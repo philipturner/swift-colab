@@ -4,7 +4,7 @@
 
 ## How to run Swift on Google Colab
 
-Copy this command into the first code cell and run it:
+Open an empty Python notebook. Copy this command into the first code cell and run it:
 
 ```bash
 !curl https://raw.githubusercontent.com/philipturner/swift-colab/main/download_swift.sh --output download_swift.sh && bash download_swift.sh
