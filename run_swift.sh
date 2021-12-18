@@ -3,4 +3,4 @@ then
   export PATH="/swift/toolchain/usr/bin:$PATH"
 fi
 
-echo "Still need to complete the rest of this script!"
+swift /swift/swift-colab/run_swift.swift $1
