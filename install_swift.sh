@@ -13,7 +13,9 @@ if [[ ! -d /swift/toolchain ]]
 then  
   ver="5.5.2"
   tar_file="swift-${ver}-RELEASE-ubuntu18.04"
-  url="https://download.swift.org/swift-${ver}-release/ubuntu1804/swift-${ver}-RELEASE/${tar_file}.tar.gz" | tar -xz
+  url="https://download.swift.org/swift-${ver}-release/ubuntu1804/swift-${ver}-RELEASE/${tar_file}.tar.gz"
+  
+  curl url | tar -xz
   mv "${tar_file}" toolchain
   
 #   curl https://download.swift.org/swift-5.5.2-release/ubuntu1804/swift-5.5.2-RELEASE/swift-5.5.2-RELEASE-ubuntu18.04.tar.gz \
