@@ -2,12 +2,13 @@
 
 # Download Swift
 
+if [[ ! -d /swift ]]
+then
+    mkdir /swift
+fi
+
 if [[ ! -d /swift/toolchain ]]
 then
-    if [[ ! -d /swift ]]
-    then
-        mkdir /swift
-    fi
     cd /swift
     curl https://download.swift.org/swift-5.5.2-release/ubuntu1804/swift-5.5.2-RELEASE/swift-5.5.2-RELEASE-ubuntu18.04.tar.gz \
         --output toolchain-tar
@@ -19,12 +20,13 @@ fi
 
 # Create directory for package
 
-if [[ ! -d /projects/Hello ]]
+if [[ ! -d /projects ]]
 then
-    if [[ ! -d /projects ]]
-    then
-        mkdir /projects
-    fi
+    mkdir /projects
+fi
+
+if [[ ! -d /projects/Hello ]]
+then    
     cd /projects
     mkdir /Hello
 fi
