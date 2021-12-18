@@ -46,7 +46,7 @@ for package in try fm.contentsOfDirectory(atPath: sourceURL.path) {
         let process = Process()
         process.executableURL = URL(fileURLWithPath: "/usr/bin/env")
         process.currentDirectoryURL = packageTargetURL
-        process.arguments = ["pip", "install", "-e", "."]
+        process.arguments = ["pip", "install", "-e", "./"]
 //         process.arguments = ["python", "setup.py", command]
 
         try process.run()
