@@ -16,4 +16,4 @@ for key in environment.keys.sorted() {
 
 let fm = FileManager.default
 
-print(fm.contentsOfDirectory(atPath: "/env/python"))
+print(try fm.contentsOfDirectory(atPath: "/env/python"))
