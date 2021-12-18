@@ -3,4 +3,4 @@ then
   export PATH="/swift/toolchain/usr/bin:$PATH"
 fi
 
-swift /swift/swift-colab/run_swift.swift $1
+swift /swift/swift-colab/run_swift.swift "$1"
