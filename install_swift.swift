@@ -35,7 +35,13 @@ let sourceURL = URL(fileURLWithPath: "/swift/swift-colab/PythonPackages")
 let targetURL = URL(fileURLWithPath: "/env/python")
 
 for package in try fm.contentsOfDirectory(atPath: sourceURL.path) {
-    print("Downloaded Python package \(package), must move to global search path")
+    print("Downloaded Python package `\(package)`, must move to global search path")
     print("Source will be \(sourceURL.appendingPathComponent(package))")
     print("Target will be \(targetURL.appendingPathComponent(package))")
+    
+    let packageSourceURL = sourceURL.appendingPathComponent(package)
+    let packageTargetURL = targetURL.appendingPathComponent(package)
+    
+    try fm.removeItemIfExists(atPath: packageSourceURL.path)
+    try fm.moveItem(at: packageSourceURL, to: packageSourceURL)
 }
