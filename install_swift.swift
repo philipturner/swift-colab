@@ -30,7 +30,7 @@ try fm.moveItem(atPath: "/swift/swift-colab/run_swift.swift", toPath: "/swift/ru
 // Create directory for temporary files created while executing a Swift script
 try fm.createDirectory(atPath: "/swift/tmp", withIntermediateDirectories: true)
 
-// Add `swift` python module to global search path
+// Add `swift` python module to `/env/python` directory
 try fm.createDirectory(atPath: "/env/python", withIntermediateDirectories: true)
 
 let sourceURL = URL(fileURLWithPath: "/swift/swift-colab/PythonPackages")
@@ -44,20 +44,20 @@ for package in try fm.contentsOfDirectory(atPath: sourceURL.path) {
     try fm.removeItemIfExists(atPath: packageTargetURL.path)
     try fm.moveItem(at: packageSourceURL, to: packageTargetURL)
     
-    // Register Python package
+//     // Register Python package
     
-//     for command in ["build", "install"] {
-        let process = Process()
-        process.executableURL = URL(fileURLWithPath: "/usr/bin/env")
-        process.currentDirectoryURL = packageTargetURL
-        process.arguments = ["pip", "install", "-e", "./"]
-//         process.arguments = ["python", "setup.py", command]
+// //     for command in ["build", "install"] {
+//         let process = Process()
+//         process.executableURL = URL(fileURLWithPath: "/usr/bin/env")
+//         process.currentDirectoryURL = packageTargetURL
+//         process.arguments = ["pip", "install", "-e", "./"]
+// //         process.arguments = ["python", "setup.py", command]
 
-        try process.run()
-        process.waitUntilExit()
-//     }
+//         try process.run()
+//         process.waitUntilExit()
+// //     }
 }
 
-print("Finished Swift script. Current working directory is \(fm.currentDirectoryPath)")
+// print("Finished Swift script. Current working directory is \(fm.currentDirectoryPath)")
 
-// fm.changeCurrentDirectoryPath("/swift")
+// // fm.changeCurrentDirectoryPath("/swift")
