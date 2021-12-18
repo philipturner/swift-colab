@@ -3,7 +3,7 @@ then
   echo "Path contained swift"
   echo $PATH
 else
-  echo "Path did not contain swift"
+  echo "Path did not contain swift 2"
   echo $PATH
 fi
 
