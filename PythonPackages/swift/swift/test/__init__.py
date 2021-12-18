@@ -1,5 +1,5 @@
 import unittest
-from test import support
+import test
 
 class MyTestCase1(unittest.TestCase):
 
