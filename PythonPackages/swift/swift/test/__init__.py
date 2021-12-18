@@ -7,9 +7,11 @@ class MyTestCase1(unittest.TestCase):
 
     def setUp(self):
         # Nothing
+        print("setting up")
 
     def tearDown(self):
         # Nothing
+        print("tearing down")
 
     def test_feature_one(self):
         # Test feature one.
