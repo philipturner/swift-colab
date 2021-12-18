@@ -1,3 +1,5 @@
+# $1 is Swift version (e.g. 5.5.2)
+
 # Download Swift
 
 if [[ ! -d /swift ]]
@@ -8,14 +10,14 @@ fi
 cd /swift
 
 if [[ ! -d /swift/toolchain ]]
-then
-  curl https://download.swift.org/swift-5.5.2-release/ubuntu1804/swift-5.5.2-RELEASE/swift-5.5.2-RELEASE-ubuntu18.04.tar.gz | tar -xz
-#   curl https://download.swift.org/swift-5.5.2-release/ubuntu1804/swift-5.5.2-RELEASE/swift-5.5.2-RELEASE-ubuntu18.04.tar.gz \
-#       --output toolchain-tar | tar -xz
+then  
+  tar_file = "swift-$1-RELEASE-ubuntu18.04"
+  url = "https://download.swift.org/swift-$1-release/ubuntu1804/swift-$1-RELEASE/${tar_file}.tar.gz" | tar -xz
+  mv tar_file toolchain
   
-#   tar -xz#f toolchain-tar -C /swift
-#   rm toolchain-tar
-  mv swift-5.5.2-RELEASE-ubuntu18.04 toolchain
+#   curl https://download.swift.org/swift-5.5.2-release/ubuntu1804/swift-5.5.2-RELEASE/swift-5.5.2-RELEASE-ubuntu18.04.tar.gz \
+#     | tar -xz
+#   mv swift-5.5.2-RELEASE-ubuntu18.04 toolchain
 fi
 
 # Execute setup script
