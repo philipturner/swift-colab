@@ -43,5 +43,5 @@ for package in try fm.contentsOfDirectory(atPath: sourceURL.path) {
     let packageTargetURL = targetURL.appendingPathComponent(package)
     
     try fm.removeItemIfExists(atPath: packageSourceURL.path)
-    try fm.moveItem(at: packageSourceURL, to: packageSourceURL)
+    try fm.moveItem(at: packageSourceURL, to: packageTargetURL)
 }
