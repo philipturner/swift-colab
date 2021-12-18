@@ -1,6 +1,6 @@
 if [[ $PATH == "/swift/toolchain/usr/bin"* ]]
 then
-  echo "Path contained swift"
+  echo "Path contained swift: $PATH"
   echo $PATH
 else
   echo "Path did not contain swift 2"
