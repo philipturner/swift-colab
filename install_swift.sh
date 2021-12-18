@@ -11,10 +11,19 @@ cd /swift
 
 if [[ ! -d /swift/toolchain ]]
 then  
-  echo "version: $@[1] alt: $@[0]"
-  echo $@
-  echo $@[0]
-  echo $@[1]
+  args=("$@")
+  echo "troubleshooting args"
+  echo ${args[0]}
+  echo ${args[1]}
+  echo $#
+  echo args[0]
+  echo args[1]
+  echo $args[0]
+  echo $args[1]
+#   echo "version: $] alt: $@[0]"
+#   echo $@
+#   echo $@[0]
+#   echo $@[1]
   ver="5.5.2"
   tar_file="swift-$1-RELEASE-ubuntu18.04"
   
