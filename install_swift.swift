@@ -17,7 +17,7 @@ for key in environment.keys.sorted() {
 let fm = FileManager.default
 
 do {
-    let pathContents = try fm.contentsOfDirectory(atPath: "/env")
+    let pathContents = try fm.contentsOfDirectory(atPath: "/")
     print(pathContents)
 } catch {
     print("Couldn't find path contents: \(error.localizedDescription)")
