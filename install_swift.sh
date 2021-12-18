@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 mkdir /swift 
 cd /swift
