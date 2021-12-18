@@ -9,9 +9,17 @@ print("debug signpost 1")
 let fm = FileManager.default
 precondition(fm.currentDirectoryPath == "/swift", "Called `install_swift.swift` when the working directory was not `/swift`.")
 
+extension FileManager {
+    func removeItemIfExists(atPath path: String) throws {
+        if fileExists(atPath: path) {
+            try removeItem(atPath: path)
+        }
+    }
+}
+
 // Remove any previously existing `run_swift` files
-try fm.removeItem(atPath: "/swift/run_swift.sh")
-try fm.removeItem(atPath: "/swift/run_swift.swift")
+try fm.removeItemIfExists(atPath: "/swift/run_swift.sh")
+try fm.removeItemIfExists(atPath: "/swift/run_swift.swift")
 
 
 print("debug signpost 2")
@@ -27,7 +35,7 @@ print("debug signpost 3")
 
 // Add `swift` python module to global search path
 try fm.createDirectory(atPath: "/env/python", withIntermediateDirectories: true)
-try fm.removeItem(atPath: "/env/python/swift")
+try fm.removeItemIfExists(atPath: "/env/python/swift")
 // try fm.moveItem(atPath: "/swift/swift-colab/PythonPa
 
 print("debug signpost 4")
