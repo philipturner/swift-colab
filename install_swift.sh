@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # Download Swift
 
 if [[ ! -d /swift ]]
@@ -15,6 +17,11 @@ then
     rm toolchain-tar
     mv swift-5.5.2-RELEASE-ubuntu18.04 toolchain
 fi
+
+## Execute setup script
+
+# export PATH="/swift/toolchain/usr/bin:$PATH"
+
 
 # Create directory for package
 
