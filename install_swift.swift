@@ -42,15 +42,16 @@ for package in try fm.contentsOfDirectory(atPath: sourceURL.path) {
     
     // Register Python package
     
-    for command in ["build", "install"] {
+//     for command in ["build", "install"] {
         let process = Process()
         process.executableURL = URL(fileURLWithPath: "/usr/bin/env")
         process.currentDirectoryURL = packageTargetURL
-        process.arguments = ["python", "setup.py", command]
+        process.arguments = ["pip", "install", "-e", "."]
+//         process.arguments = ["python", "setup.py", command]
 
         try process.run()
         process.waitUntilExit()
-    }
+//     }
 }
 
 print("Finished Swift script. Current working directory is \(fm.currentDirectoryPath)")
