@@ -13,7 +13,7 @@ tar -xvzf toolchain-zipped -C /swift
 rm toolchain-zipped 
 echo "Hello world 2"
 pwd
-mv swift-5.5.2-RELEASE-ubuntu18.04 toolchain
+mv /swift/swift-5.5.2-RELEASE-ubuntu18.04 /swift/toolchain
 
 if [[ ! -d /projects ]]
 then
