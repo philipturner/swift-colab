@@ -27,3 +27,4 @@ git clone --single-branch -b main https://github.com/philipturner/swift-colab
 
 export PATH="/swift/toolchain/usr/bin:$PATH"
 swift swift-colab/install_swift.swift
+python3 swift-colab/install_swift.py
