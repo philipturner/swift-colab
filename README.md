@@ -1,25 +1,20 @@
 # Swift-Colab
 
-Status: Incomplete
+> Note: This is only public to allow downloading files on Google Colab. Do not rely on this for guidance on using Swift on Google Colab yet.
 
-This is only public to allow downloading files on Google Colab. Do not rely on this for guidance on using Swift on Google Colab yet.
+# How to run Swift on Google Colab
 
-How to run Swift on Google Colab through command line:
+Copy this command into the first code cell and run it:
 
 ```bash
-!curl https://raw.githubusercontent.com/philipturner/swift-colab/main/install_swift.sh --output install_swift.sh && bash install_swift.sh
+!curl https://raw.githubusercontent.com/philipturner/swift-colab/main/download_swift.sh --output download_swift.sh && bash download_swift.sh
 ```
 
-<!--
-```bash
-!mkdir /swift && cd /swift && curl https://download.swift.org/swift-5.5.2-release/ubuntu1804/swift-5.5.2-RELEASE/swift-5.5.2-RELEASE-ubuntu18.04.tar.gz --output toolchain-zipped
+In the output stream, you will see:
 
-!cd /swift && tar -xvzf toolchain-zipped -C /swift
-
-!cd /swift && rm toolchain-zipped && mv swift-5.5.2-RELEASE-ubuntu18.04 toolchain
-
-!mkdir /projects && cd /projects && mkdir Hello
-
-!export PATH="/swift/toolchain/usr/bin:$PATH" && cd /projects/Hello && swift package init && swift build
 ```
--->
+...
+=== Swift was successfully downloaded ===
+...
+=== Swift was successfully installed ===
+```
