@@ -1,4 +1,4 @@
-if [[ $PATH == "/swift/toolchain/usr/bin" ]]
+if [[ $PATH == "/swift/toolchain/usr/bin"* ]]
 then
   echo "Path contained swift"
   echo $PATH
