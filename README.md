@@ -1,5 +1,9 @@
 # Swift-Colab
 
+Status: Incomplete
+
+This is only public to allow downloading files on Google Colab. Do not rely on this for guidance on using Swift in Google Colab yet.
+
 How to run Swift in Google Colab through command line:
 
 ```bash
