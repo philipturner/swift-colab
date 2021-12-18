@@ -27,11 +27,3 @@ git clone --single-branch -b main https://github.com/philipturner/swift-colab
 
 export PATH="/swift/toolchain/usr/bin:$PATH"
 swift swift-colab/install_swift.swift
-
-python3 /swift/swift-colab/test_why_not_import.py
-
-
-python3 /env/python/swift/swift/__init__.py
-cd /env/python/swift/swift
-python -m unittest test/__init__.py
-echo "finishing python test"
