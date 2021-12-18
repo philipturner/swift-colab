@@ -50,7 +50,7 @@ for package in try fm.contentsOfDirectory(atPath: sourceURL.path) {
     
     print("debug signpost 4")
     
-    try fm.removeItemIfExists(atPath: packageSourceURL.path)
+    try fm.removeItemIfExists(atPath: packageTargetURL.path)
     
     print("debug signpost 5")
     
