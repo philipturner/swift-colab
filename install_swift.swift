@@ -15,9 +15,9 @@ extension FileManager {
     }
 }
 
-for key in ProcessInfo.processInfo.environment.keys {
-    print("Environment variable \(key) = \(ProcessInfo.processInfo.environment[key]!)")
-}
+// for key in ProcessInfo.processInfo.environment.keys {
+//     print("Environment variable \(key) = \(ProcessInfo.processInfo.environment[key]!)")
+// }
 
 // Remove any previously existing `run_swift` files
 try fm.removeItemIfExists(atPath: "/swift/run_swift.sh")
