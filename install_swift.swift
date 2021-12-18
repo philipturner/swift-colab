@@ -9,5 +9,3 @@ if let value = ProcessInfo.processInfo.environment["PATH"] {
 } else {
     print("PATH was not found")
 }
-
-// print("=== Swift successfully installed ===") // try putting this in a defer statement
