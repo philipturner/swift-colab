@@ -28,7 +28,7 @@ fi
 if [[ ! -d /projects/Hello ]]
 then    
     cd /projects
-    mkdir /Hello
+    mkdir Hello
 fi
 cd /projects/Hello
 
