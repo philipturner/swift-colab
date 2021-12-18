@@ -14,12 +14,7 @@ then
   args=("$@")
   echo "troubleshooting args"
   echo ${args[0]}
-  echo ${args[1]}
-  echo $#
-  echo args[0]
-  echo args[1]
-  echo $args[0]
-  echo $args[1]
+  echo $@[0]
 #   echo "version: $] alt: $@[0]"
 #   echo $@
 #   echo $@[0]
