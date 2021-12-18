@@ -14,7 +14,7 @@ In the output stream, you will see:
 
 ```
 ...
-=== Swift was successfully downloaded ===
+=== Swift successfully downloaded ===
 ...
-=== Swift was successfully installed ===
+=== Swift successfully installed ===
 ```
