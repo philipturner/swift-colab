@@ -12,9 +12,9 @@ cd /swift
 if [[ ! -d /swift/toolchain ]]
 then  
   ver="5.5.2"
-  tar_file="swift-${$1}-RELEASE-ubuntu18.04"
+  tar_file="swift-$1-RELEASE-ubuntu18.04"
   
-  curl "https://download.swift.org/swift-${$1}-release/ubuntu1804/swift-${$1}-RELEASE/${tar_file}.tar.gz" | tar -xz
+  curl "https://download.swift.org/swift-$1-release/ubuntu1804/swift-$1-RELEASE/${tar_file}.tar.gz" | tar -xz
   mv "${tar_file}" toolchain
 fi
 
