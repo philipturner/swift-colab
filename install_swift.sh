@@ -1,5 +1,3 @@
-#!/bin/bash
-
 # Download Swift
 
 if [[ ! -d /swift ]]
