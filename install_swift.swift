@@ -44,7 +44,7 @@ for package in try fm.contentsOfDirectory(atPath: sourceURL.path) {
     
     let process = Process()
     process.executableURL = URL(fileURLWithPath: "/usr/bin/env")
-    process.currentDirectoryURL = packageTargetURL.path
+    process.currentDirectoryURL = packageTargetURL
     process.arguments = ["pwd"] // change arguments to register package
     
     try process.run()
