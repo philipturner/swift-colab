@@ -1,3 +1,3 @@
 import Foundation
 print("=== Running Swift string ===")
-print("Arguments: \(CommandLine.arguments)
+print("Arguments: \(CommandLine.arguments)")
