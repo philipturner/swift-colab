@@ -43,21 +43,4 @@ for package in try fm.contentsOfDirectory(atPath: sourceURL.path) {
     
     try fm.removeItemIfExists(atPath: packageTargetURL.path)
     try fm.moveItem(at: packageSourceURL, to: packageTargetURL)
-    
-//     // Register Python package
-    
-// //     for command in ["build", "install"] {
-//         let process = Process()
-//         process.executableURL = URL(fileURLWithPath: "/usr/bin/env")
-//         process.currentDirectoryURL = packageTargetURL
-//         process.arguments = ["pip", "install", "-e", "./"]
-// //         process.arguments = ["python", "setup.py", command]
-
-//         try process.run()
-//         process.waitUntilExit()
-// //     }
 }
-
-// print("Finished Swift script. Current working directory is \(fm.currentDirectoryPath)")
-
-// // fm.changeCurrentDirectoryPath("/swift")
