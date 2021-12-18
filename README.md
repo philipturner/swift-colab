@@ -2,7 +2,7 @@
 
 > Note: This is only public to allow downloading files on Google Colab. Do not rely on this for guidance on using Swift on Google Colab yet.
 
-# How to run Swift on Google Colab
+## How to run Swift on Google Colab
 
 Copy this command into the first code cell and run it:
 
