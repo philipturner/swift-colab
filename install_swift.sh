@@ -11,9 +11,8 @@ curl https://download.swift.org/swift-5.5.2-release/ubuntu1804/swift-5.5.2-RELEA
 
 tar -xvzf toolchain-zipped -C /swift
 rm toolchain-zipped 
-echo "Hello world"
-echo $pwd
-echo pwd
+echo "Hello world 2"
+pwd
 mv swift-5.5.2-RELEASE-ubuntu18.04 toolchain
 
 if [[ ! -d /projects ]]
