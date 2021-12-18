@@ -43,7 +43,7 @@ for package in try fm.contentsOfDirectory(atPath: sourceURL.path) {
     // Register Python package
     
     let process = Process()
-    process.executableURL = "/usr/bin/env"
+    process.executableURL = URL(fileURLWithPath: "/usr/bin/env")
     process.currentDirectoryURL = packageTargetURL.path
     process.arguments = ["pwd"] // change arguments to register package
     
