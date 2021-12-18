@@ -16,4 +16,9 @@ for key in environment.keys.sorted() {
 
 let fm = FileManager.default
 
-print(try fm.contentsOfDirectory(atPath: "/swift/toolchain"))
+do {
+    let pathContents = try fm.contentsOfDirectory(atPath: "/env")
+    print(pathContents)
+} catch {
+    print("Couldn't find path contents: \(error.localizedDescription)")
+}
