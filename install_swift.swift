@@ -34,8 +34,11 @@ try fm.createDirectory(atPath: "/env/python", withIntermediateDirectories: true)
 let sourceURL = URL(fileURLWithPath: "/swift/swift-colab/PythonPackages")
 let targetURL = URL(fileURLWithPath: "/env/python")
 
-for package in try fm.contentsOfDirectory(at: sourceURL, includingPropertiesForKeys: nil) {
-    print("Downloaded Python package \(package), must move to global search path")
-    print("Source will be \(sourceURL.appendingPathComponent(package))")
-    print("Target will be \(targetURL.appendingPathComponent(package))")
-}
+print("source url's string is \(sourceURL.absoluteString); path is \(sourceURL.path)")
+print("target url's string is \(targetURL.absoluteString); path is \(targetURL.path)")
+
+// for package in try fm.contentsOfDirectory(at: sourceURL, includingPropertiesForKeys: nil) {
+//     print("Downloaded Python package \(package), must move to global search path")
+//     print("Source will be \(sourceURL.appendingPathComponent(package))")
+//     print("Target will be \(targetURL.appendingPathComponent(package))")
+// }
