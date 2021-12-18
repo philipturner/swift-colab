@@ -6,10 +6,10 @@ class MyTestCase1(unittest.TestCase):
     # Only use setUp() and tearDown() if necessary
 
     def setUp(self):
-        
+        # Nothing
 
     def tearDown(self):
-        
+        # Nothing
 
     def test_feature_one(self):
         # Test feature one.
