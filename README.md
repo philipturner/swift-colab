@@ -7,7 +7,7 @@
 Open an empty Python notebook. Copy this command into the first code cell and run it:
 
 ```bash
-!curl https://raw.githubusercontent.com/philipturner/swift-colab/main/install_swift.sh --output install_swift.sh && bash install_swift.sh
+!curl https://raw.githubusercontent.com/philipturner/swift-colab/main/install_swift.sh --output install_swift.sh && bash install_swift.sh 5.5.2
 ```
 
 In the output stream, you will see:
