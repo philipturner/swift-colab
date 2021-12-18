@@ -16,7 +16,7 @@ class MyTestCase1(unittest.TestCase):
 
     def test_feature_one(self):
         # Test feature one.
-        run()
+        swift.run()
         print("hello world testing feature one")
 
 if __name__ == '__main__':
