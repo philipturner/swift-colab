@@ -1,5 +1,6 @@
 import unittest
 import test
+import swift
 
 class MyTestCase1(unittest.TestCase):
 
