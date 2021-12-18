@@ -1,21 +1,21 @@
 #!/bin/bash
 
-if [[ ! -d /swift ]]
-then
-    mkdir /swift
-fi
-
 # Download Swift
 
-cd /swift
-curl https://download.swift.org/swift-5.5.2-release/ubuntu1804/swift-5.5.2-RELEASE/swift-5.5.2-RELEASE-ubuntu18.04.tar.gz \
-  --output toolchain-zipped
-
-tar -xvzf toolchain-zipped -C /swift
-rm toolchain-zipped 
-echo "Hello world 2"
-pwd
-mv swift-5.5.2-RELEASE-ubuntu18.04 toolchain
+if [[ ! -d /swift/toolchain ]]
+then
+    if [[ ! -d /swift ]]
+    then
+        mkdir /swift
+    fi
+    cd /swift
+    curl https://download.swift.org/swift-5.5.2-release/ubuntu1804/swift-5.5.2-RELEASE/swift-5.5.2-RELEASE-ubuntu18.04.tar.gz \
+        --output toolchain-tar
+    
+    tar -xvzf toolchain-tar -C /swift
+    rm toolchain-tar
+    mv swift-5.5.2-RELEASE-ubuntu18.04 toolchain
+fi
 
 # Create directory for package
 
