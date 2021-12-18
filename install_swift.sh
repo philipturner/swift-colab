@@ -32,5 +32,5 @@ python3 /swift/swift-colab/test_why_not_import.py
 
 
 python3 /env/python/swift/swift/__init__.py
-python -m unittest swift
+python -m unittest swift.MyTestCase1
 echo "finishing python test"
