@@ -1,1 +1,1 @@
-
+from setuptools import setup
