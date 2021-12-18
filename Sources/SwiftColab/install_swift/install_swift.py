@@ -1,1 +1,1 @@
-
+# Register `swift` Python package
