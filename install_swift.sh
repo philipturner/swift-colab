@@ -7,7 +7,7 @@ fi
 
 cd /swift
 
-if [[ ! -d /swift/toolchain ]]
+if [[ ! -d toolchain ]]
 then  
   # $1 is the Swift version (e.g. 5.5.2)
   tar_file="swift-$1-RELEASE-ubuntu18.04"
@@ -18,9 +18,9 @@ fi
 
 # Execute setup script
 
-if [[ -d /swift/swift-colab ]]
+if [[ -d swift-colab ]]
 then
-  rm -r /swift/swift-colab
+  rm -r swift-colab
 fi
 
 git clone --single-branch -b main https://github.com/philipturner/swift-colab
