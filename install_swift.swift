@@ -1,4 +1,3 @@
 import Foundation
-print("Hello world")
-print("Hello world2")
-print("Hello world3")
+print("=== Swift successfully downloaded ===")
+print("=== Swift successfully installed ===")
