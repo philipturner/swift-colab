@@ -17,3 +17,4 @@ try fm.moveItem(atPath: "/swift/swift-colab/run_swift.swift", toPath: "/swift/ru
 
 // Create directory for temporary files created while executing a Swift script
 try fm.createDirectory(atPath: "/swift/tmp", withIntermediateDirectories: true)
+try fm.createDirectory(atPath: "/env/python", withIntermediateDirectories: true)
