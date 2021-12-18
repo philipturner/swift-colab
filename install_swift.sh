@@ -9,11 +9,12 @@ cd /swift
 
 if [[ ! -d /swift/toolchain ]]
 then
-  curl https://download.swift.org/swift-5.5.2-release/ubuntu1804/swift-5.5.2-RELEASE/swift-5.5.2-RELEASE-ubuntu18.04.tar.gz \
-      --output toolchain-tar
+  curl https://download.swift.org/swift-5.5.2-release/ubuntu1804/swift-5.5.2-RELEASE/swift-5.5.2-RELEASE-ubuntu18.04.tar.gz | tar -xz
+#   curl https://download.swift.org/swift-5.5.2-release/ubuntu1804/swift-5.5.2-RELEASE/swift-5.5.2-RELEASE-ubuntu18.04.tar.gz \
+#       --output toolchain-tar | tar -xz
   
-  tar -xz#f toolchain-tar -C /swift
-  rm toolchain-tar
+#   tar -xz#f toolchain-tar -C /swift
+#   rm toolchain-tar
   mv swift-5.5.2-RELEASE-ubuntu18.04 toolchain
 fi
 
