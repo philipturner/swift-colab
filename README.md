@@ -1,6 +1,6 @@
 # Swift-Colab
 
-> Note: This is only public to allow downloading files on Google Colab. Do not rely on this for guidance on using Swift on Google Colab yet.
+> Note: This is only public to let me download its files on Google Colab. Do not rely on this for guidance on using Swift on Colab yet.
 
 ## How to run Swift on Google Colab
 
