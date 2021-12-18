@@ -7,7 +7,7 @@ LONG_DESCRIPTION = 'Allows running Swift code as Python strings in Google Colab'
 # Setting up
 setup(
        # the name must match the folder name 'swift'
-        name="swift-possible", 
+        name="swift_possible", 
         version=VERSION,
         author="Philip Turner",
         author_email="philipturner.AR@gmail.com",
@@ -17,7 +17,7 @@ setup(
         install_requires=[], # add any additional packages that 
         # need to be installed along with your package. Eg: 'caer'
         
-        keywords=['python', 'swift-possible'],
+        keywords=['python', 'swift_possible'],
         classifiers= [
             "Programming Language :: Python :: 3",
             "Operating System :: Linux :: Ubuntu",
