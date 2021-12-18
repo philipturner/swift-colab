@@ -44,7 +44,7 @@ print("swift debug marker 1")
 
 // Add `swift` python module to `/env/python` directory
 try fm.createDirectory(atPath: "/env/python", withIntermediateDirectories: true)
-
+try fm.createDirectory(atPath: "/env/python/swift", withIntermediateDirectories: true)
 
 print("swift debug marker 2")
 
