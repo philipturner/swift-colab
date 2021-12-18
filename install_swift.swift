@@ -14,7 +14,7 @@ func moveToParent(fileName: String) throws {
         try fm.removeItem(atPath: targetPath)
     }
     
-    try fm.moveItem(atPath: "/swift/swift-colab/\(fileName)", to: targetPath)
+    try fm.moveItem(atPath: "/swift/swift-colab/\(fileName)", toPath: targetPath)
 }
 
 try moveToParent(fileName: "run_swift.sh")
