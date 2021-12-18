@@ -28,31 +28,15 @@ try fm.createDirectory(atPath: "/swift/tmp", withIntermediateDirectories: true)
 
 // Add `swift` python module to global search path
 try fm.createDirectory(atPath: "/env/python", withIntermediateDirectories: true)
-// try fm.removeItemIfExists(atPath: "/env/python/swift") --- execute this command in the code below
-// try fm.moveItem(atPath: "/swift/swift-colab/PythonPa
-
-print("debug signpost 1")
 
 let sourceURL = URL(fileURLWithPath: "/swift/swift-colab/PythonPackages")
 let targetURL = URL(fileURLWithPath: "/env/python")
 
-print("debug signpost 2")
-
 for package in try fm.contentsOfDirectory(atPath: sourceURL.path) {
-    print("Downloaded Python package `\(package)`, must move to global search path")
-    print("Source will be \(sourceURL.appendingPathComponent(package))")
-    print("Target will be \(targetURL.appendingPathComponent(package))")
-    
-    print("debug signpost 3")
-    
+    print("Registering Python package \"\(package)\"")
     let packageSourceURL = sourceURL.appendingPathComponent(package)
     let packageTargetURL = targetURL.appendingPathComponent(package)
     
-    print("debug signpost 4")
-    
     try fm.removeItemIfExists(atPath: packageTargetURL.path)
-    
-    print("debug signpost 5")
-    
     try fm.moveItem(at: packageSourceURL, to: packageTargetURL)
 }
