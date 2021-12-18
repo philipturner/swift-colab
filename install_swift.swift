@@ -10,14 +10,16 @@ precondition(fm.currentDirectoryPath == "/swift", "Called `install_swift.swift` 
 func moveToParent(fileName: String) throws {
     let targetPath = "/swift/\(fileName)"
     
-    if fm.fileExists(atPath: targetPath) {
+//     if fm.fileExists(atPath: targetPath) {
         try fm.removeItem(atPath: targetPath)
-    }
+//     }
     
     try fm.moveItem(atPath: "/swift/swift-colab/\(fileName)", toPath: targetPath)
 }
 
 try moveToParent(fileName: "run_swift.sh")
 try moveToParent(fileName: "run_swift.swift")
+
+
 
 try fm.createDirectory(atPath: "/swift/tmp", withIntermediateDirectories: true)
