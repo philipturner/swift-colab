@@ -51,7 +51,7 @@ print("swift debug marker 2")
 
 
 let sourcePath = "/swift/swift-colab/PythonPackages/swift"
-let targetPath = "env/python/swift"
+let targetPath = "/env/python/swift"
 
 try fm.removeItemIfExists(atPath: targetPath)
 
