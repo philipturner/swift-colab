@@ -1,5 +1,3 @@
-# $1 is Swift version (e.g. 5.5.2)
-
 # Download Swift
 
 if [[ ! -d /swift ]]
@@ -11,15 +9,7 @@ cd /swift
 
 if [[ ! -d /swift/toolchain ]]
 then  
-  args=("$@")
-  echo "troubleshooting args"
-  echo ${args[0]}
-  echo $@[0]
-#   echo "version: $] alt: $@[0]"
-#   echo $@
-#   echo $@[0]
-#   echo $@[1]
-  ver="5.5.2"
+  # $1 is the Swift version (e.g. 5.5.2)
   tar_file="swift-$1-RELEASE-ubuntu18.04"
   
   curl "https://download.swift.org/swift-$1-release/ubuntu1804/swift-$1-RELEASE/${tar_file}.tar.gz" | tar -xz
