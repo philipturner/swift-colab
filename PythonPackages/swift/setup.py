@@ -13,9 +13,5 @@ setup(
     install_requires=[], # add any additional packages that 
     # need to be installed along with your package. Eg: 'caer'
     
-    keywords=['python', 'swift'],
-    classifiers= [
-        "Programming Language :: Python :: 3",
-        "Operating System :: Linux :: Ubuntu",
-    ]
+    keywords=['python', 'swift']
 )
