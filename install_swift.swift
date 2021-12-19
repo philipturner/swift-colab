@@ -5,7 +5,7 @@ print("=== Swift successfully downloaded ===")
 defer { print("=== Swift successfully installed ===") }
 
 let fm = FileManager.default
-precondition(fm.currentDirectoryPath == "/swift", "Called `install_swift.swift` when the working directory was not `/swift`.")
+precondition(fm.currentDirectoryPath == "/opt/swift", "Called `install_swift.swift` when the working directory was not `/opt/swift`.")
 
 extension FileManager {
     func removeItemIfExists(atPath path: String) throws {
@@ -23,22 +23,22 @@ for key in ProcessInfo.processInfo.environment.keys {
 #endif
 
 // Remove any previously existing `run_swift` files
-try fm.removeItemIfExists(atPath: "/swift/run_swift.sh")
-try fm.removeItemIfExists(atPath: "/swift/run_swift.swift")
+try fm.removeItemIfExists(atPath: "/opt/swift/run_swift.sh")
+try fm.removeItemIfExists(atPath: "/opt/swift/run_swift.swift")
 
 // Move `run_swift` to the `/swift` directory
-let baseDirectory = "/swift/swift-colab/Sources/SwiftColab/run_swift"
-try fm.moveItem(atPath: "\(baseDirectory)/run_swift.sh", toPath: "/swift/run_swift.sh")
-try fm.moveItem(atPath: "\(baseDirectory)/run_swift.swift", toPath: "/swift/run_swift.swift")
+let baseDirectory = "/opt/swift/swift-colab/Sources/SwiftColab/run_swift"
+try fm.moveItem(atPath: "\(baseDirectory)/run_swift.sh", toPath: "/opt/swift/run_swift.sh")
+try fm.moveItem(atPath: "\(baseDirectory)/run_swift.swift", toPath: "/opt/swift/run_swift.swift")
 
 // Create directory for temporary files created while executing a Swift script
-try fm.createDirectory(atPath: "/swift/tmp", withIntermediateDirectories: true)
+try fm.createDirectory(atPath: "/opt/swift/tmp", withIntermediateDirectories: true)
 
 // Move `swift` Python package to `/env/python` directory
 try fm.createDirectory(atPath: "/env/python", withIntermediateDirectories: true)
 try fm.createDirectory(atPath: "/env/python/swift", withIntermediateDirectories: true)
 
-let sourcePath = "/swift/swift-colab/PythonPackages/swift"
+let sourcePath = "/opt/swift/swift-colab/PythonPackages/swift"
 let targetPath = "/env/python/swift"
 
 try fm.removeItemIfExists(atPath: targetPath)
