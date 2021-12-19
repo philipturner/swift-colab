@@ -9,8 +9,6 @@ let fm = FileManager.default
 
 // Write script to temporary file
 
-exit(0)
-
 guard let scriptData = CommandLine.arguments[1].data(using: .utf8) else {
     enum InvalidStringError: Error {
         case notUTF8
@@ -22,6 +20,8 @@ guard let scriptData = CommandLine.arguments[1].data(using: .utf8) else {
 print("swift debug signpost 1")
 
 let targetURL = URL(fileURLWithPath: "/opt/swift/tmp/string_script.swift")
+
+exit(0)
 
 // if fm.fileExists(at: targetURL) {
 //     try scriptData.write(to: targetURL, options: .atomic)
