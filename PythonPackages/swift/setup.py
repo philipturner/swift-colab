@@ -8,7 +8,7 @@ LONG_DESCRIPTION = 'Allows running Swift code as Python strings in Google Colab'
 setup(
     # the name must match the folder name 'swift'
     name="swift", 
-    version=VERSION,
+    version="",
     author="Philip Turner",
     author_email="philipturner.AR@gmail.com",
     description=DESCRIPTION,
