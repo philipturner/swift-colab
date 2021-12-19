@@ -1,6 +1,4 @@
 import Foundation
-print("=== Started running Swift string ===")
-defer { print("=== Finished running Swift string ===") }
 
 let fm = FileManager.default
 
