@@ -31,7 +31,7 @@ try fm.moveItem(atPath: "\(baseDirectory)/run_swift.swift", toPath: "/swift/run_
 // Create directory for temporary files created while executing a Swift script
 try fm.createDirectory(atPath: "/swift/tmp", withIntermediateDirectories: true)
 
-// Add `swift` python module to `/env/python` directory
+// Add `swift` python package to `/env/python` directory
 try fm.createDirectory(atPath: "/env/python", withIntermediateDirectories: true)
 try fm.createDirectory(atPath: "/env/python/swift", withIntermediateDirectories: true)
 
@@ -47,3 +47,13 @@ print("swift debug marker 0")
 
 
 
+let registerPackage = Process()
+registerPackage.executableURL = "/usr/bin/env"
+registerPackage.currentDirectoryURL = "/env/python/swift"
+registerPackage.arguments = ["pip", "install", "./"]
+
+registerPackage.run()
+registerPackage.waitUntilExit()
+
+
+print("swift debug marker 1")
