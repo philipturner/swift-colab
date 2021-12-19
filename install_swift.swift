@@ -36,19 +36,22 @@ try fm.createDirectory(atPath: "/opt/swift/tmp", withIntermediateDirectories: tr
 
 // Move `swift` Python package to `/env/python` directory
 try fm.createDirectory(atPath: "/env/python", withIntermediateDirectories: true)
-try fm.createDirectory(atPath: "/env/python/swift", withIntermediateDirectories: true)
 
-let sourcePath = "/opt/swift/swift-colab/PythonPackages/swift"
-let targetPath = "/env/python/swift"
+if !fm.fileExists(atPath: "/env/python/swift") {
+    try fm.createDirectory(atPath: "/env/python/swift", withIntermediateDirectories: true)
+    
+    let sourcePath = "/opt/swift/swift-colab/PythonPackages/swift"
+    let targetPath = "/env/python/swift"
 
-try fm.removeItemIfExists(atPath: targetPath)
-try fm.moveItem(atPath: sourcePath, toPath: targetPath)
+    try fm.removeItemIfExists(atPath: targetPath)
+    try fm.moveItem(atPath: sourcePath, toPath: targetPath)
 
-// Register `swift` Python package
-let registerPackage = Process()
-registerPackage.executableURL = .init(fileURLWithPath: "/usr/bin/env")
-registerPackage.currentDirectoryURL = .init(fileURLWithPath: "/env/python/swift")
-registerPackage.arguments = ["pip", "install", "--use-feature=in-tree-build", "./"]
+    // Register `swift` Python package
+    let registerPackage = Process()
+    registerPackage.executableURL = .init(fileURLWithPath: "/usr/bin/env")
+    registerPackage.currentDirectoryURL = .init(fileURLWithPath: "/env/python/swift")
+    registerPackage.arguments = ["pip", "install", "--use-feature=in-tree-build", "./"]
 
-try registerPackage.run()
-registerPackage.waitUntilExit()
+    try registerPackage.run()
+    registerPackage.waitUntilExit()
+}
