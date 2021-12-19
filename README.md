@@ -18,3 +18,14 @@ In the output stream, you will see:
 ...
 === Swift successfully installed ===
 ```
+
+In the next code cell, run this:
+
+```python
+import swift
+
+swift.run("""
+import Foundation
+print("hello world")
+""")
+```
