@@ -9,6 +9,8 @@ let fm = FileManager.default
 
 // Write script to temporary file
 
+exit(0)
+
 guard let scriptData = CommandLine.arguments[1].data(using: .utf8) else {
     enum InvalidStringError: Error {
         case notUTF8
