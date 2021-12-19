@@ -31,6 +31,7 @@ let readData = fm.contents(atPath: targetURL.path)
 print(readData != nil)
 // }
 
+print(targetURL.path)
 print("swift debug signpost 2")
 // Execute script
 
