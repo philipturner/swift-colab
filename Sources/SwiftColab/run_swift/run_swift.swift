@@ -1,4 +1,5 @@
 import Foundation
+print("swift debug signpost 0")
 print("=== Started running Swift string ===")
 defer { print("=== Finished running Swift string ===") }
 
