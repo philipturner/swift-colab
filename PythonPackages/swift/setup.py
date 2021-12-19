@@ -2,8 +2,7 @@
 from setuptools import setup, find_packages
 
 setup(
-    name="swift", 
-#     version="1.0.0",
-    packages=find_packages(),
-    install_requires=[]
+    name="swift"
+#     packages=find_packages()
+#     install_requires=[]
 )
