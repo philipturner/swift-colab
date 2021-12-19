@@ -21,8 +21,6 @@ print("swift debug signpost 1")
 
 let targetURL = URL(fileURLWithPath: "/opt/swift/tmp/string_script.swift")
 
-exit(0)
-
 // if fm.fileExists(at: targetURL) {
 //     try scriptData.write(to: targetURL, options: .atomic)
 // } else {
@@ -37,6 +35,11 @@ executeScript.executableURL = .init(fileURLWithPath: "/usr/bin/env")
 executeScript.arguments = ["swift", targetURL.path]
 executeScript.currentDirectoryURL = .init(fileURLWithPath: "/contents")
 print("swift debug signpost 3")
+
+
+
+exit(0)
+
 try executeScript.run()
 executeScript.waitUntilExit()
 
