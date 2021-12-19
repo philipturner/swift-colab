@@ -11,17 +11,17 @@ setup(
     # the name must match the folder name 'swift'
     name="swift", 
     version=VERSION,
-    author="Philip Turner",
-    author_email="philipturner.AR@gmail.com",
-    description=DESCRIPTION,
-    long_description=LONG_DESCRIPTION,
+#     author="Philip Turner",
+#     author_email="philipturner.AR@gmail.com",
+#     description=DESCRIPTION,
+#     long_description=LONG_DESCRIPTION,
     packages=find_packages(),
-    install_requires=[], # add any additional packages that 
+    install_requires=[] # add any additional packages that 
     # need to be installed along with your package. Eg: 'caer'
 
-    keywords=['python', 'swift'],
-    classifiers= [
-        "Programming Language :: Python :: 3",
-        "Operating System :: Linux :: Ubuntu",
-    ]
+#     keywords=['python', 'swift'],
+#     classifiers= [
+#         "Programming Language :: Python :: 3",
+#         "Operating System :: Linux :: Ubuntu",
+#     ]
 )
