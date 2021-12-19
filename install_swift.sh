@@ -1,11 +1,11 @@
 # Download Swift
 
-if [[ ! -d /swift ]]
+if [[ ! -d /opt/swift ]]
 then
-  mkdir /swift
+  mkdir /opt/swift
 fi
 
-cd /swift
+cd /opt/swift
 
 if [[ ! -d toolchain ]]
 then  
@@ -25,5 +25,5 @@ fi
 
 git clone --single-branch -b main https://github.com/philipturner/swift-colab
 
-export PATH="/swift/toolchain/usr/bin:$PATH"
+export PATH="/opt/swift/toolchain/usr/bin:$PATH"
 swift swift-colab/install_swift.swift
