@@ -6,7 +6,14 @@ print("Arguments: \(CommandLine.arguments)")
 
 // Write the script to temporary file
 
-let scriptData = CommandLine.arguments[1].data(using: .utf8)
+guard let scriptData = CommandLine.arguments[1].data(using: .utf8) else {
+    enum InvalidStringError: Error {
+        case wasNotUTF8
+    }
+    
+    throw InvalidStringError()
+}
+
 let targetURL = URL(fileURLWithPath: "/opt/swift/tmp/string_script.swift")
 try scriptData.write(to: targetURL, options: .atomic)
 
