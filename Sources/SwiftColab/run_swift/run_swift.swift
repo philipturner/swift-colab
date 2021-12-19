@@ -24,7 +24,9 @@ let targetURL = URL(fileURLWithPath: "/opt/swift/tmp/string_script.swift")
 // if fm.fileExists(at: targetURL) {
 //     try scriptData.write(to: targetURL, options: .atomic)
 // } else {
-    fm.createFile(atPath: targetURL.path, contents: scriptData)
+    print(fm.createFile(atPath: targetURL.path, contents: scriptData))
+let readData = fm.contents(atPath: targetURL.path)
+print(readData != nil)
 // }
 
 print("swift debug signpost 2")
