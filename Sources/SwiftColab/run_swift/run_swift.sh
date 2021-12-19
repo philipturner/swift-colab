@@ -1,6 +1,6 @@
-if [[ $PATH != "/swift/toolchain/usr/bin"* ]]
+if [[ $PATH != "/opt/swift/toolchain/usr/bin"* ]]
 then
-  export PATH="/swift/toolchain/usr/bin:$PATH"
+  export PATH="/opt/swift/toolchain/usr/bin:$PATH"
 fi
 
-swift /swift/run_swift.swift "$1"
+swift /opt/swift/run_swift.swift "$1"
