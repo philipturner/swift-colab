@@ -15,9 +15,12 @@ extension FileManager {
     }
 }
 
-// for key in ProcessInfo.processInfo.environment.keys {
-//     print("Environment variable \(key) = \(ProcessInfo.processInfo.environment[key]!)")
-// }
+#if false
+// Log the environment
+for key in ProcessInfo.processInfo.environment.keys {
+    print("Environment variable \(key) = \(ProcessInfo.processInfo.environment[key]!)")
+}
+#endif
 
 // Remove any previously existing `run_swift` files
 try fm.removeItemIfExists(atPath: "/swift/run_swift.sh")
@@ -31,7 +34,7 @@ try fm.moveItem(atPath: "\(baseDirectory)/run_swift.swift", toPath: "/swift/run_
 // Create directory for temporary files created while executing a Swift script
 try fm.createDirectory(atPath: "/swift/tmp", withIntermediateDirectories: true)
 
-// Add `swift` python package to `/env/python` directory
+// Move `swift` Python package to `/env/python` directory
 try fm.createDirectory(atPath: "/env/python", withIntermediateDirectories: true)
 try fm.createDirectory(atPath: "/env/python/swift", withIntermediateDirectories: true)
 
@@ -41,12 +44,7 @@ let targetPath = "/env/python/swift"
 try fm.removeItemIfExists(atPath: targetPath)
 try fm.moveItem(atPath: sourcePath, toPath: targetPath)
 
-
-
-print("swift debug marker 0")
-
-
-
+// Register `swift` Python package
 let registerPackage = Process()
 registerPackage.executableURL = .init(fileURLWithPath: "/usr/bin/env")
 registerPackage.currentDirectoryURL = .init(fileURLWithPath: "/env/python/swift")
@@ -54,6 +52,3 @@ registerPackage.arguments = ["pip", "install", "./"]
 
 try registerPackage.run()
 registerPackage.waitUntilExit()
-
-
-print("swift debug marker 1")
