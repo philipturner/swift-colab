@@ -27,16 +27,5 @@ git clone --single-branch -b main https://github.com/philipturner/swift-colab
 
 export PATH="/swift/toolchain/usr/bin:$PATH"
 
-echo $PATH
-echo $PATH
-echo $PATH
 base_dir="swift-colab/Sources/SwiftColab/install_swift"
-echo "debug marker 1"
 swift "${base_dir}/install_swift.swift"
-echo "debug marker 2"
-cd /env/python && ls
-cd /swift
-echo "debug marker 3"
-# mv -r /swift/swift-colab/PythonPackages/swift /env/python/swift
-
-# python3 "${base_dir}/install_swift.py"
