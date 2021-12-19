@@ -38,7 +38,7 @@ print("swift debug signpost 2")
 let executeScript = Process()
 executeScript.executableURL = .init(fileURLWithPath: "/usr/bin/env")
 executeScript.arguments = ["swift", targetURL.path]
-executeScript.currentDirectoryURL = .init(fileURLWithPath: "/contents")
+executeScript.currentDirectoryURL = .init(fileURLWithPath: "/content")
 print("swift debug signpost 3")
 
 do {
