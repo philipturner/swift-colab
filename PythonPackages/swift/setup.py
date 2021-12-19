@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 # Setting up
 setup(
     # the name must match the folder name 'swift'
-    name="swift"
+#     name="swift"
 #     version="1.0.0",
 #     author="Philip Turner",
 #     author_email="philipturner.AR@gmail.com",
