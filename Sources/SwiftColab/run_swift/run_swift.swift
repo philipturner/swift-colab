@@ -36,11 +36,9 @@ executeScript.arguments = ["swift", targetURL.path]
 executeScript.currentDirectoryURL = .init(fileURLWithPath: "/contents")
 print("swift debug signpost 3")
 
-
-
-exit(0)
-
 try executeScript.run()
 executeScript.waitUntilExit()
+
+exit(0)
 
 print("swift debug signpost 4")
