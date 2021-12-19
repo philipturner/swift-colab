@@ -49,7 +49,7 @@ print("swift debug marker 0")
 
 let registerPackage = Process()
 registerPackage.executableURL = "/usr/bin/env"
-registerPackage.currentDirectoryURL = "/env/python/swift"
+registerPackage.currentDirectoryURL = URL(fileURLWithPath: "/env/python/swift")
 registerPackage.arguments = ["pip", "install", "./"]
 
 try registerPackage.run()
