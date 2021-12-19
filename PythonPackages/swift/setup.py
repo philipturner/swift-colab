@@ -8,6 +8,6 @@ setup(
     author="Philip Turner",
     author_email="philipturner.AR@gmail.com",
     description="Execute Swift code from Python",
-    long_description="Allows running Swift code as Python strings in Google Colab",
+#     long_description="Allows running Swift code as Python strings in Google Colab",
     packages=find_packages()
 )
