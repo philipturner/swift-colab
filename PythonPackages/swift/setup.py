@@ -9,7 +9,5 @@ setup(
     author_email="philipturner.AR@gmail.com",
     description="Execute Swift code from Python",
     long_description="Allows running Swift code as Python strings in Google Colab",
-    packages=find_packages(),
-    install_requires=[] # add any additional packages that 
-    # need to be installed along with your package. Eg: 'caer'
+    packages=find_packages()
 )
