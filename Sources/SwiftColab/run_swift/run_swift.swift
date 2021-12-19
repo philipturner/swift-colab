@@ -24,6 +24,6 @@ executeScript.executableURL = "/usr/bin/env"
 executeScript.arguments = ["swift", targetURL.path]
 executeScript.currentDirectoryURL = "/contents"
 
-executeScript.run()
+try executeScript.run()
 executeScript.waitUntilExit()
 
