@@ -10,8 +10,8 @@ let fm = FileManager.default
 // Write script to temporary file
 
 
-guard let scriptData = String("import Foundation").data(using: .utf8) else {
-// guard let scriptData = CommandLine.arguments[1].data(using: .utf8) else {
+// guard let scriptData = String("import Foundation").data(using: .utf8) else {
+guard let scriptData = CommandLine.arguments[1].data(using: .utf8) else {
     enum InvalidStringError: Error {
         case notUTF8
     }
