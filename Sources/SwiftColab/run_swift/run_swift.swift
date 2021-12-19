@@ -4,6 +4,8 @@ defer { print("=== Finished running Swift string ===") }
 
 print("Arguments: \(CommandLine.arguments)")
 
+let fm = FileManager.default
+
 // Write script to temporary file
 
 guard let scriptData = CommandLine.arguments[1].data(using: .utf8) else {
@@ -15,7 +17,13 @@ guard let scriptData = CommandLine.arguments[1].data(using: .utf8) else {
 }
 
 let targetURL = URL(fileURLWithPath: "/opt/swift/tmp/string_script.swift")
-try scriptData.write(to: targetURL, options: .atomic)
+
+// if fm.fileExists(at: targetURL) {
+//     try scriptData.write(to: targetURL, options: .atomic)
+// } else {
+    fm.createFile(atPath: targetURL.path, contents: scriptData)
+// }
+
 
 // Execute script
 
