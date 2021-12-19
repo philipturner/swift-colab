@@ -1,7 +1,7 @@
 import Foundation
-print("=== Running Swift string ===")
+print("=== Started running Swift string ===")
 defer { print("=== Finished running Swift string ===") }
 
-FileManager.default.currentDirectoryPath = "/contents"
+FileManager.default.changeCurrentDirectoryPath("/contents")
 
 print("Arguments: \(CommandLine.arguments)")
