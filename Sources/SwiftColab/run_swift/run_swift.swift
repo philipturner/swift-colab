@@ -4,7 +4,7 @@ defer { print("=== Finished running Swift string ===") }
 
 print("Arguments: \(CommandLine.arguments)")
 
-// Write the script to temporary file
+// Write script to temporary file
 
 guard let scriptData = CommandLine.arguments[1].data(using: .utf8) else {
     enum InvalidStringError: Error {
@@ -17,10 +17,12 @@ guard let scriptData = CommandLine.arguments[1].data(using: .utf8) else {
 let targetURL = URL(fileURLWithPath: "/opt/swift/tmp/string_script.swift")
 try scriptData.write(to: targetURL, options: .atomic)
 
-print("successfully wrote string script")
+// Execute script
 
-// Execute the script
+let executeScript = Process()
+executeScript.executableURL = "/usr/bin/env"
+executeScript.arguments = ["swift", targetURL.path]
+executeScript.currentDirectoryURL = "/contents"
 
-FileManager.default.changeCurrentDirectoryPath("/contents")
-
-
+executeScript.run()
+executeScript.waitUntilExit()
