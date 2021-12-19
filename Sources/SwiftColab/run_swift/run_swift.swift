@@ -20,9 +20,9 @@ try scriptData.write(to: targetURL, options: .atomic)
 // Execute script
 
 let executeScript = Process()
-executeScript.executableURL = "/usr/bin/env"
+executeScript.executableURL = .init(fileURLWithPath: "/usr/bin/env")
 executeScript.arguments = ["swift", targetURL.path]
-executeScript.currentDirectoryURL = "/contents"
+executeScript.currentDirectoryURL = .init(fileURLWithPath: "/contents")
 
 try executeScript.run()
 executeScript.waitUntilExit()
