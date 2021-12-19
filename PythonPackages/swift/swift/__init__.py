@@ -1,2 +1,4 @@
-def run():
-  print("Still need to implement the run method")
+import subprocess
+
+def run(str):
+  subprocess.run(["bash", "/swift/run_swift.sh", str])
