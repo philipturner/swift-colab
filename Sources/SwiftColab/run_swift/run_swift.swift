@@ -8,10 +8,10 @@ print("Arguments: \(CommandLine.arguments)")
 
 guard let scriptData = CommandLine.arguments[1].data(using: .utf8) else {
     enum InvalidStringError: Error {
-        case wasNotUTF8
+        case notUTF8
     }
     
-    throw InvalidStringError()
+    throw InvalidStringError.notUTF8
 }
 
 let targetURL = URL(fileURLWithPath: "/opt/swift/tmp/string_script.swift")
