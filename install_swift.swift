@@ -48,7 +48,7 @@ try fm.moveItem(atPath: sourcePath, toPath: targetPath)
 let registerPackage = Process()
 registerPackage.executableURL = .init(fileURLWithPath: "/usr/bin/env")
 registerPackage.currentDirectoryURL = .init(fileURLWithPath: "/env/python/swift")
-registerPackage.arguments = ["pip", "install", "./"]
+registerPackage.arguments = ["pip", "install", "--use-feature=in-tree-build", "./"]
 
 try registerPackage.run()
 registerPackage.waitUntilExit()
