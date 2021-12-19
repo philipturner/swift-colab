@@ -52,7 +52,7 @@ registerPackage.executableURL = "/usr/bin/env"
 registerPackage.currentDirectoryURL = "/env/python/swift"
 registerPackage.arguments = ["pip", "install", "./"]
 
-registerPackage.run()
+try registerPackage.run()
 registerPackage.waitUntilExit()
 
 
