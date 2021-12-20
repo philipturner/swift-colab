@@ -24,8 +24,8 @@ In the next code cell, run this:
 ```python
 import swift
 
-swift.run("""
+swift.run('''
 import Foundation
 print("hello world")
-""")
+''')
 ```
