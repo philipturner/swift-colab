@@ -1,7 +1,5 @@
 # Swift-Colab
 
-> Note: This is only public to let me download its files on Google Colab. Do not rely on this for guidance on using Swift on Colab yet.
-
 ## How to run Swift on Google Colab
 
 Open an empty Python notebook. Copy this command into the first code cell and run it:
