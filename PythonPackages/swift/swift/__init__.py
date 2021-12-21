@@ -4,12 +4,14 @@ def run(swift_string): # will change to directly call a Swift dynamic library vi
     p = sp.run(["bash", "/opt/swift/run_swift.sh", swift_string], stdout=sp.PIPE, stderr=sp.PIPE, text=True); print(p.stdout + p.stderr)
 class SwiftObject:
     def __init__(self, function_table):
-        self.function_table = function_table # a table of 64-bit memory addresses of function pointer wrappers
+        self.function_table = function_table # a table of memory addresses of function pointer wrappers
         self.__bridge_lib = ctypes.CDLL("/opt/swift/libSwiftPythonBridge.so")
         self.__bridge_lib.restype, self.__bridge_lib.argtypes = c_void_p, [c_void_p]
         # call a C function on the return value, which optionally returns an error. The return value is a wrapper over the actual returned object
-    def call_swift(self, function_name):
-        function_wrapper_address = c_void_p(self.function_table[function_name]) # cast an integer to an `OpaquePointer`
+    def call_swift_function(self, function_name, parameter):
+        func_ptr_wrapper_ptr = c_void_p(self.function_table[function_name]) # cast an integer to an `OpaquePointer`
+        func_return_ptr = self.__bridge_lib.callSwiftFromPython(c_void_p(id(parameter)))
+        func_return = ctypes.cast(func_return_ptr, ctypes.py_object).value # is a `SwiftReturnValue`
 #         function_return = self.__bridge_lib(
         
         # call the lib's `callSwiftFromPython` function
