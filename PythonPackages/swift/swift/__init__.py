@@ -17,6 +17,6 @@ class SwiftObject:
 class SwiftReturnValue:
     def __init__(self, wrapped_object, error): # inside the Swift code, `error` is created from a Swift PythonConvertibleError type
         self.wrapped_object, self.error = wrapped_object, error # `error` conforms to `BaseException`
-class ExampleSwiftObject(SwiftObject):
+class ExampleSwiftObject(SwiftObject): # eventually, will try implementing this in a separate Python package - keeping in here rn for simplicity
     def __init__(self):
         super().__init__({})
