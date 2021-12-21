@@ -16,7 +16,7 @@ class SwiftDelegate:
 class SwiftReturnValue:
     def __init__(self, wrapped_object, error): # `error` is created from a Swift `Error` (may need to make Python classes to help with bridging)
         self.wrapped_object, self.error = wrapped_object, error # `error` conforms to `BaseException`
-class ExampleSwiftObject(): # eventually, will try implementing this in a separate Python package - keeping in here rn for simplicity
+class SwiftInteropTest(): # eventually, will try implementing this in a separate Python package - keeping in here rn for simplicity
     def __init__(self):
         self.swift_delegate = SwiftDelegate()
     def example_func(self, string_param):
