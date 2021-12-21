@@ -9,6 +9,8 @@ class SwiftObject:
         self.__bridge_lib.restype = c_void_p; self.__bridge_lib.argtypes = [c_void_p]
         # call a C function on the return value, which optionally returns an error. The return value is a wrapper over the actual returned object
     def call_swift(self, function_name):
+        function_wrapper_address = self.function_table[function_name] # is an integer
+        # call the lib's `callSwiftFromPython` function
         # initialize the `SwiftReturnValue` given the id
         pass
 class SwiftReturnValue: # need to initialize this given its id
