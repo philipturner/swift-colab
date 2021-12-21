@@ -15,7 +15,7 @@ then
   curl "https://download.swift.org/swift-$1-release/ubuntu1804/swift-$1-RELEASE/${tar_file}.tar.gz" | tar -xz
   mv "${tar_file}" toolchain
   
-  apt install patchelf # will be removed when I ship pre-compiled binaries with this kernel, as it takes a noticeable amount of time to install
+  apt install patchelf
 fi
 
 # Execute setup script
