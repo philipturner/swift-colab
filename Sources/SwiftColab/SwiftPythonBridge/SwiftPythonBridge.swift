@@ -11,6 +11,6 @@
 import PythonKit
 
 @_cdecl("callSwiftFromPython")
-public func callSwiftFromPython(_ params: OpaquePointer) -> OpaquePointer {
+public func callSwiftFromPython(_ functionHandleRef: OpaquePointer, _ params: OpaquePointer) -> OpaquePointer {
     
 }
