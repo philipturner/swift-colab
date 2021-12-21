@@ -13,7 +13,6 @@ class SwiftObject:
         if func_return.error is not None: # bridged from `nil` to `Python.None` in PythonKit
             raise func_return.error
         return func_return.wrapped_object # `None` if the Swift function doesn't return anything
-        pass
 class SwiftReturnValue:
     def __init__(self, wrapped_object, error): # `error` is created from a Swift `Error` (may need to make Python classes to help with bridging)
         self.wrapped_object, self.error = wrapped_object, error # `error` conforms to `BaseException`
