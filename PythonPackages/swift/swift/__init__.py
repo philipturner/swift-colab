@@ -6,4 +6,9 @@ class SwiftObject:
     def __init__(self, function_table):
         self.function_table = function_table # a table of 64-bit pointers to function pointer wrappers
         self.__bridge_lib = ctypes.CDLL("/opt/swift/libSwiftPythonBridge.so")
-        self.__bridge_lib.restype = c_void_p; self.__bridge_lib.argtypes = [c_void_p] # can also throw an error, but haven't figure out how to do that yet
+        self.__bridge_lib.restype = c_void_p; self.__bridge_lib.argtypes = [c_void_p]
+        # call a C function on the return value, which optionally returns an error. The return value is a wrapper over the actual returned object
+class SwiftReturnValue: # need to initialize this given its id
+    def __init(self, wrapped_value, error):
+        self.wrappedvalue = wrapped_value
+        self.error = error
