@@ -8,4 +8,4 @@
 
 // Workaround that lets me avoid modifying PythonKit: make a class that replicates the behavior of PyReference. Then, unsafe bit cast it to a PythonObject.
 
-// could make this a one-file binary
+import PythonKit
