@@ -12,5 +12,6 @@ import PythonKit
 
 @_cdecl("callSwiftFromPython")
 public func callSwiftFromPython(_ functionHandleRef: OpaquePointer, _ params: OpaquePointer) -> OpaquePointer {
-    
+    // initialize the function handle ref using Unmanaged<FunctionHandle>
+    // initialize the PythonObject from params using PythonObject+ID
 }
