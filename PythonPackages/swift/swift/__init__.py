@@ -6,7 +6,6 @@ class SwiftObject:
         self.function_table = function_table # a table of memory addresses of function pointer wrappers
         self.__bridge_lib = ctypes.CDLL("/opt/swift/libSwiftPythonBridge.so")
         self.__bridge_lib.restype, self.__bridge_lib.argtypes = c_void_p, [c_void_p]
-        # call a C function on the return value, which optionally returns an error. The return value is a wrapper over the actual returned object
     def call_swift_function(self, function_name, parameter):
         func_ptr_wrapper_ptr = c_void_p(self.function_table[function_name]) # cast an integer to an `OpaquePointer`
         func_return_ptr = self.__bridge_lib.callSwiftFromPython(c_void_p(id(parameter)))
@@ -14,12 +13,6 @@ class SwiftObject:
         if func_return.error is not None: # bridged from `nil` to `Python.None` in PythonKit
             raise func_return.error
         return func_return.wrapped_object # `None` if the Swift function doesn't return anything
-#         function_return = self.__bridge_lib(
-        
-        # call the lib's `callSwiftFromPython` function
-        # initialize the `SwiftReturnValue` given the id
-        # if the error object isn't `None`, raise an exception/error
-        # otherwise, return the wrapped_object (it might be `None`)
         pass
 class SwiftReturnValue:
     def __init__(self, wrapped_object, error): # inside the Swift code, `error` is created from a Swift PythonConvertibleError type
