@@ -7,8 +7,7 @@
 // @convention(c) (PythonObject) throws -> PythonObject
 // (PythonObject) throws -> Void
 // (PythonObject) throws -> PythonObject
-// @differentiable(reverse) (Differentiable) throws -> Void // is this possible?
-// @differentiable(reverse) (Differentiable) throws -> Differentiable
+// @differentiable(reverse) (Differentiable & ConvertibleFromPython) throws -> Differentiable & PythonConvertible
 // differentiable functions may also have the restrictions of PythonConvertible & ConvertibleFromPython on input and output
 
 // The differentiable function types will be especially hard to implement. I need to find a way to work around not being 
