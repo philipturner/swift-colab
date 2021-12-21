@@ -6,7 +6,7 @@ class SwiftObject:
     def __init__(self, function_table):
         self.function_table = function_table # a table of 64-bit pointers to function pointer wrappers
         self.__bridge_lib = ctypes.CDLL("/opt/swift/libSwiftPythonBridge.so")
-        self.__bridge_lib.restype = c_void_p; self.__bridge_lib.argtypes = [c_void_p]
+        self.__bridge_lib.restype, self.__bridge_lib.argtypes = c_void_p, [c_void_p]
         # call a C function on the return value, which optionally returns an error. The return value is a wrapper over the actual returned object
     def call_swift(self, function_name):
         function_wrapper_address = c_void_p(self.function_table[function_name]) # cast an integer to an `OpaquePointer`
@@ -19,4 +19,4 @@ class SwiftObject:
         pass
 class SwiftReturnValue:
     def __init__(self, wrapped_object, error):
-        self.wrapped_object = wrapped_object; self.error = error # inside the Swift code, this is created from a Swift PythonConvertibleError
+        self.wrapped_object, self.error = wrapped_object, error # inside the Swift code, this is created from a Swift PythonConvertibleError
