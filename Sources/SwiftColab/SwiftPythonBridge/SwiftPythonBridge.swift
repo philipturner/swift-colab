@@ -9,3 +9,8 @@
 // Workaround that lets me avoid modifying PythonKit: make a class that replicates the behavior of PyReference. Then, unsafe bit cast it to a PythonObject.
 
 import PythonKit
+
+@_cdecl("callSwiftFromPython")
+public func callSwiftFromPython(_ params: OpaquePointer) -> OpaquePointer {
+    
+}
