@@ -25,10 +25,3 @@ class SwiftReturnValue:
             assert isinstance(self.__error, SwiftError), "A SwiftReturnValue's error was not a SwiftError object."
             raise self.__error
         return self.__wrapped_object
-
-class SwiftInteropTest(): 
-    def __init__(self):
-        self.swift_delegate = SwiftDelegate()
-        
-    def example_func(self, string_param):
-        swift_delegate.call_swift_func("example_func", [self, string_param])
