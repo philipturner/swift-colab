@@ -19,5 +19,4 @@ class SwiftObject:
         pass
 class SwiftReturnValue:
     def __init__(self, wrapped_object, error):
-        self.wrapped_object = wrapped_object
-        self.error = error # inside the Swift code, this is created from a Swift PythonConvertibleError
+        self.wrapped_object = wrapped_object; self.error = error # inside the Swift code, this is created from a Swift PythonConvertibleError
