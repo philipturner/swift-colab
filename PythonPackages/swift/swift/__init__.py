@@ -3,7 +3,7 @@ def run(swift_string): # will change to directly call a Swift dynamic library vi
     p = sp.run(["bash", "/opt/swift/run_swift.sh", swift_string], stdout=sp.PIPE, stderr=sp.PIPE, text=True); print(p.stdout + p.stderr)
 class SwiftObject:
     def __init__(self, function_table):
-        self.function_table = function_table # a dictionary of memory addresses of function pointer wrappers, to be initialized in Swift code
+        self.function_table = function_table # a `[String: Int]` dictionary of memory addresses of function pointer wrappers, to be initialized in Swift code
         self.__bridge_lib = ctypes.CDLL("/opt/swift/libSwiftPythonBridge.so")
         self.__bridge_lib.restype, self.__bridge_lib.argtypes = c_void_p, [c_void_p]
     def call_swift_function(self, function_name, parameter):
