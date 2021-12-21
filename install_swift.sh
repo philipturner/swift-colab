@@ -14,6 +14,8 @@ then
   
   curl "https://download.swift.org/swift-$1-release/ubuntu1804/swift-$1-RELEASE/${tar_file}.tar.gz" | tar -xz
   mv "${tar_file}" toolchain
+  
+  apt install patchelf
 fi
 
 # Execute setup script
