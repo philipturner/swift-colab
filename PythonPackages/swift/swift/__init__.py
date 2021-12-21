@@ -6,7 +6,7 @@ class SwiftObject:
         self.function_table = function_table # a `[String: Int]` dictionary of memory addresses of function wrappers, to be initialized in Swift
         self.__bridge_lib = ctypes.CDLL("/opt/swift/lib/libSwiftPythonBridge.so")
         self.__bridge_lib.restype, self.__bridge_lib.argtypes = c_void_p, [c_void_p] # args accessed as `[PythonObject]` in Swift
-    def call_swift_func(self, function_name, params):
+    def call_swift_func(self, function_name, params): # params should have a `subscript(Int) -> PythonObject` method, will be copied into a `[PythonObject]`
         func_ptr_wrapper_ptr = c_void_p(self.function_table[function_name]) # cast an integer to an `OpaquePointer`
         func_return_ptr = self.__bridge_lib.callSwiftFromPython(c_void_p(id(params)))
         func_return = ctypes.cast(func_return_ptr, ctypes.py_object).value # `func_return` is a `SwiftReturnValue`
