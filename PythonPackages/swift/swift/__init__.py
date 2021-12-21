@@ -8,6 +8,8 @@ class SwiftObject:
         self.__bridge_lib = ctypes.CDLL("/opt/swift/libSwiftPythonBridge.so")
         self.__bridge_lib.restype = c_void_p; self.__bridge_lib.argtypes = [c_void_p]
         # call a C function on the return value, which optionally returns an error. The return value is a wrapper over the actual returned object
+    def call_swift(self, function_name):
+        pass
 class SwiftReturnValue: # need to initialize this given its id
     def __init(self, wrapped_value, error):
         self.wrappedvalue = wrapped_value
