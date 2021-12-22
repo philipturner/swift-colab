@@ -1,33 +1,30 @@
-// small dynamic library for calling Swift functions from Python
-// will import PythonKit eventually, but for now, use OpaquePointer instead of PythonObject
-// can also be imported from Swift, as it defines the function wrapper struct
+// Small dynamic library for calling Swift functions from Python.
+// Can also be imported by Swift because it declares the PythonObject
+// method for filling the function table of a `SwiftDelegate`.
 
-// 2 accepted Swift types:
+// Accepts two Swift types:
 // (PythonObject) throws -> Void
 // (PythonObject) throws -> PythonObject
 
 import PythonKit
-
 let swift = Python.import("swift")
 
 @_cdecl("callSwiftFromPython")
-public func callSwiftFromPython(_ functionHandleRef: OpaquePointer, _ params: OwnedPyObjectPointer) -> PyObjectPointer {
+public func callSwiftFromPython(_ functionHandleRef: UnsafeRawPointer, _ params: OwnedPyObjectPointer) -> PyObjectPointer {
+    let functionHandle = Unmanaged<FunctionHandle>.fromOpaque(functionHandleRef).takeUnretainedValue()
     let params = PythonObject(params)
-    var wrappedObject = Python.None
-    var error = Python.None
     
-    // initialize the function handle ref using Unmanaged<FunctionHandle>
+    var wrappedObject: PythonObject
+    var errorObject: PythonObject
     
-    try {
-        if ... { /* non-returning closure */
-            _ = ...
-        } else { /* returning closure */
-            wrappedObject = ...
-        }
+    do {
+        wrappedObject = try functionHandle.call(params)
+        errorObject = Python.None
     } catch {
-        error = swift.SwiftError(PythonObject(error.localizedDescription))
+        wrappedObject = Python.None
+        errorObject = swift.SwiftError(PythonObject(error.localizedDescription))
     }
     
-    let returnValue = swift.SwiftReturnValue(wrappedObject, error)
+    let returnValue = swift.SwiftReturnValue(wrappedObject, errorObject)
     return returnValue.borrowedPyObject
 }
