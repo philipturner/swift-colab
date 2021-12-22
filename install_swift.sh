@@ -17,11 +17,13 @@ then
   
   apt install patchelf
   
-  # will activate these commands once philipturner/PythonKit is stable
-#   mkdir packages
-#   cd packages
+  
+  mkdir packages
+  cd packages
+  # will activate this command once philipturner/PythonKit is stable
 #   git clone --single-branch -b master https://github.com/philipturner/PythonKit
-#   cd ../
+  git clone --single-branch -b "1.3.1" https://github.com/swift-server/swift-backtrace
+  cd ../
 fi
 
 # Execute setup script
