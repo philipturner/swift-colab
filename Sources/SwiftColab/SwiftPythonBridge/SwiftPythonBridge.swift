@@ -7,7 +7,7 @@
 // (PythonObject) throws -> PythonObject
 
 import PythonKit
-let swift = Python.import("swift")
+let pythonSwiftModule = Python.import("swift")
 
 @_cdecl("callSwiftFromPython")
 public func callSwiftFromPython(_ functionHandleRef: UnsafeRawPointer, _ params: OwnedPyObjectPointer) -> PyObjectPointer {
@@ -22,9 +22,9 @@ public func callSwiftFromPython(_ functionHandleRef: UnsafeRawPointer, _ params:
         errorObject = Python.None
     } catch {
         wrappedObject = Python.None
-        errorObject = swift.SwiftError(PythonObject(error.localizedDescription))
+        errorObject = pythonSwiftModule.SwiftError(PythonObject(error.localizedDescription))
     }
     
-    let returnValue = swift.SwiftReturnValue(wrappedObject, errorObject)
+    let returnValue = pythonSwiftModule.SwiftReturnValue(wrappedObject, errorObject)
     return returnValue.borrowedPyObject
 }
