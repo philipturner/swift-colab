@@ -22,7 +22,7 @@ then
   cd packages
   # will activate this command once philipturner/PythonKit is stable
 #   git clone --single-branch -b master https://github.com/philipturner/PythonKit
-  git clone --single-branch -b "1.3.1" https://github.com/swift-server/swift-backtrace
+  git clone --single-branch -b main https://github.com/philipturner/swift-backtrace
   cd ../
 fi
 
