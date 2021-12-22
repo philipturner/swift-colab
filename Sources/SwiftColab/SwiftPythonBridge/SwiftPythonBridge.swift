@@ -1,6 +1,6 @@
 // Small dynamic library for calling Swift functions from Python.
 // Can also be imported by Swift because it declares the PythonObject
-// method for filling the function table of a `SwiftDelegate`.
+// methods for managing the function table of a `SwiftDelegate`.
 
 // Accepts two Swift types:
 // (PythonObject) throws -> Void
