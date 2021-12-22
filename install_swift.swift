@@ -76,7 +76,6 @@ try doCommand(["swiftc", "/opt/swift/swift-colab/Sources/SwiftColab/InstallBackt
                directory: "/opt/swift/tmp")
 
 try doCommand(["/opt/swift/tmp/InstallBacktrace"])
-try doCommand(["rm", "-r", "/opt/swift/packages/swift-backtrace/.build"])
 
 // Cloning PythonKit will eventually go into the toolchain installation shell command, once philipturner/PythonKit is stable
 try fm.removeItemIfExists(atPath: "/opt/swift/packages/PythonKit")
