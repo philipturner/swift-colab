@@ -2,7 +2,12 @@ import PythonKit
 
 class FunctionHandle {
     let returnsObject: Bool
-//     let 
+    let unsafeFunctionPointer: () -> Void
+    
+    init(wrapping functionPointer: (PythonObject) throws -> Void) {
+        returnsObject = false
+        unsafeFunctionPointer = unsafeBitCast(functionPointer, to: (() -> Void).self)
+    }
 }
 
 public extension PythonObject {
