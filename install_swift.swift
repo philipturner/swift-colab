@@ -81,3 +81,15 @@ try doCommand(["/opt/swift/tmp/InstallBacktrace"])
 try fm.removeItemIfExists(atPath: "/opt/swift/packages/PythonKit")
 try doCommand(["git", "clone", "--single-branch", "-b", "master", "https://github.com/philipturner/PythonKit"],
               directory: "/opt/swift/packages")
+
+// Install philipturner/PythonKit
+try doCommand(["swift", "build", "-c", "release"], 
+              directory: "/opt/swift/packages/PythonKit")
+
+let pythonKitProductsPath = "/opt/swift/packages/PythonKit/.build/release"
+let pythonKitLinkPath = "/opt/swift/lib/libPythonKit.so"
+
+if !fm.fileExists(atPath: pythonKitLinkPath) {
+    try fm.createSymbolicLink(atPath: pythonKitLinkPath,
+                              withDestinationPath: "\(pythonKitProductsPath)/libPythonKit.so")
+}
