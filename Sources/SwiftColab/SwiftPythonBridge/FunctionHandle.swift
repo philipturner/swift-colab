@@ -1,24 +1,39 @@
 import PythonKit
 
 class FunctionHandle {
-    private let functionPointer: (PythonObject) throws -> PythonObject
+    private let function: (PythonObject) throws -> PythonObject
     
-    init(wrapping functionPointer: @escaping (PythonObject) throws -> Void) {
-        self.functionPointer = { params in
-            try functionPointer(params)
+    init(wrapping function: @escaping (PythonObject) throws -> PythonObject) {
+        self.function = function
+    }
+    
+    func call(_ params: PythonObject) throws -> PythonObject {
+        try function(params)
+    }
+}
+
+extension PythonObject {
+    public func registerImmortalizedFunction(name: String, function: @escaping (PythonObject) throws -> Void) {
+        registerImmortalizedFunction(name: name) { params -> PythonObject in
+            try function(params)
             return Python.None
         }
     }
     
-    init(wrapping functionPointer: @escaping (PythonObject) throws -> PythonObject) {
-        self.functionPointer = functionPointer
+    public func registerImmortalizedFunction(name: String, function: @escaping (PythonObject) throws -> PythonObject) {
+        let handle = FunctionHandle(wrapping: function)
+        let handleRef = Unmanaged.passRetained(handle).toOpaque()
+        
+        self.function_table[PythonObject(name)] = .init(Int(bitPattern: handleRef))
     }
     
-    func call(_ params: PythonObject) throws -> PythonObject {
-        try functionPointer(params)
+    public func releaseFunction(name: String) {
+        let nameObject = PythonObject(name)
+        
+        let retrievedInt = Int(self.function_table[nameObject])!
+        let handleRef = UnsafeRawPointer(bitPattern: retrievedInt)!
+        Unmanaged<FunctionHandle>.fromOpaque(handleRef).release()
+        
+        self.function_table[nameObject] = Python.None
     }
-}
-
-public extension PythonObject {
-    // register a Swift function handle in its vtable
 }
