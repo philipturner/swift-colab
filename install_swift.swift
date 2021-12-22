@@ -77,10 +77,10 @@ try doCommand(["swiftc", "/opt/swift/swift-colab/Sources/SwiftColab/InstallBackt
 
 try doCommand(["/opt/swift/tmp/InstallBacktrace"])
 
-// Cloning PythonKit will eventually go into the toolchain installation shell command, once philipturner/PythonKit is stable
-try fm.removeItemIfExists(atPath: "/opt/swift/packages/PythonKit")
-try doCommand(["git", "clone", "--single-branch", "-b", "master", "https://github.com/philipturner/PythonKit"],
-              directory: "/opt/swift/packages")
+// // Cloning PythonKit will eventually go into the toolchain installation shell command, once philipturner/PythonKit is stable
+// try fm.removeItemIfExists(atPath: "/opt/swift/packages/PythonKit")
+// try doCommand(["git", "clone", "--single-branch", "-b", "master", "https://github.com/philipturner/PythonKit"],
+//               directory: "/opt/swift/packages")
 
 // Install philipturner/PythonKit
 try doCommand(["swift", "build", "-c", "release"], 
