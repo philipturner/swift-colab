@@ -1,8 +1,8 @@
 import PythonKit
 
-class FunctionHandle {
-    let returnsObject: Bool
-    let unsafeFunctionPointer: () -> Void
+public class FunctionHandle {
+    private let returnsObject: Bool
+    private let unsafeFunctionPointer: () -> Void
     
     init(wrapping functionPointer: @escaping (PythonObject) throws -> Void) {
         returnsObject = false
