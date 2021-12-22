@@ -31,7 +31,7 @@ then
   rm -r swift-colab
 fi
 
-git clone --single-branch -b main https://github.com/philipturner/swift-colab
+git clone --single-branch -b save-2 https://github.com/philipturner/swift-colab
 
 export PATH="/opt/swift/toolchain/usr/bin:$PATH"
 swift swift-colab/install_swift.swift
