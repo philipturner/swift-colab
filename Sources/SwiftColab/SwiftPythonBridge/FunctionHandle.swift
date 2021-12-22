@@ -1,12 +1,20 @@
 import PythonKit
 
 public class FunctionHandle {
-    private let returnsObject: Bool
-    private let unsafeFunctionPointer: () -> Void
+    @usableFromInline
+    internal let functionPointer: (PythonObject) throws -> PythonObject
     
-    init(wrapping functionPointer: @escaping (PythonObject) throws -> Void) {
-        returnsObject = false
-        unsafeFunctionPointer = unsafeBitCast(functionPointer, to: (() -> Void).self)
+    @inlinable
+    public init(wrapping functionPointer: @escaping (PythonObject) throws -> Void) {
+        self.functionPointer = { params in
+            try functionPointer(params)
+            return Python.None
+        }
+    }
+    
+    @inlinable
+    public init(wrapping functionPointer: @escaping (PythonObject) throws -> PythonObject) {
+        self.functionPointer = functionPointer
     }
 }
 
