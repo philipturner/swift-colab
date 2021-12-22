@@ -64,3 +64,7 @@ if !fm.fileExists(atPath: "/env/python/swift") {
 
 try fm.createDirectory(atPath: "/opt/swift/tmp", withIntermediateDirectories: true)
 try fm.createDirectory(atPath: "/opt/swift/lib", withIntermediateDirectories: true)
+
+// Cloning PythonKit will eventually go into the toolchain installation shell command, once philipturner/PythonKit is stable
+try fm.removeItemIfExists(atPath: "/opt/swift/PythonKit")
+try doCommand(["git", "clone", "--single-branch", "-b", "master", "https://github.com/philipturner/PythonKit"])
