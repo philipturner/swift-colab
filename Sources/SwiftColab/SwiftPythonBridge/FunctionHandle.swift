@@ -14,7 +14,7 @@ class FunctionHandle {
 
 extension PythonObject {
     public func retainFunction(name: String, function: @escaping (PythonObject) throws -> Void) {
-        registerImmortalizedFunction(name: name) { params -> PythonObject in
+        retainFunction(name: name) { params -> PythonObject in
             try function(params)
             return Python.None
         }
