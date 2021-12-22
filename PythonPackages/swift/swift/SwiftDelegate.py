@@ -17,11 +17,11 @@ class SwiftError(Exception):
         super().__init__(localized_description)
         
 class SwiftReturnValue:
-    def __init__(self, wrapped_object, error):
-        self.__wrapped_object, self.__error = wrapped_object, error
+    def __init__(self, wrapped, error):
+        self.__wrapped, self.__error = wrapped, error
         
     def unwrap(self):
         if self.__error is not None:
             assert isinstance(self.__error, SwiftError), "A SwiftReturnValue's error was not a SwiftError object."
             raise self.__error
-        return self.__wrapped_object
+        return self.__wrapped
