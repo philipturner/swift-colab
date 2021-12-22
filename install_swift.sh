@@ -16,6 +16,12 @@ then
   mv "${tar_file}" toolchain
   
   apt install patchelf
+  
+  # will activate these commands once philipturner/PythonKit is stable
+#   mkdir packages
+#   cd packages
+#   git clone --single-branch -b master https://github.com/philipturner/PythonKit
+#   cd ../
 fi
 
 # Execute setup script
