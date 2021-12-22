@@ -12,25 +12,22 @@ let swift = Python.import("swift")
 
 @_cdecl("callSwiftFromPython")
 public func callSwiftFromPython(_ functionHandleRef: OpaquePointer, _ params: OwnedPyObjectPointer) -> PyObjectPointer {
-    // initialize the function handle ref using Unmanaged<FunctionHandle>
-    let paramsObject = PythonObject(params)
-    var returnObject = Python.None
-    var returnError = Python.None
+    let params = PythonObject(params)
+    var wrappedObject = Python.None
+    var error = Python.None
     
-    // call the function, either get an object or don't
+    // initialize the function handle ref using Unmanaged<FunctionHandle>
     
     try {
         if ... { /* non-returning closure */
             _ = ...
         } else { /* returning closure */
-            returnObject = ...
+            wrappedObject = ...
         }
     } catch {
-        returnError = Python.Exception(PythonObject(error.localizedDescription))
+        error = swift.SwiftError(PythonObject(error.localizedDescription))
     }
     
-    
-    
-    
-    // return the output's borrowedPythonObject
+    let returnValue = swift.SwiftReturnValue(wrappedObject, error)
+    return returnValue.borrowedPyObject
 }
