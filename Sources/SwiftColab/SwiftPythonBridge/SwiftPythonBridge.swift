@@ -6,12 +6,10 @@
 // (PythonObject) throws -> Void
 // (PythonObject) throws -> PythonObject
 
-// Workaround that lets me avoid modifying PythonKit: make a class that replicates the behavior of PyReference. Then, unsafe bit cast it to a PythonObject.
-
 import PythonKit
 
 @_cdecl("callSwiftFromPython")
-public func callSwiftFromPython(_ functionHandleRef: OpaquePointer, _ params: OpaquePointer) -> OpaquePointer {
+public func callSwiftFromPython(_ functionHandleRef: PyObjectPointer, _ params: PyObjectPointer) -> PyObjectPointer {
     // initialize the function handle ref using Unmanaged<FunctionHandle>
     // initialize the PythonObject from params using PythonObject+ID
 }
