@@ -8,6 +8,7 @@ let fm = FileManager.default
 precondition(fm.currentDirectoryPath == "/opt/swift", "Called `install_swift.swift` when the working directory was not `/opt/swift`.")
 
 extension FileManager {
+    @inline(never)
     func removeItemIfExists(atPath path: String) throws {
         if fileExists(atPath: path) {
             try removeItem(atPath: path)
@@ -15,12 +16,26 @@ extension FileManager {
     }
 }
 
-#if false
-// Log the environment
-for key in ProcessInfo.processInfo.environment.keys {
-    print("Environment variable \(key) = \(ProcessInfo.processInfo.environment[key]!)")
+@inline(never)
+func writeString(to target: String, _ contents: String) {
+    let contentsData = contents.data(using: .utf8)!
+    let contentsURL = URL(fileURLWithPath: target)
+    fm.createFile(atPath: contentsURL.path, contents: contentsData)
 }
-#endif
+
+@inline(never)
+func doCommand(_ args: [String], directory: String? = nil) throws {
+    let command = Process()
+    command.executableURL = .init(fileURLWithPath: "/usr/bin/env")
+    command.arguments = args
+    
+    if let directory = directory {
+        command.currentDirectoryURL = .init(fileURLWithPath: directory)
+    }
+    
+    try command.run()
+    command.waitUntilExit()
+}
 
 // Remove any previously existing `run_swift` files
 try fm.removeItemIfExists(atPath: "/opt/swift/run_swift.sh")
@@ -45,13 +60,16 @@ if !fm.fileExists(atPath: "/env/python/swift") {
 
     try fm.removeItemIfExists(atPath: targetPath)
     try fm.moveItem(atPath: sourcePath, toPath: targetPath)
+    
+    try doCommand(["pip", "install", "--use-feature=in-tree-build", "./"], 
+                  directory: "/env/python/swift")
+    
+//     // Register `swift` Python package
+//     let registerPackage = Process()
+//     registerPackage.executableURL = .init(fileURLWithPath: "/usr/bin/env")
+//     registerPackage.currentDirectoryURL = .init(fileURLWithPath: "/env/python/swift")
+//     registerPackage.arguments = ["pip", "install", "--use-feature=in-tree-build", "./"]
 
-    // Register `swift` Python package
-    let registerPackage = Process()
-    registerPackage.executableURL = .init(fileURLWithPath: "/usr/bin/env")
-    registerPackage.currentDirectoryURL = .init(fileURLWithPath: "/env/python/swift")
-    registerPackage.arguments = ["pip", "install", "--use-feature=in-tree-build", "./"]
-
-    try registerPackage.run()
-    registerPackage.waitUntilExit()
+//     try registerPackage.run()
+//     registerPackage.waitUntilExit()
 }
