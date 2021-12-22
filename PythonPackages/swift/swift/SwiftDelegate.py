@@ -7,7 +7,7 @@ class SwiftDelegate:
         self.__call_swift.restype, self.__call_swift.argtypes = c_void_p, [c_void_p, c_void_p] # args accessed as `[PythonObject]` in Swift
     
     # params should have a `subscript(Int) -> PythonObject` method, will be copied into a `[PythonObject]`
-    def call_swift_func(self, function_name, params): 
+    def call_func(self, function_name, params): 
         func_ptr_wrapper_ptr = c_void_p(self.function_table[function_name]) # cast an integer to an `OpaquePointer`
         func_return_ptr = self.__call_swift(func_ptr_wrapper_ptr, c_void_p(id(params)))
         return ctypes.cast(func_return_ptr, ctypes.py_object).value.unwrap() # `func_return` is a `SwiftReturnValue`
