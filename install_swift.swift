@@ -66,6 +66,18 @@ try fm.createDirectory(atPath: "/opt/swift/tmp", withIntermediateDirectories: tr
 try fm.createDirectory(atPath: "/opt/swift/lib", withIntermediateDirectories: true)
 try fm.createDirectory(atPath: "/opt/swift/packages", withIntermediateDirectories: true)
 
+// Install swift-server/swift-backtrace
+try doCommand(["swift", "build"], directory: "/opt/swift/packages/swift-backtrace")
+
+let backtraceProductsPath = "/opt/swift/packages/swift-backtrace/.build/debug"
+try doCommand(["swiftc", "/opt/swift/swift-colab/Sources/SwiftColab/InstallBacktrace.swift",
+               "-L", backtraceProductsPath, "-lBacktrace",
+               "-I", backtraceProductsPath],
+               directory: "/opt/swift/tmp")
+
+try doCommand(["/opt/swift/tmp/InstallBacktrace"])
+try doCommand(["rm", "-r", "/opt/swift/packages/swift-backtrace/.build"])
+
 // Cloning PythonKit will eventually go into the toolchain installation shell command, once philipturner/PythonKit is stable
 try fm.removeItemIfExists(atPath: "/opt/swift/packages/PythonKit")
 try doCommand(["git", "clone", "--single-branch", "-b", "master", "https://github.com/philipturner/PythonKit"],
