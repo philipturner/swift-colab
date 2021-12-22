@@ -9,7 +9,7 @@
 import PythonKit
 
 @_cdecl("callSwiftFromPython")
-public func callSwiftFromPython(_ functionHandleRef: PyObjectPointer, _ params: PyObjectPointer) -> PyObjectPointer {
+public func callSwiftFromPython(_ functionHandleRef: OpaquePointer, _ params: OwnedPyObjectPointer) -> PyObjectPointer {
     // initialize the function handle ref using Unmanaged<FunctionHandle>
     // initialize the PythonObject from params using PythonObject+ID
 }
