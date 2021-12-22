@@ -13,14 +13,14 @@ class FunctionHandle {
 }
 
 extension PythonObject {
-    public func registerImmortalizedFunction(name: String, function: @escaping (PythonObject) throws -> Void) {
+    public func retainFunction(name: String, function: @escaping (PythonObject) throws -> Void) {
         registerImmortalizedFunction(name: name) { params -> PythonObject in
             try function(params)
             return Python.None
         }
     }
     
-    public func registerImmortalizedFunction(name: String, function: @escaping (PythonObject) throws -> PythonObject) {
+    public func retainFunction(name: String, function: @escaping (PythonObject) throws -> PythonObject) {
         let handle = FunctionHandle(wrapping: function)
         let handleRef = Unmanaged.passRetained(handle).toOpaque()
         
