@@ -46,9 +46,6 @@ let baseDirectory = "/opt/swift/swift-colab/Sources/SwiftColab/run_swift"
 try fm.moveItem(atPath: "\(baseDirectory)/run_swift.sh", toPath: "/opt/swift/run_swift.sh")
 try fm.moveItem(atPath: "\(baseDirectory)/run_swift.swift", toPath: "/opt/swift/run_swift.swift")
 
-// Create directory for temporary files created while executing a Swift script
-try fm.createDirectory(atPath: "/opt/swift/tmp", withIntermediateDirectories: true)
-
 // Move `swift` Python package to `/env/python` directory
 try fm.createDirectory(atPath: "/env/python", withIntermediateDirectories: true)
 
@@ -63,13 +60,7 @@ if !fm.fileExists(atPath: "/env/python/swift") {
     
     try doCommand(["pip", "install", "--use-feature=in-tree-build", "./"], 
                   directory: "/env/python/swift")
-    
-//     // Register `swift` Python package
-//     let registerPackage = Process()
-//     registerPackage.executableURL = .init(fileURLWithPath: "/usr/bin/env")
-//     registerPackage.currentDirectoryURL = .init(fileURLWithPath: "/env/python/swift")
-//     registerPackage.arguments = ["pip", "install", "--use-feature=in-tree-build", "./"]
-
-//     try registerPackage.run()
-//     registerPackage.waitUntilExit()
 }
+
+try fm.createDirectory(atPath: "/opt/swift/tmp", withIntermediateDirectories: true)
+try fm.createDirectory(atPath: "/opt/swift/lib", withIntermediateDirectories: true)
