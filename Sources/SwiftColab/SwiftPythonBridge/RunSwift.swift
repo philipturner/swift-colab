@@ -12,63 +12,6 @@ public func runSwiftAsString(_ pythonStringRef: OwnedPyObjectPointer) -> PyObjec
         return swiftModule.SwiftReturnValue(Python.None, errorObject).borrowedPyObject
     }
     
-    func doCommand(_ args: [String], directory: String? = nil) throws {
-        let command = Process()
-        command.executableURL = .init(fileURLWithPath: "/usr/bin/env")
-        command.arguments = args
-
-        if let directory = directory {
-            command.currentDirectoryURL = .init(fileURLWithPath: directory)
-        }
-
-        try command.run()
-        command.waitUntilExit()
-    }
-    
-    try! doCommand(["echo", "runSwift checkpoint 1.011"])
-    
-    // Try running another thread to work around this bug
-    // try ctypes.PyDLL - might work!
-    // Remove SwiftError to use Python's error setting instead
-    
-    // Need to clean up this code after the mess I caused while debugging :-)
-    
-    
-    
-//     Py_Initialize()
-    print(PyEval_GetBuiltins)
-    try! doCommand(["echo", "runSwift checkpoint 1.021"])    
-    
-    // I think I'm triggering a crash from the Python Global Interpreter Lock
-    
-    
-    let builtinsResult = PyEval_GetBuiltins()
-    try! doCommand(["echo", "runSwift checkpoint 1.03"])
-    
-    let builtinsObject = PythonObject(builtinsResult)
-    try! doCommand(["echo", "runSwift checkpoint 1.04"])
-    
-    print(builtinsObject)
-    try! doCommand(["echo", "runSwift checkpoint 1.05"])
-    
-    // Runtime Fixes:
-    PyRun_SimpleString("""
-        import sys
-        import os
-
-        # Some Python modules expect to have at least one argument in `sys.argv`.
-        sys.argv = [""]
-        # Some Python modules require `sys.executable` to return the path
-        # to the Python interpreter executable. In Darwin, Python 3 returns the
-        # main process executable path instead.
-        if sys.version_info.major == 3 and sys.platform == "darwin":
-            sys.executable = os.path.join(sys.exec_prefix, "bin", "python3")
-        """)
-    try! doCommand(["echo", "runSwift checkpoint 1.06"])
-    
-    print(Python)
-    try! doCommand(["echo", "runSwift checkpoint 1.07"])
-    
     guard let scriptString = String(PythonObject(pythonStringRef)) else {
         return getPythonError(message: "Could not decode the Python string passed into `runSwiftAsString(_:)`")
     }
@@ -76,8 +19,6 @@ public func runSwiftAsString(_ pythonStringRef: OwnedPyObjectPointer) -> PyObjec
     guard let scriptData = scriptString.data(using: .utf8) else {
         return getPythonError(message: "Python string was not decoded as UTF-8 when compiling a Swift script")
     }
-    
-    try! doCommand(["echo", "runSwift checkpoint 2"])
     
     let targetPath = "/opt/swift/tmp/string_script.swift"
     FileManager.default.createFile(atPath: targetPath, contents: scriptData)
@@ -99,20 +40,7 @@ public func runSwiftAsString(_ pythonStringRef: OwnedPyObjectPointer) -> PyObjec
     }
     
     executeScript.waitUntilExit()
-    
-    try! doCommand(["echo", "runSwift checkpoint 3.2"])
-    
+
     let noneObject = Python.None
-    
-    try! doCommand(["echo", "runSwift checkpoint 3.3"])
-    
-    let typeObject = swiftModule.SwiftReturnValue
-    
-    try! doCommand(["echo", "runSwift checkpoint 3.4"])
-    
-    let output = typeObject(noneObject, noneObject)
-    
-    try! doCommand(["echo", "runSwift checkpoint 3.7"])
-    
-    return output.borrowedPyObject
+    return swiftModule.SwiftReturnValue(noneObject, noneObject).borrowedPyObject
 }
