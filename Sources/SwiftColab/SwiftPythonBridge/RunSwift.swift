@@ -46,7 +46,8 @@ public func runSwiftAsString(_ pythonStringRef: OwnedPyObjectPointer) -> PyObjec
     executeScript.waitUntilExit()
     
     print("runSwift checkpoint 3")
+    print("changing to owned pyObject")
     
     let noneObject = Python.None
-    return swiftModule.SwiftReturnValue(noneObject, noneObject).borrowedPyObject
+    return swiftModule.SwiftReturnValue(noneObject, noneObject).ownedPyObject
 }
