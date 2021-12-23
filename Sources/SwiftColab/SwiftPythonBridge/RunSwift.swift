@@ -30,13 +30,13 @@ public func runSwiftAsString(_ pythonStringRef: OwnedPyObjectPointer) -> PyObjec
     Py_Initialize()
     try! doCommand(["echo", "runSwift checkpoint 1.02"])    
     
-    let builtinsResult = PyEval_GetBuiltins()
+//     let builtinsResult = PyEval_GetBuiltins()
     try! doCommand(["echo", "runSwift checkpoint 1.03"])
     
-    let builtinsObject = PythonObject(builtinsResult)
+//     let builtinsObject = PythonObject(builtinsResult)
     try! doCommand(["echo", "runSwift checkpoint 1.04"])
     
-    print(builtinsObject)
+//     print(builtinsObject)
     try! doCommand(["echo", "runSwift checkpoint 1.05"])
     
     // Runtime Fixes:
