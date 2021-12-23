@@ -12,9 +12,6 @@ public func runSwiftAsString(_ pythonStringRef: OwnedPyObjectPointer) -> PyObjec
         return swiftModule.SwiftReturnValue(Python.None, errorObject).ownedPyObject
     }
     
-//     return getPythonError(message: "returning early")
-    
-    
     func doCommand(_ args: [String], directory: String? = nil) throws {
         let command = Process()
         command.executableURL = .init(fileURLWithPath: "/usr/bin/env")
@@ -28,10 +25,7 @@ public func runSwiftAsString(_ pythonStringRef: OwnedPyObjectPointer) -> PyObjec
         command.waitUntilExit()
     }
     
-    try! doCommand(["echo", "hello world test"])
-    
-    
-    print("runSwift checkpoint 1")
+    try! doCommand(["echo", "runSwift checkpoint 1"])
     
     guard let scriptString = String(PythonObject(pythonStringRef)) else {
         return getPythonError(message: "Could not decode the Python string passed into `runSwiftAsString(_:)`")
@@ -41,7 +35,7 @@ public func runSwiftAsString(_ pythonStringRef: OwnedPyObjectPointer) -> PyObjec
         return getPythonError(message: "Python string was not decoded as UTF-8 when compiling a Swift script")
     }
     
-    print("runSwift checkpoint 2")
+    try! doCommand(["echo", "runSwift checkpoint 2"])
     
     let targetPath = "/opt/swift/tmp/string_script.swift"
     FileManager.default.createFile(atPath: targetPath, contents: scriptData)
@@ -64,9 +58,12 @@ public func runSwiftAsString(_ pythonStringRef: OwnedPyObjectPointer) -> PyObjec
     
     executeScript.waitUntilExit()
     
-    print("runSwift checkpoint 3")
-    print("changing to owned pyObject")
+    try! doCommand(["echo", "runSwift checkpoint 3"])
     
     let noneObject = Python.None
-    return swiftModule.SwiftReturnValue(noneObject, noneObject).ownedPyObject
+    let output = swiftModule.SwiftReturnValue(noneObject, noneObject).ownedPyObject
+    
+    try! doCommand(["echo", "runSwift checkpoint 3.5"])
+    
+    return output
 }
