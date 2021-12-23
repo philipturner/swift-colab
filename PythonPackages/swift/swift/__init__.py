@@ -7,7 +7,9 @@ def run(swift_string):
     print(p.stdout + p.stderr)
 
 def run_new(swift_string):
+    print("runSwift checkpoint 0")
     call_compiled_func("/opt/swift/lib/libSwiftPythonBridge.so", "runSwiftAsString", swift_string)
+    print("runSwift checkpoint 6")
 
 # the compiled Swift function must import the modified PythonKit
 def call_compiled_func(executable_name, func_name, params):
@@ -15,4 +17,7 @@ def call_compiled_func(executable_name, func_name, params):
     func = getattr(lib, func_name)
     func.restype, func.argtypes = c_void_p, [c_void_p]
     func_return_ptr = func(c_void_p(id(params)))
-    return cast(func_return_ptr, py_object).value.unwrap() # `func_return` is a `SwiftReturnValue`
+    print("runSwift checkpoint 4")
+    output = cast(func_return_ptr, py_object).value.unwrap() # `func_return` is a `SwiftReturnValue`
+    print("runSwift checkpoint 5")
+    return output
