@@ -12,7 +12,7 @@ public func runSwiftAsString(_ pythonStringRef: OwnedPyObjectPointer) -> PyObjec
         return swiftModule.SwiftReturnValue(Python.None, errorObject).ownedPyObject
     }
     
-    return getPythonError(message: "returning early")
+//     return getPythonError(message: "returning early")
     
     
     print("runSwift checkpoint 1")
