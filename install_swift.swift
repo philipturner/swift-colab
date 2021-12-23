@@ -66,7 +66,7 @@ try fm.createDirectory(atPath: "/opt/swift/tmp", withIntermediateDirectories: tr
 try fm.createDirectory(atPath: "/opt/swift/lib", withIntermediateDirectories: true)
 try fm.createDirectory(atPath: "/opt/swift/packages", withIntermediateDirectories: true)
 
-// Install swift-server/swift-backtrace
+// Install philipturner/swift-backtrace
 try doCommand(["swift", "build"], directory: "/opt/swift/packages/swift-backtrace")
 
 let backtraceProductsPath = "/opt/swift/packages/swift-backtrace/.build/debug"
@@ -86,3 +86,27 @@ let pythonKitLibPath = "/opt/swift/lib/libPythonKit.so"
 
 try fm.removeItemIfExists(atPath: pythonKitLibPath)
 try fm.copyItem(atPath: "\(pythonKitProductsPath)/libPythonKit.so", toPath: pythonKitLibPath)
+
+// Install SwiftPythonBridge
+try fm.createDirectory(atPath: "/opt/swift/packages/SwiftPythonBridge", withIntermediateDirectories: true)
+
+let spbProductsPath = "/opt/swift/packages/SwiftPythonBridge"
+let spbLibPath = "/opt/swift/lib/libSwiftPythonBridge.so"
+let spbSourcePath = "/opt/swift/swift-colab/Sources/SwiftColab/SwiftPythonBridge"
+
+let sourceFilePaths = try fm.contentsOfDirectory(atPath: spbSourcePath).map {
+    "\(spbSourcePath)/\($0)"
+}
+
+try doCommand(["swiftc"] + sourceFilePaths + [
+                  "-emit-module", "-emit-library",
+                  "-L", pythonKitProductsPath, "-lPythonKit",
+                  "-I", pythonKitProductsPath,
+                  "-module-name", "SwiftPythonBridge"
+               ],
+               directory: spbProductsPath)
+
+try fm.removeItemIfExists(atPath: spbLibPath)
+try fm.copyItem(atPath: "\(spbProductsPath)/libSwiftPythonBridge.so", toPath: spbLibPath)
+
+try doCommand(["patchelf", "--replace-needed", "libPythonKit.so", pythonKitLibPath, spbLibPath])
