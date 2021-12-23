@@ -8,7 +8,7 @@ public func runSwiftAsString(_ pythonStringRef: OwnedPyObjectPointer) {
     let pi = ProcessInfo.processInfo
     let path = pi.environment["PATH"]
     
-    if !path.startsWith("/opt/swift/toolchain/usr/bin") {
+    if !path.starts(with: "/opt/swift/toolchain/usr/bin") {
         pi.environment["PATH"] = "/opt/swift/toolchain/usr/bin:\(path)"
     }
     
