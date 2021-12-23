@@ -84,7 +84,7 @@ try doCommand(["swift", "build", "-c", "release"],
 let pythonKitProductsPath = "/opt/swift/packages/PythonKit/.build/release"
 let pythonKitLibPath = "/opt/swift/lib/libPythonKit.so"
 
-fm.removeFileIfExists(atPath: pythonKitLibPath)
-fm.copyItem(atPath: pythonKitLibPath, toPath: "\(pythonKitProductsPath)/libPythonKit.so")
+try fm.removeFileIfExists(atPath: pythonKitLibPath)
+try fm.copyItem(atPath: pythonKitLibPath, toPath: "\(pythonKitProductsPath)/libPythonKit.so")
 // _ = try? fm.createSymbolicLink(atPath: pythonKitLinkPath,
 //                                withDestinationPath: "\(pythonKitProductsPath)/libPythonKit.so")
