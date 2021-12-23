@@ -27,6 +27,10 @@ public func runSwiftAsString(_ pythonStringRef: OwnedPyObjectPointer) -> PyObjec
     
     try! doCommand(["echo", "runSwift checkpoint 1.01"])
     
+    // Try running another thread to work around this bug
+    
+    
+    
 //     Py_Initialize()
     try! doCommand(["echo", "runSwift checkpoint 1.02"])    
     
