@@ -84,7 +84,7 @@ try doCommand(["swift", "build", "-c", "release"],
 let pythonKitProductsPath = "/opt/swift/packages/PythonKit/.build/release"
 let pythonKitLinkPath = "/opt/swift/lib/libPythonKit.so"
 
-if !fm.fileExists(atPath: pythonKitLinkPath) {
+if !URL(fileURLWithPath: pythonKitLinkPath).checkResourceIsReachable() {
     try fm.createSymbolicLink(atPath: pythonKitLinkPath,
                               withDestinationPath: "\(pythonKitProductsPath)/libPythonKit.so")
 }
