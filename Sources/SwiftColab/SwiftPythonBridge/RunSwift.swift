@@ -25,14 +25,15 @@ public func runSwiftAsString(_ pythonStringRef: OwnedPyObjectPointer) -> PyObjec
         command.waitUntilExit()
     }
     
-    try! doCommand(["echo", "runSwift checkpoint 1.01"])
+    try! doCommand(["echo", "runSwift checkpoint 1.011"])
     
     // Try running another thread to work around this bug
     
     
     
 //     Py_Initialize()
-    try! doCommand(["echo", "runSwift checkpoint 1.02"])    
+    print(PyEval_GetBuiltins)
+    try! doCommand(["echo", "runSwift checkpoint 1.021"])    
     
     let builtinsResult = PyEval_GetBuiltins()
     try! doCommand(["echo", "runSwift checkpoint 1.03"])
