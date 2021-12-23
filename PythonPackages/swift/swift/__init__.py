@@ -13,6 +13,6 @@ def run_new(swift_string):
 def call_compiled_func(executable_name, func_name, params):
     lib = ctypes.CDLL(executable_name)
     func = getattr(lib, func_name)
-    func.restype, func.argtypes = c_void_p, [c_void_p]
-    func_return_ptr = func(c_void_p(id(params)))
+    func.restype, func.argtypes = ctypes.c_void_p, [ctypes.c_void_p]
+    func_return_ptr = func(ctypes.c_void_p(id(params)))
     return ctypes.cast(func_return_ptr, ctypes.py_object).value.unwrap() # `func_return` is a `SwiftReturnValue`
