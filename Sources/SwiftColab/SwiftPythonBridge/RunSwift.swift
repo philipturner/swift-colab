@@ -29,7 +29,7 @@ public func runSwiftAsString(_ pythonStringRef: OwnedPyObjectPointer) -> PyObjec
     
     // Try running another thread to work around this bug
     // try ctypes.PyDLL - might work!
-    // Refactor SwiftError to use Python's error setting instead
+    // Remove SwiftError to use Python's error setting instead
     
     
     
