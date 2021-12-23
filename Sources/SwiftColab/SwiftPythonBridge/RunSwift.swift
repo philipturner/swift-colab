@@ -25,7 +25,9 @@ public func runSwiftAsString(_ pythonStringRef: OwnedPyObjectPointer) -> PyObjec
         command.waitUntilExit()
     }
     
-    try! doCommand(["echo", "runSwift checkpoint 1.1"])
+    try! doCommand(["echo", "runSwift checkpoint 1.05"])
+    Py_Initialize()
+    try! doCommand(["echo", "runSwift checkpoint 1.07"])
     print(Python)
     
     guard let scriptString = String(PythonObject(pythonStringRef)) else {
