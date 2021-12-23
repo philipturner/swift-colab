@@ -25,7 +25,8 @@ public func runSwiftAsString(_ pythonStringRef: OwnedPyObjectPointer) -> PyObjec
         command.waitUntilExit()
     }
     
-    try! doCommand(["echo", "runSwift checkpoint 1"])
+    try! doCommand(["echo", "runSwift checkpoint 1.1"])
+    print(Python)
     
     guard let scriptString = String(PythonObject(pythonStringRef)) else {
         return getPythonError(message: "Could not decode the Python string passed into `runSwiftAsString(_:)`")
