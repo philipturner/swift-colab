@@ -1,5 +1,5 @@
 import subprocess as sp
-import ctypes
+from ctypes import *
 
 # calling run_swift using thorugh a pre-compiled function instead should let stdout and stderr be synchronized with the Jupyter kernel.
 def run(swift_string):
@@ -11,8 +11,8 @@ def run_new(swift_string):
 
 # the compiled Swift function must import the modified PythonKit
 def call_compiled_func(executable_name, func_name, params):
-    lib = ctypes.CDLL(executable_name)
+    lib = CDLL(executable_name)
     func = getattr(lib, func_name)
-    func.restype, func.argtypes = ctypes.c_void_p, [ctypes.c_void_p]
-    func_return_ptr = func(ctypes.c_void_p(id(params)))
-    return ctypes.cast(func_return_ptr, ctypes.py_object).value.unwrap() # `func_return` is a `SwiftReturnValue`
+    func.restype, func.argtypes = c_void_p, [c_void_p]
+    func_return_ptr = func(c_void_p(id(params)))
+    return cast(func_return_ptr, py_object).value.unwrap() # `func_return` is a `SwiftReturnValue`
