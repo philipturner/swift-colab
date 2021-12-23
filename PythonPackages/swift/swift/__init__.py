@@ -7,7 +7,7 @@ def run(swift_string):
     print(p.stdout + p.stderr)
 
 def run_new(swift_string):
-    call_compiled_func("/opt/swift/lib/libSwiftPythonBridge", "runSwiftAsString", swift_string)
+    call_compiled_func("/opt/swift/lib/libSwiftPythonBridge.so", "runSwiftAsString", swift_string)
 
 # the compiled Swift function must import the modified PythonKit
 def call_compiled_func(executable_name, func_name, params):
