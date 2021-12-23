@@ -1,5 +1,5 @@
 import PythonKit
-fileprivate let swiftModule = pythonSwiftModule
+fileprivate let swiftModule = globalSwiftModule
 
 @_cdecl("callSwiftFromPython")
 public func callSwiftFromPython(_ functionHandleRef: UnsafeRawPointer, _ params: OwnedPyObjectPointer) -> PyObjectPointer {
