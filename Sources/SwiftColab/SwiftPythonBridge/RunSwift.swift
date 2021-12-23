@@ -1,6 +1,6 @@
 import Foundation
 import PythonKit
-fileprivate let swiftModule = globalSwiftModule
+fileprivate let swiftModule = Python.import("swift")
 
 // takes a Python string object as input and compile and run it
 @_cdecl("runSwiftAsString")
