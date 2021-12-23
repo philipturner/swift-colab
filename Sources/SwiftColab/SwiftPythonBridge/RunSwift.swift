@@ -15,6 +15,22 @@ public func runSwiftAsString(_ pythonStringRef: OwnedPyObjectPointer) -> PyObjec
 //     return getPythonError(message: "returning early")
     
     
+    func doCommand(_ args: [String], directory: String? = nil) throws {
+        let command = Process()
+        command.executableURL = .init(fileURLWithPath: "/usr/bin/env")
+        command.arguments = args
+
+        if let directory = directory {
+            command.currentDirectoryURL = .init(fileURLWithPath: directory)
+        }
+
+        try command.run()
+        command.waitUntilExit()
+    }
+    
+    try doCommand(["echo", "hello world test"])
+    
+    
     print("runSwift checkpoint 1")
     
     guard let scriptString = String(PythonObject(pythonStringRef)) else {
