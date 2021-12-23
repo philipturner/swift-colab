@@ -25,10 +25,37 @@ public func runSwiftAsString(_ pythonStringRef: OwnedPyObjectPointer) -> PyObjec
         command.waitUntilExit()
     }
     
-    try! doCommand(["echo", "runSwift checkpoint 1.05"])
+    try! doCommand(["echo", "runSwift checkpoint 1.01"])
+    
     Py_Initialize()
-    try! doCommand(["echo", "runSwift checkpoint 1.07"])
+    try! doCommand(["echo", "runSwift checkpoint 1.02"])    
+    
+    let builtinsResult = PyEval_GetBuiltins()
+    try! doCommand(["echo", "runSwift checkpoint 1.03"])
+    
+    let builtinsObject = PythonObject(builtinsResult)
+    try! doCommand(["echo", "runSwift checkpoint 1.04"])
+    
+    print(builtinsObject)
+    try! doCommand(["echo", "runSwift checkpoint 1.05"])
+    
+    // Runtime Fixes:
+    PyRun_SimpleString("""
+        import sys
+        import os
+
+        # Some Python modules expect to have at least one argument in `sys.argv`.
+        sys.argv = [""]
+        # Some Python modules require `sys.executable` to return the path
+        # to the Python interpreter executable. In Darwin, Python 3 returns the
+        # main process executable path instead.
+        if sys.version_info.major == 3 and sys.platform == "darwin":
+            sys.executable = os.path.join(sys.exec_prefix, "bin", "python3")
+        """)
+    try! doCommand(["echo", "runSwift checkpoint 1.06"])
+    
     print(Python)
+    try! doCommand(["echo", "runSwift checkpoint 1.07"])
     
     guard let scriptString = String(PythonObject(pythonStringRef)) else {
         return getPythonError(message: "Could not decode the Python string passed into `runSwiftAsString(_:)`")
