@@ -7,15 +7,17 @@ fileprivate let swiftModule = Python.import("swift")
 public func runSwiftAsString(_ pythonStringRef: OwnedPyObjectPointer) -> PyObjectPointer {
     @inline(never)
     func getPythonError(message: String) -> PyObjectPointer {
+        print(message)
         let errorObject = swiftModule.SwiftError(PythonObject(message))
         return swiftModule.SwiftReturnValue(Python.None, errorObject).borrowedPyObject
     }
     
-    let scriptString = String(PythonObject(pythonStringRef))
+    guard let scriptString = String(PythonObject(pythonStringRef)) else {
+        return getPythonError(message: "Could not decode the Python string passed into `runSwiftAsString(_:)`")
+    }
+    
     guard let scriptData = scriptString.data(using: .utf8) else {
-        let message = "Python string was not decoded as UTF-8 when compiling a Swift script"
-        print(message)
-        return getPythonError(message: message)
+        return getPythonError(message: "Python string was not decoded as UTF-8 when compiling a Swift script")
     }
     
     let targetPath = "/opt/swift/tmp/string_script.swift"
@@ -34,7 +36,6 @@ public func runSwiftAsString(_ pythonStringRef: OwnedPyObjectPointer) -> PyObjec
     do {
         try executeScript.run()
     } catch {
-        print(error.localizedDescription)
         return getPythonError(message: error.localizedDescription)
     }
     
