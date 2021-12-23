@@ -5,17 +5,10 @@ fileprivate let swiftModule = Python.import("swift")
 // takes a Python string object as input and compile and run it
 @_cdecl("runSwiftAsString")
 public func runSwiftAsString(_ pythonStringRef: OwnedPyObjectPointer) -> PyObjectPointer {
-    let pi = ProcessInfo.processInfo
-    let path = pi.environment["PATH"]!
-    
     @inline(never)
     func getPythonError(message: String) -> PyObjectPointer {
         let errorObject = swiftModule.SwiftError(PythonObject(message))
         return swiftModule.SwiftReturnValue(Python.None, errorObject).borrowedPyObject
-    }
-    
-    if !path.starts(with: "/opt/swift/toolchain/usr/bin") {
-        pi.environment["PATH"] = "/opt/swift/toolchain/usr/bin:\(path)"
     }
     
     let scriptString = String(PythonObject(pythonStringRef))
@@ -32,6 +25,11 @@ public func runSwiftAsString(_ pythonStringRef: OwnedPyObjectPointer) -> PyObjec
     executeScript.executableURL = .init(fileURLWithPath: "/usr/bin/env")
     executeScript.arguments = ["swift", targetPath]
     executeScript.currentDirectoryURL = .init(fileURLWithPath: "/content")
+    
+    var environment = ProcessInfo.processInfo.environment
+    let path = environment["PATH"]!
+    environment["PATH"] = "/opt/swift/toolchain/usr/bin:\(path)"
+    executeScript.environment = environment
     
     do {
         try executeScript.run()
