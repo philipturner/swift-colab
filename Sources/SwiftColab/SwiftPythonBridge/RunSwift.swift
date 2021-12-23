@@ -9,8 +9,11 @@ public func runSwiftAsString(_ pythonStringRef: OwnedPyObjectPointer) -> PyObjec
     func getPythonError(message: String) -> PyObjectPointer {
         print(message)
         let errorObject = swiftModule.SwiftError(PythonObject(message))
-        return swiftModule.SwiftReturnValue(Python.None, errorObject).borrowedPyObject
+        return swiftModule.SwiftReturnValue(Python.None, errorObject).ownedPyObject
     }
+    
+    return getPythonError(message: "returning early")
+    
     
     print("runSwift checkpoint 1")
     
