@@ -6,7 +6,7 @@ fileprivate let swiftModule = Python.import("swift")
 @_cdecl("runSwiftAsString")
 public func runSwiftAsString(_ pythonStringRef: OwnedPyObjectPointer) -> PyObjectPointer {
     let pi = ProcessInfo.processInfo
-    let path = pi.environment["PATH"]
+    let path = pi.environment["PATH"]!
     
     @inline(never)
     func getPythonError(message: String) -> PyObjectPointer {
@@ -25,7 +25,7 @@ public func runSwiftAsString(_ pythonStringRef: OwnedPyObjectPointer) -> PyObjec
         return getPythonError(message: message)
     }
     
-    let targetPath = "/opt/swift/tmp/string_script.swift")
+    let targetPath = "/opt/swift/tmp/string_script.swift"
     FileManager.default.createFile(atPath: targetPath, contents: scriptData)
     
     let executeScript = Process()
