@@ -35,6 +35,9 @@ public func runSwiftAsString(_ pythonStringRef: OwnedPyObjectPointer) -> PyObjec
     print(PyEval_GetBuiltins)
     try! doCommand(["echo", "runSwift checkpoint 1.021"])    
     
+    // I think I'm triggering a crash from the Python Global Interpreter Lock
+    
+    
     let builtinsResult = PyEval_GetBuiltins()
     try! doCommand(["echo", "runSwift checkpoint 1.03"])
     
