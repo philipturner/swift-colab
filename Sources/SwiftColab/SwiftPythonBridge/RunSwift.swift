@@ -28,7 +28,7 @@ public func runSwiftAsString(_ pythonStringRef: OwnedPyObjectPointer) -> PyObjec
         command.waitUntilExit()
     }
     
-    try doCommand(["echo", "hello world test"])
+    try! doCommand(["echo", "hello world test"])
     
     
     print("runSwift checkpoint 1")
