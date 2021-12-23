@@ -10,7 +10,8 @@ public func runSwiftAsString(_ pythonStringRef: OwnedPyObjectPointer) -> PyObjec
     
     @inline(never)
     func getPythonError(message: String) -> PyObjectPointer {
-        swiftModule.SwiftError(PythonObject(message)).borrowedPyObject
+        let errorObject = swiftModule.SwiftError(PythonObject(message))
+        return swiftModule.SwiftReturnValue(Python.None, errorObject).borrowedPyObject
     }
     
     if !path.starts(with: "/opt/swift/toolchain/usr/bin") {
@@ -40,5 +41,7 @@ public func runSwiftAsString(_ pythonStringRef: OwnedPyObjectPointer) -> PyObjec
     }
     
     executeScript.waitUntilExit()
-    return Python.None.borrowedPythonObject
+    
+    let noneObject = Python.None
+    return swiftModule.SwiftReturnValue(noneObject, noneObject).borrowedPyObject
 }
