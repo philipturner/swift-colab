@@ -12,6 +12,8 @@ public func runSwiftAsString(_ pythonStringRef: OwnedPyObjectPointer) -> PyObjec
         return swiftModule.SwiftReturnValue(Python.None, errorObject).borrowedPyObject
     }
     
+    print("runSwift checkpoint 1")
+    
     guard let scriptString = String(PythonObject(pythonStringRef)) else {
         return getPythonError(message: "Could not decode the Python string passed into `runSwiftAsString(_:)`")
     }
@@ -19,6 +21,8 @@ public func runSwiftAsString(_ pythonStringRef: OwnedPyObjectPointer) -> PyObjec
     guard let scriptData = scriptString.data(using: .utf8) else {
         return getPythonError(message: "Python string was not decoded as UTF-8 when compiling a Swift script")
     }
+    
+    print("runSwift checkpoint 2")
     
     let targetPath = "/opt/swift/tmp/string_script.swift"
     FileManager.default.createFile(atPath: targetPath, contents: scriptData)
@@ -40,6 +44,8 @@ public func runSwiftAsString(_ pythonStringRef: OwnedPyObjectPointer) -> PyObjec
     }
     
     executeScript.waitUntilExit()
+    
+    print("runSwift checkpoint 3")
     
     let noneObject = Python.None
     return swiftModule.SwiftReturnValue(noneObject, noneObject).borrowedPyObject
