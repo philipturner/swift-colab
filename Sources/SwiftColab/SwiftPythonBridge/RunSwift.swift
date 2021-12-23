@@ -12,6 +12,8 @@ public func runSwiftAsString(_ pythonStringRef: OwnedPyObjectPointer) -> PyObjec
         return swiftModule.SwiftReturnValue(Python.None, errorObject).borrowedPyObject
     }
     
+    return getPythonError(message: "hello world error")
+    
     guard let scriptString = String(PythonObject(pythonStringRef)) else {
         return getPythonError(message: "Could not decode the Python string passed into `runSwiftAsString(_:)`")
     }
