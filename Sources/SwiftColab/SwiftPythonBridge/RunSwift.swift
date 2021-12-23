@@ -9,7 +9,7 @@ public func runSwiftAsString(_ pythonStringRef: OwnedPyObjectPointer) -> PyObjec
     func getPythonError(message: String) -> PyObjectPointer {
         print(message)
         let errorObject = swiftModule.SwiftError(PythonObject(message))
-        return swiftModule.SwiftReturnValue(Python.None, errorObject).ownedPyObject
+        return swiftModule.SwiftReturnValue(Python.None, errorObject).borrowedPyObject
     }
     
     func doCommand(_ args: [String], directory: String? = nil) throws {
@@ -30,6 +30,8 @@ public func runSwiftAsString(_ pythonStringRef: OwnedPyObjectPointer) -> PyObjec
     // Try running another thread to work around this bug
     // try ctypes.PyDLL - might work!
     // Remove SwiftError to use Python's error setting instead
+    
+    // Need to clean up this code after the mess I caused while debugging :-)
     
     
     
@@ -112,5 +114,5 @@ public func runSwiftAsString(_ pythonStringRef: OwnedPyObjectPointer) -> PyObjec
     
     try! doCommand(["echo", "runSwift checkpoint 3.7"])
     
-    return output.ownedPyObject
+    return output.borrowedPyObject
 }
