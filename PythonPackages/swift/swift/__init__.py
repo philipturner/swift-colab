@@ -6,6 +6,9 @@ def run(swift_string):
     p = sp.run(["bash", "/opt/swift/run_swift.sh", swift_string], stdout=sp.PIPE, stderr=sp.PIPE, text=True)
     print(p.stdout + p.stderr)
 
+def run_new(swift_string):
+    call_compiled_func("/opt/swift/lib/libSwiftPythonBridge", "runSwiftAsString", swift_string)
+
 # the compiled Swift function must import the modified PythonKit
 def call_compiled_func(executable_name, func_name, params):
     lib = ctypes.CDLL(executable_name)
