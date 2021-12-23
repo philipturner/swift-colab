@@ -58,12 +58,12 @@ public func runSwiftAsString(_ pythonStringRef: OwnedPyObjectPointer) -> PyObjec
     
     executeScript.waitUntilExit()
     
-    try! doCommand(["echo", "runSwift checkpoint 3"])
+    try! doCommand(["echo", "runSwift checkpoint 3.1"])
     
     let noneObject = Python.None
-    let output = swiftModule.SwiftReturnValue(noneObject, noneObject).ownedPyObject
+    let output = swiftModule.SwiftReturnValue(noneObject, noneObject)
     
-    try! doCommand(["echo", "runSwift checkpoint 3.5"])
+    try! doCommand(["echo", "runSwift checkpoint 3.6"])
     
-    return output
+    return output.ownedPyObject
 }
