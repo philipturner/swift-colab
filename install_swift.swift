@@ -86,5 +86,3 @@ let pythonKitLibPath = "/opt/swift/lib/libPythonKit.so"
 
 try fm.removeItemIfExists(atPath: pythonKitLibPath)
 try fm.copyItem(atPath: "\(pythonKitProductsPath)/libPythonKit.so", toPath: pythonKitLibPath)
-// _ = try? fm.createSymbolicLink(atPath: pythonKitLinkPath,
-//                                withDestinationPath: "\(pythonKitProductsPath)/libPythonKit.so")
