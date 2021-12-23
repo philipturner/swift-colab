@@ -28,6 +28,7 @@ public func runSwiftAsString(_ pythonStringRef: OwnedPyObjectPointer) -> PyObjec
     try! doCommand(["echo", "runSwift checkpoint 1.011"])
     
     // Try running another thread to work around this bug
+    // try ctypes.PyDLL - might work!
     
     
     
