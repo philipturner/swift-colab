@@ -24,9 +24,9 @@ extension PythonObject {
         let handle = FunctionHandle(wrapping: function)
         let handleRef = Unmanaged.passRetained(handle).toOpaque()
         
-        self.function_table[PythonObject(name)] = .init(Int(bitPattern: handleRef))
+        self.swift_delegate.function_table[PythonObject(name)] = .init(Int(bitPattern: handleRef))
     }
-    
+    intentionally fail compilation
     public func releaseFunction(name: String) {
         let nameObject = PythonObject(name)
         
@@ -34,6 +34,6 @@ extension PythonObject {
         let handleRef = UnsafeRawPointer(bitPattern: retrievedInt)!
         Unmanaged<FunctionHandle>.fromOpaque(handleRef).release()
         
-        self.function_table[nameObject] = Python.None
+        self.swift_delegate.function_table[nameObject] = Python.None
     }
 }
