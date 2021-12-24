@@ -11,7 +11,7 @@ public func JupyterKernelCreate(_ jupyterKernelRef: OwnedPyObjectPointer) -> PyO
     
     do {
         let jupyterKernel = PythonObject(jupyterKernelRef)
-        print("This is the Jupyter kernel object in Swift: \(jupyterKernel)")
+        print("Modified log statement: \(jupyterKernel)")
     } catch {
         errorObject = swiftModule.SwiftError(error.localizedDescription)
     }
