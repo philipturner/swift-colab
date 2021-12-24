@@ -1,0 +1,9 @@
+root = true
+
+[*.{swift, py, metal, cu, hlsl, c, cpp, h, hpp}]
+indent_style = space
+indent_size = 4
+
+[*.{sh}]
+indent_style = space
+indent_size = 2
