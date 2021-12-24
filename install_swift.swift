@@ -113,7 +113,7 @@ print("install debug marker 5")
 // Install philipturner/PythonKit (in debug mode for now)
 try doCommand(["swift", "build"], directory: "/opt/swift/packages/PythonKit")
 
-let pythonKitProductsPath = "/opt/swift/packages/PythonKit/.build/release"
+let pythonKitProductsPath = "/opt/swift/packages/PythonKit/.build/debug"
 let pythonKitLibPath = "/opt/swift/lib/libPythonKit.so"
 
 try fm.removeItemIfExists(atPath: pythonKitLibPath)
@@ -126,9 +126,10 @@ print("install debug marker 6")
 
 
 // Install SwiftPythonBridge
-try fm.createDirectory(atPath: "/opt/swift/packages/SwiftPythonBridge", withIntermediateDirectories: true)
-
 let spbProductsPath = "/opt/swift/packages/SwiftPythonBridge"
+try fm.removeItemIfExists(atPath: spbProductsPath) // remove once SwiftPythonBridge is stable
+try fm.createDirectory(atPath: spbProductsPath, withIntermediateDirectories: true)
+
 let spbLibPath = "/opt/swift/lib/libSwiftPythonBridge.so"
 let spbSourcePath = "/opt/swift/swift-colab/Sources/SwiftColab/SwiftPythonBridge"
 
