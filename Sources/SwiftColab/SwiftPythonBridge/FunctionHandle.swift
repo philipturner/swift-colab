@@ -13,6 +13,8 @@ class FunctionHandle {
 }
 
 extension PythonObject {
+    private struct NotConvertibleError: Error { let localizedDescription: String }
+    
     public func retainFunction<T>(name: String, function: @escaping (PythonObject) throws -> T) {
         let wrapper = { (params: PythonObject) throws -> PythonObject in
             let output = try function(params)
@@ -23,7 +25,6 @@ extension PythonObject {
             case _ as Void:
                 return Python.None
             default:
-                struct NotConvertibleError: Error { let localizedDescription: String }
                 throw NotConvertibleError(localizedDescription: "Called a Swift function from Python that did not return a PythonConvertible or Void")
             }
         }
