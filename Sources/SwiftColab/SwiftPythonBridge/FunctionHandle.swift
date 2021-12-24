@@ -32,13 +32,11 @@ extension PythonObject {
         let handle = FunctionHandle(wrapping: wrapper)
         let handleRef = Unmanaged.passRetained(handle).toOpaque()
         
-        self.swift_delegate.function_table[PythonObject(name)] = .init(Int(bitPattern: handleRef))
+        self.swift_delegate.function_table[name] = .init(Int(bitPattern: handleRef))
     }
     
     public func releaseFunction(name: String) throws {
-        let nameObject = PythonObject(name)
-        
-        guard let retrievedInt = Int(self.function_table[nameObject]) else {
+        guard let retrievedInt = Int(self.function_table[name]) else {
             struct ReleaseFunctionError: Error { let localizedDescription: String }
             throw ReleaseFunctionError(localizedDescription: "Attempted to release a non-retained \(name) function on a Python object")
         }
@@ -46,6 +44,6 @@ extension PythonObject {
         let handleRef = UnsafeRawPointer(bitPattern: retrievedInt)!
         Unmanaged<FunctionHandle>.fromOpaque(handleRef).release()
         
-        self.swift_delegate.function_table[nameObject] = Python.None
+        self.swift_delegate.function_table[name] = Python.None
     }
 }
