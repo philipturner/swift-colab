@@ -93,9 +93,9 @@ let spbSourceFilePaths = try fm.contentsOfDirectory(atPath: spbSourcePath).map {
 }
 
 try doCommand(["swiftc"] + spbSourceFilePaths + [
-               "-emit-module", "-emit-library",
                "-L", pythonKitProductsPath, "-lPythonKit",
                "-I", pythonKitProductsPath,
+               "-emit-module", "-emit-library",
                "-module-name", "SwiftPythonBridge"],
                directory: spbProductsPath)
 
