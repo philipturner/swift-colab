@@ -27,7 +27,8 @@ class SwiftDelegate:
     def __del__(self):
         print("Starting deinitialization of SwiftDelegate from Python #2")
         try:
-            call_compiled_func("/opt/swift/lib/libSwiftPythonBridge.so", "releaseFunctionTable", self.function_table)
+            output = call_compiled_func("/opt/swift/lib/libSwiftPythonBridge.so", "releaseFunctionTable", self.function_table)
+            print(output)
         except Exception as e:
             print(f"Caught exception: {e}")
         print("Finishing deinitialization of SwiftDelegate from Python #2")
