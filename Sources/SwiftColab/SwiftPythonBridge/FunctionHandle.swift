@@ -10,12 +10,19 @@ class FunctionHandle {
     func call(_ params: PythonObject) throws -> PythonObject {
         try function(params)
     }
+    
+    static func release(address: Int) {
+        let handleRef = UnsafeRawPointer(bitPattern: address)!
+        Unmanaged<FunctionHandle>.fromOpaque(handleRef).release()
+    }
 }
 
 extension PythonObject {
-    private struct NotConvertibleError: Error { let localizedDescription: String }
+    private struct NotConvertibleError: Error { 
+        let localizedDescription = "From within Python, called a Swift function did not return a PythonConvertible or Void"
+    }
     
-    public func retainFunction<T>(name: String, function: @escaping (PythonObject) throws -> T) {
+    public func registerFunction<T>(name: String, function: @escaping (PythonObject) throws -> T) {
         let wrapper = { (params: PythonObject) throws -> PythonObject in
             let output = try function(params)
             
@@ -25,7 +32,7 @@ extension PythonObject {
             case _ as Void:
                 return Python.None
             default:
-                throw NotConvertibleError(localizedDescription: "From within Python, called a Swift function did not return a PythonConvertible or Void")
+                throw NotConvertibleError()
             }
         }
         
@@ -33,29 +40,11 @@ extension PythonObject {
         
         if let retrievedObject = function_table.checking[name], 
            let previousAddress = Int(retrievedObject) {
-            releaseFunction(address: previousAddress)
+            FunctionHandle.release(address: previousAddress)
         }
         
         let handle = FunctionHandle(wrapping: wrapper)
         let handleRef = Unmanaged.passRetained(handle).toOpaque()
         function_table[name] = .init(Int(bitPattern: handleRef))
-    }
-    
-    public func releaseFunction(name: String) throws {
-        let function_table = self.swift_delegate.function_table
-        
-        guard let retrievedObject = function_table.checking[name],
-              let address = Int(retrievedObject) else {
-            struct ReleaseFunctionError: Error { let localizedDescription: String }
-            throw ReleaseFunctionError(localizedDescription: "Attempted to release a non-retained \(name) function on a Python object")
-        }
-        
-        releaseFunction(address: address)
-        function_table[name] = Python.None
-    }
-    
-    private func releaseFunction(address: Int) {
-        let handleRef = UnsafeRawPointer(bitPattern: address)!
-        Unmanaged<FunctionHandle>.fromOpaque(handleRef).release()
     }
 }
