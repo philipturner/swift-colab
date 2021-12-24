@@ -33,6 +33,8 @@ public func runSwiftAsString(_ pythonStringRef: OwnedPyObjectPointer) -> PyObjec
     environment["PATH"] = "/opt/swift/toolchain/usr/bin:\(path)"
     executeScript.environment = environment
     
+    fatalError()
+    
     do {
         try executeScript.run()
     } catch {
