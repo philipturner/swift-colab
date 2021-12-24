@@ -66,21 +66,8 @@ try fm.createDirectory(atPath: "/opt/swift/tmp", withIntermediateDirectories: tr
 try fm.createDirectory(atPath: "/opt/swift/lib", withIntermediateDirectories: true)
 try fm.createDirectory(atPath: "/opt/swift/packages", withIntermediateDirectories: true)
 
-// Install philipturner/swift-backtrace
-try doCommand(["swift", "build"], directory: "/opt/swift/packages/swift-backtrace")
-
-let backtraceProductsPath = "/opt/swift/packages/swift-backtrace/.build/debug"
-try doCommand(["swiftc", "/opt/swift/swift-colab/Sources/SwiftColab/InstallBacktrace.swift",
-               "-L", backtraceProductsPath, "-lBacktrace",
-               "-I", backtraceProductsPath,
-               "-D", "DEBUG"],
-               directory: "/opt/swift/tmp")
-
-try doCommand(["/opt/swift/tmp/InstallBacktrace"])
-
-// Install philipturner/PythonKit
-try doCommand(["swift", "build", "-c", "release"], 
-              directory: "/opt/swift/packages/PythonKit")
+// Install philipturner/PythonKit (in debug mode for now)
+try doCommand(["swift", "build"], directory: "/opt/swift/packages/PythonKit")
 
 let pythonKitProductsPath = "/opt/swift/packages/PythonKit/.build/release"
 let pythonKitLibPath = "/opt/swift/lib/libPythonKit.so"
