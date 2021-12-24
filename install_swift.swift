@@ -71,13 +71,8 @@ try doCommand(["swiftc", "/opt/swift/swift-colab/Sources/SwiftColab/InstallBackt
 try doCommand(["/opt/swift/tmp/InstallBacktrace"])
 */
 
-let start = Date()
-
-try doCommand(["swift", "build", "-c", "release"], // Once philipturner/PythonKit is stable, ship the binary with swift-colab and make a good workflow for updating the binary
+try doCommand(["swift", "build", "-c", "release"],
               directory: "/opt/swift/packages/PythonKit")
-
-let end = Date()
-print("PythonKit took \(end.timeIntervalSince(start)) seconds to compile.")
 
 let pythonKitProductsPath = "/opt/swift/packages/PythonKit/.build/release"
 let pythonKitLibPath = "/opt/swift/lib/libPythonKit.so"
