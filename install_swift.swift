@@ -94,7 +94,8 @@ print("install debug marker 3")
 
 
 // Install philipturner/swift-backtrace
-try doCommand(["swift", "build"], directory: "/opt/swift/packages/swift-backtrace")
+try doCommand(["swift", "build", "-c", "release"], 
+              directory: "/opt/swift/packages/swift-backtrace")
 let backtraceProductsPath = "/opt/swift/packages/swift-backtrace/.build/debug"
 try doCommand(["swiftc", "/opt/swift/swift-colab/Sources/SwiftColab/InstallBacktrace.swift",
                "-L", backtraceProductsPath, "-lBacktrace",
