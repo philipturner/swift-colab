@@ -71,8 +71,14 @@ try doCommand(["swiftc", "/opt/swift/swift-colab/Sources/SwiftColab/InstallBackt
 try doCommand(["/opt/swift/tmp/InstallBacktrace"])
 */
 
+let pythonKitCompileStart = Date()
+
 try doCommand(["swift", "build", "-c", "release"],
               directory: "/opt/swift/packages/PythonKit")
+
+let pythonKitCompileEnd = Date()
+
+print("PythonKit took \(pythonKitCompileEnd.timeIntervalSince(pythonKitCompileStart)) seconds to compile.")
 
 let pythonKitProductsPath = "/opt/swift/packages/PythonKit/.build/release"
 let pythonKitLibPath = "/opt/swift/lib/libPythonKit.so"
