@@ -94,8 +94,7 @@ print("install debug marker 3")
 
 
 // Install philipturner/swift-backtrace
-try doCommand(["swift", "build", "-c", "release"], 
-              directory: "/opt/swift/packages/swift-backtrace")
+try doCommand(["swift", "build"], directory: "/opt/swift/packages/swift-backtrace")
 let backtraceProductsPath = "/opt/swift/packages/swift-backtrace/.build/debug"
 try doCommand(["swiftc", "/opt/swift/swift-colab/Sources/SwiftColab/InstallBacktrace.swift",
                "-L", backtraceProductsPath, "-lBacktrace",
@@ -113,7 +112,8 @@ print("install debug marker 5")
 
 // Install philipturner/PythonKit (in debug mode for now)
 try fm.removeItemIfExists(atPath: "/opt/swift/packages/PythonKit/.build") // remove once PythonKit is stable
-try doCommand(["swift", "build"], directory: "/opt/swift/packages/PythonKit")
+try doCommand(["swift", "build", "-c", "release"],
+              directory: "/opt/swift/packages/PythonKit")
 
 let pythonKitProductsPath = "/opt/swift/packages/PythonKit/.build/release"
 let pythonKitLibPath = "/opt/swift/lib/libPythonKit.so"
