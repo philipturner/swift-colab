@@ -2,7 +2,7 @@ import Foundation
 import PythonKit
 fileprivate let swiftModule = Python.import("swift")
 
-// Takes a Python string object as input, then compiles and runs it
+// Takes a Python string object as input, then compiles and runs it.
 @_cdecl("runSwiftAsString")
 public func runSwiftAsString(_ pythonStringRef: OwnedPyObjectPointer) -> PyObjectPointer {
     @inline(never)
