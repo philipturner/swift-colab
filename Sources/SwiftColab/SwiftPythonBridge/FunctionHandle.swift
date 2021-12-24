@@ -13,7 +13,7 @@ class FunctionHandle {
 }
 
 extension PythonObject {
-    public func retainFunction(name: String, function: @escaping (PythonObject) throws -> Any) {
+    public func retainFunction<T>(name: String, function: @escaping (PythonObject) throws -> T) {
         let wrapper = { (params: PythonObject) throws -> PythonObject in
             let output = try function(params)
             
