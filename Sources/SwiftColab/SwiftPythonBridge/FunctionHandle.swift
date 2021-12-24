@@ -37,7 +37,7 @@ extension PythonObject {
     public func releaseFunction(name: String) throws {
         let nameObject = PythonObject(name)
         
-        guard let retrievedInt = Int(self.function_table[nameObject])! else {
+        guard let retrievedInt = Int(self.function_table[nameObject]) else {
             struct ReleaseFunctionError: Error { let localizedDescription: String }
             throw ReleaseFunctionError(localizedDescription: "Attempted to release a non-retained \(name) function on a Python object")
         }
