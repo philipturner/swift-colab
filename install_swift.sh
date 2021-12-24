@@ -21,7 +21,7 @@ then
   
   mkdir packages
   cd packages
-  git clone --single-branch -b master https://github.com/philipturner/PythonKit
+  git clone --single-branch -b save-3 https://github.com/philipturner/PythonKit
   
   # Not installing Backtrace because I don't see it helping anything.
 #   git clone --single-branch -b main https://github.com/philipturner/swift-backtrace
@@ -35,7 +35,7 @@ then
   rm -r swift-colab
 fi
 
-git clone --single-branch -b main https://github.com/philipturner/swift-colab
+git clone --single-branch -b save-3 https://github.com/philipturner/swift-colab
 
 export PATH="/opt/swift/toolchain/usr/bin:$PATH"
 swift swift-colab/install_swift.swift
