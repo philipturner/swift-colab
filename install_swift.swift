@@ -85,7 +85,7 @@ let spbProductsPath = "/opt/swift/packages/SwiftPythonBridge"
 let spbLibPath = "/opt/swift/lib/libSwiftPythonBridge.so"
 let spbSourcePath = "/opt/swift/swift-colab/Sources/SwiftColab/SwiftPythonBridge"
 
-try fm.removeItemIfExists(atPath: spbProductsPath) // remove once SwiftPythonBridge is stable
+try fm.removeItemIfExists(atPath: spbProductsPath)
 try fm.createDirectory(atPath: spbProductsPath, withIntermediateDirectories: true)
 
 let sourceFilePaths = try fm.contentsOfDirectory(atPath: spbSourcePath).map {
