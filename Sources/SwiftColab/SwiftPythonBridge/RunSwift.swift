@@ -43,6 +43,7 @@ public func runSwiftAsString(_ pythonStringRef: OwnedPyObjectPointer) -> PyObjec
     
     
     Python.setError(message: "this is the second attempt at a hello world error")
+    print("This message should log to the console")
     
 
     let noneObject = Python.None
