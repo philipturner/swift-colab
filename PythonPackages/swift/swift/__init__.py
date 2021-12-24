@@ -1,14 +1,7 @@
-import subprocess as sp
 from ctypes import *
 from wurlitzer import sys_pipes
 
-# remove the legacy run command very soon, and the subprocess import with it
-# calling run_swift using thorugh a pre-compiled function instead should let stdout and stderr be synchronized with the Jupyter kernel.
 def run(swift_string):
-    p = sp.run(["bash", "/opt/swift/run_swift.sh", swift_string], stdout=sp.PIPE, stderr=sp.PIPE, text=True)
-    print(p.stdout + p.stderr)
-
-def run_new(swift_string):
     call_compiled_func("/opt/swift/lib/libSwiftPythonBridge.so", "runSwiftAsString", swift_string)
 
 # the compiled Swift function must import the modified PythonKit
