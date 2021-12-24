@@ -18,7 +18,7 @@ public func releaseFunctionTable(_ tableRef: OwnedPyObjectPointer) -> PyObjectPo
 //         }
 //     }
     
-    let keys = [PythonObject](tableObject.keys())
+    let keys = [PythonObject](tableObject.keys())!
     
     for key in keys {
         let address = Int(function_table[key])!
