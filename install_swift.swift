@@ -71,10 +71,10 @@ try doCommand(["swiftc", "/opt/swift/swift-colab/Sources/SwiftColab/InstallBackt
 try doCommand(["/opt/swift/tmp/InstallBacktrace"])
 */
 
-try doCommand(["swift", "build"], // Once philipturner/PythonKit is stable, ship the binary with swift-colab and make a good workflow for updating the binary
+try doCommand(["swift", "build", "-c", "release"], // Once philipturner/PythonKit is stable, ship the binary with swift-colab and make a good workflow for updating the binary
               directory: "/opt/swift/packages/PythonKit")
 
-let pythonKitProductsPath = "/opt/swift/packages/PythonKit/.build/debug"
+let pythonKitProductsPath = "/opt/swift/packages/PythonKit/.build/release"
 let pythonKitLibPath = "/opt/swift/lib/libPythonKit.so"
 
 try fm.removeItemIfExists(atPath: pythonKitLibPath)
