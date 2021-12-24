@@ -7,8 +7,7 @@ def run(swift_string):
 
 # the compiled Swift function must import the modified PythonKit
 def call_compiled_func(executable_name, func_name, params):
-    lib = PyDLL(executable_name)
-    func = getattr(lib, func_name)
+    func = getattr(PyDLL(executable_name), func_name)
     func.restype, func.argtypes = c_void_p, [c_void_p]
     func_return_ptr = func(c_void_p(id(params)))
     output = cast(func_return_ptr, py_object).value.unwrap() # `func_return` is a `SwiftReturnValue`
@@ -24,6 +23,9 @@ class SwiftDelegate:
         func_ptr_wrapper_ptr = c_void_p(self.function_table[function_name]) # cast an integer to an `OpaquePointer`
         func_return_ptr = self.__call_swift(func_ptr_wrapper_ptr, c_void_p(id(params)))
         return cast(func_return_ptr, py_object).value.unwrap() # `func_return` is a `SwiftReturnValue`
+    
+    def __del__(self):
+        call_compiled_func("/opt/swift/lib/libSwiftPythonBridge.so", "releaseFunctionTable", self.function_table)
 
 class SwiftError(Exception):
     def __init__(self, localized_description):
