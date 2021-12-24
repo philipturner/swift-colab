@@ -1,7 +1,7 @@
 import PythonKit
 import SwiftPythonBridge
 import Foundation
-let swiftModule = Python.import("swift")
+fileprivate let swiftModule = Python.import("swift")
 
 @_cdecl("helloC")
 public func helloC(_ meaningOfLife: Int32) -> Int32 {
