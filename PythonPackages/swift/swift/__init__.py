@@ -18,7 +18,7 @@ class SwiftDelegate:
     def __init__(self):
         self.function_table = {} # a `[String: Int]` dictionary of memory addresses of function wrappers, to be initialized in Swift
         self.__call_swift = PyDLL("/opt/swift/lib/libSwiftPythonBridge.so").callSwiftFromPython
-        self.__call_swift.restype, self.__call_swift.argtypes = c_void_p, [c_void_p, c_void_p] # args accessed as `[PythonObject]` in Swift
+        self.__call_swift.restype, self.__call_swift.argtypes = c_void_p, [c_void_p, c_void_p]
     
     def call(self, function_name, params): 
         func_ptr_wrapper_ptr = c_void_p(self.function_table[function_name]) # cast an integer to an `OpaquePointer`
@@ -27,7 +27,7 @@ class SwiftDelegate:
         return cast(func_return_ptr, py_object).value.unwrap() # `func_return` is a `SwiftReturnValue`
     
 class SwiftError(Exception):
-    def __init__(self, localized_description): # created from the Swift Error's `localizedDescription`
+    def __init__(self, localized_description):
         super().__init__(localized_description)
         
 class SwiftReturnValue:
