@@ -16,6 +16,7 @@ then
   mv "${tar_file}" toolchain
   
   apt install patchelf
+  pip install wurlitzer
   
   mkdir packages
   cd packages
