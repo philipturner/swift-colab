@@ -73,14 +73,14 @@ try doCommand(["/opt/swift/tmp/InstallBacktrace"])
 
 let pythonKitCompileStart = Date()
 
-try doCommand(["swift", "build", "-c", "release"],
+try doCommand(["swift", "build"],
               directory: "/opt/swift/packages/PythonKit")
 
 let pythonKitCompileEnd = Date()
 
 print("PythonKit took \(pythonKitCompileEnd.timeIntervalSince(pythonKitCompileStart)) seconds to compile.")
 
-let pythonKitProductsPath = "/opt/swift/packages/PythonKit/.build/release"
+let pythonKitProductsPath = "/opt/swift/packages/PythonKit/.build/debug"
 let pythonKitLibPath = "/opt/swift/lib/libPythonKit.so"
 
 try fm.removeItemIfExists(atPath: pythonKitLibPath)
