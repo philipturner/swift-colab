@@ -32,7 +32,7 @@ extension PythonObject {
         let function_table = self.swift_delegate.function_table
         
         if let previousAddress = Int(function_table[name]) {
-           releaseFunctionFromInt(address: previousAddress)
+           releaseFunction(address: previousAddress)
         }
         
         let handle = FunctionHandle(wrapping: wrapper)
@@ -48,12 +48,12 @@ extension PythonObject {
             throw ReleaseFunctionError(localizedDescription: "Attempted to release a non-retained \(name) function on a Python object")
         }
         
-        releaseFunctionAddress(address: address)
+        releaseFunction(address: address)
         function_table[name] = Python.None
     }
-}
-
-fileprivate func releaseFunctionFromInt(address: Int) {
-    let handleRef = UnsafeRawPointer(bitPattern: address)!
-    Unmanaged<FunctionHandle>.fromOpaque(handleRef).release()
+    
+    private func releaseFunction(address: Int) {
+        let handleRef = UnsafeRawPointer(bitPattern: address)!
+        Unmanaged<FunctionHandle>.fromOpaque(handleRef).release()
+    }
 }
