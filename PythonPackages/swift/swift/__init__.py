@@ -45,4 +45,4 @@ class SwiftInteropTest():
         self.swift_delegate = SwiftDelegate()
         
     def example_func(self, string_param):
-        self.swift_delegate.call("example_func", [self, string_param])
+        return self.swift_delegate.call("example_func", [self, string_param])
