@@ -114,7 +114,7 @@ print("install debug marker 5")
 try fm.removeItemIfExists(atPath: "/opt/swift/packages/PythonKit/.build") // remove once PythonKit is stable
 try doCommand(["swift", "build"], directory: "/opt/swift/packages/PythonKit")
 
-let pythonKitProductsPath = "/opt/swift/packages/PythonKit/.build/debug"
+let pythonKitProductsPath = "/opt/swift/packages/PythonKit/.build/release"
 let pythonKitLibPath = "/opt/swift/lib/libPythonKit.so"
 
 try fm.removeItemIfExists(atPath: pythonKitLibPath)
