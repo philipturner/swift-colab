@@ -18,5 +18,5 @@ public func callSwiftFromPython(_ functionHandleRef: UnsafeRawPointer, _ params:
     }
     
     let returnValue = swiftModule.SwiftReturnValue(wrappedObject, errorObject)
-    return returnValue.borrowedPyObject
+    return returnValue.ownedPyObjecf
 }
