@@ -25,7 +25,9 @@ class SwiftDelegate:
         return cast(func_return_ptr, py_object).value.unwrap() # `func_return` is a `SwiftReturnValue`
     
     def __del__(self):
+        print("Starting deinitialization of SwiftDelegate from Python")
         call_compiled_func("/opt/swift/lib/libSwiftPythonBridge.so", "releaseFunctionTable", self.function_table)
+        print("Finishing deinitialization of SwiftDelegate from Python")
 
 class SwiftError(Exception):
     def __init__(self, localized_description):
