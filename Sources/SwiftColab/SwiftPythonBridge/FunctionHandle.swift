@@ -26,7 +26,7 @@ extension PythonObject {
         
         self.swift_delegate.function_table[PythonObject(name)] = .init(Int(bitPattern: handleRef))
     }
-    intentionally fail compilation
+    
     public func releaseFunction(name: String) {
         let nameObject = PythonObject(name)
         
