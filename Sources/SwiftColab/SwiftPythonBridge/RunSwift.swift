@@ -42,7 +42,7 @@ public func runSwiftAsString(_ pythonStringRef: OwnedPyObjectPointer) -> PyObjec
     executeScript.waitUntilExit()
     
     
-    Python.setError(message: "this is the second attempt at a hello world error")
+//     Python.setError(message: "this is the second attempt at a hello world error")
     print("This message should log to the console")
     
 
