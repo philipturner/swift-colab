@@ -1,5 +1,5 @@
 from ctypes import *
-from wurlitzer import sys_pipes
+from wurlitzer import sys_pipes, sys_pipes_forever
 
 def run(swift_string):
     call_compiled_func("/opt/swift/lib/libSwiftPythonBridge.so", "runSwiftAsString", swift_string)
@@ -9,7 +9,7 @@ def call_compiled_func(executable_name, func_name, params):
     lib = PyDLL(executable_name)
     func = getattr(lib, func_name)
     func.restype, func.argtypes = c_void_p, [c_void_p]
-    with sys_pipes():
+    with sys_pipes_forever(): # this should crash
         func_return_ptr = func(c_void_p(id(params)))
     output = cast(func_return_ptr, py_object).value.unwrap() # `func_return` is a `SwiftReturnValue`
     return output
@@ -36,7 +36,8 @@ class SwiftDelegate:
         
     def call_alt(self, function_name, params): 
         func_ptr_wrapper_ptr = c_void_p(self.function_table[function_name]) # cast an integer to an `OpaquePointer`
-        func_return_ptr = self.__call_swift(func_ptr_wrapper_ptr, c_void_p(id(params)))
+        with sys_pipes():
+            func_return_ptr = self.__call_swift(func_ptr_wrapper_ptr, c_void_p(id(params)))
         return cast(func_return_ptr, py_object).value.unwrap() # `func_return` is a `SwiftReturnValue`
     
     def call_2_alt(self, function_name, params):
