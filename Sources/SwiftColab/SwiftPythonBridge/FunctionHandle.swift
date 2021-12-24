@@ -18,8 +18,8 @@ extension PythonObject {
             let output = try function(params)
             
             switch output {
-            case let pythonConvertible as PythonConvertible:
-                return pythonConvertible.pythonObject
+            case let aPythonConvertible as PythonConvertible:
+                return aPythonConvertible.pythonObject
             case _ as Void:
                 return Python.None
             default:
