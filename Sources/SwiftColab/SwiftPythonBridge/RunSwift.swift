@@ -12,7 +12,7 @@ public func runSwiftAsString(_ pythonStringRef: OwnedPyObjectPointer) -> PyObjec
         return swiftModule.SwiftReturnValue(Python.None, errorObject).ownedPyObject
     }
     
-    guard let scriptString = String(pythonStringRef) else {
+    guard let scriptString = String(PythonObject(pythonStringRef)) else {
         return getPythonError(message: "Could not decode the Python string passed into `runSwiftAsString(_:)`")
     }
     
