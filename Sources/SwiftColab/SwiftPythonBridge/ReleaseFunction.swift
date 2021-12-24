@@ -21,7 +21,7 @@ public func releaseFunctionTable(_ tableRef: OwnedPyObjectPointer) -> PyObjectPo
     let keys = [PythonObject](tableObject.keys())!
     
     for key in keys {
-        let address = Int(function_table[key])!
+        let address = Int(key)!
         let handleRef = UnsafeRawPointer(bitPattern: address)!
         Unmanaged<FunctionHandle>.fromOpaque(handleRef).release()
     }
