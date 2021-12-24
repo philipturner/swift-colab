@@ -27,15 +27,15 @@ class SwiftDelegate:
     def __del__(self):
         printf = CDLL(None).printf
         printf.argtypes = [c_char_p]
-        printf("Starting deinitialization of SwiftDelegate from Python #2".encode("utf-8")
+        printf("Starting deinitialization of SwiftDelegate from Python #2".encode("utf-8"))
         
         try:
             output = call_compiled_func("/opt/swift/lib/libSwiftPythonBridge.so", "releaseFunctionTable", self.function_table)
-            printf(f"{output}".encode("utf-8")
+            printf(f"{output}".encode("utf-8"))
         except Exception as e:
-            printf(f"Caught exception: {e}".encode("utf-8")
+            printf(f"Caught exception: {e}".encode("utf-8"))
         
-        printf("Finishing deinitialization of SwiftDelegate from Python #2".encode("utf-8")
+        printf("Finishing deinitialization of SwiftDelegate from Python #2".encode("utf-8"))
 
 class SwiftError(Exception):
     def __init__(self, localized_description):
