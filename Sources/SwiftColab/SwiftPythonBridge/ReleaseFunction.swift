@@ -18,14 +18,20 @@ public func releaseFunctionTable(_ tableRef: OwnedPyObjectPointer) -> PyObjectPo
 //         }
 //     }
     
-    let items = [PythonObject](tableObject.items())!
+    let noneObject = Python.None
+    let keys = [PythonObject](tableObject.keys())!
     
-    for address in items.compactMap(Int.init) {
+    for key in keys {
+        guard let address = Int(tableObject[key]) else {
+            continue
+        }
+        
+        tableObject[key] = noneObject
+        
         let handleRef = UnsafeRawPointer(bitPattern: address)!
         Unmanaged<FunctionHandle>.fromOpaque(handleRef).release()
     }
     
-    let noneObject = Python.None
     return swiftModule.SwiftReturnValue(noneObject, noneObject).ownedPyObject
 }
 
