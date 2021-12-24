@@ -31,7 +31,7 @@ extension PythonObject {
         
         let function_table = self.swift_delegate.function_table
         
-        if let retrievedObject = function_table[name], let previousAddress = Int(retrievedObject) {
+        if let previousAddress = Int(function_table.checking[name]) {
            releaseFunction(address: previousAddress)
         }
         
@@ -43,7 +43,7 @@ extension PythonObject {
     public func releaseFunction(name: String) throws {
         let function_table = self.swift_delegate.function_table
         
-        guard let address = Int(function_table[name]) else {
+        guard let address = Int(function_table.checking[name]) else {
             struct ReleaseFunctionError: Error { let localizedDescription: String }
             throw ReleaseFunctionError(localizedDescription: "Attempted to release a non-retained \(name) function on a Python object")
         }
