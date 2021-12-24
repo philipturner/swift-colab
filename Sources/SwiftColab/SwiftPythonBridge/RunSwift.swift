@@ -41,11 +41,6 @@ public func runSwiftAsString(_ pythonStringRef: OwnedPyObjectPointer) -> PyObjec
     
     executeScript.waitUntilExit()
     
-    
-//     Python.setError(message: "this is the second attempt at a hello world error")
-    print("This message should log to the console")
-    
-
     let noneObject = Python.None
     return swiftModule.SwiftReturnValue(noneObject, noneObject).ownedPyObject
 }
