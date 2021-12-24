@@ -78,12 +78,10 @@ try fm.createDirectory(atPath: "/opt/swift/packages", withIntermediateDirectorie
 //                directory: "/opt/swift/tmp")
 // try doCommand(["/opt/swift/tmp/InstallBacktrace"])
 
-// Install philipturner/PythonKit (in debug mode for now; change to release once I can ship the binary in the Swift package)
-// try fm.removeItemIfExists(atPath: "/opt/swift/packages/PythonKit/.build") // remove once PythonKit is stable
-try doCommand(["swift", "build"],
+try doCommand(["swift", "build", "-c", "release"],
               directory: "/opt/swift/packages/PythonKit")
 
-let pythonKitProductsPath = "/opt/swift/packages/PythonKit/.build/debug"
+let pythonKitProductsPath = "/opt/swift/packages/PythonKit/.build/release"
 let pythonKitLibPath = "/opt/swift/lib/libPythonKit.so"
 
 try fm.removeItemIfExists(atPath: pythonKitLibPath)
