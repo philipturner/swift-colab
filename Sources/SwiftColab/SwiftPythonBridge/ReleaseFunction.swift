@@ -18,10 +18,9 @@ public func releaseFunctionTable(_ tableRef: OwnedPyObjectPointer) -> PyObjectPo
 //         }
 //     }
     
-    let keys = [PythonObject](tableObject.keys())!
+    let items = [PythonObject](tableObject.items())!
     
-    for key in keys {
-        let address = Int(key)!
+    for address in items.compactMap(Int.init?) {
         let handleRef = UnsafeRawPointer(bitPattern: address)!
         Unmanaged<FunctionHandle>.fromOpaque(handleRef).release()
     }
