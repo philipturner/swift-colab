@@ -4,7 +4,6 @@ fileprivate let swiftModule = Python.import("swift")
 @_cdecl("releaseFunctionTable")
 public func releaseFunctionTable(_ tableRef: OwnedPyObjectPointer) -> PyObjectPointer {
     let tableObject = PythonObject(tableRef)
-    print("Inside Swift code, releasing the retained function table \(tableObject)")
     
     let noneObject = Python.None
     let keys = [PythonObject](tableObject.keys())!
@@ -20,4 +19,3 @@ public func releaseFunctionTable(_ tableRef: OwnedPyObjectPointer) -> PyObjectPo
     
     return swiftModule.SwiftReturnValue(noneObject, noneObject).ownedPyObject
 }
-
