@@ -37,13 +37,6 @@ func doCommand(_ args: [String], directory: String? = nil) throws {
     command.waitUntilExit()
 }
 
-
-
-
-
-print("install debug marker 1")
-
-
 // Remove any previously existing `run_swift` files
 try fm.removeItemIfExists(atPath: "/opt/swift/run_swift.sh")
 try fm.removeItemIfExists(atPath: "/opt/swift/run_swift.swift")
@@ -52,14 +45,6 @@ try fm.removeItemIfExists(atPath: "/opt/swift/run_swift.swift")
 let baseDirectory = "/opt/swift/swift-colab/Sources/SwiftColab/run_swift"
 try fm.moveItem(atPath: "\(baseDirectory)/run_swift.sh", toPath: "/opt/swift/run_swift.sh")
 try fm.moveItem(atPath: "\(baseDirectory)/run_swift.swift", toPath: "/opt/swift/run_swift.swift")
-
-
-
-
-print("install debug marker 2")
-
-
-
 
 // Move `swift` Python package to `/env/python` directory
 try fm.createDirectory(atPath: "/env/python", withIntermediateDirectories: true)
@@ -81,18 +66,6 @@ try fm.createDirectory(atPath: "/opt/swift/tmp", withIntermediateDirectories: tr
 try fm.createDirectory(atPath: "/opt/swift/lib", withIntermediateDirectories: true)
 try fm.createDirectory(atPath: "/opt/swift/packages", withIntermediateDirectories: true)
 
-
-
-
-
-
-print("install debug marker 3")
-
-
-
-
-
-
 // Install philipturner/swift-backtrace
 try doCommand(["swift", "build"], directory: "/opt/swift/packages/swift-backtrace")
 let backtraceProductsPath = "/opt/swift/packages/swift-backtrace/.build/debug"
@@ -103,29 +76,16 @@ try doCommand(["swiftc", "/opt/swift/swift-colab/Sources/SwiftColab/InstallBackt
                directory: "/opt/swift/tmp")
 try doCommand(["/opt/swift/tmp/InstallBacktrace"])
 
-
-
-print("install debug marker 5")
-
-
-
-
 // Install philipturner/PythonKit (in debug mode for now)
 try fm.removeItemIfExists(atPath: "/opt/swift/packages/PythonKit/.build") // remove once PythonKit is stable
-try doCommand(["swift", "build", "-c", "release"],
+try doCommand(["swift", "build"], // change to release once I can ship the binary in the Swift package
               directory: "/opt/swift/packages/PythonKit")
 
-let pythonKitProductsPath = "/opt/swift/packages/PythonKit/.build/release"
+let pythonKitProductsPath = "/opt/swift/packages/PythonKit/.build/debug"
 let pythonKitLibPath = "/opt/swift/lib/libPythonKit.so"
 
 try fm.removeItemIfExists(atPath: pythonKitLibPath)
 try fm.copyItem(atPath: "\(pythonKitProductsPath)/libPythonKit.so", toPath: pythonKitLibPath)
-
-
-
-print("install debug marker 6")
-
-
 
 // Install SwiftPythonBridge
 let spbProductsPath = "/opt/swift/packages/SwiftPythonBridge"
@@ -151,6 +111,3 @@ try fm.removeItemIfExists(atPath: spbLibPath)
 try fm.copyItem(atPath: "\(spbProductsPath)/libSwiftPythonBridge.so", toPath: spbLibPath)
 
 try doCommand(["patchelf", "--replace-needed", "libPythonKit.so", pythonKitLibPath, spbLibPath])
-
-
-print("install debug marker 7")
