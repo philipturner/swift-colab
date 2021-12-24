@@ -115,7 +115,7 @@ try doCommand(["ls"],
               directory: jupyterProductsPath)
 try fm.removeItemIfExists(atPath: jupyterProductsPath)
 try doCommand(["ls"],
-              directory: jupyterProductsPath)
+              directory: "/opt/swift/packages")
 try fm.createDirectory(atPath: jupyterProductsPath, withIntermediateDirectories: true)
 try doCommand(["ls"],
               directory: jupyterProductsPath)
