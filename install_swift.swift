@@ -93,11 +93,10 @@ let sourceFilePaths = try fm.contentsOfDirectory(atPath: spbSourcePath).map {
 }
 
 try doCommand(["swiftc"] + sourceFilePaths + [
-                  "-emit-module", "-emit-library",
-                  "-L", pythonKitProductsPath, "-lPythonKit",
-                  "-I", pythonKitProductsPath,
-                  "-module-name", "SwiftPythonBridge"
-               ],
+               "-emit-module", "-emit-library",
+               "-L", pythonKitProductsPath, "-lPythonKit",
+               "-I", pythonKitProductsPath,
+               "-module-name", "SwiftPythonBridge"],
                directory: spbProductsPath)
 
 try fm.removeItemIfExists(atPath: spbLibPath)
