@@ -71,11 +71,12 @@ try doCommand(["swiftc", "/opt/swift/swift-colab/Sources/SwiftColab/InstallBackt
 try doCommand(["/opt/swift/tmp/InstallBacktrace"])
 */
 
-try doCommand(["swift", "build", "-c", "release"],
-              directory: "/opt/swift/packages/PythonKit")
-
+// Install philipturner/PythonKit
 let pythonKitProductsPath = "/opt/swift/packages/PythonKit/.build/release"
 let pythonKitLibPath = "/opt/swift/lib/libPythonKit.so"
+
+try doCommand(["swift", "build", "-c", "release"],
+              directory: "/opt/swift/packages/PythonKit")
 
 try fm.removeItemIfExists(atPath: pythonKitLibPath)
 try fm.copyItem(atPath: "\(pythonKitProductsPath)/libPythonKit.so", toPath: pythonKitLibPath)
@@ -103,3 +104,31 @@ try fm.removeItemIfExists(atPath: spbLibPath)
 try fm.copyItem(atPath: "\(spbProductsPath)/libSwiftPythonBridge.so", toPath: spbLibPath)
 
 try doCommand(["patchelf", "--replace-needed", "libPythonKit.so", pythonKitLibPath, spbLibPath])
+
+// Install JupyterKernel
+let jupyterProductsPath = "/opt/swift/packages/JupyterKernel"
+let jupyterLibPath = "/opt/swift/lib/libJupyterKernel.so"
+let jupyterSourcePath = "/opt/swift/swift-colab/Sources/SwiftColab/JupyterKernel"
+
+try fm.removeItemIfExists(atPath: jupyterProductsPath)
+try fm.createDirectory(atPath: jupyterProductsPath, withIntermediateDirectories: true)
+
+let jupyterSourceFilePaths = try fm.contentsOfDirectory(atPath: jupyterSourcePath).map {
+    "\(jupyterSourcePath)/\($0)"
+}
+
+try doCommand(["swiftc"] + jupyterSourceFilePaths + [
+               "-L", pythonKitProductsPath, "-lPythonKit",
+               "-I", pythonKitProductsPath,
+               "-L", spbProductsPath, "-lSwiftPythonBridge",
+               "-I", spbProductsPath,
+               "-emit-module", "-emit-library",
+               "-module-name", "JupyterKernel"],
+              directory: jupyterProductsPath)
+
+try fm.removeItemIfExists(atPath: jupyterLibPath)
+try fm.copyItem(atPath: "\(jupyterProductsPath)/libJupyterKernel.so", toPath: jupyterLibPath)
+
+for pair in [("libPythonKit.so", pythonKitLibPath), ("libSwiftPythonBridge.so", spbLibPath)] {
+    try doCommand(["patchelf", "--replace-needed", pair.0, pair.1, jupyterLibPath])
+}
