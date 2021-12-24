@@ -1,23 +1,23 @@
 import PythonKit
 fileprivate let swiftModule = Python.import("swift")
 
-@_cdecl("releaseSwiftFunction")
-public func releaseSwiftFunction(_ selfRef: OwnedPyObjectPointer, _ functionStringRef: OwnedPyObjectPointer) -> PyObjectPointer {
-    let selfObject = PythonObject(selfRef)
-    let name = String(PythonObject(functionString))
+@_cdecl("releaseFunctionTable")
+public func releaseFunctionTable(_ tableRef: OwnedPyObjectPointer) -> PyObjectPointer {
+    let tableObject = PythonObject(tableRef)
+    print("Inside Swift code, releasing the retained function table \(tableObject)")
     
-    print("Inside Swift code, releasing the retained function \(name)")
+    var errorObject = Python.None
+    let keys = [PythonObject](tableObject.keys())
     
-    let noneObject = Python.None
-    var errorObject: PythonObject
-    
-    do {
-        try selfObject.releaseFunction(name: name)
-        errorObject = noneObject
-    } catch {
-        errorObject = swiftModule.SwiftError(error.localizedDescription)
+    for key in keys {
+        do {
+            try selfObject.releaseFunction(name: .init(key))
+        } catch {
+            errorObject = swiftModule.SwiftError(error.localizedDescription)
+        }
     }
-
-    let returnValue = swiftModule.SwiftReturnValue(noneObject, errorObject)
+    
+    let returnValue = swiftModule.SwiftReturnValue(Python.None, errorObject)
     return returnValue.ownedPyObject
 }
+
