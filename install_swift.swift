@@ -37,14 +37,14 @@ func doCommand(_ args: [String], directory: String? = nil) throws {
     command.waitUntilExit()
 }
 
-// Remove any previously existing `run_swift` files
-try fm.removeItemIfExists(atPath: "/opt/swift/run_swift.sh")
-try fm.removeItemIfExists(atPath: "/opt/swift/run_swift.swift")
+// // Remove any previously existing `run_swift` files
+// try fm.removeItemIfExists(atPath: "/opt/swift/run_swift.sh")
+// try fm.removeItemIfExists(atPath: "/opt/swift/run_swift.swift")
 
-// Move `run_swift` to the `/swift` directory
-let baseDirectory = "/opt/swift/swift-colab/Sources/SwiftColab/run_swift"
-try fm.moveItem(atPath: "\(baseDirectory)/run_swift.sh", toPath: "/opt/swift/run_swift.sh")
-try fm.moveItem(atPath: "\(baseDirectory)/run_swift.swift", toPath: "/opt/swift/run_swift.swift")
+// // Move `run_swift` to the `/swift` directory
+// let baseDirectory = "/opt/swift/swift-colab/Sources/SwiftColab/run_swift"
+// try fm.moveItem(atPath: "\(baseDirectory)/run_swift.sh", toPath: "/opt/swift/run_swift.sh")
+// try fm.moveItem(atPath: "\(baseDirectory)/run_swift.swift", toPath: "/opt/swift/run_swift.swift")
 
 // Move `swift` Python package to `/env/python` directory
 try fm.createDirectory(atPath: "/env/python", withIntermediateDirectories: true)
