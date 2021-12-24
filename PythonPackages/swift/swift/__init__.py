@@ -21,7 +21,7 @@ class SwiftDelegate:
         self.__call_swift.restype, self.__call_swift.argtypes = c_void_p, [c_void_p, c_void_p] # args accessed as `[PythonObject]` in Swift
     
     # params should have a `subscript(Int) -> PythonObject` method, will be copied into a `[PythonObject]`
-    def call_func(self, function_name, params): 
+    def call(self, function_name, params): 
         func_ptr_wrapper_ptr = c_void_p(self.function_table[function_name]) # cast an integer to an `OpaquePointer`
         with sys_pipes:
             func_return_ptr = self.__call_swift(func_ptr_wrapper_ptr, c_void_p(id(params)))
@@ -46,4 +46,4 @@ class SwiftInteropTest():
         self.swift_delegate = SwiftDelegate()
         
     def example_func(self, string_param):
-        self.swift_delegate.call_func("example_func", [self, string_param])
+        self.swift_delegate.call("example_func", [self, string_param])
