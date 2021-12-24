@@ -13,15 +13,22 @@ class FunctionHandle {
 }
 
 extension PythonObject {
-    public func retainFunction(name: String, function: @escaping (PythonObject) throws -> Void) {
-        retainFunction(name: name) { params -> PythonObject in
-            try function(params)
-            return Python.None
+    public func retainFunction(name: String, function: @escaping (PythonObject) throws -> Any) {
+        let wrapper = { (params: PythonObject) throws -> PythonObject in
+            let output = try function(params)
+            
+            switch output {
+            case let aPythonConvertible as PythonConvertible:
+                return PythonObject(aPythonConvertible)
+            case _ as Void:
+                return Python.None
+            default:
+                struct NotConvertibleError: Error { let localizedDescription: String }
+                throw NotConvertibleError(localizedDescription: "Called a Swift function from Python that did not return a PythonConvertible or Void")
+            }
         }
-    }
-    
-    public func retainFunction(name: String, function: @escaping (PythonObject) throws -> PythonObject) {
-        let handle = FunctionHandle(wrapping: function)
+        
+        let handle = FunctionHandle(wrapping: wrapper)
         let handleRef = Unmanaged.passRetained(handle).toOpaque()
         
         self.swift_delegate.function_table[PythonObject(name)] = .init(Int(bitPattern: handleRef))
