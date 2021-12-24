@@ -37,7 +37,7 @@ class SwiftReturnValue:
         
     def unwrap(self):
         if self.__error is not None:
-            assert isinstance(self.__error, SwiftError), "A SwiftReturnValue's error was not a SwiftError object."
+            assert(isinstance(self.__error, SwiftError), "A SwiftReturnValue's error was not a SwiftError object.")
             raise self.__error
         return self.__wrapped
 
