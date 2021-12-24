@@ -88,11 +88,11 @@ let spbSourcePath = "/opt/swift/swift-colab/Sources/SwiftColab/SwiftPythonBridge
 try fm.removeItemIfExists(atPath: spbProductsPath)
 try fm.createDirectory(atPath: spbProductsPath, withIntermediateDirectories: true)
 
-let sourceFilePaths = try fm.contentsOfDirectory(atPath: spbSourcePath).map {
+let spbSourceFilePaths = try fm.contentsOfDirectory(atPath: spbSourcePath).map {
     "\(spbSourcePath)/\($0)"
 }
 
-try doCommand(["swiftc"] + sourceFilePaths + [
+try doCommand(["swiftc"] + spbSourceFilePaths + [
                "-emit-module", "-emit-library",
                "-L", pythonKitProductsPath, "-lPythonKit",
                "-I", pythonKitProductsPath,
