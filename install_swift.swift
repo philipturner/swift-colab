@@ -72,7 +72,8 @@ try doCommand(["swift", "build"], directory: "/opt/swift/packages/swift-backtrac
 let backtraceProductsPath = "/opt/swift/packages/swift-backtrace/.build/debug"
 try doCommand(["swiftc", "/opt/swift/swift-colab/Sources/SwiftColab/InstallBacktrace.swift",
                "-L", backtraceProductsPath, "-lBacktrace",
-               "-I", backtraceProductsPath],
+               "-I", backtraceProductsPath,
+               "-D", "DEBUG"],
                directory: "/opt/swift/tmp")
 
 try doCommand(["/opt/swift/tmp/InstallBacktrace"])
