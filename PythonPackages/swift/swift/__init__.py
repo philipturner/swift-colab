@@ -26,6 +26,29 @@ class SwiftDelegate:
             func_return_ptr = self.__call_swift(func_ptr_wrapper_ptr, c_void_p(id(params)))
         return cast(func_return_ptr, py_object).value.unwrap() # `func_return` is a `SwiftReturnValue`
     
+    def call_2(self, function_name, params):
+        self.call(function_name, params)
+        
+    def call_3(self, function_name, params):
+        print("call_3 intro")
+        self.call(function_name, params)
+        print("call_3 outtro")
+        
+    def call_alt(self, function_name, params): 
+        func_ptr_wrapper_ptr = c_void_p(self.function_table[function_name]) # cast an integer to an `OpaquePointer`
+        func_return_ptr = self.__call_swift(func_ptr_wrapper_ptr, c_void_p(id(params)))
+        return cast(func_return_ptr, py_object).value.unwrap() # `func_return` is a `SwiftReturnValue`
+    
+    def call_2_alt(self, function_name, params):
+        with sys_pipes():
+            self.call_alt(function_name, params)
+        
+    def call_3_alt(self, function_name, params):
+        print("call_3_alt intro")
+        with sys_pipes():
+            self.call_alt(function_name, params)
+        print("call_3_alt outtro")
+    
 class SwiftError(Exception):
     def __init__(self, localized_description):
         super().__init__(localized_description)
