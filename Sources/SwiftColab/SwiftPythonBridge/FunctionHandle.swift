@@ -25,25 +25,35 @@ extension PythonObject {
             case _ as Void:
                 return Python.None
             default:
-                throw NotConvertibleError(localizedDescription: "Called a Swift function from Python that did not return a PythonConvertible or Void")
+                throw NotConvertibleError(localizedDescription: "From within Python, called a Swift function did not return a PythonConvertible or Void")
             }
+        }
+        
+        let function_table = self.swift_delegate.function_table
+        
+        if let previousAddress = Int(function_table[name]) {
+           releaseFunctionFromInt(address: previousAddress)
         }
         
         let handle = FunctionHandle(wrapping: wrapper)
         let handleRef = Unmanaged.passRetained(handle).toOpaque()
-        
-        self.swift_delegate.function_table[name] = .init(Int(bitPattern: handleRef))
+        function_table[name] = .init(Int(bitPattern: handleRef))
     }
     
     public func releaseFunction(name: String) throws {
-        guard let retrievedInt = Int(self.function_table[name]) else {
+        let function_table = self.swift_delegate.function_table
+        
+        guard let address = Int(function_table[name]) else {
             struct ReleaseFunctionError: Error { let localizedDescription: String }
             throw ReleaseFunctionError(localizedDescription: "Attempted to release a non-retained \(name) function on a Python object")
         }
         
-        let handleRef = UnsafeRawPointer(bitPattern: retrievedInt)!
+        releaseFunctionAddress(address: address)
+        function_table[name] = Python.None
+    }
+    
+    private func releaseFunctionFromInt(address: Int) {
+        let handleRef = UnsafeRawPointer(bitPattern: address)!
         Unmanaged<FunctionHandle>.fromOpaque(handleRef).release()
-        
-        self.swift_delegate.function_table[name] = Python.None
     }
 }
