@@ -51,9 +51,9 @@ extension PythonObject {
         releaseFunctionAddress(address: address)
         function_table[name] = Python.None
     }
-    
-    private func releaseFunctionFromInt(address: Int) {
-        let handleRef = UnsafeRawPointer(bitPattern: address)!
-        Unmanaged<FunctionHandle>.fromOpaque(handleRef).release()
-    }
+}
+
+fileprivate func releaseFunctionFromInt(address: Int) {
+    let handleRef = UnsafeRawPointer(bitPattern: address)!
+    Unmanaged<FunctionHandle>.fromOpaque(handleRef).release()
 }
