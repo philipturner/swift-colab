@@ -14,7 +14,7 @@ public func callSwiftFromPython(_ functionHandleRef: UnsafeRawPointer, _ params:
         errorObject = Python.None
     } catch {
         wrappedObject = Python.None
-        errorObject = swiftModule.SwiftError(PythonObject(error.localizedDescription))
+        errorObject = swiftModule.SwiftError(error.localizedDescription)
     }
     
     let returnValue = swiftModule.SwiftReturnValue(wrappedObject, errorObject)
