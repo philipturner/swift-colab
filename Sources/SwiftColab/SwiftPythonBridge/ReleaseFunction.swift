@@ -6,7 +6,7 @@ public func releaseFunctionTable(_ tableRef: OwnedPyObjectPointer) -> PyObjectPo
     let tableObject = PythonObject(tableRef)
     print("Inside Swift code, releasing the retained function table \(tableObject)")
     
-    let errorObject = swiftModule.SwiftError("this error should be created from Swift") // forcing this function to fail for now
+//     let errorObject = swiftModule.SwiftError("this error should be created from Swift") // forcing this function to fail for now
 //     var errorObject = Python.None
 //     let keys = [PythonObject](tableObject.keys())
     
@@ -18,7 +18,15 @@ public func releaseFunctionTable(_ tableRef: OwnedPyObjectPointer) -> PyObjectPo
 //         }
 //     }
     
-    let returnValue = swiftModule.SwiftReturnValue(Python.None, errorObject)
-    return returnValue.ownedPyObject
+    let keys = [PythonObject](tableObject.keys())
+    
+    for key in keys {
+        let address = Int(function_table[key])!
+        let handleRef = UnsafeRawPointer(bitPattern: address)!
+        Unmanaged<FunctionHandle>.fromOpaque(handleRef).release()
+    }
+    
+    let noneObject = Python.None
+    return swiftModule.SwiftReturnValue(noneObject, noneObject).ownedPyObject
 }
 
