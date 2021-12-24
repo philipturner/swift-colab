@@ -10,6 +10,7 @@ cd /opt/swift
 if [[ ! -d toolchain ]]
 then  
   # $1 is the Swift version (e.g. 5.5.2)
+  echo "=== Downloading Swift ==="
   tar_file="swift-$1-RELEASE-ubuntu18.04"
   
   curl "https://download.swift.org/swift-$1-release/ubuntu1804/swift-$1-RELEASE/${tar_file}.tar.gz" | tar -xz
