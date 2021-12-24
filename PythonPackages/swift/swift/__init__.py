@@ -39,7 +39,10 @@ class SwiftReturnValue:
             raise self.__error
         return self.__wrapped
 
-class SwiftInteropTest: 
+class SwiftInteropTestSuperclass:
+    pass
+    
+class SwiftInteropTest(SwiftInteropTestSuperclass): 
     def __init__(self):
         self.swift_delegate = SwiftDelegate()
         
