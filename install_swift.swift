@@ -111,7 +111,7 @@ print("install debug marker 5")
 
 
 // Install philipturner/PythonKit (in debug mode for now)
-try fm.removeItemIfExists(atPath: "/opt/swift/packages/PythonKit/.build") // remove once PythonKit is stable
+try fm.removeItem(atPath: "/opt/swift/packages/PythonKit/.build") // remove once PythonKit is stable
 try doCommand(["swift", "build", "-c", "release"],
               directory: "/opt/swift/packages/PythonKit")
 
