@@ -31,9 +31,9 @@ extension PythonObject {
         
         let function_table = self.swift_delegate.function_table
         
-        if let previousAddress = Int(function_table[name]) {
-           releaseFunction(address: previousAddress)
-        }
+//         if let previousAddress = Int(function_table[name]) {
+//            releaseFunction(address: previousAddress)
+//         }
         
         let handle = FunctionHandle(wrapping: wrapper)
         let handleRef = Unmanaged.passRetained(handle).toOpaque()
