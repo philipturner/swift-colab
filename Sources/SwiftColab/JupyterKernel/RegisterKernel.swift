@@ -58,7 +58,7 @@ public func JKRegisterKernel() -> Void {
     print("Registered kernel '\(kernel_name)' as '\(kernel_code_name)'!")
     
     // Additions from Philip Turner
-    let kernelSpecDirectory = "/usr/local/share/jupyter"
+    let kernelSpecDirectory = "/usr/local/share/jupyter/kernels"
     let swiftSpecDirectory = "\(kernelSpecDirectory)/swift/kernel.json"
     let pythonSpecDirectory = "\(kernelSpecDirectory)/python3/kernel.json"
     
