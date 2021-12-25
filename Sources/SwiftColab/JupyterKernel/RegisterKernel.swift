@@ -70,7 +70,6 @@ public func JKRegisterKernel() -> Void {
         try! fm.copyItem(atPath: swiftKernelPath, toPath: pythonKernelPath)
         
         print("=== Overwrote the Python kernel with the Swift kernel. Restart the Jupyter notebook and it will run in Swift mode. ===")
-        os._exit(00)
     }
     
 }
