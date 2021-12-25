@@ -16,12 +16,13 @@ public func JKRegisterKernel() -> Void {
     defer { print("=== Finished registering Swift Jupyter kernel ===") }
     
     let kernel_env = make_kernel_env()
-    print(kernel_env)
+    try! validate_kernel_env(kernel_env)
     
     let kernel_name: PythonObject = "Swift"
     let kernel_code_name: PythonObject = "swift"
 }
 
+/// Returns environment variables that tell the kernel where things are.
 func make_kernel_env() -> PythonObject {
     let swift_toolchain = "/opt/swift/toolchain"
     
@@ -33,4 +34,9 @@ func make_kernel_env() -> PythonObject {
     kernel_env["SWIFT_PACKAGE_PATH"] = .init("\(swift_toolchain)/usr/bin/swift-package")
     
     return kernel_env
+}
+
+/// Validates that the env vars refer to things that actually exist.
+func validate_kernel_env(_ kernel_env: PythonObject) throws {
+    print(os.path.isfile(kernel_env["PYTHONPATH"] + "/lldb/_lldb.so"))
 }
