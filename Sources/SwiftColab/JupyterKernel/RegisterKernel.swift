@@ -18,6 +18,13 @@ public func JKRegisterKernel() -> Void {
     let kernel_env = make_kernel_env()
     try! validate_kernel_env(kernel_env)
     
+    let testDict: PythonObject = [
+        "key": "value"
+    ]
+    
+    print(testDict["key"])
+    print(testDict["key"] as PythonObject)
+    
     let kernel_name: PythonObject = "Swift"
     let kernel_code_name: PythonObject = "swift"
 }
