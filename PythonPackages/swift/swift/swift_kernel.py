@@ -9,6 +9,11 @@ from ctypes import *
 
 # ...
 print("hello world 2")
+
+f = open("install_swift.sh", "w")
+f.write("message from swift_kernel.py")
+f.close()
+
 # define a subclass of jupyter's Kernel class
 # define any other absolutely necessary subclasses - some may be declared in `swift` module so that Swift code can import them
 
