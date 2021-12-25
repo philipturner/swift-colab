@@ -50,6 +50,8 @@ public func JKRegisterKernel() -> Void {
         KernelSpecManager().install_kernel_spec(td, kernel_code_name)
         td.cleanup()
     }
+    
+    print("Registered kernel '\(kernel_name)' as '\(kernel_code_name)'!")
 }
 
 /// Returns environment variables that tell the kernel where things are.
