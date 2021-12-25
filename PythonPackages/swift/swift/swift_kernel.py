@@ -36,6 +36,10 @@ class SwiftKernel(Kernel):
         file.write("Hello world, this is overwritten during the initializer \n")
         file.close()
     
+    def do_execute(self, code, silent, store_history=True,
+                   user_expressions=None, allow_stdin=False):
+        pass
+    
 # define any other absolutely necessary subclasses - some may be declared in `swift` module so that Swift code can import them
 
 if __name__ == "__main__":
