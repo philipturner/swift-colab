@@ -1,40 +1,46 @@
 #!/usr/bin/python3
 import swift
 from wurlitzer import sys_pipes
-import signal
-
 from ctypes import *
 
-# symbols for the Jupyter kernel
+import signal
+import sys
 
-# ...
-print("hello world 2")
+from ipykernel.kernelbase import Kernel
 
-f = open("install_swift.sh", "w")
-f.write("message from swift_kernel.py")
-f.close()
+class SwiftKernel(Kernel):
+    implementation = 'SwiftKernel'
+    implementation_version = '0.1'
+    banner = ''
 
-# define a subclass of jupyter's Kernel class
+    language_info = {
+        'name': 'swift',
+        'mimetype': 'text/x-swift',
+        'file_extension': '.swift',
+        'version': '',
+    }
+    
+    def __init__(self, **kwargs):
+        print("Hello world, creating SwiftKernel")
+        super().__init__(**kwargs)
+        
+        # We don't initialize Swift yet, so that the user has a chance to
+        # "%install" packages before Swift starts. (See doc comment in
+        # `_init_swift`).
+
+        # Whether to do code completion. Since the debugger is not yet
+        # initialized, we can't do code completion yet.
+        self.completion_enabled = False # this line can be implemented in the Swift code
+    
 # define any other absolutely necessary subclasses - some may be declared in `swift` module so that Swift code can import them
 
-SwiftError = swift.SwiftError
-
 if __name__ == "__main__":
-    print("called main 0")
+    print("called swift_kernel.py")
     
     signal.pthread_sigmask(signal.SIG_BLOCK, [signal.SIGINT])
     
-    print(swift.SwiftDelegate)
-    print(SwiftError)
+    from ipykernel.kernelapp import IPKernelApp
     
-#     with sys_pipes():
-#         print("called main")
-#    
-    
-    # register the kernel in IPKernelApp
-    # may need to use wurlitzer.sys_pipes - must validate that the called Swift code can log to output
-#     with sys_pipes(): # if logging doesn't work, try writing to a file
-#         print("called main")
-#         print(swift.SwiftDelegate)
-#         print(SwiftError)
+    IPKernelApp.launch_instance(
+        argv=sys.argv + ["--IPKernelApp.kernel_class=__main__.SwiftKernel"])
 
