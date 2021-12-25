@@ -56,17 +56,3 @@ class SwiftInteropTest(SwiftInteropTestSuperclass):
     
     def example_func_3(self, string_param):
         return self.swift_delegate.call("example_func_3", string_param)
-
-    
-    
-if __name__ == "__main__":
-#     import signal
-#     signal.pthread_sigmask(signal.SIG_BLOCK, [signal.SIGINT])
-    
-    # register the kernel in IPKernelApp
-    # may need to use wurlitzer.sys_pipes - must validate that the called Swift code can log to output
-    print("called main")
-    print(SwiftDelegate)
-else:
-    # should never be called
-    print("did not call main")
