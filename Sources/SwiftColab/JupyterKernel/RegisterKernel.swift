@@ -54,7 +54,7 @@ fileprivate func validate_kernel_env(_ kernel_env: PythonObject) throws {
         throw Exception("repl_swift binary not found at \(kernel_env["REPL_SWIFT_PATH"])")
     }
     
-    if let filePath = kernel_env.checking["SWIFT_BUILD_PATH"], !Bool(os.path.isfile(filePath)) {
+    if let filePath = kernel_env.checking["SWIFT_BUILD_PATH"], !Bool(os.path.isfile(filePath))! {
         throw Exception("swift-build binary not found at \(filePath)")
     }
     
