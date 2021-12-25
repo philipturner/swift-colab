@@ -5,7 +5,7 @@ import SwiftPythonBridge
 fileprivate let swiftModule = Python.import("swift")
 
 @_cdecl("JupyterKernelCreate")
-public func JupyterKernelCreate(_ jupyterKernelRef: OwnedPyObjectPointer) -> PyObjectPointer {
+public func JupyterKernelCreate(_ jupyterKernelRef: OwnedPyObjectPointer) -> OwnedPyObjectPointer {
     let noneObject = Python.None
     var errorObject = noneObject
     
@@ -17,5 +17,5 @@ public func JupyterKernelCreate(_ jupyterKernelRef: OwnedPyObjectPointer) -> PyO
         errorObject = swiftModule.SwiftError(error.localizedDescription)
     }
     
-    return swiftModule.SwiftReturnValue(noneObject, errorObject).borrowedPyObject
+    return swiftModule.SwiftReturnValue(noneObject, errorObject).ownedPyObject
 }
