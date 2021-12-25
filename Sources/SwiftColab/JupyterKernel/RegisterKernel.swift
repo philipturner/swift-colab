@@ -26,11 +26,11 @@ func make_kernel_env() -> PythonObject {
     let swift_toolchain = "/opt/swift/toolchain"
     
     let kernel_env: PythonObject = [:]
-    kernel_env["PYTHONPATH"] = "\(swift_toolchain)/usr/lib/python3/dist-packages"
-    kernel_env["LD_LIBRARY_PATH"] = "\(swift_toolchain)/usr/lib/swift/linux"
-    kernel_env["REPL_SWIFT_PATH"] = "\(swift_toolchain)/usr/bin/repl_swift"
-    kernel_env["SWIFT_BUILD_PATH"] = "\(swift_toolchain)/usr/bin/swift-build"
-    kernel_env["SWIFT_PACKAGE_PATH"] = "\(swift_toolchain)/usr/bin/swift-package"
+    kernel_env["PYTHONPATH"] = .init("\(swift_toolchain)/usr/lib/python3/dist-packages")
+    kernel_env["LD_LIBRARY_PATH"] = .init("\(swift_toolchain)/usr/lib/swift/linux")
+    kernel_env["REPL_SWIFT_PATH"] = .init("\(swift_toolchain)/usr/bin/repl_swift")
+    kernel_env["SWIFT_BUILD_PATH"] = .init("\(swift_toolchain)/usr/bin/swift-build")
+    kernel_env["SWIFT_PACKAGE_PATH"] = .init("\(swift_toolchain)/usr/bin/swift-package")
     
     return kernel_env
 }
