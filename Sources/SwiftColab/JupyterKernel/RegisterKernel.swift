@@ -36,9 +36,15 @@ public func JKRegisterKernel() -> Void {
     
     let kernel_code_name: PythonObject = "swift"
     
-    do {
-        let td = TemporaryDirectory()
+    do { let td = TemporaryDirectory()
         defer { td.cleanup() }
+        os.chmod(tf, 0o755)
+        
+        do { let f = Python.open(os.path.join(td, "kernel.json"), "w")
+            defer { f.close() }
+            
+            json.damp() // intentionally crashing
+        }
     }
 }
 
