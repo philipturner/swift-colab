@@ -36,11 +36,10 @@ class SwiftKernel(Kernel):
 
 if __name__ == "__main__":
     print("called swift_kernel.py")
-    print("checkpoint 1")
+    
     signal.pthread_sigmask(signal.SIG_BLOCK, [signal.SIGINT])
-    print("checkpoint 2")
+    
     from ipykernel.kernelapp import IPKernelApp
-    print("checkpoint 3")
+    
     IPKernelApp.launch_instance(
         argv=sys.argv + ["--IPKernelApp.kernel_class=__main__.SwiftKernel"])
-    print("checkpoint 4")
