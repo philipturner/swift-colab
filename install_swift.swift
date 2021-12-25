@@ -112,7 +112,7 @@ let spbSourceFilePaths = try fm.contentsOfDirectory(atPath: spbSourcePath).filte
     "\(spbSourcePath)/\($0)"
 }
 
-try doCommand(["swiftc"] + spbSourceFilePaths + [
+try doCommand(["swiftc", "-Onone"] + spbSourceFilePaths + [
                "-L", pythonKitProductsPath, "-lPythonKit",
                "-I", pythonKitProductsPath,
                "-emit-module", "-emit-library",
@@ -138,7 +138,7 @@ let jupyterSourceFilePaths = try fm.contentsOfDirectory(atPath: jupyterSourcePat
     "\(jupyterSourcePath)/\($0)"
 }
 
-try doCommand(["swiftc"] + jupyterSourceFilePaths + [
+try doCommand(["swiftc", "-Onone"] + jupyterSourceFilePaths + [
                "-L", pythonKitProductsPath, "-lPythonKit",
                "-I", pythonKitProductsPath,
                "-L", spbProductsPath, "-lSwiftPythonBridge",
