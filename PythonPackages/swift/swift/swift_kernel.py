@@ -22,9 +22,14 @@ SwiftError = swift.SwiftError
 if __name__ == "__main__":
     print("called main 0")
     
+    signal.pthread_sigmask(signal.SIG_BLOCK, [signal.SIGINT])
+    
+    print(swift.SwiftDelegate)
+    print(SwiftError)
+    
 #     with sys_pipes():
 #         print("called main")
-#     signal.pthread_sigmask(signal.SIG_BLOCK, [signal.SIGINT])
+#    
     
     # register the kernel in IPKernelApp
     # may need to use wurlitzer.sys_pipes - must validate that the called Swift code can log to output
@@ -32,8 +37,4 @@ if __name__ == "__main__":
 #         print("called main")
 #         print(swift.SwiftDelegate)
 #         print(SwiftError)
-else:
-    # should never be called
-    print("did not call main 0")
-#     with sys_pipes():
-#         print("did not call main")
+
