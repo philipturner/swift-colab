@@ -10,7 +10,7 @@ import ctypes
 if __name__ == "__main__":
     # register the kernel in IPKernelApp
     print("called main")
-    print(run_swift)
+    print(SwiftDelegate)
 else:
     # should never be called
     print("did not call main")
