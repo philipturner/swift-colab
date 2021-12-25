@@ -18,5 +18,11 @@ public func JKRegisterKernel() -> Void {
     let kernel_name: PythonObject = "Swift"
     let kernel_code_name: PythonObject = "swift"
     
+    
+}
+
+func make_kernel_env() -> PythonObject {
     let kernel_env: PythonObject = [:]
+    
+    return kernel_env
 }
