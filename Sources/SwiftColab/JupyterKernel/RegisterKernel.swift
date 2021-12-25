@@ -46,7 +46,7 @@ fileprivate struct Exception: Error {
 
 /// Validates that the env vars refer to things that actually exist.
 fileprivate func validate_kernel_env(_ kernel_env: PythonObject) throws {
-    guard Bool(os.path.isfile(kernel_env["PYTHONPATH"] + "/lldb/_lldb.so")) else {
+    guard Bool(os.path.isfile(kernel_env["PYTHONPATH"] + "/lldb/_lldb.so"))! else {
         throw Exception("lldb python libs not found at \(kernel_env["PYTHONPATH"])")
     }
 }
