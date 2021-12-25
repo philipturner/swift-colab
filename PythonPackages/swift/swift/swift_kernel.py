@@ -18,7 +18,7 @@ class SwiftKernel(Kernel):
         'mimetype': 'text/x-swift',
         'file_extension': '.swift',
         'version': '5',
-        'pygments_lexer': 'pygments.lexers.objective.SwiftLexer'
+        'pygments_lexer': 'swift'
     }
     
     def __init__(self, **kwargs):
