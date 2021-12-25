@@ -45,8 +45,6 @@ public func JKRegisterKernel() -> Void {
         do { 
             let f = Python.open(os.path.join(td.name, "kernel.json"), "w")
             defer { f.close() }
-            
-            json.damp() // intentionally crashing
         }
     }
 }
