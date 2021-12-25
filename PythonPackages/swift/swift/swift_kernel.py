@@ -31,6 +31,10 @@ class SwiftKernel(Kernel):
         # Whether to do code completion. Since the debugger is not yet
         # initialized, we can't do code completion yet.
         self.completion_enabled = False # this line can be implemented in the Swift code
+        
+        file = open("/content/install_swift.sh", "w")
+        file.write("Hello world, this is overwritten during the initializer \n")
+        file.close()
     
 # define any other absolutely necessary subclasses - some may be declared in `swift` module so that Swift code can import them
 
