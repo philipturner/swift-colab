@@ -80,14 +80,14 @@ try doCommand(["/opt/swift/tmp/InstallBacktrace"])
 // Install philipturner/PythonKit
 try fm.removeItemIfExists(atPath: "/opt/swift/packages/PythonKit/.build") // temporary workaround to profile compilation times
 
-let pythonKitProductsPath = "/opt/swift/packages/PythonKit/.build/debug"
+let pythonKitProductsPath = "/opt/swift/packages/PythonKit/.build/release"
 let pythonKitLibPath = "/opt/swift/lib/libPythonKit.so"
 
 // =====
 let start = Date()
 // =====
 
-try doCommand(["swift", "build", "-Xswiftc", "-Onone"],
+try doCommand(["swift", "build", "-c", "release", "-Xswiftc", "-Onone"],
               directory: "/opt/swift/packages/PythonKit")
 
 try fm.removeItemIfExists(atPath: pythonKitLibPath)
