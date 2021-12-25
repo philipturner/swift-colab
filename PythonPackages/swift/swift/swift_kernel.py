@@ -11,7 +11,7 @@ from ipykernel.kernelbase import Kernel
 class SwiftKernel(Kernel):
     implementation = 'SwiftKernel'
     implementation_version = '0.1'
-    banner = ''
+    banner = "This is the Swift Jupyter kernel's banner. Once it is verified to appear, it may be removed from the source code."
 
     language_info = {
         'name': 'swift',
