@@ -78,25 +78,14 @@ try doCommand(["/opt/swift/tmp/InstallBacktrace"])
 */
 
 // Install philipturner/PythonKit
-try fm.removeItemIfExists(atPath: "/opt/swift/packages/PythonKit/.build") // temporary workaround to profile compilation times
-
 let pythonKitProductsPath = "/opt/swift/packages/PythonKit/.build/release"
 let pythonKitLibPath = "/opt/swift/lib/libPythonKit.so"
-
-// =====
-let start = Date()
-// =====
 
 try doCommand(["swift", "build", "-c", "release", "-Xswiftc", "-Onone"],
               directory: "/opt/swift/packages/PythonKit")
 
 try fm.removeItemIfExists(atPath: pythonKitLibPath)
 try fm.copyItem(atPath: "\(pythonKitProductsPath)/libPythonKit.so", toPath: pythonKitLibPath)
-
-// =====
-let end = Date()
-print("PythonKit compilation took \(end.timeIntervalSince(start)) seconds")
-// =====
 
 // Install SwiftPythonBridge
 let spbProductsPath = "/opt/swift/packages/SwiftPythonBridge"
@@ -112,12 +101,21 @@ let spbSourceFilePaths = try fm.contentsOfDirectory(atPath: spbSourcePath).filte
     "\(spbSourcePath)/\($0)"
 }
 
+// =====
+let start = Date()
+// =====
+
 try doCommand(["swiftc", "-Onone"] + spbSourceFilePaths + [
                "-L", pythonKitProductsPath, "-lPythonKit",
                "-I", pythonKitProductsPath,
                "-emit-module", "-emit-library",
                "-module-name", "SwiftPythonBridge"],
                directory: spbProductsPath)
+
+// =====
+let end = Date()
+print("SwiftPythonBridge compilation took \(end.timeIntervalSince(start)) seconds")
+// =====
 
 try fm.removeItemIfExists(atPath: spbLibPath)
 try fm.copyItem(atPath: "\(spbProductsPath)/libSwiftPythonBridge.so", toPath: spbLibPath)
