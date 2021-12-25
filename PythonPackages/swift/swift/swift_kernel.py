@@ -17,7 +17,7 @@ class SwiftKernel(Kernel):
         'name': 'swift',
         'mimetype': 'text/x-swift',
         'file_extension': '.swift',
-        'version': '',
+        'version': '5',
         'pygments_lexer': 'pygments.lexers.objective.SwiftLexer'
     }
     
