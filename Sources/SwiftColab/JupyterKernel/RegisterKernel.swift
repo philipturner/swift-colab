@@ -16,11 +16,10 @@ public func JKRegisterKernel() -> Void {
     defer { print("=== Finished registering Swift Jupyter kernel ===") }
     
     let kernel_env = make_kernel_env()
+    print(kernel_env)
     
     let kernel_name: PythonObject = "Swift"
     let kernel_code_name: PythonObject = "swift"
-    
-    
 }
 
 func make_kernel_env() -> PythonObject {
