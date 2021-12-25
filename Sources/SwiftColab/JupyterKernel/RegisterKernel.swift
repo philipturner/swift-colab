@@ -11,10 +11,15 @@ fileprivate let KernelSpecManager = Python.import("jupyter_client").kernelspec.K
 fileprivate let TemporaryDirectory = Python.import("IPython").utils.tempdir.TemporaryDirectory
 fileprivate let glob = Python.import("glob").glob
 
+fileprivate let ipkernel_launcher = Python.import("ipkernel_launcher")
+
 @_cdecl("JKRegisterKernel")
 public func JKRegisterKernel() -> Void {
     print("=== Registering Swift Jupyter kernel ===")
     defer { print("=== Finished registering Swift Jupyter kernel ===") }
+    
+    let swiftKernelPath = "/env/python/swift/swift/swift_kernel.py"
+    let pythonKernelPath = String(ipkernel_launcher.__file__)!
     
     let kernel_env = make_kernel_env()
     try! validate_kernel_env(kernel_env)
@@ -23,7 +28,7 @@ public func JKRegisterKernel() -> Void {
     let kernel_json: PythonObject = [
         "argv": [
             sys.executable,
-            "/env/python/swift/swift/swift_kernel.py",
+            PythonObject(swiftKernelPath),
             "-f",
             "{connection_file}",
         ],
@@ -51,6 +56,23 @@ public func JKRegisterKernel() -> Void {
     }
     
     print("Registered kernel '\(kernel_name)' as '\(kernel_code_name)'!")
+    
+    // Additions from Philip Turner
+    let kernelSpecDirectory = "/usr/local/share/jupyter"
+    let swiftSpecDirectory = "\(kernelSpecDirectory)/swift/kernel.json"
+    let pythonSpecDirectory = "\(kernelSpecDirectory)/python3/kernel.json"
+    
+    let fm = FileManager.default
+    try! fm.copyItem(atPath: swiftSpecDirectory, toPath: pythonSpecDirectory)
+    
+    if !fm.contentsEqual(atPath: swiftKernelPath, andPath: pythonKernelPath) {
+        // If the contents of the file do not already match, overwrite Python and force the notebook to restart.
+        try! fm.copyItem(atPath: swiftKernelPath, toPath: pythonKernelPath)
+        
+        print("=== Overwrote the Python kernel with the Swift kernel. Restart the Jupyter notebook and it will run in Swift mode. ===")
+        os._exit(00)
+    }
+    
 }
 
 /// Returns environment variables that tell the kernel where things are.
