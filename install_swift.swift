@@ -133,7 +133,7 @@ try doCommand(["swiftc"] + jupyterSourceFilePaths + [
                "-module-name", "JupyterKernel"],
               directory: jupyterProductsPath)
 
-print()
+print("hello world again")
 // try doCommand(["ls"],
 //               directory: "/opt/swift/lib")
 try fm.removeItemIfExists(atPath: jupyterLibPath)
