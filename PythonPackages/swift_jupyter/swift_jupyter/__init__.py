@@ -11,4 +11,3 @@ if __name__ == "__main__":
 else:
     # should never be called
     print("did not call main")
-""")
