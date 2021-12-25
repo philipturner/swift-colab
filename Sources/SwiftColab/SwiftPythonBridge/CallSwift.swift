@@ -13,6 +13,7 @@ public func callSwiftFromPython(_ functionHandleRef: UnsafeRawPointer, _ params:
         wrappedObject = try functionHandle.call(params)
         errorObject = Python.None
     } catch {
+        print(error.localizedDescription)
         wrappedObject = Python.None
         errorObject = swiftModule.SwiftError(error.localizedDescription)
     }
