@@ -5,4 +5,11 @@ import signal
 
 from ctypes import *
 
-print("hello world")
+print("hello world 2")
+
+SwiftError = swift.SwiftError
+
+if __name__ == "__main__":
+    pass
+else:
+    pass
