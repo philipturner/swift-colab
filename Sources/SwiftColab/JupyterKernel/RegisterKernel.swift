@@ -66,10 +66,7 @@ fileprivate func validate_kernel_env(_ kernel_env: PythonObject) throws {
         throw Exception("python library not found at \(filePath)")
     }
     
-    let lib_paths_variable = kernel_env["LD_LIBRARY_PATH"] as PythonObject
-    let lib_paths_func = lib_paths_variable.split as PythonObject
-    let lib_paths = lib_paths_func(":")
-    
-    let enumerated = (Python.enumerate as PythonObject)(lib_paths)
-    print(enumerated)
+    guard Bool(os.path.isdir(kernel_env["LD_LIBRARY_PATH"]))! else {
+        throw Exception("swift libs not found at \(kernel_env["LD_LIBRARY_PATH"])")
+    }
 }
