@@ -42,7 +42,7 @@ try fm.createDirectory(atPath: "/env/python", withIntermediateDirectories: true)
 
 let packageSourceDirectory = "/opt/swift/swift-colab/PythonPackages"
 let packageMetadata = [
-    (name: "swift", forceReinstall: false),
+    (name: "swift", forceReinstall: true),
 ]
 
 for metadata in packageMetadata {
