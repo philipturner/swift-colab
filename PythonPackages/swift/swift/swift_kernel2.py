@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 import swift
-import wurlitzer
+from wurlitzer import sys_pipes
 import signal
 
 from ctypes import *
@@ -11,5 +11,11 @@ SwiftError = swift.SwiftError
 
 if __name__ == "__main__":
     print("called main 0")
+    
+    with sys_pipes():
+        print("called main")
 else:
     print("did not call main 0")
+    
+    with sys_pipes():
+        print("did not call main")
