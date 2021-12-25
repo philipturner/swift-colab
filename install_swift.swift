@@ -152,6 +152,6 @@ guard let JKRegisterKernelRef = dlsym(libJupyterKernel, "JKRegisterKernel") else
     fatalError("Could not load the helloC function")
 }
 
-let JKRegisterKernelType = @convention(c) () -> Void
+typealias JKRegisterKernelType = @convention(c) () -> Void
 let JKRegisterKernel = unsafeBitCast(JKRegisterKernelRef, to: JKRegisterKernelType.self)
 print(JKRegisterKernel)
