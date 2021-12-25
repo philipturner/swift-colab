@@ -38,7 +38,16 @@ class SwiftKernel(Kernel):
     
     def do_execute(self, code, silent, store_history=True,
                    user_expressions=None, allow_stdin=False):
-        pass
+        if not silent:
+            stream_content = {'name': 'stdout', 'text': code}
+            self.send_response(self.iopub_socket, 'stream', stream_content)
+
+        return {'status': 'ok',
+                # The base class increments the execution count
+                'execution_count': self.execution_count,
+                'payload': [],
+                'user_expressions': {},
+               }
     
 # define any other absolutely necessary subclasses - some may be declared in `swift` module so that Swift code can import them
 
