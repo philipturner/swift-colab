@@ -69,7 +69,9 @@ public func JKRegisterKernel() -> Void {
         // If the contents of the file do not already match, overwrite Python and force the notebook to restart.
         try! fm.copyItem(atPath: swiftKernelPath, toPath: pythonKernelPath)
         
-        print("=== Overwrote the Python kernel with the Swift kernel. Restart the Jupyter notebook and it will run in Swift mode. ===")
+        for i in 0..<5 {
+            print("=== Swift-Colab overwrote the Python kernel with the Swift kernel. Go to Runtime > Restart Runtime (NOT Factory Reset Runtime) and it will run in Swift mode. ===")
+        }
     }
     
 }
