@@ -110,13 +110,8 @@ let jupyterProductsPath = "/opt/swift/packages/JupyterKernel"
 let jupyterLibPath = "/opt/swift/lib/libJupyterKernel.so"
 let jupyterSourcePath = "/opt/swift/swift-colab/Sources/SwiftColab/JupyterKernel"
 
-print()
 try fm.removeItemIfExists(atPath: jupyterProductsPath)
-try doCommand(["ls"],
-              directory: "/opt/swift/packages")
 try fm.createDirectory(atPath: jupyterProductsPath, withIntermediateDirectories: true)
-try doCommand(["ls"],
-              directory: jupyterProductsPath)
 
 let jupyterSourceFilePaths = try fm.contentsOfDirectory(atPath: jupyterSourcePath).map {
     "\(jupyterSourcePath)/\($0)"
@@ -131,15 +126,8 @@ try doCommand(["swiftc"] + jupyterSourceFilePaths + [
                "-module-name", "JupyterKernel"],
               directory: jupyterProductsPath)
 
-print("hello world again")
-try doCommand(["ls"],
-              directory: "/opt/swift/lib")
 try fm.removeItemIfExists(atPath: jupyterLibPath)
-try doCommand(["ls"],
-              directory: "/opt/swift/lib")
 try fm.copyItem(atPath: "\(jupyterProductsPath)/libJupyterKernel.so", toPath: jupyterLibPath)
-try doCommand(["ls"],
-              directory: "/opt/swift/lib")
 
 for pair in [("libPythonKit.so", pythonKitLibPath), ("libSwiftPythonBridge.so", spbLibPath)] {
     try doCommand(["patchelf", "--replace-needed", pair.0, pair.1, jupyterLibPath])
