@@ -5,4 +5,4 @@ import signal
 
 from ctypes import *
 
-print("hello world!!!!!")
+print("hello world")
