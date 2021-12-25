@@ -11,7 +11,7 @@ fileprivate let KernelSpecManager = Python.import("jupyter_client").kernelspec.K
 fileprivate let TemporaryDirectory = Python.import("IPython").utils.tempdir.TemporaryDirectory
 fileprivate let glob = Python.import("glob").glob
 
-fileprivate let ipkernel_launcher = Python.import("ipkernel_launcher")
+fileprivate let ipykernel_launcher = Python.import("ipykernel_launcher")
 
 @_cdecl("JKRegisterKernel")
 public func JKRegisterKernel() -> Void {
@@ -19,7 +19,7 @@ public func JKRegisterKernel() -> Void {
     defer { print("=== Finished registering Swift Jupyter kernel ===") }
     
     let swiftKernelPath = "/env/python/swift/swift/swift_kernel.py"
-    let pythonKernelPath = String(ipkernel_launcher.__file__)!
+    let pythonKernelPath = String(ipykernel_launcher.__file__)!
     
     let kernel_env = make_kernel_env()
     try! validate_kernel_env(kernel_env)
