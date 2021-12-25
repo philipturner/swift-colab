@@ -105,7 +105,7 @@ let spbSourceFilePaths = try fm.contentsOfDirectory(atPath: spbSourcePath).filte
 let start = Date()
 // =====
 
-try doCommand(["swiftc", "-Onone"] + spbSourceFilePaths + [
+try doCommand(["swiftc"] + spbSourceFilePaths + [
                "-L", pythonKitProductsPath, "-lPythonKit",
                "-I", pythonKitProductsPath,
                "-emit-module", "-emit-library",
