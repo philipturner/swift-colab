@@ -58,5 +58,13 @@ fileprivate func validate_kernel_env(_ kernel_env: PythonObject) throws {
         throw Exception("swift-build binary not found at \(filePath)")
     }
     
+    if let filePath = kernel_env.checking["SWIFT_PACKAGE_PATH"], !Bool(os.path.isfile(filePath))! {
+        throw Exception("swift-package binary not found at \(filePath)")
+    }
+    
+    if let filePath = kernel_env.checking["PYTHON_LIBRARY"], !Bool(os.path.isfile(filePath))! {
+        throw Exception("python library not found at \(filePath)")
+    }
+    
     // for debugging, first check whether a `contains` method on Sequence will help translate the Python if ... in ...
 }
