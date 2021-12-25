@@ -37,21 +37,48 @@ func doCommand(_ args: [String], directory: String? = nil) throws {
     command.waitUntilExit()
 }
 
-// Move `swift` Python package to `/env/python` directory
+// Install Python packages
 try fm.createDirectory(atPath: "/env/python", withIntermediateDirectories: true)
 
-if !fm.fileExists(atPath: "/env/python/swift") {
-    try fm.createDirectory(atPath: "/env/python/swift", withIntermediateDirectories: true)
-    
-    let sourcePath = "/opt/swift/swift-colab/PythonPackages/swift"
-    let targetPath = "/env/python/swift"
+let packageSourceDirectory = "/opt/swift/swift-colab/PythonPackages"
+let packageMetadata = [
+    (name: "swift", forceReinstall: false),
+    (name: "swift_jupyter", forceReinstall: true)
+]
 
-    try fm.removeItemIfExists(atPath: targetPath)
-    try fm.moveItem(atPath: sourcePath, toPath: targetPath)
+for metadata in packageMetadata {
+    let targetPath = "/env/python/\(metadata.name)"
     
-    try doCommand(["pip", "install", "--use-feature=in-tree-build", "./"], 
-                  directory: "/env/python/swift")
+    if metadata.forceReinstall || !fm.fileExists(atPath: targetPath) {
+        try fm.createDirectory(atPath: targetPath, withIntermediateDirectories: true)
+        
+        try fm.removeItemIfExists(atPath: targetPath)
+        try fm.moveItem(atPath: "\(packageSourceDirectory)/\(metadata.name)", toPath: targetPath)
+        
+        try doCommand(["pip", "install", "--use-feature=in-tree-build", "./"], 
+                      directory: targetPath)
+    }
 }
+
+// // comment this stuff out
+// if !fm.fileExists(atPath: "/env/python/swift") { // this is why swiftModule isn't reinstalling unless I factory reset runtime
+//     try fm.createDirectory(atPath: "/env/python/swift", withIntermediateDirectories: true)
+    
+//     let sourcePath = "/opt/swift/swift-colab/PythonPackages/swift"
+//     let targetPath = "/env/python/swift"
+
+//     try fm.removeItemIfExists(atPath: targetPath)
+//     try fm.moveItem(atPath: sourcePath, toPath: targetPath)
+    
+//     try doCommand(["pip", "install", "--use-feature=in-tree-build", "./"], 
+//                   directory: "/env/python/swift")
+// }
+
+// // if !fm.fileExists(atPath: "/env/python/swift_jupyter") {
+// do { // replace with the if conditional when swift_jupyter is 100% stable
+//     try fm.createDirectory(atPath: "/env/python/swift_jupyter")
+    
+// }
 
 try fm.createDirectory(atPath: "/opt/swift/tmp", withIntermediateDirectories: true)
 try fm.createDirectory(atPath: "/opt/swift/lib", withIntermediateDirectories: true)
