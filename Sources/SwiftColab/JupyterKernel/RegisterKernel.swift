@@ -36,7 +36,7 @@ fileprivate func make_kernel_env() -> PythonObject {
     return kernel_env
 }
 
-fileprivate struct Exception {
+fileprivate struct Exception: Error {
     var localizedDescription: String
 
     init(_ localizedDescription: String) { 
