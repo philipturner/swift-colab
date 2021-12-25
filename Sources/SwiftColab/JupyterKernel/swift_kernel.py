@@ -16,7 +16,7 @@ if __name__ == "__main__":
     # may need to use wurlitzer.sys_pipes - must validate that the called Swift code can log to output
     print("called main")
     print(swift.SwiftDelegate)
-    print(__main__.SwiftError)
+    print(SwiftError)
 else:
     # should never be called
     print("did not call main")
