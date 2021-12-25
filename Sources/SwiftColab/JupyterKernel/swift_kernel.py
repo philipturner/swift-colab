@@ -1,5 +1,3 @@
-#!/usr/bin/python
-# this file must have chmod set to a+x
 import swift
 from ctypes import *
 import wurlitzer
@@ -15,7 +13,7 @@ if __name__ == "__main__":
     # register the kernel in IPKernelApp
     # may need to use wurlitzer.sys_pipes - must validate that the called Swift code can log to output
     print("called main")
-    print(SwiftDelegate)
+    print(swift.SwiftDelegate)
 else:
     # should never be called
     print("did not call main")
