@@ -2,7 +2,7 @@ import PythonKit
 fileprivate let swiftModule = Python.import("swift")
 
 @_cdecl("callSwiftFromPython")
-public func callSwiftFromPython(_ functionHandleRef: UnsafeRawPointer, _ params: OwnedPyObjectPointer) -> PyObjectPointer {
+public func callSwiftFromPython(_ functionHandleRef: UnsafeRawPointer, _ params: OwnedPyObjectPointer) -> OwnedPyObjectPointer {
     let functionHandle = Unmanaged<FunctionHandle>.fromOpaque(functionHandleRef).takeUnretainedValue()
     let params = PythonObject(params)
     
