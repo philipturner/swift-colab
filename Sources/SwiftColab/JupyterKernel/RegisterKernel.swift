@@ -47,7 +47,7 @@ public func JKRegisterKernel() -> Void {
         }
         
         // TODO: Ensure this doesn't throw an OSError because the process doesn't have appropriate permissions
-        KernelSpecManager().install_kernel_spec(td, kernel_code_name)
+        KernelSpecManager().install_kernel_spec(td.name, kernel_code_name)
         td.cleanup()
     }
     
