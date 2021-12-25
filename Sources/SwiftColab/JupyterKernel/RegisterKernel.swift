@@ -17,17 +17,4 @@ public func JKRegisterKernel() -> Void {
     
     let kernel_name: PythonObject = "Swift"
     let kernel_code_name: PythonObject = "swift"
-    
-    print(swiftModule)
-    print(json)
-    print(os)
-    
-    print(KernelSpecManager)
-    print(TemporaryDirectory)
-    print(glob)
-    
-    for i in 0..<10 {
-        usleep(500_000)
-        print(i)
-    }
 }
