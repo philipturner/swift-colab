@@ -17,5 +17,5 @@ public func JupyterKernelCreate(_ jupyterKernelRef: OwnedPyObjectPointer) -> PyO
         errorObject = swiftModule.SwiftError(error.localizedDescription)
     }
     
-    return swiftModule.SwiftReturnValue(noneObject, errorObject).ownedPyObject
+    return swiftModule.SwiftReturnValue(noneObject, errorObject).borrowedPyObject
 }
