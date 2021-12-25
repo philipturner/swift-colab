@@ -21,7 +21,8 @@ public func JKRegisterKernel() -> Void {
     
     let kernel_json: PythonObject = [
         "argv": [
-            sys.executable
+            sys.executable,
+            "/opt/swift/bin/swift_kernel.py"
         ]
     ]
     
