@@ -4,7 +4,7 @@ fileprivate let swiftModule = Python.import("swift")
 
 // Takes a Python string object as input, then compiles and runs it.
 @_cdecl("runSwiftAsString")
-public func runSwiftAsString(_ pythonStringRef: OwnedPyObjectPointer) -> PyObjectPointer {
+public func runSwiftAsString(_ pythonStringRef: OwnedPyObjectPointer) -> OwnedPyObjectPointer {
     @inline(never)
     func getPythonError(message: String) -> PyObjectPointer {
         print(message)
