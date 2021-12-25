@@ -50,7 +50,7 @@ fileprivate func validate_kernel_env(_ kernel_env: PythonObject) throws {
         throw Exception("lldb python libs not found at \(kernel_env["PYTHONPATH"])")
     }
     
-    guard Bool(os.path.isfile(kernel_env["REPL_SWIFT_PATH"])! else {
+    guard Bool(os.path.isfile(kernel_env["REPL_SWIFT_PATH"]))! else {
         throw Exception("repl_swift binary not found at \(kernel_env["REPL_SWIFT_PATH"])")
     }
     
