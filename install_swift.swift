@@ -154,4 +154,4 @@ guard let JKRegisterKernelRef = dlsym(libJupyterKernel, "JKRegisterKernel") else
 
 typealias JKRegisterKernelType = @convention(c) () -> Void
 let JKRegisterKernel = unsafeBitCast(JKRegisterKernelRef, to: JKRegisterKernelType.self)
-print(JKRegisterKernel)
+print(JKRegisterKernel())
