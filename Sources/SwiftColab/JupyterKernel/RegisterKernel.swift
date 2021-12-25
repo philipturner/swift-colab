@@ -38,7 +38,7 @@ public func JKRegisterKernel() -> Void {
     
     do { let td = TemporaryDirectory()
         defer { td.cleanup() }
-        os.chmod(tf, 0o755)
+        os.chmod(td, 0o755)
         
         do { let f = Python.open(os.path.join(td, "kernel.json"), "w")
             defer { f.close() }
