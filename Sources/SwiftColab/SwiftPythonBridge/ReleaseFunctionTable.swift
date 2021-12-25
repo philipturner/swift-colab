@@ -2,7 +2,7 @@ import PythonKit
 fileprivate let swiftModule = Python.import("swift")
 
 @_cdecl("releaseFunctionTable")
-public func releaseFunctionTable(_ tableRef: OwnedPyObjectPointer) -> PyObjectPointer {
+public func releaseFunctionTable(_ tableRef: OwnedPyObjectPointer) -> OwnedPyObjectPointer {
     let tableObject = PythonObject(tableRef)
     
     let noneObject = Python.None
