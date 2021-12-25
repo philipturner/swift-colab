@@ -111,14 +111,12 @@ let jupyterLibPath = "/opt/swift/lib/libJupyterKernel.so"
 let jupyterSourcePath = "/opt/swift/swift-colab/Sources/SwiftColab/JupyterKernel"
 
 print()
-// try doCommand(["ls"],
-//               directory: jupyterProductsPath)
 try fm.removeItemIfExists(atPath: jupyterProductsPath)
-// try doCommand(["ls"],
-//               directory: "/opt/swift/packages")
+try doCommand(["ls"],
+              directory: "/opt/swift/packages")
 try fm.createDirectory(atPath: jupyterProductsPath, withIntermediateDirectories: true)
-// try doCommand(["ls"],
-//               directory: jupyterProductsPath)
+try doCommand(["ls"],
+              directory: jupyterProductsPath)
 
 let jupyterSourceFilePaths = try fm.contentsOfDirectory(atPath: jupyterSourcePath).map {
     "\(jupyterSourcePath)/\($0)"
