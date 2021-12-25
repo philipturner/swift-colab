@@ -4,6 +4,7 @@ import PythonKit
 import SwiftPythonBridge
 import Foundation
 fileprivate let swiftModule = Python.import("swift")
+fileprivate let wurlitzer = Python.import("wurlitzer")
 
 @_cdecl("JKRegisterKernel")
 public func JKRegisterKernel() -> Void {
