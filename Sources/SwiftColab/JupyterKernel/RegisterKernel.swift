@@ -22,7 +22,11 @@ public func JKRegisterKernel() -> Void {
 }
 
 func make_kernel_env() -> PythonObject {
+    let swift_toolchain = "/opt/swift/toolchain"
+    
     let kernel_env: PythonObject = [:]
+    kernel_env["PYTHONPATH"] = "\(swift_toolchain)/usr/lib/python3/dist-packages"
+    
     
     return kernel_env
 }
