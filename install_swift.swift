@@ -78,14 +78,25 @@ try doCommand(["/opt/swift/tmp/InstallBacktrace"])
 */
 
 // Install philipturner/PythonKit
+try fm.removeItemIfExists(atPath: "/opt/swift/packages/PythonKit/.build") // temporary workaround to profile compilation times
+
 let pythonKitProductsPath = "/opt/swift/packages/PythonKit/.build/release"
 let pythonKitLibPath = "/opt/swift/lib/libPythonKit.so"
+
+// =====
+let start = Date()
+// =====
 
 try doCommand(["swift", "build", "-c", "release"],
               directory: "/opt/swift/packages/PythonKit")
 
 try fm.removeItemIfExists(atPath: pythonKitLibPath)
 try fm.copyItem(atPath: "\(pythonKitProductsPath)/libPythonKit.so", toPath: pythonKitLibPath)
+
+// =====
+let end = Date()
+print("PythonKit compilation took \(end.timeIntervalSince(start)) seconds")
+// =====
 
 // Install SwiftPythonBridge
 let spbProductsPath = "/opt/swift/packages/SwiftPythonBridge"
