@@ -134,14 +134,14 @@ try doCommand(["swiftc"] + jupyterSourceFilePaths + [
               directory: jupyterProductsPath)
 
 print("hello world again")
-// try doCommand(["ls"],
-//               directory: "/opt/swift/lib")
+try doCommand(["ls"],
+              directory: "/opt/swift/lib")
 try fm.removeItemIfExists(atPath: jupyterLibPath)
-// try doCommand(["ls"],
-//               directory: "/opt/swift/lib")
+try doCommand(["ls"],
+              directory: "/opt/swift/lib")
 try fm.copyItem(atPath: "\(jupyterProductsPath)/libJupyterKernel.so", toPath: jupyterLibPath)
-// try doCommand(["ls"],
-//               directory: "/opt/swift/lib")
+try doCommand(["ls"],
+              directory: "/opt/swift/lib")
 
 for pair in [("libPythonKit.so", pythonKitLibPath), ("libSwiftPythonBridge.so", spbLibPath)] {
     try doCommand(["patchelf", "--replace-needed", pair.0, pair.1, jupyterLibPath])
