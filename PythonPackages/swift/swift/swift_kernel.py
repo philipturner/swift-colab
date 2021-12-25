@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 import swift
-import wurlitzer
+from wurlitzer import sys_pipes
 import signal
 
 from ctypes import *
@@ -19,9 +19,11 @@ if __name__ == "__main__":
     
     # register the kernel in IPKernelApp
     # may need to use wurlitzer.sys_pipes - must validate that the called Swift code can log to output
-    print("called main")
-    print(swift.SwiftDelegate)
-    print(SwiftError)
+    with sys_pipes(): # if logging doesn't work, try writing to a file
+        print("called main")
+        print(swift.SwiftDelegate)
+        print(SwiftError)
 else:
     # should never be called
-    print("did not call main")
+    with sys_pipes():
+        print("did not call main")
