@@ -8,7 +8,7 @@ from ctypes import *
 # symbols for the Jupyter kernel
 
 # ...
-
+print("hello world 2")
 # define a subclass of jupyter's Kernel class
 # define any other absolutely necessary subclasses - some may be declared in `swift` module so that Swift code can import them
 
@@ -17,8 +17,8 @@ SwiftError = swift.SwiftError
 if __name__ == "__main__":
     print("called main 0")
     
-    with sys_pipes():
-        print("called main")
+#     with sys_pipes():
+#         print("called main")
 #     signal.pthread_sigmask(signal.SIG_BLOCK, [signal.SIGINT])
     
     # register the kernel in IPKernelApp
@@ -30,5 +30,5 @@ if __name__ == "__main__":
 else:
     # should never be called
     print("did not call main 0")
-    with sys_pipes():
-        print("did not call main")
+#     with sys_pipes():
+#         print("did not call main")
