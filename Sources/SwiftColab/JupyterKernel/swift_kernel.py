@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 import swift
 import wurlitzer
 import signal
