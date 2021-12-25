@@ -66,5 +66,5 @@ fileprivate func validate_kernel_env(_ kernel_env: PythonObject) throws {
         throw Exception("python library not found at \(filePath)")
     }
     
-    // for debugging, first check whether a `contains` method on Sequence will help translate the Python if ... in ...
+    print(kernel_env["LD_LIBRARY_PATH"])
 }
