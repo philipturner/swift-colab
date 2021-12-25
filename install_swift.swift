@@ -101,21 +101,12 @@ let spbSourceFilePaths = try fm.contentsOfDirectory(atPath: spbSourcePath).filte
     "\(spbSourcePath)/\($0)"
 }
 
-// =====
-let start = Date()
-// =====
-
-try doCommand(["swiftc"] + spbSourceFilePaths + [
+try doCommand(["swiftc", "-Onone"] + spbSourceFilePaths + [
                "-L", pythonKitProductsPath, "-lPythonKit",
                "-I", pythonKitProductsPath,
                "-emit-module", "-emit-library",
                "-module-name", "SwiftPythonBridge"],
                directory: spbProductsPath)
-
-// =====
-let end = Date()
-print("SwiftPythonBridge compilation took \(end.timeIntervalSince(start)) seconds")
-// =====
 
 try fm.removeItemIfExists(atPath: spbLibPath)
 try fm.copyItem(atPath: "\(spbProductsPath)/libSwiftPythonBridge.so", toPath: spbLibPath)
@@ -163,4 +154,4 @@ guard let JKRegisterKernelRef = dlsym(libJupyterKernel, "JKRegisterKernel") else
 
 typealias JKRegisterKernelType = @convention(c) () -> Void
 let JKRegisterKernel = unsafeBitCast(JKRegisterKernelRef, to: JKRegisterKernelType.self)
-print(JKRegisterKernel())
+JKRegisterKernel()
