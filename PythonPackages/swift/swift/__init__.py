@@ -7,7 +7,6 @@ def run(swift_string):
 
 # the compiled Swift function must import the modified PythonKit
 def call_compiled_func(executable_name, func_name, params):
-    print("calling compiled function")
     func = getattr(PyDLL(executable_name), func_name)
     func.restype, func.argtypes = c_void_p, [c_void_p]
     func_return_ptr = func(c_void_p(id(params)))
