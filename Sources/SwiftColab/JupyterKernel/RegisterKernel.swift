@@ -38,16 +38,17 @@ public func JKRegisterKernel() -> Void {
     
     do { 
         let td = TemporaryDirectory()
-        defer { td.cleanup() }
-        
         os.chmod(td.name, 0o755)
         
         do { 
             let f = Python.open(os.path.join(td.name, "kernel.json"), "w")
-            defer { f.close() }
-            
             json.dump(kernel_json, f, indent: 2)
+            f.close()
         }
+        
+        // TODO: Ensure this doesn't throw an OSError because the process doesn't have appropriate permissions
+        KernelSpecManager().install_kernel_spec(td, kernel_code_name)
+        td.cleanup()
     }
 }
 
