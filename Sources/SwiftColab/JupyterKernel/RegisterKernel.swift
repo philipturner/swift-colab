@@ -5,6 +5,7 @@ import Foundation
 fileprivate let swiftModule = Python.import("swift")
 fileprivate let json = Python.import("json")
 fileprivate let os = Python.import("os")
+fileprivate let sys = Python.import("sys")
 
 fileprivate let KernelSpecManager = Python.import("jupyter_client").kernelspec.KernelSpecManager
 fileprivate let TemporaryDirectory = Python.import("IPython").utils.tempdir.TemporaryDirectory
