@@ -38,5 +38,5 @@ func make_kernel_env() -> PythonObject {
 
 /// Validates that the env vars refer to things that actually exist.
 func validate_kernel_env(_ kernel_env: PythonObject) throws {
-    print(!os.path.isfile(kernel_env["PYTHONPATH"] + "/lldb/_lldb.so"))
+    print(os.path.isfile(kernel_env["PYTHONPATH"] + "/lldb/_lldb.so") == false)
 }
