@@ -1,7 +1,6 @@
 #!/usr/bin/python
 # this file must have chmod set to a+x
 import ctypes
-import swift
 
 # define a subclass of jupyter's Kernel class
 # define any other absolutely necessary subclasses
@@ -11,6 +10,7 @@ import swift
 if __name__ == "__main__":
     # register the kernel in IPKernelApp
     print("called main")
+    print(run_swift)
 else:
     # should never be called
     print("did not call main")
