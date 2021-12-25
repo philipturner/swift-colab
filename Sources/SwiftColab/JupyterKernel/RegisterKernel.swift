@@ -35,6 +35,11 @@ public func JKRegisterKernel() -> Void {
     print("kernel.json:\n\(json.dumps(kernel_json, indent: 2))\n")
     
     let kernel_code_name: PythonObject = "swift"
+    
+    do {
+        let td = TemporaryDirectory()
+        defer { td.cleanup() }
+    }
 }
 
 /// Returns environment variables that tell the kernel where things are.
