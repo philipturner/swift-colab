@@ -68,7 +68,6 @@ fileprivate func validate_kernel_env(_ kernel_env: PythonObject) throws {
     
     let lib_paths = kernel_env["LD_LIBRARY_PATH"].split(separator: ":")
     
-    for tupleObject in (Python.enumerate as PythonObject)(lib_paths) {
-        
-    }
+    let enumerated = (Python.enumerate as PythonObject)(lib_paths)
+    print(enumerated)
 }
