@@ -66,9 +66,9 @@ fileprivate func validate_kernel_env(_ kernel_env: PythonObject) throws {
         throw Exception("python library not found at \(filePath)")
     }
     
-    let lib_paths = kernel_env["LD_LIBRARY_PATH"].split(":")
+    let lib_paths = kernel_env["LD_LIBRARY_PATH"].split(separator: ":")
     
-    for tupleObject in PythonObject.enumerate(lib_paths) {
+    for tupleObject in Python.enumerate(lib_paths) {
         
     }
 }
