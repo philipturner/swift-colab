@@ -87,7 +87,7 @@ let pythonKitLibPath = "/opt/swift/lib/libPythonKit.so"
 let start = Date()
 // =====
 
-try doCommand(["swift", "build", "-c", "release", "-Onone"],
+try doCommand(["swift", "build", "-c", "release", "-O0"],
               directory: "/opt/swift/packages/PythonKit")
 
 try fm.removeItemIfExists(atPath: pythonKitLibPath)
