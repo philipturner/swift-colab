@@ -10,11 +10,11 @@ precondition(fm.currentDirectoryPath == "/opt/swift", "Called `install_swift.swi
 extension FileManager {
     @inline(never)
     func removeItemIfExists(atPath path: String) throws {
-        do {
+//         do {
             try removeItem(atPath: path)            
-        } catch {
-            print("Failed to remove file or directory \"\(path)\": \(error.localizedDescription)")
-        }
+//         } catch {
+//             print("Failed to remove file or directory \"\(path)\": \(error.localizedDescription)")
+//         }
     }
 }
 
