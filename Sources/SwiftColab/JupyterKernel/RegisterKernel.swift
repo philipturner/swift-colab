@@ -19,16 +19,21 @@ public func JKRegisterKernel() -> Void {
     let kernel_env = make_kernel_env()
     try! validate_kernel_env(kernel_env)
     
+    let kernel_name: PythonObject = "Swift"
     let kernel_json: PythonObject = [
         "argv": [
             sys.executable,
-            "/opt/swift/bin/swift_kernel.py"
-        ]
+            "/env/python/swift/swift/swift_kernel.py",
+            "-f",
+            "{connection_file}",
+        ],
+        "display_name": kernel_name,
+        "language": "swift",
+        "env": kernel_env,
     ]
     
-    print(kernel_json)
+    print("kernel.json:\n\(json.dumps(kernel_json, indent: 2))\n")
     
-    let kernel_name: PythonObject = "Swift"
     let kernel_code_name: PythonObject = "swift"
 }
 
