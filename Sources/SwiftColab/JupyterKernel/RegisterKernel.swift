@@ -5,8 +5,8 @@ import SwiftPythonBridge
 import Foundation
 fileprivate let swiftModule = Python.import("swift")
 
-@_cdecl("JupyterKernelRegister")
-public func JupyterKernelRegister() -> Void {
+@_cdecl("JKRegisterKernel")
+public func JKRegisterKernel() -> Void {
     print(swiftModule.SwiftReturnValue)
     print(52)
 }
