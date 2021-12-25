@@ -25,4 +25,9 @@ public func JKRegisterKernel() -> Void {
     print(KernelSpecManager)
     print(TemporaryDirectory)
     print(glob)
+    
+    for i in 0..<10 {
+        usleep(500_000)
+        print(i)
+    }
 }
