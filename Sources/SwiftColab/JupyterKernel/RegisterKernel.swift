@@ -23,7 +23,7 @@ public func JKRegisterKernel() -> Void {
 }
 
 /// Returns environment variables that tell the kernel where things are.
-func make_kernel_env() -> PythonObject {
+fileprivate func make_kernel_env() -> PythonObject {
     let swift_toolchain = "/opt/swift/toolchain"
     
     let kernel_env: PythonObject = [:]
@@ -36,7 +36,17 @@ func make_kernel_env() -> PythonObject {
     return kernel_env
 }
 
+fileprivate struct Exception {
+    var localizedDescription: String
+
+    init(_ localizedDescription: String) { 
+        self.localizedDescription = localizedDescription 
+    }
+}
+
 /// Validates that the env vars refer to things that actually exist.
-func validate_kernel_env(_ kernel_env: PythonObject) throws {
-    print(Bool(os.path.isfile(kernel_env["PYTHONPATH"] + "/lldb/_lldb.so")) == false)
+fileprivate func validate_kernel_env(_ kernel_env: PythonObject) throws {
+    guard Bool(os.path.isfile(kernel_env["PYTHONPATH"] + "/lldb/_lldb.so")) else {
+        throw Exception("lldb python libs not found at \(kernel_env["PYTHONPATH"])")
+    }
 }
