@@ -1,5 +1,3 @@
-#!/usr/bin/python
-# this file must have chmod set to a+x
 from ctypes import *
 from wurlitzer import sys_pipes
 
@@ -58,18 +56,3 @@ class SwiftInteropTest(SwiftInteropTestSuperclass):
     
     def example_func_3(self, string_param):
         return self.swift_delegate.call("example_func_3", string_param)
-
-# symbols for the Jupyter kernel
-
-# ...
-
-# define a subclass of jupyter's Kernel class
-# define any other absolutely necessary subclasses
-
-if __name__ == "__main__":
-    # register the kernel in IPKernelApp
-    print("called main")
-    print(SwiftDelegate)
-else:
-    # should never be called
-    print("did not call main")
