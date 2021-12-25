@@ -70,7 +70,7 @@ public func JKRegisterKernel() -> Void {
         try! fm.copyItem(atPath: swiftKernelPath, toPath: pythonKernelPath)
         
         for i in 0..<5 {
-            print("=== Swift-Colab overwrote the Python kernel with the Swift kernel. Go to Runtime > Restart Runtime (NOT Factory Reset Runtime) and it will run in Swift mode. ===")
+            print("=== Swift-Colab overwrote the Python kernel with Swift. Go to Runtime > Restart runtime (NOT Factory reset runtime) to run in Swift mode. ===")
         }
     }
     
