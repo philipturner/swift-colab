@@ -42,7 +42,7 @@ try fm.createDirectory(atPath: "/env/python", withIntermediateDirectories: true)
 
 let packageSourceDirectory = "/opt/swift/swift-colab/PythonPackages"
 let packageMetadata = [
-    (name: "swift", forceReinstall: true),
+    (name: "swift", forceReinstall: false),
 ]
 
 for metadata in packageMetadata {
@@ -58,26 +58,6 @@ for metadata in packageMetadata {
                       directory: targetPath)
     }
 }
-
-// // comment this stuff out
-// if !fm.fileExists(atPath: "/env/python/swift") { // this is why swiftModule isn't reinstalling unless I factory reset runtime
-//     try fm.createDirectory(atPath: "/env/python/swift", withIntermediateDirectories: true)
-    
-//     let sourcePath = "/opt/swift/swift-colab/PythonPackages/swift"
-//     let targetPath = "/env/python/swift"
-
-//     try fm.removeItemIfExists(atPath: targetPath)
-//     try fm.moveItem(atPath: sourcePath, toPath: targetPath)
-    
-//     try doCommand(["pip", "install", "--use-feature=in-tree-build", "./"], 
-//                   directory: "/env/python/swift")
-// }
-
-// // if !fm.fileExists(atPath: "/env/python/swift_jupyter") {
-// do { // replace with the if conditional when swift_jupyter is 100% stable
-//     try fm.createDirectory(atPath: "/env/python/swift_jupyter")
-    
-// }
 
 try fm.createDirectory(atPath: "/opt/swift/tmp", withIntermediateDirectories: true)
 try fm.createDirectory(atPath: "/opt/swift/lib", withIntermediateDirectories: true)
@@ -162,3 +142,16 @@ try fm.copyItem(atPath: "\(jupyterProductsPath)/libJupyterKernel.so", toPath: ju
 for pair in [("libPythonKit.so", pythonKitLibPath), ("libSwiftPythonBridge.so", spbLibPath)] {
     try doCommand(["patchelf", "--replace-needed", pair.0, pair.1, jupyterLibPath])
 }
+
+// Register Jupyter kernel
+guard let libJupyterKernel = dlopen(jupyterLibPath, RTLD_LAZY | RTLD_GLOBAL) else {
+    fatalError("Could not load the \(jupyterLibPath) dynamic library")
+}
+
+guard let JKRegisterKernelRef = dlsym(libJupyterKernel, "JKRegisterKernel") else {
+    fatalError("Could not load the helloC function")
+}
+
+let JKRegisterKernelType = @convention(c) () -> Void
+let JKRegisterKernel = unsafeBitcast(JKRegisterKernelRef, to: JKRegisterKernelType.self)
+print(JKRegisterKernel)
