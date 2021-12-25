@@ -10,6 +10,6 @@ print("hello world 2")
 SwiftError = swift.SwiftError
 
 if __name__ == "__main__":
-    pass
+    print("called main 0")
 else:
-    pass
+    print("did not call main 0")
