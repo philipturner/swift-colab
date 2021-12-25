@@ -7,16 +7,20 @@ fileprivate let swiftModule = Python.import("swift")
 @_cdecl("JupyterKernelCreate")
 public func JupyterKernelCreate(_ jupyterKernelRef: OwnedPyObjectPointer) -> OwnedPyObjectPointer {
     let noneObject = Python.None
-    var errorObject = noneObject
+    let errorObject = noneObject
+//     var errorObject = noneObject
     
-    do {
-        let jupyterKernel = PythonObject(jupyterKernelRef)
-        jupyterKernel.swift_delegate = swiftModule.SwiftDelegate()
-        print("Modified log 4444 statement: \(jupyterKernel)")
-    } catch {
-        print(error.localizedDescription)
-        errorObject = swiftModule.SwiftError(error.localizedDescription)
+//     do {
+    let jupyterKernel = PythonObject(jupyterKernelRef)
+    jupyterKernel.swift_delegate = swiftModule.SwiftDelegate()
+    
+    jupyterKernel.registerFunction(name: "helloC") { params -> PythonConvertible in
+        helloC(Int32(params)!)
     }
+//     } catch {
+//         print(error.localizedDescription)
+//         errorObject = swiftModule.SwiftError(error.localizedDescription)
+//     }
     
     return swiftModule.SwiftReturnValue(noneObject, errorObject).ownedPyObject
 }
