@@ -64,11 +64,17 @@ public func JKRegisterKernel() -> Void {
         try! fm.copyItem(atPath: swiftKernelPath, toPath: pythonKernelPath)
         
         print("""
+        |
+        |
+        |
         ===-----------------------------------------------------------------------------------------------===
         === Swift-Colab overwrote the Python kernel with Swift.                                           ===
         === Automatically crashing and restarting the runtime to enter Swift mode.                        ===
         === If the runtime does not restart, go to Runtime > Restart runtime (NOT Factory reset runtime). ===
         ===-----------------------------------------------------------------------------------------------===
+        |
+        |
+        |
         """)
     } else {
         print("=== Swift Jupyter kernel was already registered ===")
