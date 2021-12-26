@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-import swift
+import Swift
 from wurlitzer import sys_pipes
 from ctypes import *
 
@@ -17,9 +17,10 @@ class SwiftKernel(Kernel):
         'name': 'swift',
         'mimetype': 'text/x-swift',
         'file_extension': '.swift',
-        'version': '5',
-        'pygments_lexer': 'swift'
+        'version': '',
     }
+    
+    # TODO: Move the property initialization (shown above) out of Python and into Swift code
     
     def __init__(self, **kwargs):
         print("Hello world, creating SwiftKernel")
@@ -50,10 +51,10 @@ class SwiftKernel(Kernel):
                 'user_expressions': {},
                }
     
-# define any other absolutely necessary subclasses - some may be declared in `swift` module so that Swift code can import them
+# define any other absolutely necessary subclasses - some may be declared in `Swift` module so that Swift code can import them
 
 if __name__ == "__main__":
-    print("called swift_kernel.py")
+    print("Executing swift_kernel.py")
     
     signal.pthread_sigmask(signal.SIG_BLOCK, [signal.SIGINT])
     
