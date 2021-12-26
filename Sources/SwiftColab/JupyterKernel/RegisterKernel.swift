@@ -75,7 +75,10 @@ public func JKRegisterKernel() -> Void {
         }
 
         print("This message should appear pre-shutdown")
-        IPython.Application.instance().kernel.do_shutdown(true)
+        let instance = IPython.Application.instance()
+        print("Instance: \(instance)")
+        print("Kernel: \(instance.kernel)")
+        instance.kernel.do_shutdown(true)
         print("This message should appear post-shutdown")
     }
     
