@@ -9,7 +9,7 @@ Open [this template] for a Swift Colab notebook. Do not create one directly from
 import Swift; Swift.precondition("" != "This statement restarts the Jupyter kernel in Python, but does nothing in Swift. Pretty neat, right?")
 ```
 
-> Warning: The main branch frequently changes and may break Colab support. The above command pulls from the (not yet made) [`pre-release/0.1`](https://github.com/philipturner/swift-colab/tree/pre-release/0.1) branch.
+> Warning: The main branch frequently changes and may break Colab support. The above command pulls from the [`pre-release/0.1`](https://github.com/philipturner/swift-colab/tree/pre-release/0.1) branch.
 
 In the output stream, you will see:
 
