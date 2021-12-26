@@ -32,13 +32,6 @@ class SwiftKernel(Kernel):
         log("Do execute completed")
         
         return output
-        
-#         return {'status': 'ok',
-#                 # The base class increments the execution count
-#                 'execution_count': self.execution_count,
-#                 'payload': [],
-#                 'user_expressions': {},
-#                }
 
 if __name__ == "__main__":
     # Jupyter sends us SIGINT when the user requests execution interruption.
