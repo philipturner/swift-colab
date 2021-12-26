@@ -35,6 +35,7 @@ public func JKCreateKernel(_ jupyterKernelRef: OwnedPyObjectPointer) -> OwnedPyO
     
     kernel.swift_delegate = SwiftModule.SwiftDelegate()
     kernel.registerFunction(name: "do_execute", function: doExecute)
+    kernel.registerFunction(name: "do_complete", function: doComplete)
     
     return SwiftModule.SwiftReturnValue(noneObject, errorObject).ownedPyObject
 }
