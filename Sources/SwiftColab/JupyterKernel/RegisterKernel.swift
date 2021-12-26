@@ -2,7 +2,6 @@ import PythonKit
 import SwiftPythonBridge
 import Foundation
 
-fileprivate let swiftModule = Python.import("swift")
 fileprivate let json = Python.import("json")
 fileprivate let os = Python.import("os")
 fileprivate let sys = Python.import("sys")
@@ -24,7 +23,7 @@ public func JKRegisterKernel() -> Void {
     let kernel_json: PythonObject = [
         "argv": [
             sys.executable,
-            "/env/python/swift/swift/swift_kernel.py",
+            "/env/python/Swift/Swift/swift_kernel.py",
             "-f",
             "{connection_file}",
         ],
@@ -55,7 +54,7 @@ public func JKRegisterKernel() -> Void {
     
     // Addition from Philip Turner: 
     // If contents of the kernel initializers do not already match, overwrite Python and force the notebook to restart.
-    let swiftKernelPath = "/env/python/swift/swift/swift_kernel.py"
+    let swiftKernelPath = "/env/python/Swift/Swift/swift_kernel.py"
     let pythonKernelPath = String(ipykernel_launcher.__file__)!
     
     let fm = FileManager.default
