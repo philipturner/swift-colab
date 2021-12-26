@@ -11,7 +11,7 @@ from ipykernel.kernelbase import Kernel
 class SwiftKernel(Kernel):
     implementation = 'SwiftKernel'
     implementation_version = '0.1'
-    banner = "This is the Swift Jupyter kernel's banner. Once it is verified to appear, it may be removed from the source code."
+    banner = ''
 
     language_info = {
         'name': 'swift',
@@ -23,7 +23,6 @@ class SwiftKernel(Kernel):
     # TODO: Move the property initialization (shown above) out of Python and into Swift code
     
     def __init__(self, **kwargs):
-        print("Hello world, creating SwiftKernel")
         super().__init__(**kwargs)
         
         # We don't initialize Swift yet, so that the user has a chance to
@@ -32,11 +31,8 @@ class SwiftKernel(Kernel):
 
         # Whether to do code completion. Since the debugger is not yet
         # initialized, we can't do code completion yet.
-        self.completion_enabled = False # this line can be implemented in the Swift code
         
-        file = open("/content/install_swift.sh", "w")
-        file.write("Hello world, this is overwritten during the initializer \n")
-        file.close()
+        self.completion_enabled = False # implement this code in Swift
     
     def do_execute(self, code, silent, store_history=True,
                    user_expressions=None, allow_stdin=False):
@@ -54,8 +50,6 @@ class SwiftKernel(Kernel):
 # define any other absolutely necessary subclasses - some may be declared in `Swift` module so that Swift code can import them
 
 if __name__ == "__main__":
-    print("Executing swift_kernel.py")
-    
     signal.pthread_sigmask(signal.SIG_BLOCK, [signal.SIGINT])
     
     from ipykernel.kernelapp import IPKernelApp
