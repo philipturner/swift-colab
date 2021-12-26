@@ -28,6 +28,6 @@ The kernel will crash and automatically reconnect. That's expected, because it r
 
 > Tip: If you factory reset the runtime or exceed the time limit, Colab will restart in Python mode. Just re-run the first code cell, and you will return to Swift mode.
 
-> Tip: Do not attempt to run any other code cells while Swift is downloading. Otherwise, Colab may wait indefinitely to reconnect after crashing.
+> Tip: Do not attempt to run any other code cells while Swift is downloading. Otherwise, Colab may indefinitely wait to reconnect after crashing.
 
 Type anything into the next code cell and it echoes as output. At this time, Swift-Colab can sideload a Jupyter kernel and modify syntax coloring. Compilation and code completion are still in the works.
