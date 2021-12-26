@@ -12,7 +12,6 @@ fileprivate let TemporaryDirectory = Python.import("IPython").utils.tempdir.Temp
 fileprivate let glob = Python.import("glob").glob
 
 fileprivate let ipykernel_launcher = Python.import("ipykernel_launcher")
-fileprivate let IPython = Python.import("IPython")
 
 @_cdecl("JKRegisterKernel")
 public func JKRegisterKernel() -> Void {
@@ -64,22 +63,14 @@ public func JKRegisterKernel() -> Void {
     let pythonSpecDirectory = "\(kernelSpecDirectory)/python3/kernel.json"
     
     let fm = FileManager.default
-    try! fm.copyItem(atPath: swiftSpecDirectory, toPath: pythonSpecDirectory)
+    //try! fm.copyItem(atPath: swiftSpecDirectory, toPath: pythonSpecDirectory)
     
-    if !fm.contentsEqual(atPath: swiftKernelPath, andPath: pythonKernelPath) {
+    if !fm.contentsEqual(atPath: swiftKernelPath, andPath: pythonKernelPath) { // find a different way to measure that it's already completely installed
         // If the contents of the file do not already match, overwrite Python and force the notebook to restart.
-        try! fm.copyItem(atPath: swiftKernelPath, toPath: pythonKernelPath)
+        //try! fm.copyItem(atPath: swiftKernelPath, toPath: pythonKernelPath)
         
-        for i in 0..<5 {
-            print("=== Swift-Colab overwrote the Python kernel with Swift. Go to Runtime > Restart runtime (NOT Factory reset runtime) to run in Swift mode. ===")
-        }
-
-        print("This message should appear pre-shutdown")
-        let instance = IPython.Application.instance()
-        print("Instance: \(instance)")
-        print("Kernel: \(instance.kernel)")
-        instance.kernel.do_shutdown(true)
-        print("This message should appear post-shutdown")
+        print("=== Swift-Colab overwrote the Python kernel with Swift. Automatically crashing and restarting the runtime to enter Swift mode. ===")
+        print("=== If the runtime does not restart, go to Runtime > Restart runtime (NOT Factory reset runtime). ===")
     }
     
 }
