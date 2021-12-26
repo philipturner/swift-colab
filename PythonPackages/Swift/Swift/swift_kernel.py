@@ -29,7 +29,7 @@ class SwiftKernel(Kernel):
         print("Starting initialization of Swift Kernel")
         ###
         
-        call_compiled_func("/opt/swift/lib/libJupyterKernel.so", "JKCreateKernel", self)
+        Swift.call_compiled_func("/opt/swift/lib/libJupyterKernel.so", "JKCreateKernel", self)
         
         ###
         print("Finishing initialization of Swift Kernel")
