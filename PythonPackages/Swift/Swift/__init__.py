@@ -33,8 +33,7 @@ class SwiftDelegate:
 
 class SwiftError(Exception):
     def __init__(self, localized_description):
-        self.message = "Temporary alternaitve error message"
-        super().__init__("Temporary alternaitve error message")
+        super().__init__(localized_description)
         
 class SwiftReturnValue:
     def __init__(self, wrapped, error):
@@ -43,7 +42,7 @@ class SwiftReturnValue:
     def unwrap(self):
         if self.__error is not None:
             assert(isinstance(self.__error, SwiftError), "A SwiftReturnValue's error was not a SwiftError object.")
-            raise Exception(self.__error.message)
+            raise self.__error
         return self.__wrapped
 
 # SwiftInteropTest is used by `helloC` in JupyterKernel to validate that SwiftPythonBridge works.
