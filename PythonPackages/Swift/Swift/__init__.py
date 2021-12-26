@@ -45,6 +45,8 @@ class SwiftReturnValue:
             raise self.__error
         return self.__wrapped
 
+# SwiftInteropTest is used by `helloC` in JupyterKernel to validate that SwiftPythonBridge works.
+
 class SwiftInteropTestSuperclass:
     pass
     
