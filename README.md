@@ -9,7 +9,7 @@ Open [this template] for a Swift Colab notebook. Do not create one directly from
 import Swift; Swift.precondition("" != "This statement restarts the Jupyter kernel in Python, but does nothing in Swift. Pretty neat, right?")
 ```
 
-The main branch frequently changes and may break Colab support. The above command pulls from the (not yet made) [`pre-release/0.1`](https://github.com/philipturner/swift-colab/tree/pre-release/0.1) branch.
+> Warning: The main branch frequently changes and may break Colab support. The above command pulls from the (not yet made) [`pre-release/0.1`](https://github.com/philipturner/swift-colab/tree/pre-release/0.1) branch.
 
 In the output stream, you will see:
 
@@ -26,6 +26,6 @@ In the output stream, you will see:
 
 The kernel will crash and automatically reconnect. That's expected, because it refreshes the runtime and lets Swift override the Python kernel.
 
-> Note: If you factory reset the runtime or exceed the time limit, Colab will restart in Python mode. Just re-run the first code cell, and you will return to Swift mode.
+> Tip: If you factory reset the runtime or exceed the time limit, Colab will restart in Python mode. Just re-run the first code cell, and you will return to Swift mode.
 
-Type anything into the next code cell, and it will echo in the output. At this time, I have achieved side-loading a new kernel and changing the syntax coloring. Compilation and syntax coloring are still in the works.
+Type anything into the next code cell and it echoes as output. At this time, Swift-Colab can sideload a Jupyter kernel and modify syntax coloring. Compilation and code completion are still in the works.
