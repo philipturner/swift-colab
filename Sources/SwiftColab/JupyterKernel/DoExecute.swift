@@ -4,7 +4,7 @@ import SwiftPythonBridge
 
 internal func doExecute(_ kwargs: PythonObject) throws -> PythonObject {
     struct Exception: LocalizedError {
-        let errorDescription = "Intentionally causing a crash from Swift"
+        let errorDescription: String? = "Intentionally causing a crash from Swift"
     }
     
     throw Exception()
