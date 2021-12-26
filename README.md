@@ -15,12 +15,18 @@ In the output stream, you will see:
 
 ```
 ...
+=== Downloading Swift ===
+...
 === Swift successfully downloaded ===
 ...
 === Swift successfully installed ===
+...
+(a brief message about why Google Colab was intentionally crashed)
 ```
 
-In the next code cell, run this:
+The kernel will crash and automatically reconnect. That's expected, because it refreshes the runtime and lets Swift override the Python kernel.
+
+> Note: If you factory reset the runtime or exceed the time limit, Colab will restart in Python mode. Just re-run the first code cell, and you will return to Swift mode.
 
 ```python
 import swift
