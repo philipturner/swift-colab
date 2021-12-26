@@ -25,6 +25,17 @@ class SwiftKernel(Kernel):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         
+        ###
+        print("Starting initialization of Swift Kernel")
+        ###
+        
+        self.swift_delegate = Swift.SwiftDelegate()
+        call_compiled_func("/opt/swift/lib/libJupyterKernel.so", "JKCreateKernel", self)
+        
+        ###
+        print("Finishing initialization of Swift Kernel")
+        ###
+        
         # We don't initialize Swift yet, so that the user has a chance to
         # "%install" packages before Swift starts. (See doc comment in
         # `_init_swift`).
