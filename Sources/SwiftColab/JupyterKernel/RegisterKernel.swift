@@ -16,7 +16,6 @@ fileprivate let ipykernel_launcher = Python.import("ipykernel_launcher")
 @_cdecl("JKRegisterKernel")
 public func JKRegisterKernel() -> Void {
     print("=== Registering Swift Jupyter kernel ===")
-    defer { print("=== Finished registering Swift Jupyter kernel ===") }
     
     let swiftKernelPath = "/env/python/swift/swift/swift_kernel.py"
     let pythonKernelPath = String(ipykernel_launcher.__file__)!
@@ -63,14 +62,20 @@ public func JKRegisterKernel() -> Void {
     let pythonSpecDirectory = "\(kernelSpecDirectory)/python3/kernel.json"
     
     let fm = FileManager.default
-    //try! fm.copyItem(atPath: swiftSpecDirectory, toPath: pythonSpecDirectory)
     
+    // If the contents of the file do not already match, overwrite Python and force the notebook to restart.
     if !fm.contentsEqual(atPath: swiftKernelPath, andPath: pythonKernelPath) { // find a different way to measure that it's already completely installed
-        // If the contents of the file do not already match, overwrite Python and force the notebook to restart.
         try! fm.copyItem(atPath: swiftKernelPath, toPath: pythonKernelPath)
         
-        print("=== Swift-Colab overwrote the Python kernel with Swift. Automatically crashing and restarting the runtime to enter Swift mode. ===")
-        print("=== If the runtime does not restart, go to Runtime > Restart runtime (NOT Factory reset runtime). ===")
+        print("""
+        ===-----------------------------------------------------------------------------------------------===
+        === Swift-Colab overwrote the Python kernel with Swift.                                           ===
+        === Automatically crashing and restarting the runtime to enter Swift mode.                        ===
+        === If the runtime does not restart, go to Runtime > Restart runtime (NOT Factory reset runtime). ===
+        ===-----------------------------------------------------------------------------------------------===
+        """)
+    } else {
+        print("=== Swift Jupyter kernel was already registered ===")
     }
     
 }
