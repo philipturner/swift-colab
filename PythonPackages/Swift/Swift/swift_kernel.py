@@ -9,22 +9,10 @@ import sys
 from ipykernel.kernelbase import Kernel
 
 def log(message, mode="a"):
-    file = open("/content/install_swift.sh", mode)
-    file.write(message + "\n")
-    file.close()
+    with open("/content/install_swift.sh", mode) as f:
+        f.write(message + "\n")
 
 class SwiftKernel(Kernel):
-#     implementation = 'SwiftKernel' # comment out the default initialization of all of these once I have verified the Swift code doesn't crash
-#     implementation_version = '0.1'
-#     banner = ''
-
-#     language_info = {
-#         'name': 'swift',
-#         'mimetype': 'text/x-swift',
-#         'file_extension': '.swift',
-#         'version': ''
-#     }
-    
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         Swift.call_compiled_func("/opt/swift/lib/libJupyterKernel.so", "JKCreateKernel", self)
