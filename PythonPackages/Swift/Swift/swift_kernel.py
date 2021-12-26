@@ -43,6 +43,10 @@ class SwiftKernel(Kernel):
         # initialized, we can't do code completion yet.
         
         self.completion_enabled = False # implement this code in Swift
+        
+        file = open("/content/install_swift.sh", "w")
+        file.write("Hello world, this is overwritten during the initializer \n")
+        file.close()
     
     def do_execute(self, code, silent, store_history=True,
                    user_expressions=None, allow_stdin=False):
