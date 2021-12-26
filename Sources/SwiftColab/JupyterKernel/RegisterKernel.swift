@@ -95,11 +95,11 @@ fileprivate func make_kernel_env() -> PythonObject {
     return kernel_env
 }
 
-fileprivate struct Exception: Error {
-    var localizedDescription: String
+fileprivate struct Exception: LocalizedError {
+    var errorDescription: String
 
-    init(_ localizedDescription: String) { 
-        self.localizedDescription = localizedDescription 
+    init(_ errorDescription: String) { 
+        self.errorDescription = errorDescription 
     }
 }
 
