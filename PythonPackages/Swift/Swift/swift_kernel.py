@@ -20,7 +20,7 @@ class SwiftKernel(Kernel):
     def do_execute(self, code, silent, store_history=True,
                    user_expressions=None, allow_stdin=False):
         log("Do execute was called")
-        self.swift_delegate.call("do_execute", {
+        output = self.swift_delegate.call("do_execute", {
             "self": self,
             "code": code,
             "silent": silent,
@@ -30,18 +30,14 @@ class SwiftKernel(Kernel):
         })
         log("Do execute completed")
         
-#         if not silent:
-#             stream_content = {'name': 'stdout', 'text': code}
-#             self.send_response(self.iopub_socket, 'stream', stream_content)
+        return output
         
-        return {'status': 'ok',
-                # The base class increments the execution count
-                'execution_count': self.execution_count,
-                'payload': [],
-                'user_expressions': {},
-               }
-    
-# define any other absolutely necessary subclasses - some may be declared in `Swift` module so that Swift code can import them
+#         return {'status': 'ok',
+#                 # The base class increments the execution count
+#                 'execution_count': self.execution_count,
+#                 'payload': [],
+#                 'user_expressions': {},
+#                }
 
 if __name__ == "__main__":
     # Jupyter sends us SIGINT when the user requests execution interruption.
