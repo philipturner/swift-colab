@@ -17,9 +17,6 @@ fileprivate let ipykernel_launcher = Python.import("ipykernel_launcher")
 public func JKRegisterKernel() -> Void {
     print("=== Registering Swift Jupyter kernel ===")
     
-    let swiftKernelPath = "/env/python/swift/swift/swift_kernel.py"
-    let pythonKernelPath = String(ipykernel_launcher.__file__)!
-    
     let kernel_env = make_kernel_env()
     try! validate_kernel_env(kernel_env)
     
@@ -27,7 +24,7 @@ public func JKRegisterKernel() -> Void {
     let kernel_json: PythonObject = [
         "argv": [
             sys.executable,
-            PythonObject(swiftKernelPath),
+            "/env/python/swift/swift/swift_kernel.py",
             "-f",
             "{connection_file}",
         ],
@@ -36,7 +33,7 @@ public func JKRegisterKernel() -> Void {
         "env": kernel_env,
     ]
     
-    print("kernel.json:\n\(json.dumps(kernel_json, indent: 2))\n")
+    //print("kernel.json:\n\(json.dumps(kernel_json, indent: 2))\n")
     
     let kernel_code_name: PythonObject = "swift"
     
@@ -54,17 +51,16 @@ public func JKRegisterKernel() -> Void {
         td.cleanup()
     }
     
-    print("Registered kernel '\(kernel_name)' as '\(kernel_code_name)'!")
+    //print("Registered kernel '\(kernel_name)' as '\(kernel_code_name)'!")
     
-    // Additions from Philip Turner - if the runtime automatically selects these, stop copying and overwriting
-    let kernelSpecDirectory = "/usr/local/share/jupyter/kernels"
-    let swiftSpecDirectory = "\(kernelSpecDirectory)/swift/kernel.json"
-    let pythonSpecDirectory = "\(kernelSpecDirectory)/python3/kernel.json"
+    // Addition from Philip Turner: 
+    // If contents of the kernel initializers do not already match, overwrite Python and force the notebook to restart.
+    let swiftKernelPath = "/env/python/swift/swift/swift_kernel.py"
+    let pythonKernelPath = String(ipykernel_launcher.__file__)!
     
     let fm = FileManager.default
     
-    // If the contents of the file do not already match, overwrite Python and force the notebook to restart.
-    if !fm.contentsEqual(atPath: swiftKernelPath, andPath: pythonKernelPath) { // find a different way to measure that it's already completely installed
+    if !fm.contentsEqual(atPath: swiftKernelPath, andPath: pythonKernelPath) {
         try! fm.copyItem(atPath: swiftKernelPath, toPath: pythonKernelPath)
         
         print("""
