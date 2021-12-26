@@ -55,7 +55,7 @@ class SwiftKernel(Kernel):
             stream_content = {'name': 'stdout', 'text': code}
             self.send_response(self.iopub_socket, 'stream', stream_content)
             
-#         print("do execute was called")
+        print("do execute was called")
 
         return {'status': 'ok',
                 # The base class increments the execution count
