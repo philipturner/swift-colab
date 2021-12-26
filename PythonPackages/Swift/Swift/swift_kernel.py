@@ -29,7 +29,7 @@ class SwiftKernel(Kernel):
             "store_history": store_history,
             "user_expressions": user_expressions,
             "allow_stdin": allow_stdin
-        }
+        })
         log("Do execute completed")
         
         if not silent:
