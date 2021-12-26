@@ -96,7 +96,7 @@ fileprivate func make_kernel_env() -> PythonObject {
 }
 
 fileprivate struct Exception: LocalizedError {
-    var errorDescription: String
+    let errorDescription: String?
 
     init(_ errorDescription: String) { 
         self.errorDescription = errorDescription 
