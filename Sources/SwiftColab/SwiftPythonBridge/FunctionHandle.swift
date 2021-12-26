@@ -18,8 +18,8 @@ class FunctionHandle {
 }
 
 extension PythonObject {
-    private struct NotConvertibleError: Error { 
-        let localizedDescription = "From within Python, called a Swift function did not return a PythonConvertible or Void"
+    private struct NotConvertibleError: LocalizedError { 
+        let errorDescription = "From within Python, called a Swift function did not return a PythonConvertible or Void"
     }
     
     public func registerFunction<T>(name: String, function: @escaping (PythonObject) throws -> T) {
