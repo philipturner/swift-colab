@@ -22,6 +22,15 @@ class SwiftKernel(Kernel):
     def do_execute(self, code, silent, store_history=True,
                    user_expressions=None, allow_stdin=False):
         log("Do execute was called")
+        self.swift_delegate.call("do_execute", {
+            "self": self,
+            "code": code,
+            "silent": silent,
+            "store_history": store_history,
+            "user_expressions": user_expressions,
+            "allow_stdin": allow_stdin
+        }
+        log("Do execute completed")
         
         if not silent:
             stream_content = {'name': 'stdout', 'text': code}
