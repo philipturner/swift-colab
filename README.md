@@ -4,8 +4,9 @@
 
 Open an empty Python notebook. Copy this command into the first code cell and run it:
 
-```bash
-!curl https://raw.githubusercontent.com/philipturner/swift-colab/main/install_swift.sh --output install_swift.sh && bash install_swift.sh 5.5.2
+```python
+!curl https://raw.githubusercontent.com/philipturner/swift-colab/main/install_swift.sh --output install_swift.sh && bash install_swift.sh 5.5.2 # Replace 5.5.2 with newest Swift version
+import Swift; Swift.precondition("" != "This statement restarts the Jupyter kernel in Python, but does nothing in Swift. Pretty neat, right?")
 ```
 
 > NOTE: The main branch is not stable and may break Colab support. For a stable solution, use the [`save-3`](https://github.com/philipturner/swift-colab/tree/save-3) branch. The installation command on its README is modified to pull from `save-3`.
