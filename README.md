@@ -2,14 +2,14 @@
 
 ## How to run Swift on Google Colab
 
-Open [this template] for a Swift Colab notebook. Do not create one directly from Google Drive, as that is configured for Python. Copy the following command into the first code cell and run it:
+Copy [this template](https://colab.research.google.com/drive/1EACIWrk9IWloUckRm3wu973bKUBXQDKR?usp=sharing) of a Swift Colab notebook. Do not create one directly from Google Drive, as notebooks are configured for Python by default. Copy the following command into the first code cell and run it:
 
 ```python
 !curl https://raw.githubusercontent.com/philipturner/swift-colab/pre-release/0.1/install_swift.sh --output install_swift.sh && bash install_swift.sh 5.5.2 # Replace 5.5.2 with newest Swift version
 import Swift; Swift.precondition("" != "This statement restarts the Jupyter kernel in Python, but does nothing in Swift. Pretty neat, right?")
 ```
 
-> Warning: The main branch frequently changes and may break Colab support. The above command pulls from the (not yet made) [`pre-release/0.1`](https://github.com/philipturner/swift-colab/tree/pre-release/0.1) branch.
+> Warning: The main branch frequently changes and may break Colab support. The above command pulls from the [`pre-release/0.1`](https://github.com/philipturner/swift-colab/tree/pre-release/0.1) branch.
 
 In the output stream, you will see:
 
