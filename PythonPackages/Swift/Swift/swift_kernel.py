@@ -14,18 +14,16 @@ def log(message, mode="a"):
     file.close()
 
 class SwiftKernel(Kernel):
-    implementation = 'SwiftKernel' # comment out the default initialization of all of these once I have verified the Swift code doesn't crash
-    implementation_version = '0.1'
-    banner = ''
+#     implementation = 'SwiftKernel' # comment out the default initialization of all of these once I have verified the Swift code doesn't crash
+#     implementation_version = '0.1'
+#     banner = ''
 
-    language_info = {
-        'name': 'swift',
-        'mimetype': 'text/x-swift',
-        'file_extension': '.swift',
-        'version': ''
-    }
-    
-    # TODO: Move the property initialization (shown above) out of Python and into Swift code
+#     language_info = {
+#         'name': 'swift',
+#         'mimetype': 'text/x-swift',
+#         'file_extension': '.swift',
+#         'version': ''
+#     }
     
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
