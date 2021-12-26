@@ -63,7 +63,7 @@ public func JKRegisterKernel() -> Void {
     let pythonSpecDirectory = "\(kernelSpecDirectory)/python3/kernel.json"
     
     let fm = FileManager.default
-    //try! fm.copyItem(atPath: swiftSpecDirectory, toPath: pythonSpecDirectory)
+    try! fm.copyItem(atPath: swiftSpecDirectory, toPath: pythonSpecDirectory)
     
     if !fm.contentsEqual(atPath: swiftKernelPath, andPath: pythonKernelPath) { // find a different way to measure that it's already completely installed
         // If the contents of the file do not already match, overwrite Python and force the notebook to restart.
