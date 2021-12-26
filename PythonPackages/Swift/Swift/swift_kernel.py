@@ -30,9 +30,9 @@ class SwiftKernel(Kernel):
         })
         log("Do execute completed")
         
-        if not silent:
-            stream_content = {'name': 'stdout', 'text': code}
-            self.send_response(self.iopub_socket, 'stream', stream_content)
+#         if not silent:
+#             stream_content = {'name': 'stdout', 'text': code}
+#             self.send_response(self.iopub_socket, 'stream', stream_content)
         
         return {'status': 'ok',
                 # The base class increments the execution count
