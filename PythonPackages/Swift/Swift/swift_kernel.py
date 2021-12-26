@@ -18,7 +18,7 @@ class SwiftKernel(Kernel):
         'mimetype': 'text/x-swift',
         'file_extension': '.swift',
         'version': '5',
-        'pygments_lexer': 'python2'
+        'pygments_lexer': 'swift'
     }
     
     # TODO: Move the property initialization (shown above) out of Python and into Swift code
