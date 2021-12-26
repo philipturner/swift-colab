@@ -21,7 +21,7 @@ In the output stream, you will see:
 ...
 === Swift successfully installed ===
 ...
-(a brief message about why Google Colab was intentionally crashed)
+(a brief message about why Google Colab restarted)
 ```
 
 The kernel will crash and automatically reconnect. That's expected, because it refreshes the runtime and lets Swift override the Python kernel.
