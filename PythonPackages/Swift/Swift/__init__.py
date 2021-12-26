@@ -1,5 +1,9 @@
 from ctypes import *
 from wurlitzer import sys_pipes
+import IPython
+
+def precondition(ignored_argument):
+    IPython.Application.instance().kernel.do_shutdown(True)
 
 def run(swift_string):
     with sys_pipes():
