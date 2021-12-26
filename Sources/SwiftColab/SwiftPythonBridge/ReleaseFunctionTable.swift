@@ -1,5 +1,5 @@
 import PythonKit
-fileprivate let swiftModule = Python.import("swift")
+fileprivate let SwiftModule = Python.import("swift")
 
 @_cdecl("releaseFunctionTable")
 public func releaseFunctionTable(_ tableRef: OwnedPyObjectPointer) -> OwnedPyObjectPointer {
@@ -17,5 +17,5 @@ public func releaseFunctionTable(_ tableRef: OwnedPyObjectPointer) -> OwnedPyObj
         tableObject[key] = noneObject
     }
     
-    return swiftModule.SwiftReturnValue(noneObject, noneObject).ownedPyObject
+    return SwiftModule.SwiftReturnValue(noneObject, noneObject).ownedPyObject
 }
