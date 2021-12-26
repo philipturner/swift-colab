@@ -33,6 +33,7 @@ class SwiftDelegate:
 
 class SwiftError(Exception):
     def __init__(self, localized_description):
+        self.message = localized_description
         super().__init__(localized_description)
         
 class SwiftReturnValue:
