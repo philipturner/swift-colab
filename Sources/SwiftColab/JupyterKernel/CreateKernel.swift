@@ -31,7 +31,7 @@ public func JKCreateKernel(_ jupyterKernelRef: OwnedPyObjectPointer) -> OwnedPyO
     
     // Whether to do code completion. Since the debugger is not yet
     // initialized, we can't do code completion yet.
-    kernel.completion_enabled = false
+//     kernel.completion_enabled = false
     
     kernel.swift_delegate = SwiftModule.SwiftDelegate()
     kernel.registerFunction(name: "do_execute", function: doExecute)
