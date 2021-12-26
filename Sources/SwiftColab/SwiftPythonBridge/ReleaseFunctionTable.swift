@@ -5,8 +5,8 @@ fileprivate let SwiftModule = Python.import("Swift")
 public func releaseFunctionTable(_ tableRef: OwnedPyObjectPointer) -> OwnedPyObjectPointer {
     let tableObject = PythonObject(tableRef)
     
-    let noneObject = Python.None
     let keys = [PythonObject](tableObject.keys())!
+    let noneObject = Python.None
     
     for key in keys {
         guard let address = Int(tableObject[key]) else {
