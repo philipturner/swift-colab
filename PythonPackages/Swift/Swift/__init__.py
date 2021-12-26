@@ -43,7 +43,7 @@ class SwiftReturnValue:
     def unwrap(self):
         if self.__error is not None:
             assert(isinstance(self.__error, SwiftError), "A SwiftReturnValue's error was not a SwiftError object.")
-            raise self.__error
+            raise Exception(self.__error.message)
         return self.__wrapped
 
 # SwiftInteropTest is used by `helloC` in JupyterKernel to validate that SwiftPythonBridge works.
