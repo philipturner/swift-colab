@@ -1,6 +1,6 @@
 import Foundation
 import PythonKit
-fileprivate let swiftModule = Python.import("swift")
+fileprivate let SwiftModule = Python.import("Swift")
 
 // Takes a Python string object as input, then compiles and runs it.
 @_cdecl("runSwiftAsString")
@@ -8,8 +8,8 @@ public func runSwiftAsString(_ pythonStringRef: OwnedPyObjectPointer) -> OwnedPy
     @inline(never)
     func getPythonError(message: String) -> PyObjectPointer {
         print(message)
-        let errorObject = swiftModule.SwiftError(message)
-        return swiftModule.SwiftReturnValue(Python.None, errorObject).ownedPyObject
+        let errorObject = SwiftModule.SwiftError(message)
+        return SwiftModule.SwiftReturnValue(Python.None, errorObject).ownedPyObject
     }
     
     guard let scriptString = String(PythonObject(pythonStringRef)) else {
@@ -42,5 +42,5 @@ public func runSwiftAsString(_ pythonStringRef: OwnedPyObjectPointer) -> OwnedPy
     executeScript.waitUntilExit()
     
     let noneObject = Python.None
-    return swiftModule.SwiftReturnValue(noneObject, noneObject).ownedPyObject
+    return SwiftModule.SwiftReturnValue(noneObject, noneObject).ownedPyObject
 }
