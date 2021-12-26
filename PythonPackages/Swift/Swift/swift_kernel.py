@@ -27,10 +27,21 @@ class SwiftKernel(Kernel):
             "silent": silent,
             "store_history": store_history,
             "user_expressions": user_expressions,
-            "allow_stdin": allow_stdin
+            "allow_stdin": allow_stdin,
         })
-        log("Do execute completed")
         
+        log("Do execute completed")
+        return output
+    
+    def do_complete(self, code, cursor_pos):
+        log("Do complete was called")
+        output = self.swift_delegate.call("do_complete", {
+            "self": self,
+            "code": code,
+            "cursor_pos": cursor_pos,
+        })
+        
+        log("Do complete completed")
         return output
 
 if __name__ == "__main__":
