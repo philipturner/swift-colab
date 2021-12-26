@@ -1,5 +1,5 @@
 import PythonKit
-fileprivate let swiftModule = Python.import("swift")
+fileprivate let SwiftModule = Python.import("Swift")
 
 @_cdecl("callSwiftFromPython")
 public func callSwiftFromPython(_ functionHandleRef: UnsafeRawPointer, _ params: OwnedPyObjectPointer) -> OwnedPyObjectPointer {
@@ -15,9 +15,9 @@ public func callSwiftFromPython(_ functionHandleRef: UnsafeRawPointer, _ params:
     } catch {
         print(error.localizedDescription)
         wrappedObject = Python.None
-        errorObject = swiftModule.SwiftError(error.localizedDescription)
+        errorObject = SwiftModule.SwiftError(error.localizedDescription)
     }
     
-    let returnValue = swiftModule.SwiftReturnValue(wrappedObject, errorObject)
+    let returnValue = SwiftModule.SwiftReturnValue(wrappedObject, errorObject)
     return returnValue.ownedPyObject
 }
