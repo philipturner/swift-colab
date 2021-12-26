@@ -16,8 +16,6 @@ class SwiftKernel(Kernel):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         Swift.call_compiled_func("/opt/swift/lib/libJupyterKernel.so", "JKCreateKernel", self)
-        
-        log("Swift Kernel successfully initialized", mode="w")
     
     def do_execute(self, code, silent, store_history=True,
                    user_expressions=None, allow_stdin=False):
