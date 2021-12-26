@@ -12,5 +12,11 @@ internal func doExecute(_ kwargs: PythonObject) throws -> PythonObject {
         try throwingObject.dynamicallyCall(withArguments: selfRef.iopub_socket, "stream", stream_content)
     }
     
-    return Python.None
+    return [
+        "status": "ok",
+        // The base class increments the execution count
+        "execution_count": selfRef.execution_count,
+        "payload": [],
+        "user_expressions": [:],
+    ]
 }
