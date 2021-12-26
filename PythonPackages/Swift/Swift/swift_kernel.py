@@ -29,7 +29,6 @@ class SwiftKernel(Kernel):
         print("Starting initialization of Swift Kernel")
         ###
         
-        self.swift_delegate = Swift.SwiftDelegate()
         call_compiled_func("/opt/swift/lib/libJupyterKernel.so", "JKCreateKernel", self)
         
         ###
