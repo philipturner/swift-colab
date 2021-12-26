@@ -30,4 +30,4 @@ The kernel will crash and automatically reconnect. That's expected, because it r
 
 > Tip: Do not attempt to run any other code cells while Swift is downloading. Otherwise, Colab may indefinitely wait to reconnect after restarting in Swift mode.
 
-Type anything into the next code cell and it echoes as output. At this time, Swift-Colab can sideload a Jupyter kernel and modify syntax coloring. Compilation and code completion are still in the works.
+Type anything into the next code cell and it echoes as output. At this time, Swift-Colab can sideload an incomplete Jupyter kernel and modify syntax coloring. Code execution and auto-completion are still in the works.
