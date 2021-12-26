@@ -1,5 +1,5 @@
 import PythonKit
-fileprivate let SwiftModule = Python.import("swift")
+fileprivate let SwiftModule = Python.import("Swift")
 
 @_cdecl("releaseFunctionTable")
 public func releaseFunctionTable(_ tableRef: OwnedPyObjectPointer) -> OwnedPyObjectPointer {
