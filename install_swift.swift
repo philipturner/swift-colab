@@ -42,7 +42,7 @@ try fm.createDirectory(atPath: "/env/python", withIntermediateDirectories: true)
 
 let packageSourceDirectory = "/opt/swift/swift-colab/PythonPackages"
 let packageMetadata = [
-    (name: "swift", forceReinstall: true),
+    (name: "Swift", forceReinstall: true),
 ]
 
 for metadata in packageMetadata {
@@ -72,7 +72,7 @@ let backtraceProductsPath = "/opt/swift/packages/swift-backtrace/.build/debug"
 try doCommand(["swiftc", "/opt/swift/swift-colab/Sources/SwiftColab/InstallBacktrace.swift",
                "-L", backtraceProductsPath, "-lBacktrace",
                "-I", backtraceProductsPath,
-               "-D", "DEBUG"],
+               "-Onone"],
                directory: "/opt/swift/tmp")
 try doCommand(["/opt/swift/tmp/InstallBacktrace"])
 */
