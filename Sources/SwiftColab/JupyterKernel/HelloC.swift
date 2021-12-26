@@ -1,13 +1,13 @@
 import PythonKit
 import SwiftPythonBridge
 import Foundation
-fileprivate let swiftModule = Python.import("swift")
+fileprivate let SwiftModule = Python.import("Swift")
 
 @_cdecl("helloC")
 public func helloC(_ meaningOfLife: Int32) -> Int32 {
     print("meaning of life: \(meaningOfLife)")
 
-    let interopTest = swiftModule.SwiftInteropTest()
+    let interopTest = SwiftModule.SwiftInteropTest()
 
     // Direct the logic of SwiftInteropTest's methods from Python to Swift
 
