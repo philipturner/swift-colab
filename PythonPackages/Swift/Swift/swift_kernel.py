@@ -9,7 +9,7 @@ import sys
 from ipykernel.kernelbase import Kernel
 
 class SwiftKernel(Kernel):
-    implementation = 'SwiftKernel'
+    implementation = 'SwiftKernel' # comment out the default initialization of all of these once I have verified the Swift code doesn't crash
     implementation_version = '0.1'
     banner = ''
 
