@@ -60,9 +60,13 @@ class SwiftKernel(Kernel):
 # define any other absolutely necessary subclasses - some may be declared in `Swift` module so that Swift code can import them
 
 if __name__ == "__main__":
+    # Jupyter sends us SIGINT when the user requests execution interruption.
+    # Here, we block all threads from receiving the SIGINT, so that we can
+    # handle it in a specific handler thread.
     signal.pthread_sigmask(signal.SIG_BLOCK, [signal.SIGINT])
     
     from ipykernel.kernelapp import IPKernelApp
-    
+    # We pass the kernel name as a command-line arg, since Jupyter gives those
+    # highest priority (in particular overriding any system-wide config).
     IPKernelApp.launch_instance(
         argv=sys.argv + ["--IPKernelApp.kernel_class=__main__.SwiftKernel"])
