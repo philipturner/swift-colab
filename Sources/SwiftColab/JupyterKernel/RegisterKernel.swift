@@ -63,11 +63,11 @@ public func JKRegisterKernel() -> Void {
     let pythonSpecDirectory = "\(kernelSpecDirectory)/python3/kernel.json"
     
     let fm = FileManager.default
-    try! fm.copyItem(atPath: swiftSpecDirectory, toPath: pythonSpecDirectory)
+    //try! fm.copyItem(atPath: swiftSpecDirectory, toPath: pythonSpecDirectory)
     
     if !fm.contentsEqual(atPath: swiftKernelPath, andPath: pythonKernelPath) { // find a different way to measure that it's already completely installed
         // If the contents of the file do not already match, overwrite Python and force the notebook to restart.
-        //try! fm.copyItem(atPath: swiftKernelPath, toPath: pythonKernelPath)
+        try! fm.copyItem(atPath: swiftKernelPath, toPath: pythonKernelPath)
         
         print("=== Swift-Colab overwrote the Python kernel with Swift. Automatically crashing and restarting the runtime to enter Swift mode. ===")
         print("=== If the runtime does not restart, go to Runtime > Restart runtime (NOT Factory reset runtime). ===")
