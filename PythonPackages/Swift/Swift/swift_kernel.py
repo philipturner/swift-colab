@@ -8,6 +8,11 @@ import sys
 
 from ipykernel.kernelbase import Kernel
 
+def log(message, mode="a"):
+    file = open("/content/install_swift.sh", mode)
+    file.write(message + "\n")
+    file.close()
+
 class SwiftKernel(Kernel):
     implementation = 'SwiftKernel' # comment out the default initialization of all of these once I have verified the Swift code doesn't crash
     implementation_version = '0.1'
@@ -24,39 +29,18 @@ class SwiftKernel(Kernel):
     
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        Swift.call_compiled_func("/opt/swift/lib/libJupyterKernel.so", "JKCreateKernel", self)
         
-        ###
-        print("Starting initialization of Swift Kernel")
-        ###
-        
-        with sys_pipes():
-            Swift.call_compiled_func("/opt/swift/lib/libJupyterKernel.so", "JKCreateKernel", self)
-        
-        ###
-        print("Finishing initialization of Swift Kernel")
-        ###
-        
-        # We don't initialize Swift yet, so that the user has a chance to
-        # "%install" packages before Swift starts. (See doc comment in
-        # `_init_swift`).
-
-        # Whether to do code completion. Since the debugger is not yet
-        # initialized, we can't do code completion yet.
-        
-        self.completion_enabled = False # implement this code in Swift
-        
-        file = open("/content/install_swift.sh", "w")
-        file.write("Hello world, this is overwritten during the initializer \n")
-        file.close()
+        log("Swift Kernel successfully initialized", mode="w")
     
     def do_execute(self, code, silent, store_history=True,
                    user_expressions=None, allow_stdin=False):
+        log("Do execute was called")
+        
         if not silent:
             stream_content = {'name': 'stdout', 'text': code}
             self.send_response(self.iopub_socket, 'stream', stream_content)
-            
-        print("do execute was called")
-
+        
         return {'status': 'ok',
                 # The base class increments the execution count
                 'execution_count': self.execution_count,
