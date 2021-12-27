@@ -11,7 +11,7 @@ func preprocess_and_execute(_ selfRef: PythonObject, code: PythonObject) throws 
         let preprocessed = try preprocess(selfRef, code: code)
         return execute(selfRef, code: preprocessed)
     } catch(let e as PreprocessorException) {
-        return PreprocessorError(exception: e.localizedDescription.pythonObject)
+        return PreprocessorError(exception: e)
     }
 }
 
@@ -38,7 +38,7 @@ fileprivate func file_name_for_source_location(_ selfRef: PythonObject) -> Strin
 }
 
 fileprivate func preprocess(_ selfRef: PythonObject, code: PythonObject) throws -> PythonObject {
-    let lines = (code.split as PythonObject)("\n")
+    let lines = code[dynamicMember: "split"]("\n")
     let preprocessed_lines = try Array(Python.enumerate(lines)).map { tupleObject -> PythonObject in
         let (i, line) = tupleObject.tuple2
         return try preprocess_line(selfRef, line_index: i, line: line)
