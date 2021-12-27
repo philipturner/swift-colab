@@ -9,7 +9,9 @@ protocol ExecutionResult: CustomDebugStringConvertible { }
 protocol ExecutionResultSuccess: ExecutionResult { }
 
 /// Protocol for the result of unsuccessfully executing code.
-protocol ExecutionResultError: ExecutionResult { }
+protocol ExecutionResultError: ExecutionResult { 
+    var description: String
+}
 
 /// The code executed successfully, and did not produce a value.
 struct SuccessWithoutValue: ExecutionResultSuccess {
