@@ -43,7 +43,7 @@ fileprivate func preprocess_line(_ selfRef: PythonObject, line_index: PythonObje
     ^\s*%disableCompletion\s*$
     """###
     if let disable_completion_match = Optional(re.match(regexExpression, line)) {
-        // try handle disable completion
+        try handle_disable_completion(selfRef)
         return ""
     }
     
@@ -51,7 +51,7 @@ fileprivate func preprocess_line(_ selfRef: PythonObject, line_index: PythonObje
     ^\s*%enableCompletion\s*$
     """###
     if let enable_completion_match = Optional(re.match(regexExpression, line)) {
-        // try enable disable completion
+        try handle_enable_completion(selfRef)
         return ""
     }
     
