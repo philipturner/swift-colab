@@ -8,7 +8,7 @@ fileprivate let sys = Python.import("sys")
 ///
 /// This must happen after package installation, because the ClangImporter
 /// does not see modulemap files that appear after it has started.
-func initSwift(_ selfRef: PythonObject) throws {
+func init_swift(_ selfRef: PythonObject) throws {
     try init_repl_process(selfRef)
     try init_kernel_communicator(selfRef)
     try init_int_bitwidth(selfRef)
