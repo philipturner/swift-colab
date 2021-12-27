@@ -1,12 +1,13 @@
 import Foundation
 import PythonKit
-let lldb = Python.import("lldb")
+fileprivate let lldb = Python.import("lldb")
+fileprivate let os = Python.import("os")
 
 /// Initializes Swift so that it's ready to start executing user code.
 ///
 /// This must happen after package installation, because the ClangImporter
 /// does not see modulemap files that appear after it has started.
-func init_swift(_ selfRef: PythonObject) throws {
+func initSwift(_ selfRef: PythonObject) throws {
     try init_repl_process(selfRef)
     try init_kernel_communicator(selfRef)
     try init_int_bitwidth(selfRef)
@@ -34,5 +35,11 @@ func init_repl_process(_ selfRef: PythonObject) throws {
         debugger.HandleCommand("setings append target.swift-module-search-paths \(selfRef.swift_module_search_path)")
     }
     
+    // LLDB crashes while trying to load some Python stuff on Mac. Maybe
+    // something is misconfigured? This works around the problem by telling
+    // LLDB not to load the Python scripting stuff, which we don't use
+    // anyways.
+    debugger.SetScriptLanguage(lldb.eScriptLanguageNone)
     
+    let repl_swift = 
 }
