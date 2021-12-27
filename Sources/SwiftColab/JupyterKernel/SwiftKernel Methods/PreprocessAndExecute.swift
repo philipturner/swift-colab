@@ -7,8 +7,8 @@ fileprivate let sys = Python.import("sys")
 
 func execute(_ selfRef: PythonObject, code: PythonObject) -> ExecutionResult {
     let fileName = file_name_for_source_location(selfRef)
-    let locationDirective = "#sourceLocation(file: \(fileName), line: 1)"
-    let codeWithLocationDirective = locationDirective + PythonObject("\n") + code
+    let locationDirective: PythonObject = "#sourceLocation(file: \(fileName), line: 1)"
+    let codeWithLocationDirective: PythonObject = locationDirective + "\n" + code
     
     let result = selfRef.target.EvaluateExpression(
         codeWithLocationDirective, selfRef.expr_opts)
@@ -50,7 +50,7 @@ fileprivate func read_include(_ selfRef: PythonObject, line_index: PythonObject,
             
             code = try f.read.throwing.dynamicallyCall(withArguments: [])
             f.close()
-        } catch PythonError.exception(let error, let traceback) {
+        } catch PythonError.exception(let error, _) {
             precondition(error.__class__ == Python.IOError)
         }
     }
