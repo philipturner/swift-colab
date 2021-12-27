@@ -33,7 +33,7 @@ struct SuccessWithValue: ExecutionResultSuccess {
     }
     
     var debugDescription: String {
-        "SuccessWithValue(result: \(Python.repr(result)), description: \(Python.repr(result.checking.description ?? "not found"))"
+        "SuccessWithValue(result: \(Python.repr(result)), description: \(Python.repr(result.description))"
     }
 }
 
@@ -58,4 +58,17 @@ struct PreprocessorException: LocalizedError {
 struct PackageInstallException: LocalizedError {
     var errorDescription: String?
     init(_ message: String) { errorDescription = message }
+}
+
+/// There was a compile or runtime error.
+struct SwiftError: ExecutionResultError {
+    var result: PythonObject // SBValue
+    
+    var description: String {
+        result.error.description
+    }
+    
+    var debugDescription: String {
+        "SwiftError(result: \(Python.repr(result)), description: \(description))"
+    }
 }
