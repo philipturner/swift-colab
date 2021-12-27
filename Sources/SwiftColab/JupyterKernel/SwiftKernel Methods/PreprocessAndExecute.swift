@@ -33,7 +33,7 @@ fileprivate func read_include(_ selfRef: PythonObject, line_index: PythonObject,
     """###)
     guard let name = Optional(re.match(regexExpression, rest_of_line))?.group(1) else {
         throw PreprocessorException(
-            "Line \(line_index + 1): %%include must be followed by a name in quotes")
+            "Line \(line_index + 1): %include must be followed by a name in quotes")
     }
     
     let include_paths = [
