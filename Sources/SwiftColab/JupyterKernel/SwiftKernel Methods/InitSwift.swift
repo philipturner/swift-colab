@@ -124,7 +124,12 @@ fileprivate func init_kernel_communicator(_ selfRef: PythonObject) throws {
 }
 
 fileprivate func init_int_bitwidth(_ selfRef: PythonObject) throws {
+    let result = execute(selfRef, code: "Int.bitWidth")
+    guard result as? SuccessWithValue else {
+        throw Exception("Expected value from Int.bitWidth, but got: \(String(reflecting: result))")
+    }
     
+    selfRef._int_bitwidth = Python.int(result.result.GetData().GetSignedInt32(lldb.SBError(), 0)))
 }
 
 fileprivate func init_sigint_handler(_ selfRef: PythonObject) throws {
