@@ -107,7 +107,7 @@ fileprivate func init_kernel_communicator(_ selfRef: PythonObject) throws {
     
     let session = selfRef.session
     let id = json.dumps(session.session)
-    let key = jon.dumps(session.key.decode("utf8"))
+    let key = json.dumps(session.key.decode("utf8"))
     let username = json.dumps(session.username)
     
     let decl_code: PythonObject = """
@@ -117,6 +117,10 @@ fileprivate func init_kernel_communicator(_ selfRef: PythonObject) throws {
                 id: \(id), key: \(key), username: \(username)))
     }
     """
+    
+    if let result = preprocess_and_execute(selfRef, code: decl_code) as? ExecutionResultError {
+        throw Exception("Error declaring JupyterKernel: \(String(reflecting: result))")
+    }
 }
 
 fileprivate func init_int_bitwidth(_ selfRef: PythonObject) throws {
