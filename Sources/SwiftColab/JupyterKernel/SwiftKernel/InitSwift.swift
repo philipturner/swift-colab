@@ -57,7 +57,7 @@ fileprivate func init_repl_process(_ selfRef: PythonObject) throws {
     selfRef.main_bp = main_bp
     
     let script_dir = os.path.dirname(os.path.realpath(sys.argv[0]))
-    var repl_env: [PythonObject] = ["PYTHONPATH=\(script_dir)"]
+    var repl_env = [PythonObject("PYTHONPATH=\(script_dir)")]
     
     for key in os.environ {
         guard key != "PYTHONPATH", 
