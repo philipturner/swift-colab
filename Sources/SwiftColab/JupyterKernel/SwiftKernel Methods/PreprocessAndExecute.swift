@@ -26,9 +26,9 @@ fileprivate func file_name_for_source_location(_ selfRef: PythonObject) -> Strin
 }
 
 fileprivate func read_include(_ selfRef: PythnonObject, line_index: PythonObject, rest_of_line: PythonObject) throws -> PythonObject {
-    let regexExpression = PythonObject("""
+    let regexExpression = PythonObject(###"""
     ^\s*"([^"]+)"\s*$
-    """)
+    """###)
     guard let name_match = Optional(re.match(regexExpression, rest_of_line)) else {
         throw PreprocessorException(
             "Line \(line_index + 1): %%include must be followed by a name in quotes"
