@@ -2,6 +2,7 @@ import Foundation
 import PythonKit
 fileprivate let lldb = Python.import("lldb")
 fileprivate let os = Python.import("os")
+fileprivate let sys = Python.import("sys")
 
 /// Initializes Swift so that it's ready to start executing user code.
 ///
