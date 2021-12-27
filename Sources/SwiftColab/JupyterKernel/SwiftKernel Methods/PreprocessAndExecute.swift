@@ -11,7 +11,7 @@ func preprocess_and_execute(_ selfRef: PythonObject, code: PythonObject) throws 
         let preprocessed = try preprocess(selfRef, code: code)
         return try execute(selfRef, code: preprocessed)
     } catch(let e as PreprocessorException) {
-        return PreprocessorError(e.localizedDescription.pythonObject)
+        return PreprocessorError(exception: e.localizedDescription.pythonObject)
     }
 }
 
@@ -38,8 +38,8 @@ fileprivate func file_name_for_source_location(_ selfRef: PythonObject) -> Strin
 }
 
 fileprivate func preprocess(_ selfRef: PythonObject, code: PythonObject) throws -> PythonObject {
-    let lines = code.split("\n")
-    let preprocessed_lines = try Array(Python.enumerate(lines)).map { tupleObject in
+    let lines = (code.split as PythonObject)("\n")
+    let preprocessed_lines = try Array(Python.enumerate(lines)).map { tupleObject -> PythonObject in
         let (i, line) = tupleObject.tuple2
         return try preprocess_line(selfRef, line_index: i, line: line)
     }
@@ -62,7 +62,7 @@ fileprivate func preprocess_line(_ selfRef: PythonObject, line_index: PythonObje
     regexExpression = ###"""
     ^\s*%disableCompletion\s*$
     """###
-    if let disable_completion_match = Optional(re.match(regexExpression, line)) {
+    if let _ = Optional(re.match(regexExpression, line)) {
         try handle_disable_completion(selfRef)
         return ""
     }
@@ -70,7 +70,7 @@ fileprivate func preprocess_line(_ selfRef: PythonObject, line_index: PythonObje
     regexExpression = ###"""
     ^\s*%enableCompletion\s*$
     """###
-    if let enable_completion_match = Optional(re.match(regexExpression, line)) {
+    if let _ = Optional(re.match(regexExpression, line)) {
         try handle_enable_completion(selfRef)
         return ""
     }
