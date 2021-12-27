@@ -14,7 +14,7 @@ func init_swift(_ selfRef: PythonObject) throws {
     try init_repl_process(selfRef)
     try init_kernel_communicator(selfRef)
     try init_int_bitwidth(selfRef)
-    try init_sigint_handler(selfRef)
+    init_sigint_handler(selfRef)
     
     // We do completion by default when the toolchain has the SBTarget.CompleteCode API.
     // The user can disable/enable using "%disableCompletion" and "%enableCompletion".
@@ -134,8 +134,7 @@ fileprivate func init_int_bitwidth(_ selfRef: PythonObject) throws {
     selfRef._int_bitwidth = Python.int(result.result.GetData().GetSignedInt32(lldb.SBError(), 0)))
 }
 
-fileprivate func init_sigint_handler(_ selfRef: PythonObject) throws {
-    let sigint_handler = SwiftModule.SIGINTHandler(selfRef)
-    selfRef.sigint_handler = sigint_handler
-    sigint_handler.start()
+fileprivate func init_sigint_handler(_ selfRef: PythonObject) {
+    selfRef.sigint_handler = SwiftModule.SIGINTHandler(selfRef)
+    selfRef.sigint_handler.start()
 }
