@@ -2,6 +2,8 @@ import Foundation
 import PythonKit
 fileprivate let lldb = Python.import("lldb")
 fileprivate let re = Python.import("re")
+fileprivate let os = Python.import("os")
+fileprivate let sys = Python.import("sys")
 
 func execute(_ selfRef: PythonObject, code: PythonObject) -> ExecutionResult {
     let fileName = file_name_for_source_location(selfRef)
@@ -29,10 +31,20 @@ fileprivate func read_include(_ selfRef: PythnonObject, line_index: PythonObject
     let regexExpression = PythonObject(###"""
     ^\s*"([^"]+)"\s*$
     """###)
-    guard let name_match = Optional(re.match(regexExpression, rest_of_line)) else {
+    guard let name = Optional(re.match(regexExpression, rest_of_line)).group(1) else {
         throw PreprocessorException(
-            "Line \(line_index + 1): %%include must be followed by a name in quotes"
+            "Line \(line_index + 1): %%include must be followed by a name in quotes")
     }
     
+    let include_paths = [
+        os.path.dirname(os.path.realpath(sys.argv[0])),
+        os.path.realpath("."),
+    ]
+    var code = Python.None
     
+    for include_path in include_paths {
+        do {
+            
+        }
+    }
 }
