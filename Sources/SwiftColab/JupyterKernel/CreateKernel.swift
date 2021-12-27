@@ -8,11 +8,6 @@ public func JKCreateKernel(_ jupyterKernelRef: OwnedPyObjectPointer) -> OwnedPyO
     let noneObject = Python.None
     let errorObject = noneObject
     
-    ///
-    print("Starting initialization of Swift Kernel from Swift")
-    defer { print("Finishing initialization of Swift Kernel from Swift") }
-    ///
-    
     let kernel = PythonObject(jupyterKernelRef)
     kernel.implementation = "SwiftKernel"
     kernel.implementation_version = "0.1"
