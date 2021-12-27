@@ -22,6 +22,11 @@ func do_complete(_ kwargs: PythonObject) throws -> PythonObject {
     throw CompletionNotImplementedError()
 }
 
-func handle_disable_completion(_ selfRef: PythonObject) throws -> PythonObject {
-    
+func handle_disable_completion(_ selfRef: PythonObject) throws {
+    selfRef.completion_enabled = false
+    try selfRef.send_response.throwing
+        .dynamicallyCall(withArguments: selfRef.iopub_socket, "stream", [
+        "name": "stdout",
+        "text": "Completion disabled!\n"
+    ])
 }
