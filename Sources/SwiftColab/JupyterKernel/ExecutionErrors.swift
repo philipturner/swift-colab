@@ -10,7 +10,7 @@ struct NotImplementedError: LocalizedError {
 }
 
 extension ExecutionResultError {
-    func description() throws {
+    func description() throws -> String {
         throw NotImplementedError()
     }
 }
