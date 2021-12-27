@@ -1,6 +1,7 @@
 import Foundation
 import PythonKit
 fileprivate let lldb = Python.import("lldb")
+fileprivate let re = Python.import("re")
 
 func execute(_ selfRef: PythonObject, code: PythonObject) -> ExecutionResult {
     let fileName = file_name_for_source_location(selfRef)
@@ -22,4 +23,8 @@ func execute(_ selfRef: PythonObject, code: PythonObject) -> ExecutionResult {
 
 fileprivate func file_name_for_source_location(_ selfRef: PythonObject) -> String {
     "<Cell \(selfRef.execution_count)>"
+}
+
+fileprivate func read_include(_ selfRef: PythnonObject, line_index: PythonObject, rest_of_line: PythonObject) throws -> PythonObject {
+    guard let name_match = Optional(re.match(
 }
