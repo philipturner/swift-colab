@@ -28,5 +28,11 @@ struct SuccessWithValue: ExecutionResultSuccess {
     ///   (Int) $R0 = 64
     func valueDescription() -> String {
         let stream = lldb.SBStream()
+        result.GetDescription(stream)
+        return stream.GetData()
+    }
+    
+    var debugDescription: String {
+        "SuccessWithValue(result=\(result), description=\(result.checking.description ?? "not found")"
     }
 }
