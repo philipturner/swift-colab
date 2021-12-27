@@ -1,6 +1,5 @@
 import Foundation
 import PythonKit
-import SwiftPythonBridge
 
 func doComplete(_ kwargs: PythonObject) throws -> PythonObject {
     let selfRef = kwargs["self"]
