@@ -26,5 +26,5 @@ fileprivate func file_name_for_source_location(_ selfRef: PythonObject) -> Strin
 }
 
 fileprivate func read_include(_ selfRef: PythnonObject, line_index: PythonObject, rest_of_line: PythonObject) throws -> PythonObject {
-    guard let name_match = Optional(re.match(
+    guard let name_match = Optional(re.match(#"^\s*"([^"]+)"\s*$"#)
 }
