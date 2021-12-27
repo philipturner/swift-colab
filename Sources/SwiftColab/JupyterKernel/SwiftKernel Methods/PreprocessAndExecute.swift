@@ -7,8 +7,8 @@ fileprivate let sys = Python.import("sys")
 
 func execute(_ selfRef: PythonObject, code: PythonObject) -> ExecutionResult {
     let fileName = file_name_for_source_location(selfRef)
-    let locationDirective: PythonObject = "#sourceLocation(file: \(fileName), line: 1)"
-    let codeWithLocationDirective: PythonObject = locationDirective + "\n" + code
+    let locationDirective = PythonObject("#sourceLocation(file: \(fileName), line: 1)")
+    let codeWithLocationDirective = locationDirective + "\n" + code
     
     let result = selfRef.target.EvaluateExpression(
         codeWithLocationDirective, selfRef.expr_opts)
