@@ -50,6 +50,16 @@ func do_complete(_ kwargs: PythonObject) -> PythonObject {
     let `prefix` = sbresponse.GetPrefix()
     var insertable_matches: [PythonObject] = []
     
+    for i in Python.range(sbresponse.GetNumMatches()) {
+        let sbmatch = sbresponse.GetMatchAtIndex(i)
+        let insertable_match = `prefix` + sbmatch.GetInsertable()
+        if insertable_match.startswith("_") {
+            continue
+        }
+        
+        insertable_matches.append(insertable_match)
+    }
+    
     return getReturnValue(matches: insertable_matches, 
                           cursor_start: cursor_pos - Python.len(`prefix`))
 }
