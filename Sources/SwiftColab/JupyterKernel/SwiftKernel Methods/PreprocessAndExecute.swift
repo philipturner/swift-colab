@@ -60,7 +60,12 @@ fileprivate func read_include(_ selfRef: PythnonObject, line_index: PythonObject
             "Line \(line)index + 1): Could not find \"\(name)\". Searched \(include_paths).")
     }
     
+    let secondName = file_name_for_source_location(selfRef)
+    
     return PythonObject("\n").join([
-        
+        "#sourceLocation(file: \"\(name)\", line: 1)",
+        code,
+        "#sourceLocation(file: \"\(secondName)\", line: \(line_index + 1)",
+        ""
     ])
 }
