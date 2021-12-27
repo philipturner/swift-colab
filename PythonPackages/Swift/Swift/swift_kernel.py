@@ -12,6 +12,21 @@ from ipykernel.kernelbase import Kernel
 #     with open("/content/install_swift.sh", mode) as f:
 #         f.write(message + "\n")
 
+# Interrupts currently-executing code whenever the process receives a SIGINT.
+class SIGINTHandler(threading.Thread):
+    def __init__(self, kernel):
+        self.daemon = True
+        super().__init__()
+        self.kernel = kernel
+
+    def run(self):
+        try:
+            while True:
+                signal.sigwait([signal.SIGINT])
+                self.kernel.process.SendAsyncInterrupt()
+        except Exception as e:
+            self.kernel.log.error(f"Exception in SIGINTHandler: {str(e)}")
+
 class SwiftKernel(Kernel):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
