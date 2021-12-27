@@ -25,22 +25,31 @@ fileprivate func send_response(_ selfRef: PythonObject, text: String) throws {
     ])
 }
 
-func do_complete(_ kwargs: PythonObject) throws -> PythonObject {
+func do_complete(_ kwargs: PythonObject) -> PythonObject {
     let selfRef = kwargs["self"]
     let cursor_pos = kwargs["cursor_pos"]
     
-    if !Bool(selfRef.completion_enabled)! {
-        return [
+    func getReturnValue(matches: [PythonObject], cursor_start: PythonObject) -> PythonObject {
+        [
             "status": "ok",
-            "matches": [],
-            "cursor_start": cursor_pos,
+            "matches": PythonObject(matches),
+            "cursor_start": cursor_start,
             "cursor_end": cursor_pos,
         ]
     }
     
-    struct CompletionNotImplementedError: LocalizedError {
-        let errorDescription: String? = "`do_complete` has not been implemented for the Swift Kernel."
+    if !Bool(selfRef.completion_enabled)! {
+        return getReturnValue(matches: [], cursor_start: cursor_pos)
     }
     
-    throw CompletionNotImplementedError()
+    let code = kwargs["code"]
+    let code_to_cursor = code[(..<cursor_pos).pythonObject]
+    let sbresponse = selfRef.target.CompleteCode(
+        selfRef.swift_language, Python.None, code_to_cursor)
+    
+    let `prefix` = sbresponse.GetPrefix()
+    var insertable_matches: [PythonObject] = []
+    
+    return getReturnValue(matches: insertable_matches, 
+                          cursor_start: cursor_pos - Python.len(`prefix`))
 }
