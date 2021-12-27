@@ -36,7 +36,7 @@ fileprivate func sendStdout(kernel: PythonObject, stdout: PythonObject) throws {
             
 
         try sendStdout(kernel: kernel, stdout:
-                       stdout[(clear_sequence_index + clear_sequence_length...).pythonObject])
+                       stdout[((clear_sequence_index + clear_sequence_length)...).pythonObject])
     } else {
         try kernel.send_response.throwing.dynamicallyCall(withArguments:
             kernel.iopub_socket, "stream", ["name": "stdout", "text": stdout])
