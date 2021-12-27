@@ -22,3 +22,6 @@ func do_complete(_ kwargs: PythonObject) throws -> PythonObject {
     throw CompletionNotImplementedError()
 }
 
+func handle_disable_completion(_ selfRef: PythonObject) throws -> PythonObject {
+    
+}
