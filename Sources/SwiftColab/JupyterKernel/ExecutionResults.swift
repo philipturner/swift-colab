@@ -49,3 +49,13 @@ struct PreprocessorError: ExecutionResultError {
         "PreprocessorError(exception: \(String(reflecting: exception)))"
     }
 }
+
+struct PreprocessorException: LocalizedError {
+    var errorDescription: String?
+    init(_ message: String) { errorDescription = message }
+}
+
+struct PackageInstallException: LocalizedError {
+    var errorDescription: String?
+    init(_ message: String) { errorDescription = message }
+}
