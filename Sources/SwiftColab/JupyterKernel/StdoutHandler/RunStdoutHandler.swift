@@ -9,6 +9,10 @@ fileprivate func getAndSendStdout(_ selfRef: PythonObject) throws {
     
 }
 
+fileprivate func getStdout(_ selfRef: PythonObject) throws {
+    
+}
+
 fileprivate func sendStdout(_ selfRef: PythonObject, stdout: PythonObject) throws {
     
 }
