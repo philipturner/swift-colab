@@ -18,5 +18,7 @@ public func JKCreateStdoutHandler(_ argsRef: OwnedPyObjectPointer) -> OwnedPyObj
     
     // Still need to do more here
     
+    // put the member functions in the same file
+    
     return SwiftModule.SwiftReturnValue(noneObject, errorObject).ownedPyObject
 }
