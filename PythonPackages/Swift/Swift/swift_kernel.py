@@ -8,20 +8,18 @@ import sys
 
 from ipykernel.kernelbase import Kernel
 
-def log(message, mode="a"):
-    with open("/content/install_swift.sh", mode) as f:
-        f.write(message + "\n")
+# def log(message, mode="a"):
+#     with open("/content/install_swift.sh", mode) as f:
+#         f.write(message + "\n")
 
 class SwiftKernel(Kernel):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         Swift.call_compiled_func("/opt/swift/lib/libJupyterKernel.so", "JKCreateKernel", self)
-        log("Initialized Swift Kernel", "w")
     
     def do_execute(self, code, silent, store_history=True,
                    user_expressions=None, allow_stdin=False):
-        log("Do execute was called")
-        output = self.swift_delegate.call("do_execute", {
+        return self.swift_delegate.call("do_execute", {
             "self": self,
             "code": code,
             "silent": silent,
@@ -29,20 +27,13 @@ class SwiftKernel(Kernel):
             "user_expressions": user_expressions,
             "allow_stdin": allow_stdin,
         })
-        
-        log("Do execute completed")
-        return output
     
     def do_complete(self, code, cursor_pos):
-        log("Do complete was called")
-        output = self.swift_delegate.call("do_complete", {
+        return self.swift_delegate.call("do_complete", {
             "self": self,
             "code": code,
             "cursor_pos": cursor_pos,
         })
-        
-        log("Do complete completed")
-        return output
 
 if __name__ == "__main__":
     # Jupyter sends us SIGINT when the user requests execution interruption.
