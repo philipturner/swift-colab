@@ -44,6 +44,7 @@ fileprivate func sendStdout(kernel: PythonObject, stdout: PythonObject) throws {
         try sendStdout(kernel: kernel, stdout:
                        stdout[clear_sequence_index + Python.len(clear_sequence)...])
     } else {
-        
+        try kernel.send_response.throwing.dynamicallyCall(withArguments:
+            kernel.iopub_socket, "stream", ["name": "stdout", "text": stdout])
     }
 }
