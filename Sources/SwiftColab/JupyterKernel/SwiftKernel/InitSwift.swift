@@ -23,7 +23,7 @@ fileprivate struct Exception: LocalizedError {
     init(_ message: String) { errorDescription = message }
 }
 
-func init_repl_process(_ selfRef: PythonObject) throws {
+fileprivate func init_repl_process(_ selfRef: PythonObject) throws {
     guard let debugger = Optional(lldb.SBDebugger.Create()) else {
         throw Exception("could not start debugger")
     }
@@ -96,4 +96,16 @@ func init_repl_process(_ selfRef: PythonObject) throws {
     expr_opts.SetTimeoutInMicroSeconds(0)
     
     selfRef.main_thread = process.GetThreadAtIndex(0)
+}
+
+fileprivate func init_kernel_communicator(_ selfRef: PythonObject) throws {
+    
+}
+
+fileprivate func init_int_bitwidth(_ selfRef: PythonObject) throws {
+    
+}
+
+fileprivate func init_sigint_handler(_ selfRef: PythonObject) throws {
+    
 }
