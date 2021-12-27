@@ -69,5 +69,8 @@ func init_repl_process(_ selfRef: PythonObject) throws {
     
     // Turn off "disable ASLR" because it uses the "personality" syscall in
     // a way that is forbidden by the default Docker security policy.
-    
+    let launch_info = target.GetLaunchInfo()
+    let launch_flags = launch_info.GetLaunchFlags()
+    launch_info.SetLaunchFlags(launch_flags & ~lldb.eLaunchFlagDisableASLR)
+    target.SetLaunchInfo(launch_info)
 }
