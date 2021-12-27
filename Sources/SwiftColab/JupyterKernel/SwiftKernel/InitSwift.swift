@@ -91,4 +91,9 @@ func init_repl_process(_ selfRef: PythonObject) throws {
     expr_opts.SetREPLMode(true)
     expr_opts.SetUnwindOnError(false)
     expr_opts.SetGenerateDebugInfo(true)
+    
+    // Sets an infinite timeout so that users can run aribtrarily long computations.
+    expr_opts.SetTimeoutInMicroSeconds(0)
+    
+    selfRef.main_thread = process.GetThreadAtIndex(0)
 }
