@@ -16,5 +16,7 @@ public func JKCreateStdoutHandler(_ argsRef: OwnedPyObjectPointer) -> OwnedPyObj
     handler.stop_event = threading.Event()
     handler.had_stdout = false
     
+    // Still need to do more here
+    
     return SwiftModule.SwiftReturnValue(noneObject, errorObject).ownedPyObject
 }
