@@ -1,7 +1,7 @@
 import Foundation
 import PythonKit
 
-fileprivate func getStdout(_ selfRef: PythonObject) -> [PythonObject] throws {
+fileprivate func getStdout(_ selfRef: PythonObject) throws -> [PythonObject] {
     var output: [PythonObject] = []
     
     while true {
@@ -28,13 +28,13 @@ fileprivate func sendStdout(kernel: PythonObject, stdout: PythonObject) throws {
     
     if clear_sequence_index != -1 {
         try sendStdout(kernel: kernel, stdout:
-                       stdout[...clear_sequence_index])
+                       stdout[.init(...clear_sequence_index)])
         
         try kernel.send_response.throwing.dynamicallyCall(withArguments:
             kernel.iopub_socket, "clear_output", ["wait": false])
        
         try sendStdout(kernel: kernel, stdout:
-                       stdout[clear_sequence_index + Python.len(clear_sequence)...])
+                       stdout[.init(clear_sequence_index + Python.len(clear_sequence)...)])
     } else {
         try kernel.send_response.throwing.dynamicallyCall(withArguments:
             kernel.iopub_socket, "stream", ["name": "stdout", "text": stdout])
@@ -62,6 +62,6 @@ func runStdoutHandler(_ selfRef: PythonObject) -> PythonObject {
         
         try getAndSendStdout(selfRef)
     } catch(let e) {
-        selfRef.kernel.log.error("Exception in StdoutHandler: \(Python.str(e))")
+        selfRef.kernel.log.error("Exception in StdoutHandler: \(Python.str(e.localizedDescription))")
     }
 }
