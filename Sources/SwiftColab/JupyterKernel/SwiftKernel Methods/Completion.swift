@@ -24,9 +24,24 @@ func do_complete(_ kwargs: PythonObject) throws -> PythonObject {
 
 func handle_disable_completion(_ selfRef: PythonObject) throws {
     selfRef.completion_enabled = false
+    try send_response(selfRef, text: "Completion disabled!\n")
+}
+
+func handle_enable_completion(_ selfRef: PythonObject) throws {
+    guard Bool(Python.hasattr(selfRef.target, "CompleteCode"))! else {
+        try send_response(selfRef, text: "Completion NOT enabled because toolchain does not " +
+                                         "have CompleteCode API.\n")
+        return
+    }
+    
+    selfRef.completion_enabled = true
+    try send_response(selfRef, text: "Completion enabled!\n")
+}
+
+fileprivate func send_response(_ selfRef: PythonObject, text: String) throws {
     try selfRef.send_response.throwing
         .dynamicallyCall(withArguments: selfRef.iopub_socket, "stream", [
         "name": "stdout",
-        "text": "Completion disabled!\n"
+        "text": message
     ])
 }
