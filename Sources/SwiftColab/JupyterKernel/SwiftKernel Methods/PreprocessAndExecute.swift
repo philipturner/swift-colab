@@ -1,9 +1,19 @@
 import Foundation
 import PythonKit
+
 fileprivate let lldb = Python.import("lldb")
 fileprivate let re = Python.import("re")
 fileprivate let os = Python.import("os")
 fileprivate let sys = Python.import("sys")
+
+func preprocess_and_execute(_ selfRef: PythonObject, code: PythonObject) throws -> Any {
+    do {
+        let preprocessed = try preprocess(selfRef, code: code)
+        return try execute(selfRef, code: preprocessed)
+    } catch(let e as PreprocessorException) {
+        return PreprocessorError(e.localizedDescription.pythonObject)
+    }
+}
 
 func execute(_ selfRef: PythonObject, code: PythonObject) -> ExecutionResult {
     let fileName = file_name_for_source_location(selfRef)
