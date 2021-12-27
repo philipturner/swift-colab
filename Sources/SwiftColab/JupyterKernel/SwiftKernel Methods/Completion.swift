@@ -3,10 +3,9 @@ import PythonKit
 
 func do_complete(_ kwargs: PythonObject) throws -> PythonObject {
     let selfRef = kwargs["self"]
+    let cursor_pos = kwargs["cursor_pos"]
     
     if !Bool(selfRef.completion_enabled)! {
-        let cursor_pos = kwargs["cursor_pos"]
-        
         return [
             "status": "ok",
             "matches": [],
