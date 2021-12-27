@@ -31,17 +31,37 @@ fileprivate func file_name_for_source_location(_ selfRef: PythonObject) -> Strin
 ///
 /// Does not process "%install" directives, because those need to be
 /// handled before everything else.
-fileprivate func preprocess_line(_ selfRef: PythonObject, line_index: PythonObject, line: PythonObject) {
-    let regexExpression = PythonObject(###"""
+fileprivate func preprocess_line(_ selfRef: PythonObject, line_index: PythonObject, line: PythonObject) throws -> PythonObject {
+    var regexExpression: PythonObject = ###"""
     ^\s*%include (.*)$
-    """###)
+    """###
+    if let include_match = Optional(re.match(regexExpression, line)) {
+        return try read_include(selfRef, line_index, include_match.group(1))
+    }
     
+    regexExpression = ###"""
+    ^\s*%disableCompletion\s*$
+    """###
+    if let disable_completion_match = Optional(re.match(regexExpression, line)) {
+        // try handle disable completion
+        return ""
+    }
+    
+    regexExpression = ###"""
+    ^\s*%enableCompletion\s*$
+    """###
+    if let enable_completion_match = Optional(re.match(regexExpression, line)) {
+        // try enable disable completion
+        return ""
+    }
+    
+    return line
 }
 
 fileprivate func read_include(_ selfRef: PythonObject, line_index: PythonObject, rest_of_line: PythonObject) throws -> PythonObject {
-    let regexExpression = PythonObject(###"""
+    let regexExpression: PythonObject = ###"""
     ^\s*"([^"]+)"\s*$
-    """###)
+    """###
     guard let name = Optional(re.match(regexExpression, rest_of_line))?.group(1) else {
         throw PreprocessorException(
             "Line \(line_index + 1): %include must be followed by a name in quotes")
