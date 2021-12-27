@@ -12,5 +12,18 @@ protocol ExecutionResultError: ExecutionResult { }
 
 /// The code executed successfully, and did not produce a value.
 struct SuccessWithoutValue: ExecutionResultSuccess {
+    var debugDescription: String {
+        "SuccessWithoutValue()"
+    }
+}
+
+/// The code executed successfully, and produced a value.
+struct SuccessWithValue: ExecutionResultSuccess {
+    var result: PythonObject // SBValue
     
+    /// A description of the vaule, e.g.
+    ///   (Int) $R0 = 64
+    func valueDescription() throws -> String {
+        
+    }
 }
