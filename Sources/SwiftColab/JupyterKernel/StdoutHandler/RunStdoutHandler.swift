@@ -31,5 +31,18 @@ fileprivate func getStdout(_ selfRef: PythonObject) -> [PythonObject] throws {
 // clearing the whole display with a 'clear_output' message to the jupyter
 // client.
 fileprivate func sendStdout(_ selfRef: PythonObject, stdout: PythonObject) throws {
+    let clear_sequence: PythonObject = "\033[2J"
+    let clear_sequence_index = stdout.find(clear_sequence)
     
+    if Int(clear_sequence_index)! != -1 {
+        try sendStdout(selfRef, stdout[...clear_sequence_index])
+        
+        let kernel = selfRef.kernel
+        try kernel.send_response.throwing.dynamicallyCall(withArguments:
+            kernel.iopub_socket, "clear_output", ["wait": false])
+       
+        
+    } else {
+        
+    }
 }
