@@ -42,7 +42,7 @@ struct PreprocessorError: ExecutionResultError {
     var exception: PreprocessorException
     
     var description: String {
-        String(self.exception)
+        String(self.exception)!
     }
     
     var debugDescription: String {
