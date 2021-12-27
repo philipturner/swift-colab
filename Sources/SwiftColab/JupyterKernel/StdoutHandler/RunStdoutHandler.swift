@@ -6,7 +6,7 @@ func runStdoutHandler(_ selfRef: PythonObject) -> PythonObject {
 }
 
 fileprivate func getAndSendStdout(_ selfRef: PythonObject) throws {
-    
+    let stdout = PythonObject("").join(try getStdout(selfRef))
 }
 
 fileprivate func getStdout(_ selfRef: PythonObject) -> [PythonObject] throws {
