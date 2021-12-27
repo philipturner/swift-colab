@@ -54,4 +54,13 @@ fileprivate func read_include(_ selfRef: PythnonObject, line_index: PythonObject
             precondition(e.__class__ == Python.IOError)
         }
     }
+    
+    guard code != Python.None else {
+        throw PreprocessorException(
+            "Line \(line)index + 1): Could not find \"\(name)\". Searched \(include_paths).")
+    }
+    
+    return PythonObject("\n").join([
+        
+    ])
 }
