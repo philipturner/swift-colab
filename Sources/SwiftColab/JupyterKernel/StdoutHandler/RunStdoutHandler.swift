@@ -1,19 +1,6 @@
 import Foundation
 import PythonKit
 
-func runStdoutHandler(_ selfRef: PythonObject) -> PythonObject {
-    Python.None
-}
-
-fileprivate func getAndSendStdout(_ selfRef: PythonObject) throws {
-    let stdout = PythonObject("").join(try getStdout(selfRef))
-    
-    if Python.len(stdout) > 0 {
-        selfRef.had_stdout = true
-        try sendStdout(kernel: selfRef.kernel, stdout: stdout)
-    }
-}
-
 fileprivate func getStdout(_ selfRef: PythonObject) -> [PythonObject] throws {
     var output: [PythonObject] = []
     
@@ -51,5 +38,30 @@ fileprivate func sendStdout(kernel: PythonObject, stdout: PythonObject) throws {
     } else {
         try kernel.send_response.throwing.dynamicallyCall(withArguments:
             kernel.iopub_socket, "stream", ["name": "stdout", "text": stdout])
+    }
+}
+
+fileprivate func getAndSendStdout(_ selfRef: PythonObject) throws {
+    let stdout = PythonObject("").join(try getStdout(selfRef))
+    
+    if Python.len(stdout) > 0 {
+        selfRef.had_stdout = true
+        try sendStdout(kernel: selfRef.kernel, stdout: stdout)
+    }
+}
+
+func runStdoutHandler(_ selfRef: PythonObject) -> PythonObject {
+    do {
+        while true {
+            if Bool(selfRef.stop_event.wait(0.1))! {
+                break
+            }
+            
+            try getAndSendStdout(selfRef)
+        }
+        
+        try getAndSendStdout(selfRef)
+    } catch(let e) {
+        selfRef.kernel.log.error("Exception in StdoutHandler: \(Python.str(e))")
     }
 }
