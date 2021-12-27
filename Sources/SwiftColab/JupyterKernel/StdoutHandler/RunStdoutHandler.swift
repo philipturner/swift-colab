@@ -1,7 +1,7 @@
 import Foundation
 import PythonKit
 
-fileprivate func getStdout(_ selfRef: PythonObject) throws -> PythonObject {
+fileprivate func getStdout(_ selfRef: PythonObject) throws -> [PythonObject] {
     var output: [PythonObject] = []
     
     while true {
@@ -16,7 +16,7 @@ fileprivate func getStdout(_ selfRef: PythonObject) throws -> PythonObject {
         output.append(stdout_buffer)
     }
     
-    return .init(output)
+    return output
 }
 
 // Sends stdout to the jupyter client, replacing the ANSI sequence for
@@ -66,4 +66,6 @@ func runStdoutHandler(_ selfRef: PythonObject) -> PythonObject {
     } catch(let e) {
         selfRef.kernel.log.error("Exception in StdoutHandler: \(Python.str(e.localizedDescription))")
     }
+    
+    return Python.None
 }
