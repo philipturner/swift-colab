@@ -27,6 +27,17 @@ fileprivate func file_name_for_source_location(_ selfRef: PythonObject) -> Strin
     "<Cell \(selfRef.execution_count)>"
 }
 
+/// Returns the preprocessed line.
+///
+/// Does not process "%install" directives, because those need to be
+/// handled before everything else.
+fileprivate func preprocess_line(_ selfRef: PythonObject, line_index: PythonObject, line: PythonObject) {
+    let regexExpression = PythonObject(###"""
+    ^\s*%include (.*)$
+    """###)
+    
+}
+
 fileprivate func read_include(_ selfRef: PythonObject, line_index: PythonObject, rest_of_line: PythonObject) throws -> PythonObject {
     let regexExpression = PythonObject(###"""
     ^\s*"([^"]+)"\s*$
