@@ -46,14 +46,14 @@ func init_repl_process(_ selfRef: PythonObject) throws {
         throw Exception("Could not create target \(repl_swift)")
     }
     
-    self.target = target
+    selfRef.target = target
     
     guard let main_bp = Optional(target.BreakpointCreateByName(
         "repl_main", target.GetExecutable().GetFileName())) else {
         throw Exception("Could not set breakpoint")
     }
     
-    self.main_bp = main_bp
+    selfRef.main_bp = main_bp
     
     let script_dir = os.path.dirname(os.path.realpath(sys.argv[0]))
     var repl_env: [PythonObject] = ["PYTHONPATH=\(script_dir)"]
@@ -73,4 +73,12 @@ func init_repl_process(_ selfRef: PythonObject) throws {
     let launch_flags = launch_info.GetLaunchFlags()
     launch_info.SetLaunchFlags(launch_flags & ~lldb.eLaunchFlagDisableASLR)
     target.SetLaunchInfo(launch_info)
+    
+    guard let process = Optional(target.LaunchSimple(Python.None,
+                                                     repl_env,
+                                                     os.getcwd())) else {
+        throw Exception("Could not launch process")
+    }
+    
+    selfRef.process = process
 }
