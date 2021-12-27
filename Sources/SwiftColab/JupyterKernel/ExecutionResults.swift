@@ -33,6 +33,19 @@ struct SuccessWithValue: ExecutionResultSuccess {
     }
     
     var debugDescription: String {
-        "SuccessWithValue(result=\(result), description=\(result.checking.description ?? "not found")"
+        "SuccessWithValue(result: \(Python.repr(result)), description: \(Python.repr(result.checking.description ?? "not found"))"
+    }
+}
+
+/// There was an error preprocessing the code.
+struct PreprocessorError: ExecutionResultError {
+    var exception: PreprocessorException
+    
+    var description: String {
+        String(self.exception)
+    }
+    
+    var debugDescription: String {
+        "PreprocessorError(exception: \(String(reflecting: exception)))"
     }
 }
