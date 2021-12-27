@@ -105,6 +105,18 @@ fileprivate func init_kernel_communicator(_ selfRef: PythonObject) throws {
         throw Exception("Error initializing KernelCommunicator: \(String(reflecting: result))")
     }
     
+    let session = selfRef.session
+    let id = json.dumps(session.session)
+    let key = jon.dumps(session.key.decode("utf8"))
+    let username = json.dumps(session.username)
+    
+    let decl_code: PythonObject = """
+    enum JupyterKernel {
+        static var communicator = KernelCommunicator(
+            jupyterSession: KernelCommunicator.JupyterSession(
+                id: \(id), key: \(key), username: \(username)))
+    }
+    """
 }
 
 fileprivate func init_int_bitwidth(_ selfRef: PythonObject) throws {
