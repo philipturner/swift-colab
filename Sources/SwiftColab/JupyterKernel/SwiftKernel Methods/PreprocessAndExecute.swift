@@ -15,11 +15,11 @@ func execute(_ selfRef: PythonObject, code: PythonObject) -> ExecutionResult {
     let errorType = result.error.type
     
     if errorType == lldb.eErrorTypeInvalid {
-        return SuccessWithValue(result)
+        return SuccessWithValue(result: result)
     } else if errorType == lldb.eErrorTypeGeneric {
         return SuccessWithoutValue()
     } else {
-        return SwiftError(result)
+        return SwiftError(result: result)
     }
 }
 
@@ -31,7 +31,7 @@ fileprivate func read_include(_ selfRef: PythonObject, line_index: PythonObject,
     let regexExpression = PythonObject(###"""
     ^\s*"([^"]+)"\s*$
     """###)
-    guard let name = Optional(re.match(regexExpression, rest_of_line)).group(1) else {
+    guard let name = Optional(re.match(regexExpression, rest_of_line))?.group(1) else {
         throw PreprocessorException(
             "Line \(line_index + 1): %%include must be followed by a name in quotes")
     }
@@ -50,14 +50,14 @@ fileprivate func read_include(_ selfRef: PythonObject, line_index: PythonObject,
             
             code = try f.read.throwing.dynamicallyCall(withArguments: [])
             f.close()
-        } catch PythonError.exception(let e) {
-            precondition(e.__class__ == Python.IOError)
+        } catch PythonError.exception(let error, let traceback) {
+            precondition(error.__class__ == Python.IOError)
         }
     }
     
     guard code != Python.None else {
         throw PreprocessorException(
-            "Line \(line)index + 1): Could not find \"\(name)\". Searched \(include_paths).")
+            "Line \(line_index + 1): Could not find \"\(name)\". Searched \(include_paths).")
     }
     
     let secondName = file_name_for_source_location(selfRef)
@@ -67,5 +67,5 @@ fileprivate func read_include(_ selfRef: PythonObject, line_index: PythonObject,
         code,
         "#sourceLocation(file: \"\(secondName)\", line: \(line_index + 1)",
         ""
-    ])
+    ] as [PythonObject])
 }
