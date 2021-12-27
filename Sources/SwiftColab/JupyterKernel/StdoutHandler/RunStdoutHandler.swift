@@ -24,8 +24,8 @@ fileprivate func getStdout(_ selfRef: PythonObject) throws -> [PythonObject] {
 // client.
 fileprivate func sendStdout(kernel: PythonObject, stdout: PythonObject) throws {
     let clear_sequence: PythonObject = "\033[2J"
-    let clear_sequence_index = stdout.find(clear_sequence))
-    let clear_sequence_length = Python.len(clear_sequence))
+    let clear_sequence_index = stdout.find(clear_sequence)
+    let clear_sequence_length = Python.len(clear_sequence)
     
     if clear_sequence_index != -1 {
         try sendStdout(kernel: kernel, stdout:
