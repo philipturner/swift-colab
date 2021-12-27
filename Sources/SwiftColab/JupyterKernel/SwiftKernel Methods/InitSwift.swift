@@ -1,7 +1,9 @@
 import Foundation
 import PythonKit
+
 fileprivate let lldb = Python.import("lldb")
 fileprivate let os = Python.import("os")
+fileprivate let SwiftModule = Python.import("Swift")
 fileprivate let sys = Python.import("sys")
 
 /// Initializes Swift so that it's ready to start executing user code.
@@ -133,5 +135,7 @@ fileprivate func init_int_bitwidth(_ selfRef: PythonObject) throws {
 }
 
 fileprivate func init_sigint_handler(_ selfRef: PythonObject) throws {
-    
+    let sigint_handler = SwiftModule.SIGINTHandler(selfRef)
+    selfRef.sigint_handler = sigint_handler
+    sigint_handler.start()
 }
