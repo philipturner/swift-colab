@@ -1,5 +1,6 @@
 import Foundation
 import PythonKit
+let lldb = Python.import("lldb")
 
 /// Protocol for the result of executing code.
 protocol ExecutionResult: CustomDebugStringConvertible { }
@@ -23,7 +24,7 @@ struct SuccessWithValue: ExecutionResultSuccess {
     
     /// A description of the vaule, e.g.
     ///   (Int) $R0 = 64
-    func valueDescription() throws -> String {
-        
+    func valueDescription() -> String {
+        let stream = lldb.SBStream()
     }
 }
