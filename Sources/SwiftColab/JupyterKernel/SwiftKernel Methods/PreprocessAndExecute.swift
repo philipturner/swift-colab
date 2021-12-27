@@ -44,7 +44,14 @@ fileprivate func read_include(_ selfRef: PythnonObject, line_index: PythonObject
     
     for include_path in include_paths {
         do {
+            let path = os.path.join(include_path, name)
+            let f = try Python.open.throwing
+                .dynamicallyCall(withArguments: path, "r")
             
+            code = try f.read.throwing.dynamicallyCall(withArguments: [])
+            f.close()
+        } catch(let e) {
+        
         }
     }
 }
