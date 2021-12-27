@@ -32,7 +32,7 @@ fileprivate func init_repl_process(_ selfRef: PythonObject) throws {
     selfRef.debugger = debugger
     debugger.SetAsync(false)
     
-    if Python.hasattr(selfRef, "swift_module_search_path") {
+    if Bool(Python.hasattr(selfRef, "swift_module_search_path"))! {
         debugger.HandleCommand("setings append target.swift-module-search-paths \(selfRef.swift_module_search_path)")
     }
     
