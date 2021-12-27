@@ -2,7 +2,7 @@ import Foundation
 import PythonKit
 import SwiftPythonBridge
 
-func doExecute(_ kwargs: PythonObject) throws -> PythonObject {
+func do_execute(_ kwargs: PythonObject) throws -> PythonObject {
     let selfRef = kwargs["self"]
     
     if !Bool(kwargs["silent"])! {
