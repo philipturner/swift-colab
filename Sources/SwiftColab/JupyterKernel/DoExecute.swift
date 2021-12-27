@@ -5,6 +5,8 @@ import SwiftPythonBridge
 func doExecute(_ kwargs: PythonObject) throws -> PythonObject {
     let selfRef = kwargs["self"]
     
+    fatalError()
+    
     if !Bool(kwargs["silent"])! {
         let stream_content: PythonObject = ["name": "stdout", "text": kwargs["code"]]
         
