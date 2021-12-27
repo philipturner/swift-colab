@@ -5,6 +5,7 @@ from ctypes import *
 
 import signal
 import sys
+import threading
 
 from ipykernel.kernelbase import Kernel
 
@@ -23,8 +24,15 @@ class SIGINTHandler(threading.Thread):
         except Exception as e:
             self.kernel.log.error(f"Exception in SIGINTHandler: {str(e)}")
 
-
-
+# Collects stdout from the Swift process and sends it to the client.
+class StdoutHandler(threading.Thread):
+    def __init__(self, kernel):
+        self.daemon = True
+        super().__init__()
+        Swift.call_compiled_func("/opt/swift/lib/libJupyterKernel.so", "JKCreateStdoutHandler", [self, kernel])
+    
+    def run(self):
+        self.swift_delegate.call("run", self)
 
 class SwiftKernel(Kernel):
     def __init__(self, **kwargs):
