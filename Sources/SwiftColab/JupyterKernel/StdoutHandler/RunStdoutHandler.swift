@@ -13,9 +13,9 @@ fileprivate func getStdout(_ selfRef: PythonObject) -> [PythonObject] throws {
     var output: [PythonObject] = []
     
     while true {
-        let BUFFER_SIZE: PythonObject = 1000
+        let bufferSize: PythonObject = 1000
         let stdout_buffer = try self.kernel.process.GetSTDOUT.throwing
-            .dynamicallyCall(withArguments: BUFFER_SIZE)
+            .dynamicallyCall(withArguments: bufferSize)
         
         if Int(Python.len(stdout_buffer))! == 0 {
             break
