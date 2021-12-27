@@ -50,8 +50,8 @@ fileprivate func read_include(_ selfRef: PythnonObject, line_index: PythonObject
             
             code = try f.read.throwing.dynamicallyCall(withArguments: [])
             f.close()
-        } catch(let e) {
-        
+        } catch PythonError.exception(let e) {
+            precondition(e.__class__ == Python.IOError)
         }
     }
 }
