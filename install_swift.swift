@@ -95,7 +95,7 @@ let spbSourcePath = "/opt/swift/swift-colab/Sources/SwiftColab/SwiftPythonBridge
 try fm.removeItemIfExists(atPath: spbProductsPath)
 try fm.createDirectory(atPath: spbProductsPath, withIntermediateDirectories: true)
 
-let spbSourceFilePaths = try fm.contentsOfDirectory(atPath: spbSourcePath).filter {
+let spbSourceFilePaths = try fm.subpathsOfDirectory(atPath: spbSourcePath).filter {
     $0.hasSuffix(".swift")
 }.map {
     "\(spbSourcePath)/\($0)"
@@ -121,7 +121,7 @@ let jupyterSourcePath = "/opt/swift/swift-colab/Sources/SwiftColab/JupyterKernel
 try fm.removeItemIfExists(atPath: jupyterProductsPath)
 try fm.createDirectory(atPath: jupyterProductsPath, withIntermediateDirectories: true)
 
-let jupyterSourceFilePaths = try fm.contentsOfDirectory(atPath: jupyterSourcePath).filter {
+let jupyterSourceFilePaths = try fm.subpathsOfDirectory(atPath: jupyterSourcePath).filter {
     $0.hasSuffix(".swift") 
 }.map {
     "\(jupyterSourcePath)/\($0)"
