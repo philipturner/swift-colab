@@ -1,6 +1,6 @@
 import Foundation
 import PythonKit
-let lldb = Python.import("lldb")
+fileprivate let lldb = Python.import("lldb")
 
 /// Protocol for the result of executing code.
 protocol ExecutionResult: CustomDebugStringConvertible { }
