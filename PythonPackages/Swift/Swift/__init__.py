@@ -3,6 +3,7 @@ from wurlitzer import sys_pipes
 import IPython
 
 def precondition(ignored_argument):
+    os.remove("/content/install_swift.sh")
     IPython.Application.instance().kernel.do_shutdown(True)
 
 def run(swift_string):
