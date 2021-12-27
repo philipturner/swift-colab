@@ -10,7 +10,7 @@ protocol ExecutionResultSuccess: ExecutionResult { }
 
 /// Protocol for the result of unsuccessfully executing code.
 protocol ExecutionResultError: ExecutionResult { 
-    var description: String
+    var description: String { get }
 }
 
 /// The code executed successfully, and did not produce a value.
