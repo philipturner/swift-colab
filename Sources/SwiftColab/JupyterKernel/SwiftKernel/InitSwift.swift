@@ -81,4 +81,14 @@ func init_repl_process(_ selfRef: PythonObject) throws {
     }
     
     selfRef.process = process
+    
+    let expr_opts = lldb.SBExpressionOptions()
+    let swift_language = lldb.SBLanguageRuntime.GetLanguageTypeFromString("swift")
+    selfRef.expr_opts = expr_opts
+    selfRef.swift_language = swift_language
+    
+    expr_opts.SetLanguage(swift_language)
+    expr_opts.SetREPLMode(true)
+    expr_opts.SetUnwindOnError(false)
+    expr_opts.SetGenerateDebugInfo(true)
 }
