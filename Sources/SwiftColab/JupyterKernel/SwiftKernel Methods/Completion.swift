@@ -21,7 +21,7 @@ fileprivate func send_response(_ selfRef: PythonObject, text: String) throws {
     try selfRef.send_response.throwing
         .dynamicallyCall(withArguments: selfRef.iopub_socket, "stream", [
         "name": "stdout",
-        "text": message
+        "text": text
     ])
 }
 
@@ -53,7 +53,8 @@ func do_complete(_ kwargs: PythonObject) -> PythonObject {
     for i in Python.range(sbresponse.GetNumMatches()) {
         let sbmatch = sbresponse.GetMatchAtIndex(i)
         let insertable_match = `prefix` + sbmatch.GetInsertable()
-        if insertable_match.startswith("_") {
+        
+        if Bool(insertable_match.startswith("_"))! {
             continue
         }
         
