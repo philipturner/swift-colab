@@ -103,7 +103,7 @@ fileprivate func read_include(_ selfRef: PythonObject, line_index: PythonObject,
             f.close()
         } catch PythonError.exception(let error, let traceback) {
             guard error.__class__ == Python.IOError else {
-                throw PythonError.exception(error, traceback)
+                throw PythonError.exception(error, traceback: traceback)
             }
         }
     }
