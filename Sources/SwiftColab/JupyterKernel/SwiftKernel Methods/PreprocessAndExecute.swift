@@ -36,7 +36,7 @@ fileprivate func preprocess_line(_ selfRef: PythonObject, line_index: PythonObje
     ^\s*%include (.*)$
     """###
     if let include_match = Optional(re.match(regexExpression, line)) {
-        return try read_include(selfRef, line_index, include_match.group(1))
+        return try read_include(selfRef, line_index: line_index, rest_of_line: include_match.group(1))
     }
     
     regexExpression = ###"""
