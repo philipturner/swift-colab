@@ -57,7 +57,7 @@ fileprivate func init_repl_process(_ selfRef: PythonObject) throws {
     selfRef.main_bp = main_bp
     
     let script_dir = os.path.dirname(os.path.realpath(sys.argv[0]))
-    var repl_env = [PythonObject("PYTHONPATH=\(script_dir)")]
+    var repl_env: [String] = ["PYTHONPATH=\(script_dir)"]
     
     for key in os.environ {
         guard key != "PYTHONPATH", 
@@ -76,7 +76,7 @@ fileprivate func init_repl_process(_ selfRef: PythonObject) throws {
     target.SetLaunchInfo(launch_info)
     
     guard let process = Optional(target.LaunchSimple(Python.None,
-                                                     repl_env,
+                                                     PythonObject(repl_env),
                                                      os.getcwd())) else {
         throw Exception("Could not launch process")
     }
