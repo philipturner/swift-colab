@@ -55,5 +55,19 @@ func init_repl_process(_ selfRef: PythonObject) throws {
     
     self.main_bp = main_bp
     
+    let script_dir = os.path.dirname(os.path.realpath(sys.argv[0]))
+    var repl_env: [PythonObject] = ["PYTHONPATH=\(script_dir)"]
+    
+    for key in os.environ {
+        guard key != "PYTHONPATH", 
+              key != "REPL_SWIFT_PATH" else {
+            continue
+        }
+        
+        repl_env.append("\(key)=\(os.environ[key])")
+    }
+    
+    // Turn off "disable ASLR" because it uses the "personality" syscall in
+    // a way that is forbidden by the default Docker security policy.
     
 }
