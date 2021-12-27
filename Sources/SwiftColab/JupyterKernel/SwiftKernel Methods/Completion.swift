@@ -1,7 +1,7 @@
 import Foundation
 import PythonKit
 
-func doComplete(_ kwargs: PythonObject) throws -> PythonObject {
+func do_complete(_ kwargs: PythonObject) throws -> PythonObject {
     let selfRef = kwargs["self"]
     
     if !Bool(selfRef.completion_enabled)! {
@@ -21,3 +21,4 @@ func doComplete(_ kwargs: PythonObject) throws -> PythonObject {
     
     throw CompletionNotImplementedError()
 }
+
