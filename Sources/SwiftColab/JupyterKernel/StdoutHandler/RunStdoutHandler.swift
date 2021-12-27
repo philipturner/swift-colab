@@ -6,7 +6,7 @@ fileprivate func getStdout(_ selfRef: PythonObject) throws -> [PythonObject] {
     
     while true {
         let bufferSize: PythonObject = 1000
-        let stdout_buffer = try self.kernel.process.GetSTDOUT
+        let stdout_buffer = try selfRef.kernel.process.GetSTDOUT
             .throwing.dynamicallyCall(withArguments: bufferSize)
         
         if Python.len(stdout_buffer) == 0 {
@@ -28,13 +28,13 @@ fileprivate func sendStdout(kernel: PythonObject, stdout: PythonObject) throws {
     
     if clear_sequence_index != -1 {
         try sendStdout(kernel: kernel, stdout:
-                       stdout[.init(...clear_sequence_index)])
+                       stdout[PythonObject(...clear_sequence_index)])
         
         try kernel.send_response.throwing.dynamicallyCall(withArguments:
             kernel.iopub_socket, "clear_output", ["wait": false])
        
         try sendStdout(kernel: kernel, stdout:
-                       stdout[.init(clear_sequence_index + Python.len(clear_sequence)...)])
+                       stdout[PythonObject(clear_sequence_index + Python.len(clear_sequence)...)])
     } else {
         try kernel.send_response.throwing.dynamicallyCall(withArguments:
             kernel.iopub_socket, "stream", ["name": "stdout", "text": stdout])
