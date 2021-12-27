@@ -29,14 +29,14 @@ fileprivate func sendStdout(kernel: PythonObject, stdout: PythonObject) throws {
     
     if clear_sequence_index != -1 {
         try sendStdout(kernel: kernel, stdout:
-                       stdout[(...clear_sequence_index).pythonObject])
+                       stdout[((...clear_sequence_index) as PartialRangeUpTo<PythonConvertible>).pythonObject])
         
         try kernel.send_response.throwing.dynamicallyCall(withArguments:
             kernel.iopub_socket, "clear_output", ["wait": false])
             
 
         try sendStdout(kernel: kernel, stdout:
-                       stdout[(clear_sequence_index + clear_sequence_length...).pythonObject])
+                       stdout[(((clear_sequence_index + clear_sequence_length)...) as PartialRangeFrom<PythonConvertible>).pythonObject])
     } else {
         try kernel.send_response.throwing.dynamicallyCall(withArguments:
             kernel.iopub_socket, "stream", ["name": "stdout", "text": stdout])
