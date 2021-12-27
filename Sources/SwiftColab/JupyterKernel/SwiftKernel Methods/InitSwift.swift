@@ -1,6 +1,7 @@
 import Foundation
 import PythonKit
 
+fileprivate let json = Python.import("json")
 fileprivate let lldb = Python.import("lldb")
 fileprivate let os = Python.import("os")
 fileprivate let SwiftModule = Python.import("Swift")
@@ -102,7 +103,7 @@ fileprivate func init_repl_process(_ selfRef: PythonObject) throws {
 }
 
 fileprivate func init_kernel_communicator(_ selfRef: PythonObject) throws {
-    if let result = preprocess_and_execute(selfRef, code:
+    if let result = try preprocess_and_execute(selfRef, code:
         "%include KernelCommunicator.swift".pythonObject) as? ExecutionResultError {
         throw Exception("Error initializing KernelCommunicator: \(String(reflecting: result))")
     }
@@ -112,15 +113,15 @@ fileprivate func init_kernel_communicator(_ selfRef: PythonObject) throws {
     let key = json.dumps(session.key.decode("utf8"))
     let username = json.dumps(session.username)
     
-    let decl_code: PythonObject = """
+    let decl_code = PythonObject("""
     enum JupyterKernel {
         static var communicator = KernelCommunicator(
             jupyterSession: KernelCommunicator.JupyterSession(
                 id: \(id), key: \(key), username: \(username)))
     }
-    """
+    """)
     
-    if let result = preprocess_and_execute(selfRef, code: decl_code) as? ExecutionResultError {
+    if let result = try preprocess_and_execute(selfRef, code: decl_code) as? ExecutionResultError {
         throw Exception("Error declaring JupyterKernel: \(String(reflecting: result))")
     }
 }
@@ -131,7 +132,7 @@ fileprivate func init_int_bitwidth(_ selfRef: PythonObject) throws {
         throw Exception("Expected value from Int.bitWidth, but got: \(String(reflecting: result))")
     }
     
-    selfRef._int_bitwidth = Python.int(result.result.GetData().GetSignedInt32(lldb.SBError(), 0)))
+    selfRef._int_bitwidth = Python.int(result.result.GetData().GetSignedInt32(lldb.SBError(), 0))
 }
 
 fileprivate func init_sigint_handler(_ selfRef: PythonObject) {
