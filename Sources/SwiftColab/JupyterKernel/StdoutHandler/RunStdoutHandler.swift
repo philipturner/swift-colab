@@ -1,7 +1,7 @@
 import Foundation
 import PythonKit
 
-fileprivate func getStdout(_ selfRef: PythonObject) throws -> [PythonObject] {
+fileprivate func getStdout(_ selfRef: PythonObject) throws -> PythonObject {
     var output: [PythonObject] = []
     
     while true {
