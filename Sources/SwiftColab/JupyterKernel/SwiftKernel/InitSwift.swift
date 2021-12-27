@@ -41,5 +41,19 @@ func init_repl_process(_ selfRef: PythonObject) throws {
     // anyways.
     debugger.SetScriptLanguage(lldb.eScriptLanguageNone)
     
-    let repl_swift = 
+    let repl_swift = os.environ["REPL_SWIFT_PATH"]
+    guard let target = Optional(debugger.CreateTargetWithFileAndArch(repl_swift, "")) else {
+        throw Exception("Could not create target \(repl_swift)")
+    }
+    
+    self.target = target
+    
+    guard let main_bp = Optional(target.BreakpointCreateByName(
+        "repl_main", target.GetExecutable().GetFileName())) else {
+        throw Exception("Could not set breakpoint")
+    }
+    
+    self.main_bp = main_bp
+    
+    
 }
