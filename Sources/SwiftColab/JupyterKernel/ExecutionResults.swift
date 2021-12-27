@@ -24,9 +24,9 @@ struct SuccessWithoutValue: ExecutionResultSuccess {
 struct SuccessWithValue: ExecutionResultSuccess {
     var result: PythonObject // SBValue
     
-    /// A description of the vaule, e.g.
+    /// A description of the value, e.g.
     ///   (Int) $R0 = 64
-    func valueDescription() -> String {
+    func valueDescription() -> PythonObject {
         let stream = lldb.SBStream()
         result.GetDescription(stream)
         return stream.GetData()
