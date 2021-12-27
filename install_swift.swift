@@ -155,3 +155,6 @@ guard let JKRegisterKernelRef = dlsym(libJupyterKernel, "JKRegisterKernel") else
 typealias JKRegisterKernelType = @convention(c) () -> Void
 let JKRegisterKernel = unsafeBitCast(JKRegisterKernelRef, to: JKRegisterKernelType.self)
 JKRegisterKernel()
+
+// Move include files
+try fm.moveItem(atPath: "/opt/swift/swift-colab/Sources/SwiftColab/include", toPath: "/opt/swift/include")
