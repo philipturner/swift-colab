@@ -27,6 +27,16 @@ fileprivate func file_name_for_source_location(_ selfRef: PythonObject) -> Strin
     "<Cell \(selfRef.execution_count)>"
 }
 
+fileprivate func preprocess(_ selfRef: PythonObject, code: PythonObject) throws -> PythonObject {
+    let lines = code.split("\n")
+    let preprocessed_lines = try Array(Python.enumerate(lines)).map { tupleObject in
+        let (i, line) = tupleObject.tuple2
+        return try preprocess_line(selfRef, line_index: i, line: line)
+    }
+    
+    return PythonObject("\n").join(preprocessed_lines)
+}
+
 /// Returns the preprocessed line.
 ///
 /// Does not process "%install" directives, because those need to be
@@ -81,8 +91,10 @@ fileprivate func read_include(_ selfRef: PythonObject, line_index: PythonObject,
             
             code = try f.read.throwing.dynamicallyCall(withArguments: [])
             f.close()
-        } catch PythonError.exception(let error, _) {
-            precondition(error.__class__ == Python.IOError)
+        } catch PythonError.exception(let error, let traceback) {
+            guard error.__class__ == Python.IOError else {
+                throw PythonError.exception(error, traceback)
+            }
         }
     }
     
