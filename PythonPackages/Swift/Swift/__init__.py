@@ -44,21 +44,3 @@ class SwiftReturnValue:
             assert(isinstance(self.__error, SwiftError), "A SwiftReturnValue's error was not a SwiftError object.")
             raise self.__error
         return self.__wrapped
-
-# SwiftInteropTest is used by `helloC` in JupyterKernel to validate that SwiftPythonBridge works.
-
-class SwiftInteropTestSuperclass:
-    pass
-    
-class SwiftInteropTest(SwiftInteropTestSuperclass): 
-    def __init__(self):
-        self.swift_delegate = SwiftDelegate()
-        
-    def example_func(self, string_param):
-        return self.swift_delegate.call("example_func", [self, string_param])
-    
-    def example_func_2(self, string_param):
-        return self.swift_delegate.call("example_func_2", { string_param: self })
-    
-    def example_func_3(self, string_param):
-        return self.swift_delegate.call("example_func_3", string_param)
