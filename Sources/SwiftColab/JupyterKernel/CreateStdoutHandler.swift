@@ -16,9 +16,16 @@ public func JKCreateStdoutHandler(_ argsRef: OwnedPyObjectPointer) -> OwnedPyObj
     handler.stop_event = threading.Event()
     handler.had_stdout = false
     
+    handler.swift_delegate = SwiftModule.SwiftDelegate()
+    handler.registerFunction(name: "run", function: runStdoutHandler)
+    
     // Still need to do more here
     
     // put the member functions in the same file
     
     return SwiftModule.SwiftReturnValue(noneObject, errorObject).ownedPyObject
+}
+
+func runStdoutHandler(_ selfRef: PythonObject) -> PythonObject {
+    Python.None
 }
