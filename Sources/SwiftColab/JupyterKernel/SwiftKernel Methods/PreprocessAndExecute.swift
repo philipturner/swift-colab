@@ -8,7 +8,7 @@ fileprivate let sys = Python.import("sys")
 func execute(_ selfRef: PythonObject, code: PythonObject) -> ExecutionResult {
     let fileName = file_name_for_source_location(selfRef)
     let locationDirective = "#sourceLocation(file: \(fileName), line: 1)"
-    let codeWithLocationDirective: PythonObject = "\(locationDirective)\n\(code)"
+    let codeWithLocationDirective: PythonObject = locationDirective + "\n" + code
     
     let result = selfRef.target.EvaluateExpression(
         codeWithLocationDirective, selfRef.expr_opts)
@@ -27,7 +27,7 @@ fileprivate func file_name_for_source_location(_ selfRef: PythonObject) -> Strin
     "<Cell \(selfRef.execution_count)>"
 }
 
-fileprivate func read_include(_ selfRef: PythnonObject, line_index: PythonObject, rest_of_line: PythonObject) throws -> PythonObject {
+fileprivate func read_include(_ selfRef: PythonObject, line_index: PythonObject, rest_of_line: PythonObject) throws -> PythonObject {
     let regexExpression = PythonObject(###"""
     ^\s*"([^"]+)"\s*$
     """###)
