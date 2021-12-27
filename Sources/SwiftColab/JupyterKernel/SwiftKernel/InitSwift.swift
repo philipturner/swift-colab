@@ -23,11 +23,16 @@ fileprivate struct Exception: LocalizedError {
 }
 
 func init_repl_process(_ selfRef: PythonObject) throws {
-    selfRef.debugger = lldb.SBDebugger.Create()
-    guard selfRef.debugger != Python.None else {
+    guard let debugger = Optional(lldb.SBDebugger.Create()) else {
         throw Exception("could not start debugger")
     }
-    selfRef.debugger.SetAsync(false)
+    
+    selfRef.debugger = debugger
+    debugger.SetAsync(false)
+    
+    if Python.hasattr(selfRef, "swift_module_search_path") {
+        debugger.HandleCommand("setings append target.swift-module-search-paths \(selfRef.swift_module_search_path)")
+    }
     
     
 }
