@@ -157,12 +157,12 @@ fileprivate func send_exception_report(_ selfRef: PythonObject, _ while_doing: P
      try send_iopub_error_message(selfRef, [
          "Kernel is in a bad state. Try restarting the kernel.",
          "",
-         "Exception in `\(while_doing)`:",
+         "Exception in `\(while_doing)`:".pythonObject,
          Python.str(e)
      ])
 }
 
-fileprivate func execute_cell(_ selfRef: PythonObject, _ code: PythonObject) throws -> PythonObject {
+fileprivate func execute_cell(_ selfRef: PythonObject, _ code: PythonObject) throws -> Any {
     try set_parent_message(selfRef)
     let result = try preprocess_and_execute(selfRef, code: code)
     if result is ExecutionResultSuccess {
