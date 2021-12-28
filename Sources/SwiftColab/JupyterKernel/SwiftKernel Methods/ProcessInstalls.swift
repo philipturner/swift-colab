@@ -92,7 +92,25 @@ fileprivate func process_system_command_line(_ selfRef: PythonObject, line: Pyth
 }
 
 fileprivate func link_extra_includes(_ selfRef: PythonObject, _ swift_module_search_path: PythonObject, _ include_dir: PythonObject) throws {
-    
+    for include_file in os.listdir(include_dir) {
+        let link_name = os.path.join(swift_module_search_path, include_file)
+        let target = os.path.join(include_dir, include_dir)
+        
+        do {
+            
+        } catch PythonError.exception(let error, let traceback) {
+            let e = PythonError.exception(error, traceback: traceback)
+            
+            if error.__class__ == Python.FileNotFoundError {
+                // pass
+            } else if error.__class__ == Python.Error {
+                throw PackageInstallException(
+                    "Failed to stat scratchwork base path: \(e)")
+            }
+        }
+        
+        os.symlink(target, link_name)
+    }
 }
 
 // Addition by Philip Turner
