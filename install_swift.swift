@@ -79,7 +79,7 @@ var pythonSearchPath = "/usr/local/lib"
 do {
     let possibleFolders = try fm.contentsOfDirectory(atPath: pythonSearchPath).filter { $0.hasPrefix("python3.") }
     let folderNumbers = possibleFolders.map { $0.dropFirst("python3.".count) }
-    let pythonVersion = "python3.\(folderNumbers.max!)"
+    let pythonVersion = "python3.\(folderNumbers.max()!)"
     pythonSearchPath += "/\(pythonVersion)/distpackages"
 }
 
