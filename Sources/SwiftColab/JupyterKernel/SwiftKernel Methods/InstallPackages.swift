@@ -23,4 +23,10 @@ func install_packages(_ selfRef: PythonObject,
             "Install Error: Cannot install packages because " +
             "SWIFT_BUILD_PATH is not specified.")
     }
+    
+    guard let swift_build_path = os.environ.get("SWIFT_BUILD_PATH") else {
+        throw PackageInstallException(
+            "Install Error: Cannot install packages because " +
+            "SWIFT_BUILD_PATH is not specified.")
+    }
 }
