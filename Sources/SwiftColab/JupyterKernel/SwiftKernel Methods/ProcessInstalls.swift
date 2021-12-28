@@ -17,16 +17,16 @@ func process_installs(_ selfRef: PythonObject, code: PythonObject) throws -> Pyt
     var user_install_location: PythonObject?
     
     for (index, var line) in Python.enumerate(code[dynamicMember: "split"]("\n")).map({ $0.tuple2 }) {
-        process_system_command_line(selfRef, &line)
+        try process_system_command_line(selfRef, &line)
         
-        if let install_location = try process_install_location_line(selfRef, line_index, &line) {
+        if let install_location = try process_install_location_line(selfRef, index, &line) {
             user_install_location = install_location
         }
         
-        all_swiftpm_flags += try process_install_swiftpm_flags(selfRef, &line)
+        all_swiftpm_flags += process_install_swiftpm_flags_line(selfRef, &line)
         all_packages += try process_install_line(selfRef, index, &line)
         
-        if let extra_include_command = try process_extra_include_command_line(selfRef, &line) {
+        if let extra_include_command = process_extra_include_command_line(selfRef, &line) {
             extra_include_commands.append(extra_include_command)
         }
         
