@@ -146,9 +146,23 @@ fileprivate func make_execute_reply_error_message(_ selfRef: PythonObject, _ tra
 
 fileprivate func send_iopub_error_message(_ selfRef: PythonObject, _ traceback: PythonObject) throws {
     try selfRef.send_response.throwing
-    .dynamicallyCall(withArguments: selfRef.iopub_socket, "error", [
+        .dynamicallyCall(withArguments: selfRef.iopub_socket, "error", [
         "ename": "",
         "evalue": "",
         "traceback": traceback
     ])
+}
+
+fileprivate func send_exception_report(_ selfRef: PythonObject, _ while_doing: PythonObject, _ e: PythonObject) throws {
+     try send_iopub_error_message(selfRef, [
+         "Kernel is in a bad state. Try restarting the kernel.",
+         "",
+         "Exception in `\(while_doing)`:",
+         Python.str(e)
+     ])
+}
+
+fileprivate func execute_cell(_ selfRef: PythonObject, _ code: PythonObject) throws -> PythonObject {
+    try set_parent_message(selfRef)
+    let result = try preprocess_and_execute(selfRef, code)
 }
