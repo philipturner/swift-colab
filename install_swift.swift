@@ -41,10 +41,6 @@ func doCommand(_ args: [String], directory: String? = nil) throws {
 let lldbSourceDirectory = "/opt/swift/toolchain/usr/lib/python3/dist-packages"
 let lldbTargetDirectory = "/opt/swift/swift-colab/PythonPackages/lldb"
 
-print("began ls command")
-try doCommand(["ls", lldbSourceDirectory])
-print("ended ls command")
-
 for subpath in try fm.contentsOfDirectory(atPath: lldbSourceDirectory) {
     let sourcePath = "\(lldbSourceDirectory)/\(subpath)"
     let targetPath = "\(lldbTargetDirectory)/\(subpath)"
@@ -53,10 +49,6 @@ for subpath in try fm.contentsOfDirectory(atPath: lldbSourceDirectory) {
         try fm.copyItem(atPath: sourcePath, toPath: targetPath)
     }
 }
-
-print("began ls command")
-try doCommand(["ls", lldbTargetDirectory])
-print("ended ls command")
 
 // Install Python packages
 try fm.createDirectory(atPath: "/env/python", withIntermediateDirectories: true)
@@ -78,6 +70,30 @@ for metadata in packageMetadata {
         
         try doCommand(["pip", "install", "--use-feature=in-tree-build", "./"], 
                       directory: targetPath)
+    }
+}
+
+// Move the LLDB binary to Python search path
+var pythonSearchPath = "/usr/local/lib"
+
+do {
+    let possibleFolders = try fm.contentsOfDirectory(atPath: pythonSearchPath).filter { $0.startsWith("python3.") }
+    let folderNumbers = possibleFolders.map { $0.dropFirst("python3.".count) }
+    let pythonVersion = "python3.\(folderNumbers.max!)"
+    pythonSearchPath += "/\(pythonVersion)/distpackages"
+}
+
+let lldbSearchPath = pythonSearchPath + "/lldb"
+
+do {
+    let originalSubpaths = try fm.contentsOfDirectory(atPath: lldbTargetDirectory)
+    let newSubpaths = try fm.contentsOfDirectory(atPath: lldbSearchPath)
+    
+    for missedSubpath in originalSubpaths where !newSubpaths.contains(misedSubpath) {
+        let originalPath = "\(lldbTargetDirectory)/\(missedSubpath)"
+        let newPath = "\(lldbTargetDirectory)/\(missedSubpath)"
+        
+        try fm.copyItem(atPath: originalPath, toPath: newPath)
     }
 }
 
