@@ -6,6 +6,7 @@ fileprivate let json = Python.import("json")
 fileprivate let lldb = Python.import("lldb")
 fileprivate let squash_dates = Python.import("jupyter_client").jsonutil.squash_dates
 fileprivate let SwiftModule = Python.import("Swift")
+fileprivate let time = Python.import("time")
 
 func do_execute(_ kwargs: PythonObject) throws -> PythonObject {
     let selfRef = kwargs["self"]
@@ -60,6 +61,13 @@ func do_execute(_ kwargs: PythonObject) throws -> PythonObject {
         throw e
     }
     
+    let emptyResponse: PythonObject = [
+        "status": "ok",
+        "execution_count": selfRef.execution_count,
+        "payload": [],
+        "user_expressions": [:]
+    ]
+    
     // Send values/errors and status to the client.
     if let result = result as? SuccessWithValue {
         try selfRef.send_response.throwing
@@ -71,15 +79,38 @@ func do_execute(_ kwargs: PythonObject) throws -> PythonObject {
             "metadata": [:]
         ])
         
-        return [
-            "status": "ok",
-            "execution_count": selfRef.execution_count,
-            "payload": [],
-            "user_expressions": [:]
-        ]
+        return emptyResponse
     }
-    
-    fatalError()
+    else if result is SuccessWithoutValue {
+        return emptyResponse
+    }
+    else if let result = result as? ExecutionResultError {
+        if !Bool(selfRef.process.is_alive)! {
+            selfRef.send_iopub_error_message(["Process killed"])
+            
+            // Exit the kernel because there is no way to recover from a
+            // killed process. The UI will tell the user that the kernel has
+            // died and the UI will automatically restart the kernel.
+            // We do the exit in a callback so that this execute request can
+            // cleanly finish before the kernel exits.
+            let loop = ioloop.IOLoop.current()
+            loop.add_timeout(time.time() + 0.1, loop.stop)
+            
+            return make_execute_reply_error_message(["Process killed"])
+        }
+        
+        if Bool(stdout_handler.had_stdout)! {
+            // When there is stdout, it is a runtime error. Stdout, which we
+            // have already sent to the client, contains the error message
+            // (plus some other ugly traceback that we should eventually
+            // figure out how to suppress), so this block of code only needs
+            // to add a traceback.
+            let stackTrace = get_pretty_main_thread_stack_trace(selfRef)
+            let traceback = ["Current stack trace"].pythonObject + stackTrace.map {
+                "\t\($0)"
+            }
+        }
+    }
 }
 
 fileprivate struct Exception: LocalizedError {
