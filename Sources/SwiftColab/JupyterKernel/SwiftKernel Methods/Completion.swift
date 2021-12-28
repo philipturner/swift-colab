@@ -7,7 +7,7 @@ func handle_disable_completion(_ selfRef: PythonObject) throws {
 }
 
 func handle_enable_completion(_ selfRef: PythonObject) throws {
-    guard Bool(Python.hasattr(selfRef.target, "CompleteCode"))! else {
+    guard selfRef.target.checking.CompleteCode != nil else {
         try send_response(selfRef, text: "Completion NOT enabled because toolchain does not " +
                                          "have CompleteCode API.\n")
         return
