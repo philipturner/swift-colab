@@ -11,11 +11,11 @@ fileprivate func process_install_location_line(_ selfRef: PythonObject, line_ind
     ^\s*%install-location (.*)$
     """###
     guard var install_location = Optional(re.match(regexExpression, line))?[dynamicMember: "group"](1) else {
-        return .init(line, Python.None)
+        return (line, Python.None).pythonObject
     }
     
     try process_install_substitute(template: &install_location, line_index: line_index)
-    return .init("", install_location)
+    return ("", install_location).pythonObject
 }
 
 fileprivate func process_extra_include_command_line(_ selfRef: PythonObject, line: PythonObject) -> PythonObject {
@@ -23,9 +23,9 @@ fileprivate func process_extra_include_command_line(_ selfRef: PythonObject, lin
     ^\s*%install-extra-include-command (.*)$
     """###
     if let extra_include_command = Optional(re.match(regexExpression, line))?[dynamicMember: "group"](1) {
-        return .init("", extra_include_command)
+        return ("", extra_include_command).pythonObject
     } else {
-        return .init(line, Python.None)
+        return (line, Python.None).pythonObject
     }
 }
 
@@ -34,9 +34,9 @@ fileprivate func process_install_swiftpm_flags_line(_ selfRef: PythonObject, lin
     ^\s*%install-swiftpm-flags (.*)$
     """###
     if let flags = Optional(re.match(regexExpression, line))?[dynamicMember: "group"](1) {
-        return .init("", flags)
+        return ("", flags).pythonObject
     } else {
-        return .init(line, [])
+        return (line, []).pythonObject
     }
 }
 
@@ -45,7 +45,7 @@ fileprivate func process_install_line(_ selfRef: PythonObject, line_index: Pytho
     ^\s*%install (.*)$
     """###
     guard let install_match = Optional(re.match(regexExpression, line)) else {
-        return .init(line, [])
+        return (line, []).pythonObject
     }
     
     let parsed = shlex.split(install_match[dynamicMember: "group"](1))
@@ -55,10 +55,10 @@ fileprivate func process_install_line(_ selfRef: PythonObject, line_index: Pytho
     }
     
     try process_install_substitute(template: &parsed[0], line_index: line_index)
-    return .init("", [[
+    return ("", [[
         "spec": parsed[0],
         "products": parsed[1...]
-    ]])
+    ]]).pythonObject
 }
 
 // Addition by Philip Turner
