@@ -46,5 +46,27 @@ func install_packages(_ selfRef: PythonObject,
         // symlink to the specified location
         // Remove existing base if it is already a symlink
         os.makedirs(user_install_location, exist_ok: true)
+        
+        try call_unlink(link_name: scratchwork_base_path)
+        os.symlink(user_install_location, scratchwork_base_path, target_is_directory: true)
+    }
+    
+    // Make the directory containing our synthesized package.
+    os.makedirs(package_base_path, exist_ok: true)
+    
+    // Make the directory containing our built modules and other includes.
+    os.makedirs(swift_module_search_path, exist_ok: true)
+    
+    // Make links from the install location to extra includes.
+    for include_command in extra_include_commands {
+        let result = subprocess.run(include_command, shell: true,
+                                    stdout: subprocess.PIPE,
+                                    stderr: subprocess.PIPE)
+        
+        if result.returncode != 0 {
+            // throw an error
+        }
+        
+        // proceed
     }
 }
