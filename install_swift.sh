@@ -25,7 +25,7 @@ then
   
   # Not installing Backtrace because I don't see it helping anything.
 #   git clone --single-branch -b main https://github.com/philipturner/swift-backtrace
-#   cd ../
+  cd ../
 fi
 
 # Execute setup script
