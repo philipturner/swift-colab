@@ -106,7 +106,7 @@ do {
     
     for missedSubpath in originalSubpaths where !newSubpaths.contains(missedSubpath) {
         let originalPath = "\(lldbSourceDirectory)/\(missedSubpath)"
-        precondition(fm.fileExists(atPath: "/env/python/lldb/\(missedSubpath)")
+        precondition(fm.fileExists(atPath: "/env/python/lldb/\(missedSubpath)"))
         let newPath = "\(lldbSearchPath)/\(missedSubpath)"
         
         do {
