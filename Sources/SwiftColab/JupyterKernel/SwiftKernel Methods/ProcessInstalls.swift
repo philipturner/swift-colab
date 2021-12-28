@@ -137,7 +137,7 @@ fileprivate func process_install_line(_ selfRef: PythonObject, _ line_index: Pyt
     }
     
     guard let install = install_match.checking[dynamicMember: "group"]?(1) else {
-        fatalError("debugging checkpoint #6)
+        fatalError("debugging checkpoint #6")
     }
     
     let parsed = shlex[dynamicMember: "split"](install)
