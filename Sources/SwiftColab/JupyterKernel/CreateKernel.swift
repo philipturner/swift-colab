@@ -22,7 +22,7 @@ public func JKCreateKernel(_ jupyterKernelRef: OwnedPyObjectPointer) -> OwnedPyO
     
     // We don't initialize Swift yet, so that the user has a chance to
     // "%install" packages before Swift starts. (See doc comment in
-    // `_init_swift`).
+    // `init_swift`).
     
     // Whether to do code completion. Since the debugger is not yet
     // initialized, we can't do code completion yet.
