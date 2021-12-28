@@ -11,11 +11,11 @@ fileprivate func process_install_location_line(_ selfRef: PythonObject, line_ind
     ^\s*%install-location (.*)$
     """###
     guard var install_location = Optional(re.match(regexExpression, line))?[dynamicMember: "group"](1) else {
-        return (line, Python.None).pythonObject
+        return .init(tupleOf: line, Python.None)
     }
     
     try process_install_substitute(template: &install_location, line_index: line_index)
-    return ("", install_location).pythonObject
+    return .init(tupleOf: "", install_location)
 }
 
 fileprivate func process_extra_include_command_line(_ selfRef: PythonObject, line: PythonObject) -> PythonObject {
@@ -23,9 +23,9 @@ fileprivate func process_extra_include_command_line(_ selfRef: PythonObject, lin
     ^\s*%install-extra-include-command (.*)$
     """###
     if let extra_include_command = Optional(re.match(regexExpression, line))?[dynamicMember: "group"](1) {
-        return ("", extra_include_command).pythonObject
+        return .init(tupleOf: "", extra_include_command)
     } else {
-        return (line, Python.None).pythonObject
+        return .init(tupleOf: line, Python.None)
     }
 }
 
@@ -34,9 +34,9 @@ fileprivate func process_install_swiftpm_flags_line(_ selfRef: PythonObject, lin
     ^\s*%install-swiftpm-flags (.*)$
     """###
     if let flags = Optional(re.match(regexExpression, line))?[dynamicMember: "group"](1) {
-        return ("", flags).pythonObject
+        return .init(tupleOf: "", flags)
     } else {
-        return (line, []).pythonObject
+        return .init(tupleOf: line, [])
     }
 }
 
@@ -45,7 +45,7 @@ fileprivate func process_install_line(_ selfRef: PythonObject, line_index: Pytho
     ^\s*%install (.*)$
     """###
     guard let install_match = Optional(re.match(regexExpression, line)) else {
-        return (line, []).pythonObject
+        return .init(tupleOf: line, [])
     }
     
     let parsed = shlex.split(install_match[dynamicMember: "group"](1))
@@ -55,10 +55,10 @@ fileprivate func process_install_line(_ selfRef: PythonObject, line_index: Pytho
     }
     
     try process_install_substitute(template: &parsed[0], line_index: line_index)
-    return ("", [[
+    return .init(tupleOf: "", [[
         "spec": parsed[0],
         "products": parsed[1...]
-    ]]).pythonObject
+    ] as [String: PythonObject]])
 }
 
 // Addition by Philip Turner
