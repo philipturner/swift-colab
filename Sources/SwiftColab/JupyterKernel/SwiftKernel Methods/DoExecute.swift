@@ -37,6 +37,9 @@ fileprivate func after_successful_execution(_ selfRef: PythonObject) throws {
             "but got: \(result)")
         return
     }
+    
+    let messages = try read_jupyter_messages(selfRef, result.result)
+//     try send_jupyter_messages(selfRef, messages)
 }
 
 fileprivate func read_jupyter_messages(_ selfRef: PythonObject, _ sbvalue: PythonObject) throws -> PythonObject {
