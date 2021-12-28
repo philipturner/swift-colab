@@ -19,7 +19,7 @@ func init_swift(_ selfRef: PythonObject) throws {
     
     // We do completion by default when the toolchain has the SBTarget.CompleteCode API.
     // The user can disable/enable using "%disableCompletion" and "%enableCompletion".
-    selfRef.completion_enabled = selfRef.target.checking.CompleteCode ?? nil
+    selfRef.completion_enabled = selfRef.target.checking.CompleteCode ?? Python.None
 }
 
 fileprivate struct Exception: LocalizedError {
