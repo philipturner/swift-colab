@@ -16,7 +16,10 @@ func process_installs(_ selfRef: PythonObject, code: PythonObject) throws -> Pyt
     var extra_include_commands: [PythonObject] = []
     var user_install_location: PythonObject?
     
-    for (index, var line) in Python.enumerate(code[dynamicMember: "split"]("\n")).map({ $0.tuple2 }) {
+    let lines = code[dynamicMember: "split"]("\n")
+    
+    for index in 0..<lines.count {
+        var line = lines[index]
         try process_system_command_line(selfRef, &line)
         
         if let install_location = try process_install_location_line(selfRef, index, &line) {
