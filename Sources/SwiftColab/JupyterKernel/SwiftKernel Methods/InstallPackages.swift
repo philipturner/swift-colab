@@ -238,6 +238,14 @@ func install_packages(_ selfRef: PythonObject, packages: [PythonObject], swiftpm
     let db_connection = sqlite3.connect(build_db_file)
     let cursor = db_connection.cursor()
     
+    func queryDatabase(_ input: String) -> [PythonObject] {
+        cursor.execute(SQL_FILES_SELECT, [input])
+        return cursor.fetchall().compactMap { row -> PythonObject? in
+            let first_row = row[0]
+            return is_valid_dependenc
+    }
+    
     // Process *.swiftmodules files
-    cursor.execute(SQL_FILES_SELECT, [".swiftmodule"])
+    
+    let swift_modules = 
 }
