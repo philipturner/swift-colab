@@ -33,3 +33,14 @@ fileprivate func process_install_location_line(_ selfRef: PythonObject, line_ind
     
     return ("", install_location)
 }
+
+fileprivate func process_extra_include_command_line(_ selfRef: PythonObject, line: PythonObject) -> PythonObject {
+    let regexExpression: PythonObject = ###"""
+    ^\s*%install-extra-include-command (.*)$
+    """###
+    if let extra_include_command = Optional(re.match(regexExpression, line))?.group(1) {
+        return ("", extra_include_command)
+    } else {
+        return (line, Python.None)
+    }
+}
