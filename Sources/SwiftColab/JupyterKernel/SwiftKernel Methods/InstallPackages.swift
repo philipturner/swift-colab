@@ -292,4 +292,8 @@ func install_packages(_ selfRef: PythonObject, packages: [PythonObject], swiftpm
     // == dlopen the shared lib ==
     send_response("Initializing Swift...\n")
     init_swift(selfRef)
+    
+    guard let _ = dlopen(String(json.dumps(lib_filename)), RTLD_NOW) else {
+        throw PackageInstallException("Install error: dlopen error: \(String(cString: dlerror())")
+    }
 }
