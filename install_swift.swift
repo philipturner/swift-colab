@@ -77,44 +77,16 @@ for metadata in packageMetadata {
 var pythonSearchPath = "/usr/local/lib"
 
 do {
-    var possibleFolders: [String]
-    do {
-        possibleFolders = try fm.contentsOfDirectory(atPath: pythonSearchPath).filter { $0.hasPrefix("python3.") }
-    } catch {
-        fatalError("debug marker 1")
-    }
+    var possibleFolders = try fm.contentsOfDirectory(atPath: pythonSearchPath).filter { $0.hasPrefix("python3.") }
     let folderNumbers = possibleFolders.map { $0.dropFirst("python3.".count) }
     let pythonVersion = "python3.\(folderNumbers.max()!)"
     pythonSearchPath += "/\(pythonVersion)/dist-packages"
 }
 
-let lldbSearchPath = pythonSearchPath + "/lldb"
-
 do {
-    var originalSubpaths: [String]
-    var newSubpaths: [String]
-    do {
-        originalSubpaths = try fm.contentsOfDirectory(atPath: lldbSourceDirectory)
-    } catch {
-        fatalError("debug marker 2")
-    }
-    do {
-        newSubpaths = try fm.contentsOfDirectory(atPath: lldbSearchPath)
-    } catch {
-        fatalError("debug marker 3")
-    }
-    
-    for missedSubpath in originalSubpaths where !newSubpaths.contains(missedSubpath) {
-        let originalPath = "\(lldbSourceDirectory)/\(missedSubpath)"
-        precondition(fm.fileExists(atPath: "/env/python/lldb/\(missedSubpath)"))
-        let newPath = "\(lldbSearchPath)/\(missedSubpath)"
-        
-        do {
-            try fm.copyItem(atPath: originalPath, toPath: newPath)
-        } catch {
-            fatalError("debug marker 4")
-        }
-    }
+    let originalPath = "\(lldbSourceDirectory)/_lldb.so"
+    let newPath = "\(pythonSearchPath)/lldb/_lldb.so"
+    try? fm.createSymbolicLink(atPath: newPath, withDestinationPath: originalPath)
 }
 
 try fm.createDirectory(atPath: "/opt/swift/tmp", withIntermediateDirectories: true)
