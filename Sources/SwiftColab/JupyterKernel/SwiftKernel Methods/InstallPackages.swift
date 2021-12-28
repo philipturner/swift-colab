@@ -258,7 +258,7 @@ func install_packages(_ selfRef: PythonObject, packages: [PythonObject], swiftpm
         // ClangImporter requires that they are all named
         // "module.modulemap".
         // Use the module name to prevent two modulemaps for the same
-        // depndency ending up in multiple directories after several
+        // dependency ending up in multiple directories after several
         // installations, causing the kernel to end up in a bad state.
         // Make all relative header paths in module.modulemap absolute
         // because we copy file to different location.
@@ -267,7 +267,13 @@ func install_packages(_ selfRef: PythonObject, packages: [PythonObject], swiftpm
         let file = Python.open(filename, encoding: "utf8")
         defer { file.close() }
         
-        let modulemap_contents = file.read()
-        // make a lambda
+        var modulemap_contents = file.read()
+        modulemap_contents = re.sub(
+            ###"""
+            header\s+"(.*?)"
+            """###,
+            selfRef.lambda1(src_folder),
+            modulemap_contents
+        )
     }
 }
