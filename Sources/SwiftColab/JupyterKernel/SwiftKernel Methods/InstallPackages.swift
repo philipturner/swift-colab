@@ -123,9 +123,9 @@ func install_packages(_ selfRef: PythonObject, packages: [PythonObject], swiftpm
         ])
     }
 
-    send_response("Installing packages:\n\(packages_human_description)")
-    send_response("With SwiftPM flags: \(swiftpm_flags)\n")
-    send_response("Working in: \(scratcwork_base_path)\n")
+    try send_response("Installing packages:\n\(packages_human_description)")
+    try send_response("With SwiftPM flags: \(swiftpm_flags)\n")
+    try send_response("Working in: \(scratchwork_base_path)\n")
 
     let package_swift = """
     // swift-tools-version:4.2
@@ -167,7 +167,7 @@ func install_packages(_ selfRef: PythonObject, packages: [PythonObject], swiftpm
                                    cwd: package_base_path)
     
     for build_output_line in Python.iter(build_p.stdout.readline, PythonBytes(Data())) {
-        send_response(String(build_output_line.decode("utf8")))
+        try send_response(String(build_output_line.decode("utf8"))!)
     }
     
     let build_returncode = build_p.wait()
