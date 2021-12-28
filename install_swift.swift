@@ -86,7 +86,9 @@ do {
 do {
     let originalPath = "\(lldbSourceDirectory)/_lldb.so"
     let newPath = "\(pythonSearchPath)/lldb/_lldb.so"
-    try? fm.createSymbolicLink(atPath: newPath, withDestinationPath: originalPath)
+    
+    let destination = try fm.destinationOfSymbolicLink(atPath: originalPath)
+    try? fm.createSymbolicLink(atPath: newPath, withDestinationPath: destination)
 }
 
 try fm.createDirectory(atPath: "/opt/swift/tmp", withIntermediateDirectories: true)
