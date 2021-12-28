@@ -134,7 +134,7 @@ fileprivate func process_system_command_line(_ selfRef: PythonObject, _ line: in
         return
     }
     
-    if Bool(Python.hasattr(selfRef, "debugger"))! {
+    if selfRef.checking.debugger != nil {
         throw PackageInstallException(
             "System commands can only run in the first cell.")
     }
