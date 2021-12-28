@@ -17,7 +17,7 @@ func preprocess_and_execute(_ selfRef: PythonObject, code: PythonObject) throws 
 
 func execute(_ selfRef: PythonObject, code: PythonObject) -> ExecutionResult {
     let fileName = file_name_for_source_location(selfRef)
-    let locationDirective = PythonObject("#sourceLocation(file: \(fileName), line: 1)")
+    let locationDirective = PythonObject("#sourceLocation(file: \"\(fileName)\", line: 1)")
     let codeWithLocationDirective = locationDirective + "\n" + code
     
     let result = selfRef.target.EvaluateExpression(
@@ -117,7 +117,6 @@ fileprivate func read_include(_ selfRef: PythonObject, line_index: PythonObject,
             f.close()
         } catch PythonError.exception(let error, let traceback) {
             guard Bool(Python.isinstance(error, Python.IOError))! else {
-                fatalError("This should never happen! \(Python.repr(error)), \(Python.repr(traceback)), \(Python.repr(error.__class__))")
                 throw PythonError.exception(error, traceback: traceback)
             }
         }
