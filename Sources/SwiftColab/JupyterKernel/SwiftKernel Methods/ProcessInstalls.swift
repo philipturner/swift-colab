@@ -4,7 +4,30 @@ import PythonKit
 fileprivate let os = Python.import("os")
 fileprivate let re = Python.import("re")
 fileprivate let shlex = Python.import("shlex")
+fileprivate let stat = Python.import("stat")
 fileprivate let subprocess = Python.import("subprocess")
+
+func call_unlink(link_name: PythonObject) throws {
+    do {
+        func call(_ function: PythonObject, _ param: PythonObject) throws -> PythonObject {
+            try function.throwing.dynamicallyCall(withArguments: param)
+        }
+
+        let st_mode = try call(os.lstat, link_name)
+        if Bool(try call(stat.S_ISLNK, st_mode))! {
+            call(os.unlink, link_name)
+        }
+    } catch PythonError.exception(let error, let traceback) {
+        let e = PythonError.exception(error, traceback: traceback)
+
+        if error.__class__ == Python.FileNotFoundError {
+            // pass
+        } else if error.__class__ == Python.Error {
+            throw PackageInstallException(
+                "Failed to stat scratchwork base path: \(e)")
+        }
+    }
+}
 
 fileprivate func process_install_location_line(_ selfRef: PythonObject, line_index: PythonObject, line: PythonObject) throws -> PythonObject {
     let regexExpression: PythonObject = ###"""
@@ -96,31 +119,10 @@ fileprivate func link_extra_includes(_ selfRef: PythonObject, _ swift_module_sea
         let link_name = os.path.join(swift_module_search_path, include_file)
         let target = os.path.join(include_dir, include_dir)
         
-        do {
-            func call(_ function: PythonObject, _ param: PythonObject) throws -> PythonObject {
-                try function.throwing.dynamicallyCall(withArguments: param)
-            }
-            
-            let st_mode = try call(os.lstat, link_name)
-            if Bool(try call(stat.S_ISLNK, st_mode))! {
-                call(os.unlink, link_name)
-            }
-        } catch PythonError.exception(let error, let traceback) {
-            let e = PythonError.exception(error, traceback: traceback)
-            
-            if error.__class__ == Python.FileNotFoundError {
-                // pass
-            } else if error.__class__ == Python.Error {
-                throw PackageInstallException(
-                    "Failed to stat scratchwork base path: \(e)")
-            }
-        }
-        
+        call_unlink(link_name: link_name)
         os.symlink(target, link_name)
     }
 }
-
-// Addition by Philip Turner
 
 fileprivate func process_install_substitute(template: inout PythonObject, line_index: PythonObject) throws {
     do {
