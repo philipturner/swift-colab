@@ -46,9 +46,23 @@ fileprivate func read_byte_array(_ selfRef: PythonObject, _ sbvalue: PythonObjec
         .GetChildMemberWithName("address")
         .GetData()
         .GetAddress(get_address_error, 0)
-    if get_address_error.Fail() {
+    if Bool(get_address_error.Fail())! {
         throw Exception("getting address: \(get_address_error)")
     }
     
     let get_count_error = lldb.SBError()
+    let count_data = sbvalue
+        .GetChildMemberWithName("count")
+        .GetData()
+    var count: PythonObject
+    
+    switch Int(selfRef._int_bitwidth)! {
+    case 32: count = count_data.GetSignedInt32(get_count_error, 0)
+    case 64: count = count_data.GetSignedInt64(get_count_error, 0)
+    default:
+        throw Exception("Unsupported integer bitwidth: \(selfRef._int_bitwidth)")
+    }
+    if Bool(get_count_error.Fail())! {
+        throw Exception("getting count: \(get_count_error)")
+    }
 }
