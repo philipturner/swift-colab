@@ -254,5 +254,19 @@ func install_packages(_ selfRef: PythonObject, packages: [PythonObject], swiftpm
     let modulemap_files = queryDatabase("%/module.modulemap")
     for index in 0..<modulemap_files.count {
         let filename = modulemap_files[index]
+        // Create a separate directory for each modulemap file because the
+        // ClangImporter requires that they are all named
+        // "module.modulemap".
+        // Use the module name to prevent two modulemaps for the same
+        // depndency ending up in multiple directories after several
+        // installations, causing the kernel to end up in a bad state.
+        // Make all relative header paths in module.modulemap absolute
+        // because we copy file to different location.
+        
+        let (src_folder, src_filename) = os.path[dynamicMember: "split"](filename).tuple2
+        let file = Python.open(filename, encoding: "utf8")
+        defer { file.close() }
+        
+        let modulemap_contents = file.read()
     }
 }
