@@ -36,7 +36,7 @@ fileprivate func process_install_swiftpm_flags_line(_ selfRef: PythonObject, lin
     if let flags = Optional(re.match(regexExpression, line))?[dynamicMember: "group"](1) {
         return .init(tupleOf: "", flags)
     } else {
-        return .init(tupleOf: line, [PythonObject]())
+        return .init(tupleOf: line, [] as [PythonObject])
     }
 }
 
@@ -45,7 +45,7 @@ fileprivate func process_install_line(_ selfRef: PythonObject, line_index: Pytho
     ^\s*%install (.*)$
     """###
     guard let install_match = Optional(re.match(regexExpression, line)) else {
-        return .init(tupleOf: line, [])
+        return .init(tupleOf: line, [] as [PythonObject])
     }
     
     let parsed = shlex[dynamicMember: "split"](install_match[dynamicMember: "group"](1))
