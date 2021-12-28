@@ -41,7 +41,7 @@ fileprivate func preprocess(_ selfRef: PythonObject, code: PythonObject) throws 
     let lines = Array(code[dynamicMember: "split"]("\n"))
     let preprocessed_lines = try (0..<lines.count).map { i -> PythonObject in
         let line = lines[i]
-        return try preprocess_line(selfRef, line_index: i, line: line)
+        return try preprocess_line(selfRef, line_index: PythonObject(i), line: line)
     }
     
     return PythonObject("\n").join(preprocessed_lines)
