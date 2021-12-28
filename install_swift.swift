@@ -85,7 +85,7 @@ do {
     }
     let folderNumbers = possibleFolders.map { $0.dropFirst("python3.".count) }
     let pythonVersion = "python3.\(folderNumbers.max()!)"
-    pythonSearchPath += "/\(pythonVersion)/distpackages"
+    pythonSearchPath += "/\(pythonVersion)/dist-packages"
 }
 
 let lldbSearchPath = pythonSearchPath + "/lldb"
