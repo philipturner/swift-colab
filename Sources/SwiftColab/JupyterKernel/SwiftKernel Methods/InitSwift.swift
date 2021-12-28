@@ -105,7 +105,7 @@ fileprivate func init_repl_process(_ selfRef: PythonObject) throws {
 
 fileprivate func init_kernel_communicator(_ selfRef: PythonObject) throws {
     if let result = try preprocess_and_execute(selfRef, code:
-        "%include KernelCommunicator.swift".pythonObject) as? ExecutionResultError {
+        "%include \"KernelCommunicator.swift\"".pythonObject) as? ExecutionResultError {
         throw Exception("Error initializing KernelCommunicator: \(String(reflecting: result))")
     }
     
