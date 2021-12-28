@@ -3,6 +3,7 @@ import PythonKit
 
 fileprivate let json = Python.import("json")
 fileprivate let os = Python.import("os")
+fileprivate let re = Python.import("re")
 fileprivate let shlex = Python.import("shlex")
 fileprivate let shutil = Python.import("shutil")
 fileprivate let sqlite3 = Python.import("sqlite3")
@@ -290,13 +291,13 @@ func install_packages(_ selfRef: PythonObject, packages: [PythonObject], swiftpm
     }
     
     // == dlopen the shared lib ==
-    send_response("Initializing Swift...\n")
+    try send_response("Initializing Swift...\n")
     init_swift(selfRef)
     
     guard let _ = dlopen(String(json.dumps(lib_filename)), RTLD_NOW) else {
         throw PackageInstallException("Install error: dlopen error: \(String(cString: dlerror()))")
     }
     
-    send_response("Installation complete!\n")
+    try send_response("Installation complete!\n")
     selfRef.already_installed_packages = true
 }
