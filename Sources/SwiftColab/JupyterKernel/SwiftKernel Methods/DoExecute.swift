@@ -42,4 +42,13 @@ fileprivate func read_display_message(_ selfRef: PythonObject, _ sbvalue: Python
 
 fileprivate func read_byte_array(_ selfRef: PythonObject, _ sbvalue: PythonObject) throws -> PythonObject) {
     let get_address_error = lldb.SBError()
+    let address = sbvalue
+        .GetChildMemberWithName("address")
+        .GetData()
+        .GetAddress(get_address_error, 0)
+    if get_address_error.Fail() {
+        throw Exception("getting address: \(get_address_error)")
+    }
+    
+    let get_count_error = lldb.SBError()
 }
