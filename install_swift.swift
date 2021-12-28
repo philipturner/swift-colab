@@ -45,7 +45,7 @@ try fm.createDirectory(atPath: "/env/python", withIntermediateDirectories: true)
 let packageSourceDirectory = "/opt/swift/swift-colab/PythonPackages"
 let packageMetadata = [
     (name: "Swift", forceReinstall: false),
-    (name: "lldb", forceReinstall: true)
+    (name: "lldb", forceReinstall: false)
 ]
 
 for metadata in packageMetadata {
@@ -66,7 +66,7 @@ for metadata in packageMetadata {
 var pythonSearchPath = "/usr/local/lib"
 
 do {
-    var possibleFolders = try fm.contentsOfDirectory(atPath: pythonSearchPath).filter { $0.hasPrefix("python3.") }
+    let possibleFolders = try fm.contentsOfDirectory(atPath: pythonSearchPath).filter { $0.hasPrefix("python3.") }
     let folderNumbers = possibleFolders.map { $0.dropFirst("python3.".count) }
     let pythonVersion = "python3.\(folderNumbers.max()!)"
     pythonSearchPath += "/\(pythonVersion)/dist-packages"
