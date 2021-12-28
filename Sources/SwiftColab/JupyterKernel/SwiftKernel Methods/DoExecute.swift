@@ -70,7 +70,16 @@ func do_execute(_ kwargs: PythonObject) throws -> PythonObject {
             },
             "metadata": [:]
         ])
+        
+        return [
+            "status": "ok",
+            "execution_count": selfRef.execution_count,
+            "payload": [],
+            "user_expressions": [:]
+        ]
     }
+    
+    fatalError()
 }
 
 fileprivate struct Exception: LocalizedError {
