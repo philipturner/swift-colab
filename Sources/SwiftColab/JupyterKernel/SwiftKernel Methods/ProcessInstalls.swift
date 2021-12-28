@@ -159,7 +159,8 @@ fileprivate func process_system_command_line(_ selfRef: PythonObject, _ line: in
     let regexExpression: PythonObject = ###"""
     ^\s*%system (.*)$
     """###
-    guard let system_match = Optional<PythonObject>(re.match(regexExpression, line)) else {
+    let system_match = re.match(regexExpression, line)
+    guard system_match != Python.None else {
         return
     }
     
@@ -168,10 +169,7 @@ fileprivate func process_system_command_line(_ selfRef: PythonObject, _ line: in
             "System commands can only run in the first cell.")
     }
     
-    guard let rest_of_line = system_match.checking[dynamicMember: "group"]?(1) else {
-        fatalError("debugging checkpoint #7: \(Python.repr(system_match)) ----- \(Python.repr(line))")
-    }
-    
+    let rest_of_line = system_match.group(1) 
     let process = subprocess.Popen(rest_of_line,
                                    stdout: subprocess.PIPE,
                                    stderr: subprocess.STDOUT,
