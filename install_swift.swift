@@ -95,6 +95,9 @@ do {
     let sourcePath = "/opt/swift/toolchain/usr/lib/python3/dist-packages/lldb/_lldb.so"
     let targetPath = "/usr/local/lib/python3.7/dist-packages/lldb/_lldb.so"
     
+    precondition(sourcePaht == "\(lldbSourceDirectory)/lldb/_lldb.so"
+    precondition(targetPath == "\(pythonSearchPath)/lldb/_lldb.so"
+    
     try? fm.removeItem(atPath: targetPath)
     try fm.createSymbolicLink(atPath: targetPath, withDestinationPath: sourcePath)
 }
