@@ -34,10 +34,10 @@ func process_installs(_ selfRef: PythonObject, code: PythonObject) throws -> Pyt
     }
     
     try install_packages(selfRef, 
-                         packages: all_packages.pythonObject,
-                         swiftpm_flags: all_swiftpm_flags.pythonObject,
-                         extra_include_commands: extra_include_commands.pythonObject,
-                         user_install_location: user_install_location.pythonObject)
+                         packages: all_packages,
+                         swiftpm_flags: all_swiftpm_flags,
+                         extra_include_commands: extra_include_commands,
+                         user_install_location: user_install_location)
     
     return PythonObject("\n").join(processed_lines)
 }
