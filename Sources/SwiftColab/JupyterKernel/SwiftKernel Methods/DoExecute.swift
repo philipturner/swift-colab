@@ -7,21 +7,23 @@ fileprivate let squash_dates = Python.import("jupyter_client").jsonutil.squash_d
 
 func do_execute(_ kwargs: PythonObject) throws -> PythonObject {
     let selfRef = kwargs["self"]
+    let code = kwargs["code"]
     
-    if !Bool(kwargs["silent"])! {
-        let stream_content: PythonObject = ["name": "stdout", "text": kwargs["code"]]
-        
-        let throwingObject = selfRef.send_response.throwing
-        try throwingObject.dynamicallyCall(withArguments: selfRef.iopub_socket, "stream", stream_content)
+    // Return early if the code is empty or whitespace, to avoid
+    // initializing Swift and preventing package installs.
+    if Python.len(code) == 0 || Bool(code.isspace())! {
+        return [
+            "status": "ok",
+            "execution_count": selfRef.execution_count,
+            "payload": [],
+            "user_expressions": [:],
+        ]
     }
     
-    return [
-        "status": "ok",
-        // The base class increments the execution count
-        "execution_count": selfRef.execution_count,
-        "payload": [],
-        "user_expressions": [:],
-    ]
+    // Package installs must be done before initializing Swift (see doc
+    // comment in `init_swift`).
+    
+    
 }
 
 fileprivate struct Exception: LocalizedError {
