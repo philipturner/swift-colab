@@ -89,7 +89,7 @@ do {
     let originalSubpaths = try fm.contentsOfDirectory(atPath: lldbTargetDirectory)
     let newSubpaths = try fm.contentsOfDirectory(atPath: lldbSearchPath)
     
-    for missedSubpath in originalSubpaths where !newSubpaths.contains(misedSubpath) {
+    for missedSubpath in originalSubpaths where !newSubpaths.contains(missedSubpath) {
         let originalPath = "\(lldbTargetDirectory)/\(missedSubpath)"
         let newPath = "\(lldbTargetDirectory)/\(missedSubpath)"
         
