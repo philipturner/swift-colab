@@ -275,5 +275,10 @@ func install_packages(_ selfRef: PythonObject, packages: [PythonObject], swiftpm
             selfRef.lambda1(src_folder),
             modulemap_contents
         )
+        
+        let module_match = re.match(###"""
+                                    module\s+([^\s]+)\s.*{
+                                    """###, modulemap_contents)
+        let module_name = (module_match != Python.None) ? os.path.join(swift_module_search_path) : Python.str(index)
     }
 }
