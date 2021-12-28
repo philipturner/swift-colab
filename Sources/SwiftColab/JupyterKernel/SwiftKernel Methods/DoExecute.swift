@@ -143,3 +143,12 @@ fileprivate func make_execute_reply_error_message(_ selfRef: PythonObject, _ tra
         "traceback": traceback
     ]
 }
+
+fileprivate func send_iopub_error_message(_ selfRef: PythonObject, _ traceback: PythonObject) throws {
+    try selfRef.send_response.throwing
+    .dynamicallyCall(withArguments: selfRef.iopub_socket, "error", [
+        "ename": "",
+        "evalue": "",
+        "traceback": traceback
+    ])
+}
