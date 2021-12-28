@@ -37,7 +37,7 @@ fileprivate func read_jupyter_messages(_ selfRef: PythonObject, _ sbvalue: Pytho
 }
 
 fileprivate func read_display_message(_ selfRef: PythonObject, _ sbvalue: PythonObject) throws -> PythonObject {
-    
+    sbvalue.map { part in try read_byte_array(selfRef, part) }.pythonObject
 }
 
 fileprivate func read_byte_array(_ selfRef: PythonObject, _ sbvalue: PythonObject) throws -> PythonObject) {
