@@ -10,7 +10,7 @@ func preprocess_and_execute(_ selfRef: PythonObject, code: PythonObject) throws 
     do {
         let preprocessed = try preprocess(selfRef, code: code)
         return execute(selfRef, code: preprocessed)
-    } catch(let e as PreprocessorException) {
+    } catch let e as PreprocessorException {
         return PreprocessorError(exception: e)
     }
 }
@@ -56,14 +56,22 @@ fileprivate func preprocess_line(_ selfRef: PythonObject, line_index: PythonObje
     ^\s*%include (.*)$
     """###, line)
     if include_match != Python.None {
-        return try read_include(selfRef, line_index: line_index, rest_of_line: include_match.group(1))
+        do {
+            return try read_include(selfRef, line_index: line_index, rest_of_line: include_match.group(1))
+        } catch {
+            fatalError("debug checkpoint 0.1")
+        }
     }
     
     let disable_completion_match = re.match(###"""
     ^\s*%disableCompletion\s*$
     """###, line)
     if disable_completion_match != Python.None {
-        try handle_disable_completion(selfRef)
+        do {
+            try handle_disable_completion(selfRef)
+        } catch {
+            fatalError("debug checkpoint 0.2")
+        }
         return ""
     }
     
@@ -71,7 +79,11 @@ fileprivate func preprocess_line(_ selfRef: PythonObject, line_index: PythonObje
     ^\s*%enableCompletion\s*$
     """###, line)
     if enable_completion_match != Python.None {
-        try handle_enable_completion(selfRef)
+        do {
+            try handle_enable_completion(selfRef)
+        } catch {
+            fatalError("debug checkpoint 0.3")
+        }
         return ""
     }
     
