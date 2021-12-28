@@ -56,6 +56,7 @@ class SwiftKernel(Kernel):
             "code": code,
             "cursor_pos": cursor_pos,
         })
+    
 
 if __name__ == "__main__":
     # Jupyter sends us SIGINT when the user requests execution interruption.
