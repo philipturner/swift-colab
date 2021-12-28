@@ -188,19 +188,19 @@ func install_packages(_ selfRef: PythonObject, packages: [PythonObject], swiftpm
     
     // Search for build.db
     let build_db_candidates = [
-        os.path.join(bin_dir, '..', 'build.db'),
-        os.path.join(package_base_path, '.build', 'build.db'),
+        os.path.join(bin_dir, "..", "build.db"),
+        os.path.join(package_base_path, ".build", "build.db"),
     ]
     guard let build_db_file = Python.next(Python.filter(os.path.exists, build_db_candidates), Python.None) else {
         throw PackageInstallException("build.db is missing")
     }
     
     // Execute swift-package show-dependencies to get all dependencies' paths
-    let dependencies_result = subprocess.run([swift_package_path, 'show-dependencies', '--format', 'json'],
+    let dependencies_result = subprocess.run([swift_package_path, "show-dependencies", "--format", "json"],
                                              stdout: subprocess.PIPE, 
                                              stderr: subprocess.PIPE,
                                              cwd: package_base_path)
-    let dependencies_json = dependencies_result.stdout.decode('utf8')
+    let dependencies_json = dependencies_result.stdout.decode("utf8")
     let dependencies_obj = json.loads(dependencies_json)
     
     func flatten_deps_paths(_ dep: PythonObject) -> PythonObject {
