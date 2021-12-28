@@ -42,7 +42,7 @@ try fm.createDirectory(atPath: "/env/python", withIntermediateDirectories: true)
 
 let packageSourceDirectory = "/opt/swift/swift-colab/PythonPackages"
 let packageMetadata = [
-    (name: "Swift", forceReinstall: true),
+    (name: "Swift", forceReinstall: false),
 ]
 
 for metadata in packageMetadata {
@@ -92,7 +92,7 @@ let spbProductsPath = "/opt/swift/packages/SwiftPythonBridge"
 let spbLibPath = "/opt/swift/lib/libSwiftPythonBridge.so"
 let spbSourcePath = "/opt/swift/swift-colab/Sources/SwiftColab/SwiftPythonBridge"
 
-try fm.removeItemIfExists(atPath: spbProductsPath)
+// try fm.removeItemIfExists(atPath: spbProductsPath)
 try fm.createDirectory(atPath: spbProductsPath, withIntermediateDirectories: true)
 
 let spbSourceFilePaths = try fm.subpathsOfDirectory(atPath: spbSourcePath).filter {
