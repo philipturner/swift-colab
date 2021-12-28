@@ -33,7 +33,11 @@ func process_installs(_ selfRef: PythonObject, code: PythonObject) throws -> Pyt
         processed_lines.append(line)
     }
     
-    // TODO: make a call to install_packages
+    try install_packages(selfRef, 
+                         packages: all_packages,
+                         swiftpm_flags: all_swiftpm_flags,
+                         extra_include_commands: extra_include_commands,
+                         user_install_location: user_install_location)
     
     return PythonObject("\n").join(processed_lines)
 }
