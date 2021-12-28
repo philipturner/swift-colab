@@ -39,7 +39,7 @@ fileprivate func after_successful_execution(_ selfRef: PythonObject) throws {
     }
     
     let messages = try read_jupyter_messages(selfRef, result.result)
-//     try send_jupyter_messages(selfRef, messages)
+    try send_jupyter_messages(selfRef, messages)
 }
 
 fileprivate func read_jupyter_messages(_ selfRef: PythonObject, _ sbvalue: PythonObject) throws -> PythonObject {
@@ -97,5 +97,16 @@ fileprivate func send_jupyter_messages(_ selfRef: PythonObject, _ messages: Pyth
     let function = selfRef.iopub_socket.send_multipart.throwing
     for display_message in messages["display_messages"] {
         try function.dynamicallyCall(withArguments: display_message)
+    }
+}
+
+fileprivate func set_parent_message(_ selfRef: PythonObject) throws {
+    let jsonDumps = json.dumps(json.dumps(squash_dates(selfRef._parent_header)))
+    let result = execute(selfRef, code: """
+                         JupyterKernel.communicator.updateParentMessage(
+                             to: KernelCommunicator.ParentMessage(json: \(jsonDumps)))
+                         """)
+    if result is ExecutionResultError {
+        throw Exception("Error setting parent message: \(result)")
     }
 }
