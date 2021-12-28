@@ -7,7 +7,7 @@ fileprivate let squash_dates = Python.import("jupyter_client").jsonutil.squash_d
 
 func do_execute(_ kwargs: PythonObject) throws -> PythonObject {
     let selfRef = kwargs["self"]
-    let code = kwargs["code"]
+    var code = kwargs["code"]
     
     // Return early if the code is empty or whitespace, to avoid
     // initializing Swift and preventing package installs.
@@ -22,6 +22,16 @@ func do_execute(_ kwargs: PythonObject) throws -> PythonObject {
     
     // Package installs must be done before initializing Swift (see doc
     // comment in `init_swift`).
+    do {
+        code = try process_installs(code)
+    } catch let e as PackageInstallException {
+        let array = [String(describing: e)].pythonObject
+        send_iopub_error_message(array)
+        return make_execute_reply_error_message(array)
+    } catch let e {
+        send_exception_report(selfRef, "process_installs", e)
+        throw e
+    }
     
     
 }
@@ -155,12 +165,12 @@ fileprivate func send_iopub_error_message(_ selfRef: PythonObject, _ traceback: 
     ])
 }
 
-fileprivate func send_exception_report(_ selfRef: PythonObject, _ while_doing: PythonObject, _ e: PythonObject) throws {
+fileprivate func send_exception_report(_ selfRef: PythonObject, _ while_doing: PythonObject, _ e: Any) throws {
      try send_iopub_error_message(selfRef, [
          "Kernel is in a bad state. Try restarting the kernel.",
          "",
          "Exception in `\(while_doing)`:".pythonObject,
-         Python.str(e)
+         String(describing: e).pythonObject
      ])
 }
 
