@@ -5,11 +5,7 @@ fileprivate let os = Python.import("os")
 fileprivate let subprocess = Python.import("subprocess")
 fileprivate let tempfile = Python.import("tempfile")
 
-func install_packages(_ selfRef: PythonObject,
-                      packages: [PythonObject],
-                      swiftpm_flags: [PythonObject],
-                      extra_include_commands: [PythonObject],
-                      user_install_location: PythonObject?) throws {
+func install_packages(_ selfRef: PythonObject, packages: [PythonObject], swiftpm_flags: [PythonObject], extra_include_commands: [PythonObject], user_install_location: PythonObject?) throws {
     if packages.count == 0 && swiftpm_flags.count == 0 {
         return
     }
