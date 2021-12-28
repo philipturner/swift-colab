@@ -113,19 +113,13 @@ fileprivate func process_extra_include_command_line(_ selfRef: PythonObject, _ l
 }
 
 fileprivate func process_install_swiftpm_flags_line(_ selfRef: PythonObject, _ line: inout PythonObject) -> [PythonObject] {
-    let regexExpression: PythonObject = ###"""
+    let flags_match = re.match(###"""
     ^\s*%install-swiftpm-flags (.*)$
-    """###
-    if let flags_match = Optional(re.match(regexExpression, line)) {
-        guard let flags = flags_match.checking[dynamicMember: "group"]?(1) else {
-            fatalError("debugging checkpoint #5")
-        }
-        
-        line = ""
-        return Array(flags)
-    } else {
-        return []
-    }
+    """###, line)
+    guard flags_match != Python.None else { return [] }
+    
+    line = ""
+    return Array(flags_match.group(1))
 }
 
 fileprivate func process_install_line(_ selfRef: PythonObject, _ line_index: PythonObject, _ line: inout PythonObject) throws -> [PythonObject] {
