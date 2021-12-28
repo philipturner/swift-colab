@@ -42,6 +42,16 @@ func process_installs(_ selfRef: PythonObject, code: PythonObject) throws -> Pyt
     return PythonObject("\n").join(processed_lines)
 }
 
+func link_extra_includes(_ selfRef: PythonObject, _ swift_module_search_path: PythonObject, _ include_dir: PythonObject) throws {
+    for include_file in os.listdir(include_dir) {
+        let link_name = os.path.join(swift_module_search_path, include_file)
+        let target = os.path.join(include_dir, include_dir)
+        
+        try call_unlink(link_name: link_name)
+        os.symlink(target, link_name)
+    }
+}
+
 func call_unlink(link_name: PythonObject) throws {
     do {
         @discardableResult
@@ -154,16 +164,6 @@ fileprivate func process_system_command_line(_ selfRef: PythonObject, _ line: in
     ])
     
     line = ""
-}
-
-fileprivate func link_extra_includes(_ selfRef: PythonObject, _ swift_module_search_path: PythonObject, _ include_dir: PythonObject) throws {
-    for include_file in os.listdir(include_dir) {
-        let link_name = os.path.join(swift_module_search_path, include_file)
-        let target = os.path.join(include_dir, include_dir)
-        
-        try call_unlink(link_name: link_name)
-        os.symlink(target, link_name)
-    }
 }
 
 fileprivate func process_install_substitute(template: inout PythonObject, line_index: PythonObject) throws {
