@@ -59,8 +59,11 @@ class SwiftKernel(Kernel):
         })
     
     def lambda1(src_folder):
-        return lambda m: 'header "%s"' %
-            (m.group(1) if os.path.isabs(m.group(1)) else os.path.abspath(os.path.join(src_folder, m.group(1)))) }\""
+        def extract(input):
+            return input
+        return extract(lambda m: 'header "%s"' %
+                          (m.group(1) if os.path.isabs(m.group(1)) else os.path.abspath(os.path.join(src_folder, m.group(1))))
+                      )
                         
 
 if __name__ == "__main__":
