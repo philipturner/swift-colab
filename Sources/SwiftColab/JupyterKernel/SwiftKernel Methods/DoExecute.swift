@@ -1,9 +1,11 @@
 import Foundation
 import PythonKit
 
+fileprivate let ioloop = Python.import("tornado").ioloop
 fileprivate let json = Python.import("json")
 fileprivate let lldb = Python.import("lldb")
 fileprivate let squash_dates = Python.import("jupyter_client").jsonutil.squash_dates
+fileprivate let SwiftModule = Python.import("Swift")
 
 func do_execute(_ kwargs: PythonObject) throws -> PythonObject {
     let selfRef = kwargs["self"]
@@ -26,14 +28,19 @@ func do_execute(_ kwargs: PythonObject) throws -> PythonObject {
         code = try process_installs(code)
     } catch let e as PackageInstallException {
         let array = [String(describing: e)].pythonObject
-        send_iopub_error_message(array)
+        try send_iopub_error_message(array)
         return make_execute_reply_error_message(array)
     } catch let e {
-        send_exception_report(selfRef, "process_installs", e)
+        try send_exception_report(selfRef, "process_installs", e)
         throw e
     }
     
+    if selfRef.checking.debugger == nil {
+        try init_swift(selfRef)
+    }
     
+    // Start up a new thread to collect stdout.
+    let stdout_handler = SwiftModule.Stdout
 }
 
 fileprivate struct Exception: LocalizedError {
