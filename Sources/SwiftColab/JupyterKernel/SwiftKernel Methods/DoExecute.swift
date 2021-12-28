@@ -110,3 +110,25 @@ fileprivate func set_parent_message(_ selfRef: PythonObject) throws {
         throw Exception("Error setting parent message: \(result)")
     }
 }
+
+fileprivate func get_pretty_main_thread_stack_trace(_ selfRef: PythonObject) -> [PythonObject] {
+    var stack_trace: [PythonObject] = []
+    for frame in selfRef.main_thread {
+        // Do not include frames without source location information. These
+        // are frames in libraries and frames that belong to the LLDB
+        // expression execution implementation.
+        guard let file = Optional(frame.line_entry.file) else {
+            continue
+        }
+        
+        // Do not include <compiler-generated> frames. These are
+        // specializations of library functions.
+        guard file.fullpath != "<compiler-generated>" else {
+            continue
+        }
+        
+        stack_trace.append(Python.str(frame))
+    }
+    
+    return stack_trace
+}
