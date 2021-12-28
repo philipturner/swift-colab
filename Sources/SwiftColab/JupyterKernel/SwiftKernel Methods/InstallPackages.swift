@@ -74,13 +74,16 @@ func install_packages(_ selfRef: PythonObject, packages: [PythonObject], swiftpm
         
         let include_dirs = shlex[dynamicMember: "split"](stdout)
         
-        for include_dir in include_dirs {
+        for var include_dir in include_dirs {
             if include_dir[0..<2] != "-I" {
                 selfRef.log.warn(
                     "Non \"-I\" output from " + 
                     "%install-extra-include-command: \(include_dir)")
                 continue
             }
+            
+            include_dir = include_dir[2...]
+            try link_extra_includes(selfRef, swift_module_search_path, include_dir)
         }
     }
 }
