@@ -25,7 +25,7 @@ func install_packages(_ selfRef: PythonObject, packages: [PythonObject], swiftpm
             "SWIFT_BUILD_PATH is not specified.")
     }
     
-    guard let _ = Optional(os.environ.get("SWIFT_PACKAGE_PATH")) else {
+    guard let swift_package_path = Optional(os.environ.get("SWIFT_PACKAGE_PATH")) else {
         throw PackageInstallException(
             "Install Error: Cannot install packages because " +
             "SWIFT_PACKAGE_PATH is not specified.")
@@ -179,7 +179,7 @@ func install_packages(_ selfRef: PythonObject, packages: [PythonObject], swiftpm
     
     let show_bin_path_result = subprocess.run([swift_build_path, "--show-bin-path"] + swiftpm_flags,
                                               stdout: subprocess.PIPE, 
-                                              stderr: subproces.PIPE,
+                                              stderr: subprocess.PIPE,
                                               cwd: package_base_path)
     let bin_dir = show_bin_path_result.stdout.decode("utf8").strip()
     let lib_filename = os.path.join(bin_dir, "libjupyterInstalledPackages.so")
