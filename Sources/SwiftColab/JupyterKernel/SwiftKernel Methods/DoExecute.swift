@@ -20,3 +20,19 @@ func do_execute(_ kwargs: PythonObject) throws -> PythonObject {
         "user_expressions": [:],
     ]
 }
+
+fileprivate func after_successful_execution(_ selfRef: PythonObject) throws {
+    
+}
+
+fileprivate func read_jupyter_messages(_ selfRef: PythonObject, _ sbvalue: PythonObject) throws -> PythonObject {
+    
+}
+
+fileprivate func read_display_message(_ selfRef: PythonObject, _ sbvalue: PythonObject) throws -> PythonObject {
+    
+}
+
+fileprivate func read_byte_array(_ selfRef: PythonObject, _ sbvalue: PythonObject) throws -> PythonObject) {
+    
+}
