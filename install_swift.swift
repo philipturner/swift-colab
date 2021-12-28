@@ -49,7 +49,7 @@ for subpath in try fm.contentsOfDirectory(atPath: lldbSourceDirectory) {
     let sourcePath = "\(lldbSourceDirectory)/\(subpath)"
     let targetPath = "\(lldbTargetDirectory)/\(subpath)"
     
-    if !fm.fileExists(atPath: targetpath) {
+    if !fm.fileExists(atPath: targetPath) {
         try fm.copyItem(atPath: sourcePath, toPath: targetPath)
     }
 }
