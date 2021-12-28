@@ -22,8 +22,8 @@ func install_packages(_ selfRef: PythonObject, packages: [PythonObject], swiftpm
     }
     
     let swift_toolchain = "/opt/swift/toolchain"
-    let swift_build_path = "\(swift_toolchain)/usr/bin/swift-build"
-    let swift_package_path = "\(swift_toolchain)/usr/bin/swift-package"
+    let swift_build_path = PythonObject("\(swift_toolchain)/usr/bin/swift-build")
+    let swift_package_path = PythonObject("\(swift_toolchain)/usr/bin/swift-package")
     
     var package_install_scratchwork_base = tempfile.mkdtemp()
     package_install_scratchwork_base = os.path.join(package_install_scratchwork_base, "swift-install")
