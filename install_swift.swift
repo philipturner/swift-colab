@@ -8,11 +8,11 @@ let fm = FileManager.default
 precondition(fm.currentDirectoryPath == "/opt/swift", "Called `install_swift.swift` when the working directory was not `/opt/swift`.")
 
 extension FileManager {
-    @inline(never)
+//     @inline(never)
     func removeItemIfExists(atPath path: String) throws {
-        if fileExists(atPath: path) {
-            try removeItem(atPath: path)
-        }         
+//         if fileExists(atPath: path) {
+            try? removeItem(atPath: path)
+//         }         
     }
 }
 
@@ -84,20 +84,6 @@ do {
 }
 
 do {
-//     let originalPath = "\(lldbSourceDirectory)/lldb/_lldb.so"
-//     let newPath = "\(pythonSearchPath)/lldb/_lldb.so"
-    
-//     let destination = try fm.destinationOfSymbolicLink(atPath: originalPath)
-//     try? fm.createSymbolicLink(atPath: newPath, withDestinationPath: destination)
-    
-//     let sourcePath = try fm.destinationOfSymbolicLink(atPath: "/opt/swift/toolchain/usr/lib/python3/dist-packages/lldb/_lldb.so")
-//     let sourcePath = "/opt/swift/toolchain/usr/lib/liblldb.so.10.0.0git"
-//     let sourcePath = "/opt/swift/toolchain/usr/lib/python3/dist-packages/lldb/_lldb.so"
-//     let targetPath = "/usr/local/lib/python3.7/dist-packages/lldb/_lldb.so"
-    
-//     precondition(sourcePath == "\(lldbSourceDirectory)/lldb/_lldb.so")
-//     precondition(targetPath == "\(pythonSearchPath)/lldb/_lldb.so")
-    
     let sourcePath = "\(lldbSourceDirectory)/lldb/_lldb.so"
     let targetPath = "\(pythonSearchPath)/lldb/_lldb.so"
     
