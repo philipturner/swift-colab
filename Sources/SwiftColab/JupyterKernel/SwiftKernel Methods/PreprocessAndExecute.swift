@@ -117,7 +117,7 @@ fileprivate func read_include(_ selfRef: PythonObject, line_index: PythonObject,
                 f = try Python.open.throwing
                 .dynamicallyCall(withArguments: path, "r")
             } catch {
-                fatalError("debug checkpoint 0.0.1 --- \(path) --- \(include_path) --- \(name) --- \(String(reflecting: error))")
+                fatalError("debug checkpoint 0.0.1 --- \(path) --- \(include_path) --- \(String(reflecting: include_paths)) --- \(name) --- \(String(reflecting: error))")
             }
             
             do {
