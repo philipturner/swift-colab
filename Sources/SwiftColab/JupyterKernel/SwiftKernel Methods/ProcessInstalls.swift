@@ -82,6 +82,13 @@ fileprivate func process_system_command_line(_ selfRef: PythonObject, line: Pyth
     process.wait()
     
     let command_result = process.stdout.read().decode("utf-8")
+    try selfRef.send_response.throwing
+        .dynamicallyCall(withArguments: selfRef.ioput_socket, "stream", [
+        "name": "stdout",
+        "text": "\(command_result)"
+    ])
+    
+    return ""
 }
 
 // Addition by Philip Turner
