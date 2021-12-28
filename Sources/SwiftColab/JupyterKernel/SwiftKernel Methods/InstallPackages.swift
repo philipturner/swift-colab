@@ -86,80 +86,79 @@ func install_packages(_ selfRef: PythonObject, packages: [PythonObject], swiftpm
             include_dir = include_dir[2...]
             try link_extra_includes(selfRef, swift_module_search_path, include_dir)
         }
-        
-        // Summary of how this works:
-        // - create a SwiftPM package that depends on all the packages that
-        //   the user requested
-        // - ask SwiftPM to build that package
-        // - copy all the .swiftmodule and module.modulemap files that SwiftPM
-        //   created to SWIFT_IMPORT_SEARCH_PATH
-        // - dlopen the .so file that SwiftPM created
-        
-        // == Create the SwiftPM package ==
-        
-        var packages_specs = ""
-        var packages_products = ""
-        var packages_human_description = ""
-        
-        for package in packages {
-            let spec = package["spec"]
-            packages_specs += "\(spec),\n"
-            packages_human_description += "\t\(spec)\n"
-            
-            for target in package["products"] {
-                packages_products += "\(json.dumps(target)),\n"
-                packages_human_description += "\t\t\(target)\n"
-            }
-        }
-        
-        let iopub_socket = selfRef.iopub_socket
-        
-        func send_response(_ message: String) throws {
-            let function = selfRef.send_response.throwing
-            try function.dynamicallyCall(withArguments: iopub_socket, "stream", [
-                "name": "stdout",
-                "text": message
-            ])
-        }
-        
-        send_response("Installing packages:\n\(packages_human_description)")
-        send_response("With SwiftPM flags: \(swiftpm_flags)\n")
-        send_response("Working in: \(scratcwork_base_path)\n")
-        
-        let package_swift = """
-        // swift-tools-version:4.2
-        import PackageDescription
-        let package = Package(
-            name: "jupyterInstalledPackages",
-            products: [
-                .library(
-                    name: "jupyterInstalledPackages",
-                    type: .dynamic,
-                    targets: ["jupyterInstalledPackages"]),
-            ],
-            dependencies: [\(packages_specs)],
-            targets: [
-                .target(
-                    name: "jupyterInstalledPackages",
-                    dependencies: [\(packages_products)],
-                    path: ".",
-                    sources: ["jupyterInstalledPackages.swift"]),
-            ]
-        )
-        """
-        
-        do {
-            var f = Python.open("\(package_base_path)/Package.swift", "w")
-            f.write(package_swift)
-            f.close()
-            
-            f = Python.open("\(package_base_path)/jupyterInstalledPackages.swift", "w")
-            f.write("// intentionally blank")
-            f.close()
-        }
-        
-        // == Ask SwiftPM to build the package ==
-        
-        
     }
+    
+    // Summary of how this works:
+    // - create a SwiftPM package that depends on all the packages that
+    //   the user requested
+    // - ask SwiftPM to build that package
+    // - copy all the .swiftmodule and module.modulemap files that SwiftPM
+    //   created to SWIFT_IMPORT_SEARCH_PATH
+    // - dlopen the .so file that SwiftPM created
+    
+    // == Create the SwiftPM package ==
+    
+    var packages_specs = ""
+    var packages_products = ""
+    var packages_human_description = ""
+
+    for package in packages {
+        let spec = package["spec"]
+        packages_specs += "\(spec),\n"
+        packages_human_description += "\t\(spec)\n"
+
+        for target in package["products"] {
+            packages_products += "\(json.dumps(target)),\n"
+            packages_human_description += "\t\t\(target)\n"
+        }
+    }
+
+    let iopub_socket = selfRef.iopub_socket
+
+    func send_response(_ message: String) throws {
+        let function = selfRef.send_response.throwing
+        try function.dynamicallyCall(withArguments: iopub_socket, "stream", [
+            "name": "stdout",
+            "text": message
+        ])
+    }
+
+    send_response("Installing packages:\n\(packages_human_description)")
+    send_response("With SwiftPM flags: \(swiftpm_flags)\n")
+    send_response("Working in: \(scratcwork_base_path)\n")
+
+    let package_swift = """
+    // swift-tools-version:4.2
+    import PackageDescription
+    let package = Package(
+        name: "jupyterInstalledPackages",
+        products: [
+            .library(
+                name: "jupyterInstalledPackages",
+                type: .dynamic,
+                targets: ["jupyterInstalledPackages"]),
+        ],
+        dependencies: [\(packages_specs)],
+        targets: [
+            .target(
+                name: "jupyterInstalledPackages",
+                dependencies: [\(packages_products)],
+                path: ".",
+                sources: ["jupyterInstalledPackages.swift"]),
+        ]
+    )
+    """
+
+    do {
+        var f = Python.open("\(package_base_path)/Package.swift", "w")
+        f.write(package_swift)
+        f.close()
+
+        f = Python.open("\(package_base_path)/jupyterInstalledPackages.swift", "w")
+        f.write("// intentionally blank")
+        f.close()
+    }
+
+    // == Ask SwiftPM to build the package ==
+    
 }
