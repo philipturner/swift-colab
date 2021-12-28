@@ -115,12 +115,12 @@ fileprivate func process_install_line(_ selfRef: PythonObject, line_index: Pytho
     ]]
 }
 
-fileprivate func process_system_command_line(_ selfRef: PythonObject, line: PythonObject) throws -> PythonObject {
+fileprivate func process_system_command_line(_ selfRef: PythonObject, line: inout PythonObject) throws {
     let regexExpression: PythonObject = ###"""
     ^\s*%system (.*)$
     """###
     guard let system_match = Optional(re.match(regexExpression, line)) else {
-        return line
+        return
     }
     
     if Bool(Python.hasattr(selfRef, "debugger"))! {
@@ -142,7 +142,7 @@ fileprivate func process_system_command_line(_ selfRef: PythonObject, line: Pyth
         "text": "\(command_result)"
     ])
     
-    return ""
+    line = ""
 }
 
 fileprivate func link_extra_includes(_ selfRef: PythonObject, _ swift_module_search_path: PythonObject, _ include_dir: PythonObject) throws {
