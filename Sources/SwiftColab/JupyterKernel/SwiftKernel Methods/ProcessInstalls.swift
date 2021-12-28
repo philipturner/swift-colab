@@ -97,7 +97,7 @@ fileprivate func process_install_swiftpm_flags_line(_ selfRef: PythonObject, _ l
     """###
     if let flags = Optional(re.match(regexExpression, line))?[dynamicMember: "group"](1) {
         line = ""
-        return flags
+        return Array(flags)
     } else {
         return []
     }
