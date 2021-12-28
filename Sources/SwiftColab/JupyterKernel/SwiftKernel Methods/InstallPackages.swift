@@ -237,4 +237,7 @@ func install_packages(_ selfRef: PythonObject, packages: [PythonObject], swiftpm
     // Connect to build.db
     let db_connection = sqlite3.connect(build_db_file)
     let cursor = db_connection.cursor()
+    
+    // Process *.swiftmodules files
+    cursor.execute(SQL_FILES_SELECT, [".swiftmodule"])
 }
