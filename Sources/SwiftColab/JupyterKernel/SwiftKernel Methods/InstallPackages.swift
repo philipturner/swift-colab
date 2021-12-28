@@ -268,5 +268,6 @@ func install_packages(_ selfRef: PythonObject, packages: [PythonObject], swiftpm
         defer { file.close() }
         
         let modulemap_contents = file.read()
+        // make a lambda
     }
 }
