@@ -7,15 +7,6 @@ defer { print("=== Swift successfully installed ===") }
 let fm = FileManager.default
 precondition(fm.currentDirectoryPath == "/opt/swift", "Called `install_swift.swift` when the working directory was not `/opt/swift`.")
 
-extension FileManager {
-//     @inline(never)
-    func removeItemIfExists(atPath path: String) throws {
-//         if fileExists(atPath: path) {
-            try? removeItem(atPath: path)
-//         }         
-    }
-}
-
 @inline(never)
 func writeString(to target: String, _ contents: String) {
     let contentsData = contents.data(using: .utf8)!
@@ -37,7 +28,7 @@ func doCommand(_ args: [String], directory: String? = nil) throws {
     command.waitUntilExit()
 }
 
-// Copy lldb package to swift-colab/PythonPackages - may need to dlopen _lldb.so somewhere
+// Copy lldb package to swift-colab/PythonPackages
 let lldbSourceDirectory = "/opt/swift/toolchain/usr/lib/python3/dist-packages"
 let lldbTargetDirectory = "/opt/swift/swift-colab/PythonPackages/lldb"
 
@@ -45,9 +36,7 @@ for subpath in try fm.contentsOfDirectory(atPath: lldbSourceDirectory) {
     let sourcePath = "\(lldbSourceDirectory)/\(subpath)"
     let targetPath = "\(lldbTargetDirectory)/\(subpath)"
     
-    if !fm.fileExists(atPath: targetPath) {
-        try fm.copyItem(atPath: sourcePath, toPath: targetPath)
-    }
+    try? fm.copyItem(atPath: sourcePath, toPath: targetPath)
 }
 
 // Install Python packages
@@ -65,7 +54,7 @@ for metadata in packageMetadata {
     if metadata.forceReinstall || !fm.fileExists(atPath: targetPath) {
         try fm.createDirectory(atPath: targetPath, withIntermediateDirectories: true)
         
-        try fm.removeItemIfExists(atPath: targetPath)
+        try? fm.removeItem(atPath: targetPath)
         try fm.moveItem(atPath: "\(packageSourceDirectory)/\(metadata.name)", toPath: targetPath)
         
         try doCommand(["pip", "install", "--use-feature=in-tree-build", "./"], 
@@ -95,7 +84,7 @@ try fm.createDirectory(atPath: "/opt/swift/tmp", withIntermediateDirectories: tr
 try fm.createDirectory(atPath: "/opt/swift/lib", withIntermediateDirectories: true)
 try fm.createDirectory(atPath: "/opt/swift/packages", withIntermediateDirectories: true)
 
-// // Not installing Backtrace because I don't see it helping anything.
+// Not installing Backtrace because I don't see it helping anything.
 
 /*
 // Install philipturner/swift-backtrace
@@ -116,7 +105,7 @@ let pythonKitLibPath = "/opt/swift/lib/libPythonKit.so"
 try doCommand(["swift", "build", "-c", "release", "-Xswiftc", "-Onone"],
               directory: "/opt/swift/packages/PythonKit")
 
-try fm.removeItemIfExists(atPath: pythonKitLibPath)
+try? fm.removeItem(atPath: pythonKitLibPath)
 try fm.copyItem(atPath: "\(pythonKitProductsPath)/libPythonKit.so", toPath: pythonKitLibPath)
 
 // Install SwiftPythonBridge
@@ -140,7 +129,7 @@ try doCommand(["swiftc", "-Onone"] + spbSourceFilePaths + [
                "-module-name", "SwiftPythonBridge"],
                directory: spbProductsPath)
 
-try fm.removeItemIfExists(atPath: spbLibPath)
+try? fm.removeItem(atPath: spbLibPath)
 try fm.copyItem(atPath: "\(spbProductsPath)/libSwiftPythonBridge.so", toPath: spbLibPath)
 
 try doCommand(["patchelf", "--replace-needed", "libPythonKit.so", pythonKitLibPath, spbLibPath])
@@ -150,7 +139,7 @@ let jupyterProductsPath = "/opt/swift/packages/JupyterKernel"
 let jupyterLibPath = "/opt/swift/lib/libJupyterKernel.so"
 let jupyterSourcePath = "/opt/swift/swift-colab/Sources/SwiftColab/JupyterKernel"
 
-try fm.removeItemIfExists(atPath: jupyterProductsPath)
+try? fm.removeItem(atPath: jupyterProductsPath)
 try fm.createDirectory(atPath: jupyterProductsPath, withIntermediateDirectories: true)
 
 let jupyterSourceFilePaths = try fm.subpathsOfDirectory(atPath: jupyterSourcePath).filter {
@@ -168,7 +157,7 @@ try doCommand(["swiftc", "-Onone"] + jupyterSourceFilePaths + [
                "-module-name", "JupyterKernel"],
               directory: jupyterProductsPath)
 
-try fm.removeItemIfExists(atPath: jupyterLibPath)
+try? fm.removeItem(atPath: jupyterLibPath)
 try fm.copyItem(atPath: "\(jupyterProductsPath)/libJupyterKernel.so", toPath: jupyterLibPath)
 
 for pair in [("libPythonKit.so", pythonKitLibPath), ("libSwiftPythonBridge.so", spbLibPath)] {
@@ -189,5 +178,5 @@ let JKRegisterKernel = unsafeBitCast(JKRegisterKernelRef, to: JKRegisterKernelTy
 // JKRegisterKernel()
 
 // Move include files
-try fm.removeItemIfExists(atPath: "/opt/swift/include")
+try? fm.removeItem(atPath: "/opt/swift/include")
 try fm.moveItem(atPath: "/opt/swift/swift-colab/Sources/SwiftColab/include", toPath: "/opt/swift/include")
