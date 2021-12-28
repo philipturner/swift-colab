@@ -205,7 +205,7 @@ func install_packages(_ selfRef: PythonObject, packages: [PythonObject], swiftpm
     let dependencies_obj = json.loads(dependencies_json)
     
     func flatten_deps_paths(_ dep: PythonObject) -> PythonObject {
-        var paths: PythonObject = [dep["path"]]
+        let paths: PythonObject = [dep["path"]]
         
         if let dependencies = dep.checking["dependencies"] {
             for d in dependencies {
@@ -230,5 +230,11 @@ func install_packages(_ selfRef: PythonObject, packages: [PythonObject], swiftpm
         return false
     }
     
+    // Query to get build files list from build.db
+    // SUBSTR because string starts with "N" (why?)
+    let SQL_FILES_SELECT = "SELECT SUBSTR(key, 2) FROM 'key_names' WHERE key LIKE ?"
     
+    // Connect to build.db
+    let db_connection = sqlite3.connect(build_db_file)
+    let cursor = db_connection.cursor()
 }
