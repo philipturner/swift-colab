@@ -15,19 +15,19 @@ func install_packages(_ selfRef: PythonObject, packages: [PythonObject], swiftpm
         return
     }
     
-    if selfRef.checking.debugger != nil {
+    if selfRef.checking.debugger != Python.None {
         throw PackageInstallException(
             "Install Error: Packages can only be installed during the " +
             "first cell execution. Restart the kernel to install packages.")
     }
     
-    guard let swift_build_path = Optional(os.environ.get("SWIFT_BUILD_PATH")) else {
+    guard let swift_build_path = os.environ.checking["SWIFT_BUILD_PATH"] else {
         throw PackageInstallException(
             "Install Error: Cannot install packages because " +
             "SWIFT_BUILD_PATH is not specified.")
     }
     
-    guard let swift_package_path = Optional(os.environ.get("SWIFT_PACKAGE_PATH")) else {
+    guard let swift_package_path = os.environ.checking["SWIFT_PACKAGE_PATH"] else {
         throw PackageInstallException(
             "Install Error: Cannot install packages because " +
             "SWIFT_PACKAGE_PATH is not specified.")
@@ -161,7 +161,7 @@ func install_packages(_ selfRef: PythonObject, packages: [PythonObject], swiftpm
         f.write("// intentionally blank")
         f.close()
     }
-
+    
     // == Ask SwiftPM to build the package ==
     
     let build_p = subprocess.Popen([swift_build_path] + swiftpm_flags,
@@ -280,7 +280,7 @@ func install_packages(_ selfRef: PythonObject, packages: [PythonObject], swiftpm
         let module_match = re.match(###"""
                                     module\s+([^\s]+)\s.*{
                                     """###, modulemap_contents)
-        let module_name = (module_match != Python.None) ? module_match[dynamicMember: "group"](1) : Python.str(index)
+        let module_name = (module_match != Python.None) ? module_match.group(1) : Python.str(index)
         let modulemap_dest = os.path.join(swift_module_search_path, "modulemap-\(module_name)")
         os.makedirs(modulemap_dest, exist_ok: true)
         
