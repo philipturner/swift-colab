@@ -2,6 +2,7 @@ import Foundation
 import PythonKit
 
 fileprivate let os = Python.import("os")
+fileprivate let shlex = Python.import("shlex")
 fileprivate let subprocess = Python.import("subprocess")
 fileprivate let tempfile = Python.import("tempfile")
 
@@ -60,9 +61,10 @@ func install_packages(_ selfRef: PythonObject, packages: [PythonObject], swiftpm
                                     stdout: subprocess.PIPE,
                                     stderr: subprocess.PIPE)
         
-        if result.returncode != 0 {
-            let returncode = result.returncode
-            let stdout = result.stdout.decode("utf8")
+        let returncode = result.returncode
+        let stdout = result.stdout.decode("utf8")
+        
+        if returncode != 0 {
             let stderr = result.stderr.decode("utf8")
             
             throw PackageInstallException(
@@ -70,6 +72,15 @@ func install_packages(_ selfRef: PythonObject, packages: [PythonObject], swiftpm
                 "exit code: \(returncode)\nStdout:\n\(stdout)\nStderr:\n\(stderr)\n")
         }
         
-        // proceed
+        let include_dirs = shlex[dynamicMember: "split"](stdout)
+        
+        for include_dir in include_dirs {
+            if include_dir[0..<2] != "-I" {
+                selfRef.log.warn(
+                    "Non \"-I\" output from " + 
+                    "%install-extra-include-command: \(include_dir)")
+                continue
+            }
+        }
     }
 }
