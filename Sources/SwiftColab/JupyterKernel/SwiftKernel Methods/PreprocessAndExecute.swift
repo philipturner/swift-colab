@@ -79,17 +79,15 @@ fileprivate func preprocess_line(_ selfRef: PythonObject, line_index: PythonObje
 }
 
 fileprivate func read_include(_ selfRef: PythonObject, line_index: PythonObject, rest_of_line: PythonObject) throws -> PythonObject {
-    let regexExpression: PythonObject = ###"""
+    let name_match = re.match(###"""
     ^\s*"([^"]+)"\s*$
-    """###
-    guard let name_match = Optional(re.match(regexExpression, rest_of_line)) else {
+    """###, rest_of_line)
+    guard name_match != Python.None else {
         throw PreprocessorException(
             "Line \(line_index + 1): %include must be followed by a name in quotes")
     }
     
-    guard let name = name_match.checking.group?(1) else {
-        fatalError("debugging checkpoint #2")
-    }
+    let name = name_match.group(1)
     
     let include_paths = [
         os.path.dirname(os.path.realpath(sys.argv[0])),
