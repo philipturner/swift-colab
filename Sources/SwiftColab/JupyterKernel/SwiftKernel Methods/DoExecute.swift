@@ -1,6 +1,9 @@
 import Foundation
 import PythonKit
 
+fileprivate let json = Python.import("json")
+fileprivate let lldb = Python.import("lldb")
+
 func do_execute(_ kwargs: PythonObject) throws -> PythonObject {
     let selfRef = kwargs["self"]
     
@@ -38,5 +41,5 @@ fileprivate func read_display_message(_ selfRef: PythonObject, _ sbvalue: Python
 }
 
 fileprivate func read_byte_array(_ selfRef: PythonObject, _ sbvalue: PythonObject) throws -> PythonObject) {
-    
+    let get_address_error = lldb.SBError()
 }
