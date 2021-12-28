@@ -29,7 +29,7 @@ fileprivate struct Exception: LocalizedError {
 }
 
 fileprivate func after_successful_execution(_ selfRef: PythonObject) throws {
-    let result = execute(selfRef, 
+    let result = execute(selfRef, code:
                          "JupyterKernel.communicator.triggerAfterSuccessfulExecution()")
     guard result is SuccessWithValue else {
         selfRef.log.error(
