@@ -108,7 +108,7 @@ fileprivate func init_repl_process(_ selfRef: PythonObject) throws {
 }
 
 fileprivate func init_kernel_communicator(_ selfRef: PythonObject) throws {
-    var preresult: PythonObject
+    var preresult: Any
     
     do {
         preresult = try preprocess_and_execute(selfRef, code:
@@ -134,7 +134,7 @@ fileprivate func init_kernel_communicator(_ selfRef: PythonObject) throws {
     }
     """)
     
-    var result: PythonObject
+    var result: Any
     
     do {
         result = try preprocess_and_execute(selfRef, code: decl_code)
