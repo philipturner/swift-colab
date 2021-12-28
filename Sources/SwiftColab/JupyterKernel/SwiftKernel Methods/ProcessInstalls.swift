@@ -120,7 +120,7 @@ fileprivate func link_extra_includes(_ selfRef: PythonObject, _ swift_module_sea
         let link_name = os.path.join(swift_module_search_path, include_file)
         let target = os.path.join(include_dir, include_dir)
         
-        call_unlink(link_name: link_name)
+        try call_unlink(link_name: link_name)
         os.symlink(target, link_name)
     }
 }
