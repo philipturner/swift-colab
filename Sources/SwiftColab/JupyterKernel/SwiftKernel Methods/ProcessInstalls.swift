@@ -9,13 +9,14 @@ fileprivate let subprocess = Python.import("subprocess")
 
 func call_unlink(link_name: PythonObject) throws {
     do {
+        @discardableResult
         func call(_ function: PythonObject, _ param: PythonObject) throws -> PythonObject {
             try function.throwing.dynamicallyCall(withArguments: param)
         }
 
         let st_mode = try call(os.lstat, link_name)
         if Bool(try call(stat.S_ISLNK, st_mode))! {
-            call(os.unlink, link_name)
+            try call(os.unlink, link_name)
         }
     } catch PythonError.exception(let error, let traceback) {
         let e = PythonError.exception(error, traceback: traceback)
@@ -92,7 +93,7 @@ fileprivate func process_system_command_line(_ selfRef: PythonObject, line: Pyth
         return line
     }
     
-    if Python.hasattr(selfRef, "debugger") {
+    if Bool(Python.hasattr(selfRef, "debugger"))! {
         throw PackageInstallException(
             "System commands can only run in the first cell.")
     }
