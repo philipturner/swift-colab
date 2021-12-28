@@ -61,6 +61,29 @@ fileprivate func process_install_line(_ selfRef: PythonObject, line_index: Pytho
     ]])
 }
 
+fileprivate func process_system_command_line(_ selfRef: PythonObject, line: PythonObject) throws -> PythonObject {
+    let regexExpression: PythonObject = ###"""
+   ^\s*%system (.*)$
+    """###
+    guard let system_match = Optional(re.match(regexExpression, line)) else {
+        return line
+    }
+    
+    if Python.hasattr(selfRef, "debugger") {
+        throw PackageInstallException(
+            "System commands can only run in the first cell.")
+    }
+    
+    let rest_of_line = system_match[dynamicMember: "group"](1)
+    let process = subprocess.Popen(rest_of_line,
+                                   stdout: subprocess.PIPE,
+                                   stderr: subprocess.STDOUT,
+                                   shell: true)
+    process.wait()
+    
+    let command_result = process.stdout.read().decode("utf-8")
+}
+
 // Addition by Philip Turner
 
 fileprivate func process_install_substitute(template: inout PythonObject, line_index: PythonObject) throws {
