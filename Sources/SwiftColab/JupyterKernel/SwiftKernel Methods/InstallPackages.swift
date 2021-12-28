@@ -85,5 +85,29 @@ func install_packages(_ selfRef: PythonObject, packages: [PythonObject], swiftpm
             include_dir = include_dir[2...]
             try link_extra_includes(selfRef, swift_module_search_path, include_dir)
         }
+        
+        // Summary of how this works:
+        // - create a SwiftPM package that depends on all the packages that
+        //   the user requested
+        // - ask SwiftPM to build that package
+        // - copy all the .swiftmodule and module.modulemap files that SwiftPM
+        //   created to SWIFT_IMPORT_SEARCH_PATH
+        // - dlopen the .so file that SwiftPM created
+        
+        // == Create the SwiftPM package ==
+        
+        var packages_specs = ""
+        var packages_products = ""
+        var packages_human_description = ""
+        
+        for package in packages {
+            let spec = package["spec"]
+            packages_specs += "\(spec),\n"
+            packages_human_description += "\t\(spec)\n"
+            
+            for target in package["products"] {
+                packages_products += "\(),\n"
+            }
+        }
     }
 }
