@@ -10,23 +10,23 @@ fileprivate let subprocess = Python.import("subprocess")
 /// Handles all "%install" directives, and returns `code` with all
 /// "%install" directives removed.
 func process_installs(_ selfRef: PythonObject, code: PythonObject) throws -> PythonObject {
-    var preprocessed_lines: [PythonObject] = []
+    var processed_lines: [PythonObject] = []
     var all_packages: [PythonObject] = []
     var all_swiftpm_flags: [PythonObject] = []
     var extra_include_commands: [PythonObject] = []
     var user_install_location: PythonObject?
     
-    for (index, line) in Python.enumerate(code[dynamicMember: "split"]("\n")) {
-        var line = process_system_command_line(selfRef, line: line)
+    for (index, line) in Python.enumerate(code[dynamicMember: "split"]("\n")).map({ $0.tuple2 }) {
+        process_system_command_line(selfRef, &line)
         
-        if let install_location = try process_install_location_line(selfRef, line: &line) {
+        if let install_location = try process_install_location_line(selfRef, line_index, &line) {
             user_install_location = install_location
         }
         
-        all_swiftpm_flags += try process_install_swiftpm_flags(selfRef, line: &line)
-        all_packages += try process_install_line(selfRef, line_index: index, line: &line)
+        all_swiftpm_flags += try process_install_swiftpm_flags(selfRef, &line)
+        all_packages += try process_install_line(selfRef, index, &line)
         
-        if let extra_include_command = try process_extra_include_command_line(selfRef, line: &line) {
+        if let extra_include_command = try process_extra_include_command_line(selfRef, &line) {
             extra_include_commands.append(extra_include_command)
         }
         
@@ -34,10 +34,10 @@ func process_installs(_ selfRef: PythonObject, code: PythonObject) throws -> Pyt
     }
     
     try install_packages(selfRef, 
-                         packages: all_packages,
-                         swiftpm_flags: all_swiftpm_flags,
-                         extra_include_commands: extra_include_commands,
-                         user_install_location: user_install_location)
+                         packages: all_packages.pythonObject,
+                         swiftpm_flags: all_swiftpm_flags.pythonObject,
+                         extra_include_commands: extra_include_commands.pythonObject,
+                         user_install_location: user_install_location.pythonObject)
     
     return PythonObject("\n").join(processed_lines)
 }
@@ -65,7 +65,7 @@ func call_unlink(link_name: PythonObject) throws {
     }
 }
 
-fileprivate func process_install_location_line(_ selfRef: PythonObject, line_index: PythonObject, line: inout PythonObject) throws -> PythonObject? {
+fileprivate func process_install_location_line(_ selfRef: PythonObject, _ line_index: PythonObject, _ line: inout PythonObject) throws -> PythonObject? {
     let regexExpression: PythonObject = ###"""
     ^\s*%install-location (.*)$
     """###
@@ -79,7 +79,7 @@ fileprivate func process_install_location_line(_ selfRef: PythonObject, line_ind
     return install_location
 }
 
-fileprivate func process_extra_include_command_line(_ selfRef: PythonObject, line: PythonObject) -> PythonObject? {
+fileprivate func process_extra_include_command_line(_ selfRef: PythonObject, _ line: inout PythonObject) -> PythonObject? {
     let regexExpression: PythonObject = ###"""
     ^\s*%install-extra-include-command (.*)$
     """###
@@ -91,7 +91,7 @@ fileprivate func process_extra_include_command_line(_ selfRef: PythonObject, lin
     }
 }
 
-fileprivate func process_install_swiftpm_flags_line(_ selfRef: PythonObject, line: inout PythonObject) -> [PythonObject] {
+fileprivate func process_install_swiftpm_flags_line(_ selfRef: PythonObject, _ line: inout PythonObject) -> [PythonObject] {
     let regexExpression: PythonObject = ###"""
     ^\s*%install-swiftpm-flags (.*)$
     """###
@@ -103,7 +103,7 @@ fileprivate func process_install_swiftpm_flags_line(_ selfRef: PythonObject, lin
     }
 }
 
-fileprivate func process_install_line(_ selfRef: PythonObject, line_index: PythonObject, line: inout PythonObject) throws -> [PythonObject] {
+fileprivate func process_install_line(_ selfRef: PythonObject, _ line_index: PythonObject, _ line: inout PythonObject) throws -> [PythonObject] {
     let regexExpression: PythonObject = ###"""
     ^\s*%install (.*)$
     """###
@@ -126,7 +126,7 @@ fileprivate func process_install_line(_ selfRef: PythonObject, line_index: Pytho
     ]]
 }
 
-fileprivate func process_system_command_line(_ selfRef: PythonObject, line: inout PythonObject) throws {
+fileprivate func process_system_command_line(_ selfRef: PythonObject, _ line: inout PythonObject) throws {
     let regexExpression: PythonObject = ###"""
     ^\s*%system (.*)$
     """###
