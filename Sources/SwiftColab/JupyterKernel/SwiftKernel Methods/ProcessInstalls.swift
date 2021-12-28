@@ -79,17 +79,12 @@ func call_unlink(link_name: PythonObject) throws {
 }
 
 fileprivate func process_install_location_line(_ selfRef: PythonObject, _ line_index: PythonObject, _ line: inout PythonObject) throws -> PythonObject? {
-    let regexExpression: PythonObject = ###"""
+    let install_location_match = re.match(###"""
     ^\s*%install-location (.*)$
-    """###
-    guard let install_location_match = Optional(re.match(regexExpression, line)) else {
-        return nil
-    }
+    """###, line)
+    guard install_location_match != Python.None else { return nil }
     
-    guard var install_location = install_location_match.checking[dynamicMember: "group"]?(1) else {
-        fatalError("debugging checkpoint #3")
-    }
-    
+    var install_location = install_location_match.group(1)
     try process_install_substitute(template: &install_location, line_index: line_index)
     
     line = ""
@@ -97,19 +92,13 @@ fileprivate func process_install_location_line(_ selfRef: PythonObject, _ line_i
 }
 
 fileprivate func process_extra_include_command_line(_ selfRef: PythonObject, _ line: inout PythonObject) -> PythonObject? {
-    let regexExpression: PythonObject = ###"""
+    let extra_include_command_match = re.match(###"""
     ^\s*%install-extra-include-command (.*)$
-    """###
-    if let extra_include_command_match = Optional(re.match(regexExpression, line)) {
-        guard let extra_include_command = extra_include_command_match.checking[dynamicMember: "group"]?(1) else {
-            fatalError("debugging checkpoint #4")
-        }
-        
-        line = ""
-        return extra_include_command
-    } else {
-        return nil
-    }
+    """###, line)
+    guard extra_include_command_match != Python.None else { return nil }
+    
+    line = ""
+    return extra_include_command_match.group(1)
 }
 
 fileprivate func process_install_swiftpm_flags_line(_ selfRef: PythonObject, _ line: inout PythonObject) -> [PythonObject] {
