@@ -21,17 +21,9 @@ func install_packages(_ selfRef: PythonObject, packages: [PythonObject], swiftpm
             "first cell execution. Restart the kernel to install packages.")
     }
     
-    guard let swift_build_path = os.environ.checking["SWIFT_BUILD_PATH"] else {
-        throw PackageInstallException(
-            "Install Error: Cannot install packages because " +
-            "SWIFT_BUILD_PATH is not specified.")
-    }
-    
-    guard let swift_package_path = os.environ.checking["SWIFT_PACKAGE_PATH"] else {
-        throw PackageInstallException(
-            "Install Error: Cannot install packages because " +
-            "SWIFT_PACKAGE_PATH is not specified.")
-    }
+    let swift_toolchain = "/opt/swift/toolchain"
+    let swift_build_path = "\(swift_toolchain)/usr/bin/swift-build"
+    let swift_package_path = "\(swift_toolchain)/usr/bin/swift-package"
     
     var package_install_scratchwork_base = tempfile.mkdtemp()
     package_install_scratchwork_base = os.path.join(package_install_scratchwork_base, "swift-install")
