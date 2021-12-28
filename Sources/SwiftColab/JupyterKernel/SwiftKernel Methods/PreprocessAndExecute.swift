@@ -111,10 +111,20 @@ fileprivate func read_include(_ selfRef: PythonObject, line_index: PythonObject,
     for include_path in include_paths {
         do {
             let path = os.path.join(include_path, name)
-            let f = try Python.open.throwing
-                .dynamicallyCall(withArguments: path, "r")
+            var f: PythonObject
             
-            code = try f.read.throwing.dynamicallyCall(withArguments: [])
+            do {
+                f = try Python.open.throwing
+                .dynamicallyCall(withArguments: path, "r")
+            } catch {
+                fatalError("debug checkpoint 0.0.1")
+            }
+            
+            do {
+                code = try f.read.throwing.dynamicallyCall(withArguments: [])
+            } catch {
+                fatalError("debug checkpoint 0.0.2")
+            }
             f.close()
         } catch PythonError.exception(let error, let traceback) {
             guard error.__class__ == Python.IOError else {
