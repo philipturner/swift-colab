@@ -40,7 +40,24 @@ func do_execute(_ kwargs: PythonObject) throws -> PythonObject {
     }
     
     // Start up a new thread to collect stdout.
-    let stdout_handler = SwiftModule.Stdout
+    let stdout_handler = SwiftModule.StdoutHandler(selfRef)
+    stdout_handler.start()
+    
+    var result: PythonObject
+    
+    // Execute the cell, handle unexpected exceptions, and make sure to
+    // always clean up the stdout handler.
+    do {
+        defer {
+            stdout_handler.stop_event.set()
+            stdout_handler.join()
+        }
+        
+        result = try execute_cell(selfRef, code)
+    } catch let e {
+        try send_exception_report(selfRef, "execute_cell", e)
+        throw e
+    }
 }
 
 fileprivate struct Exception: LocalizedError {
