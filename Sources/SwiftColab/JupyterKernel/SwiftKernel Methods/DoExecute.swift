@@ -3,6 +3,7 @@ import PythonKit
 
 fileprivate let json = Python.import("json")
 fileprivate let lldb = Python.import("lldb")
+fileprivate let squash_dates = Python.import("jupyter_client").jsonutil.squash_dates
 
 func do_execute(_ kwargs: PythonObject) throws -> PythonObject {
     let selfRef = kwargs["self"]
@@ -102,10 +103,10 @@ fileprivate func send_jupyter_messages(_ selfRef: PythonObject, _ messages: Pyth
 
 fileprivate func set_parent_message(_ selfRef: PythonObject) throws {
     let jsonDumps = json.dumps(json.dumps(squash_dates(selfRef._parent_header)))
-    let result = execute(selfRef, code: """
+    let result = execute(selfRef, code: PythonObject("""
                          JupyterKernel.communicator.updateParentMessage(
                              to: KernelCommunicator.ParentMessage(json: \(jsonDumps)))
-                         """)
+                         """))
     if result is ExecutionResultError {
         throw Exception("Error setting parent message: \(result)")
     }
