@@ -164,5 +164,10 @@ fileprivate func send_exception_report(_ selfRef: PythonObject, _ while_doing: P
 
 fileprivate func execute_cell(_ selfRef: PythonObject, _ code: PythonObject) throws -> PythonObject {
     try set_parent_message(selfRef)
-    let result = try preprocess_and_execute(selfRef, code)
+    let result = try preprocess_and_execute(selfRef, code: code)
+    if result is ExecutionResultSuccess {
+        try after_successful_execution(selfRef)
+    }
+    
+    return result
 }
