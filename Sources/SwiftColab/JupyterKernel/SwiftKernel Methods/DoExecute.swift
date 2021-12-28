@@ -65,9 +65,9 @@ func do_execute(_ kwargs: PythonObject) throws -> PythonObject {
         try selfRef.send_response.throwing
             .dynamicallyCall(withArguments: selfRef.iopub_socket, "execute_result", [
             "execution_count": selfRef.execution_count,
-            "data": {
+            "data": [
                 "text/plain": String(describing: result.result)
-            },
+            ],
             "metadata": [:]
         ])
         
