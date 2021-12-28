@@ -38,9 +38,9 @@ fileprivate func file_name_for_source_location(_ selfRef: PythonObject) -> Strin
 }
 
 fileprivate func preprocess(_ selfRef: PythonObject, code: PythonObject) throws -> PythonObject {
-    let lines = code[dynamicMember: "split"]("\n")
-    let preprocessed_lines = try Array(Python.enumerate(lines)).map { tupleObject -> PythonObject in
-        let (i, line) = tupleObject.tuple2
+    let lines = Array(code[dynamicMember: "split"]("\n"))
+    let preprocess_lines = try (0..<lines.count).map { i in
+        let line = lines[i]
         return try preprocess_line(selfRef, line_index: i, line: line)
     }
     
