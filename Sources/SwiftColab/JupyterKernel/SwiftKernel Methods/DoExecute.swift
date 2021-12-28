@@ -71,4 +71,12 @@ fileprivate func read_byte_array(_ selfRef: PythonObject, _ sbvalue: PythonObjec
     if count == 0 {
         return Python.bytes()
     }
+    
+    let get_data_error = lldb.SBError()
+    let data = selfRef.process.ReadMemory(address, count, get_data_error)
+    if Bool(get_data_error.Fail())! {
+        throw Exception("getting data: \(get_data_error)")
+    }
+    
+    return data
 }
