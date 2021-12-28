@@ -54,12 +54,12 @@ func call_unlink(link_name: PythonObject) throws {
     }
 }
 
-fileprivate func process_install_location_line(_ selfRef: PythonObject, line_index: PythonObject, line: inout PythonObject) throws -> PythonObject {
+fileprivate func process_install_location_line(_ selfRef: PythonObject, line_index: PythonObject, line: inout PythonObject) throws -> PythonObject? {
     let regexExpression: PythonObject = ###"""
     ^\s*%install-location (.*)$
     """###
     guard var install_location = Optional(re.match(regexExpression, line))?[dynamicMember: "group"](1) else {
-        return Python.None
+        return nil
     }
     
     try process_install_substitute(template: &install_location, line_index: line_index)
@@ -68,34 +68,36 @@ fileprivate func process_install_location_line(_ selfRef: PythonObject, line_ind
     return install_location
 }
 
-fileprivate func process_extra_include_command_line(_ selfRef: PythonObject, line: PythonObject) -> PythonObject {
+fileprivate func process_extra_include_command_line(_ selfRef: PythonObject, line: PythonObject) -> PythonObject? {
     let regexExpression: PythonObject = ###"""
     ^\s*%install-extra-include-command (.*)$
     """###
     if let extra_include_command = Optional(re.match(regexExpression, line))?[dynamicMember: "group"](1) {
-        return .init(tupleOf: "", extra_include_command)
+        line = ""
+        return extra_include_command
     } else {
-        return .init(tupleOf: line, Python.None)
+        return nil
     }
 }
 
-fileprivate func process_install_swiftpm_flags_line(_ selfRef: PythonObject, line: PythonObject) -> PythonObject {
+fileprivate func process_install_swiftpm_flags_line(_ selfRef: PythonObject, line: inout PythonObject) -> [PythonObject] {
     let regexExpression: PythonObject = ###"""
     ^\s*%install-swiftpm-flags (.*)$
     """###
     if let flags = Optional(re.match(regexExpression, line))?[dynamicMember: "group"](1) {
-        return .init(tupleOf: "", flags)
+        line = ""
+        return flags
     } else {
-        return .init(tupleOf: line, [] as [PythonObject])
+        return []
     }
 }
 
-fileprivate func process_install_line(_ selfRef: PythonObject, line_index: PythonObject, line: PythonObject) throws -> PythonObject {
+fileprivate func process_install_line(_ selfRef: PythonObject, line_index: PythonObject, line: inout PythonObject) throws -> [PythonObject] {
     let regexExpression: PythonObject = ###"""
     ^\s*%install (.*)$
     """###
     guard let install_match = Optional(re.match(regexExpression, line)) else {
-        return .init(tupleOf: line, [] as [PythonObject])
+        return []
     }
     
     let parsed = shlex[dynamicMember: "split"](install_match[dynamicMember: "group"](1))
@@ -105,10 +107,12 @@ fileprivate func process_install_line(_ selfRef: PythonObject, line_index: Pytho
     }
     
     try process_install_substitute(template: &parsed[0], line_index: line_index)
-    return .init(tupleOf: "", [[
+    
+    line = ""
+    return [[
         "spec": parsed[0],
         "products": parsed[1...]
-    ]])
+    ]]
 }
 
 fileprivate func process_system_command_line(_ selfRef: PythonObject, line: PythonObject) throws -> PythonObject {
