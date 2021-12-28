@@ -102,7 +102,6 @@ fileprivate func read_include(_ selfRef: PythonObject, line_index: PythonObject,
     let name = name_match.group(1)
     
     let include_paths = [
-        os.path.dirname(os.path.realpath(sys.argv[0])),
         os.path.realpath("."),
         PythonObject("/opt/swift/include")
     ]
