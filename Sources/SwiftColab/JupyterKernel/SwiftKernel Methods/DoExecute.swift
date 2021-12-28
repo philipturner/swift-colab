@@ -65,4 +65,10 @@ fileprivate func read_byte_array(_ selfRef: PythonObject, _ sbvalue: PythonObjec
     if Bool(get_count_error.Fail())! {
         throw Exception("getting count: \(get_count_error)")
     }
+    
+    // ReadMemory requires that count is positive, so early-return an empty
+    // byte array when count is 0.
+    if count == 0 {
+        return Python.bytes()
+    }
 }
