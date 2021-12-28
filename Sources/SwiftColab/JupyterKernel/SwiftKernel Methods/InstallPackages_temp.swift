@@ -65,7 +65,8 @@ func install_packages(_ selfRef: PythonObject,
                                     stderr: subprocess.PIPE)
         
         if result.returncode != 0 {
-            // throw an error
+            let returncode = result.returncode
+            let 
         }
         
         // proceed
