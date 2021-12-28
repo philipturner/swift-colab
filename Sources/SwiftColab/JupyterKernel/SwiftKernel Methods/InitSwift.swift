@@ -28,7 +28,8 @@ fileprivate struct Exception: LocalizedError {
 }
 
 fileprivate func init_repl_process(_ selfRef: PythonObject) throws {
-    guard let debugger = Optional(lldb.SBDebugger.Create()) else {
+    let debugger = lldb.SBDebugger.Create()
+    guard debuger != Python.None else {
         throw Exception("could not start debugger")
     }
     
@@ -46,14 +47,15 @@ fileprivate func init_repl_process(_ selfRef: PythonObject) throws {
     debugger.SetScriptLanguage(lldb.eScriptLanguageNone)
     
     let repl_swift = os.environ["REPL_SWIFT_PATH"]
-    guard let target = Optional(debugger.CreateTargetWithFileAndArch(repl_swift, "")) else {
+    let target = debugger.CreateTargetWithFileAndArch(repl_swift, "")
+    guard target != Python.None else {
         throw Exception("Could not create target \(repl_swift)")
     }
     
     selfRef.target = target
     
-    guard let main_bp = Optional(target.BreakpointCreateByName(
-        "repl_main", target.GetExecutable().GetFileName())) else {
+    let main_bp = target.BreakpointCreateByName("repl_main", target.GetExecutable().GetFileName())
+    guard main_bp != Python.None else {
         throw Exception("Could not set breakpoint")
     }
     
@@ -78,9 +80,8 @@ fileprivate func init_repl_process(_ selfRef: PythonObject) throws {
     launch_info.SetLaunchFlags(launch_flags & ~lldb.eLaunchFlagDisableASLR)
     target.SetLaunchInfo(launch_info)
     
-    guard let process = Optional(target.LaunchSimple(Python.None,
-                                                     PythonObject(repl_env),
-                                                     os.getcwd())) else {
+    let process = target.LaunchSimple(Python.None, PythonObject(repl_env), os.getcwd())
+    guard process != Python.None else {
         throw Exception("Could not launch process")
     }
     
