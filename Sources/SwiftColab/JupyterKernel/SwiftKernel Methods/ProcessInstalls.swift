@@ -1,10 +1,10 @@
 import Foundation
 import PythonKit
 
-let os = Python.import("os")
-let re = Python.import("re")
-let shlex = Python.import("shlex")
-let subprocess = Python.import("subprocess")
+fileprivate let os = Python.import("os")
+fileprivate let re = Python.import("re")
+fileprivate let shlex = Python.import("shlex")
+fileprivate let subprocess = Python.import("subprocess")
 
 fileprivate func process_install_location_line(_ selfRef: PythonObject, line_index: PythonObject, line: PythonObject) throws -> PythonObject {
     let regexExpression: PythonObject = ###"""
