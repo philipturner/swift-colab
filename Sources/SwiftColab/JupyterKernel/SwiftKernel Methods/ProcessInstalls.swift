@@ -36,7 +36,7 @@ fileprivate func process_install_swiftpm_flags_line(_ selfRef: PythonObject, lin
     if let flags = Optional(re.match(regexExpression, line))?[dynamicMember: "group"](1) {
         return .init(tupleOf: "", flags)
     } else {
-        return .init(tupleOf: line, [])
+        return .init(tupleOf: line, [PythonObject]())
     }
 }
 
@@ -48,7 +48,7 @@ fileprivate func process_install_line(_ selfRef: PythonObject, line_index: Pytho
         return .init(tupleOf: line, [])
     }
     
-    let parsed = shlex.split(install_match[dynamicMember: "group"](1))
+    let parsed = shlex[dynamicMember: "split"](install_match[dynamicMember: "group"](1))
     guard Python.len(parsed) >= 2 else {
         throw PackageInstallException(
             "Line: \(line_index + 1): %install usage: SPEC PRODUCT [PRODUCT ...]")
@@ -58,7 +58,7 @@ fileprivate func process_install_line(_ selfRef: PythonObject, line_index: Pytho
     return .init(tupleOf: "", [[
         "spec": parsed[0],
         "products": parsed[1...]
-    ] as [String: PythonObject]])
+    ]])
 }
 
 // Addition by Philip Turner
