@@ -19,7 +19,7 @@ func init_swift(_ selfRef: PythonObject) throws {
     
     // We do completion by default when the toolchain has the SBTarget.CompleteCode API.
     // The user can disable/enable using "%disableCompletion" and "%enableCompletion".
-    selfRef.completion_enabled = Python.hasattr(selfRef.target, "CompleteCode")
+    selfRef.completion_enabled = selfRef.target.checking.CompleteCode ?? nil
 }
 
 fileprivate struct Exception: LocalizedError {
@@ -35,8 +35,8 @@ fileprivate func init_repl_process(_ selfRef: PythonObject) throws {
     selfRef.debugger = debugger
     debugger.SetAsync(false)
     
-    if Bool(Python.hasattr(selfRef, "swift_module_search_path"))! {
-        debugger.HandleCommand("setings append target.swift-module-search-paths \(selfRef.swift_module_search_path)")
+    if let search_path = selfRef.checking.swift_module_search_path {
+        debugger.HandleCommand("setings append target.swift-module-search-paths \(search_path)")
     }
     
     // LLDB crashes while trying to load some Python stuff on Mac. Maybe
