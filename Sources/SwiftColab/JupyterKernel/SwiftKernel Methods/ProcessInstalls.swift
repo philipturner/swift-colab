@@ -61,6 +61,8 @@ fileprivate func process_install_line(_ selfRef: PythonObject, line_index: Pytho
     ]])
 }
 
+// Addition by Philip Turner
+
 fileprivate func process_install_substitute(template: inout PythonObject, line_index: PythonObject) throws {
     do {
         let function = Python.string.Template(template).substitute.throwing
