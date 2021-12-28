@@ -32,6 +32,10 @@ func process_installs(_ selfRef: PythonObject, code: PythonObject) throws -> Pyt
         
         processed_lines.append(line)
     }
+    
+    // TODO: make a call to install_packages
+    
+    return PythonObject("\n").join(processed_lines)
 }
 
 func call_unlink(link_name: PythonObject) throws {
