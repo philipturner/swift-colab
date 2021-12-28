@@ -7,6 +7,18 @@ fileprivate let shlex = Python.import("shlex")
 fileprivate let stat = Python.import("stat")
 fileprivate let subprocess = Python.import("subprocess")
 
+/// Handles all "%install" directives, and returns `code` with all
+/// "%install" directives removed.
+func process_installs(_ selfRef: PythonObject, code: PythonObject) throws -> PythonObject {
+    var preprocessed_lines: [PythonObject] = []
+    var all_packages: [PythonObject] = []
+    var all_swiftpm_flags: [PythonObject] = []
+    var extra_include_commands: [PythonObject] = []
+    var user_install_location = Python.None
+    
+    
+}
+
 func call_unlink(link_name: PythonObject) throws {
     do {
         @discardableResult
