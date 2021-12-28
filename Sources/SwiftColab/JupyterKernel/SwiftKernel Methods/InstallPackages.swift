@@ -149,5 +149,15 @@ func install_packages(_ selfRef: PythonObject, packages: [PythonObject], swiftpm
             ]
         )
         """
+        
+        do {
+            var f = Python.open("\(package_base_path)/Package.swift", "w")
+            f.write(package_swift)
+            f.close()
+            
+            f = Python.open("\(package_base_path)/jupyterInstalledPackages.swift", "w")
+            f.write("// intentionally blank")
+            f.close()
+        }
     }
 }
