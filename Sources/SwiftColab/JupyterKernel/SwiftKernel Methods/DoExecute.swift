@@ -86,7 +86,7 @@ func do_execute(_ kwargs: PythonObject) throws -> PythonObject {
     }
     else if let result = result as? ExecutionResultError {
         if !Bool(selfRef.process.is_alive)! {
-            selfRef.send_iopub_error_message(["Process killed"])
+            selfRef.send_iopub_error_message(selfRef, ["Process killed"])
             
             // Exit the kernel because there is no way to recover from a
             // killed process. The UI will tell the user that the kernel has
@@ -96,7 +96,7 @@ func do_execute(_ kwargs: PythonObject) throws -> PythonObject {
             let loop = ioloop.IOLoop.current()
             loop.add_timeout(time.time() + 0.1, loop.stop)
             
-            return make_execute_reply_error_message(["Process killed"])
+            return make_execute_reply_error_message(selfRef, ["Process killed"])
         }
         
         if Bool(stdout_handler.had_stdout)! {
@@ -107,7 +107,7 @@ func do_execute(_ kwargs: PythonObject) throws -> PythonObject {
             // to add a traceback.
             let stackTrace = get_pretty_main_thread_stack_trace(selfRef)
             let traceback = ["Current stack trace"].pythonObject + stackTrace.map {
-                "\t\($0)"
+                PythonObject("\t\($0)")
             }
         }
     }
