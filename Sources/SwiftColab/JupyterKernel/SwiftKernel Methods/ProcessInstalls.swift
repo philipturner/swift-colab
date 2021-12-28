@@ -63,7 +63,7 @@ fileprivate func process_install_line(_ selfRef: PythonObject, line_index: Pytho
 
 fileprivate func process_system_command_line(_ selfRef: PythonObject, line: PythonObject) throws -> PythonObject {
     let regexExpression: PythonObject = ###"""
-   ^\s*%system (.*)$
+    ^\s*%system (.*)$
     """###
     guard let system_match = Optional(re.match(regexExpression, line)) else {
         return line
