@@ -46,7 +46,7 @@ fileprivate func init_repl_process(_ selfRef: PythonObject) throws {
     // anyways.
     debugger.SetScriptLanguage(lldb.eScriptLanguageNone)
     
-    let repl_swift = os.environ["REPL_SWIFT_PATH"]
+    let repl_swift = "/opt/swift/toolchain/usr/bin/repl_swift"
     let target = debugger.CreateTargetWithFileAndArch(repl_swift, "")
     guard target != Python.None else {
         throw Exception("Could not create target \(repl_swift)")
