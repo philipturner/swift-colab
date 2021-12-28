@@ -84,7 +84,7 @@ do {
 }
 
 do {
-    let originalPath = "\(lldbSourceDirectory)/_lldb.so"
+    let originalPath = "\(lldbSourceDirectory)/lldb/_lldb.so"
     let newPath = "\(pythonSearchPath)/lldb/_lldb.so"
     
     let destination = try fm.destinationOfSymbolicLink(atPath: originalPath)
