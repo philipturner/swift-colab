@@ -10,22 +10,22 @@ fileprivate func process_install_location_line(_ selfRef: PythonObject, line_ind
     let regexExpression: PythonObject = ###"""
     ^\s*%install-location (.*)$
     """###
-    guard var install_location = Optional(re.match(regexExpression, line))?.group(1) else {
-        return (line, Python.None)
+    guard var install_location = Optional(re.match(regexExpression, line))?[dynamicMember: "group"](1) else {
+        return .init(line, Python.None)
     }
     
     try process_install_substitute(template: &install_location, line_index: line_index)
-    return ("", install_location)
+    return .init("", install_location)
 }
 
 fileprivate func process_extra_include_command_line(_ selfRef: PythonObject, line: PythonObject) -> PythonObject {
     let regexExpression: PythonObject = ###"""
     ^\s*%install-extra-include-command (.*)$
     """###
-    if let extra_include_command = Optional(re.match(regexExpression, line))?.group(1) {
-        return ("", extra_include_command)
+    if let extra_include_command = Optional(re.match(regexExpression, line))?[dynamicMember: "group"](1) {
+        return .init("", extra_include_command)
     } else {
-        return (line, Python.None)
+        return .init(line, Python.None)
     }
 }
 
@@ -33,10 +33,10 @@ fileprivate func process_install_swiftpm_flags_line(_ selfRef: PythonObject, lin
     let regexExpression: PythonObject = ###"""
     ^\s*%install-swiftpm-flags (.*)$
     """###
-    if let flags = Optional(re.match(regexExpression, line))?.group(1) {
-        return ("", flags)
+    if let flags = Optional(re.match(regexExpression, line))?[dynamicMember: "group"](1) {
+        return .init("", flags)
     } else {
-        return (line, [])
+        return .init(line, [])
     }
 }
 
@@ -45,17 +45,17 @@ fileprivate func process_install_line(_ selfRef: PythonObject, line_index: Pytho
     ^\s*%install (.*)$
     """###
     guard let install_match = Optional(re.match(regexExpression, line)) else {
-        return (line, [])
+        return .init(line, [])
     }
     
-    let parsed = shlex.split(install_match.group(1))
+    let parsed = shlex.split(install_match[dynamicMember: "group"](1))
     guard Python.len(parsed) >= 2 else {
         throw PackageInstallException(
             "Line: \(line_index + 1): %install usage: SPEC PRODUCT [PRODUCT ...]")
     }
     
     try process_install_substitute(template: &parsed[0], line_index: line_index)
-    return ("", [[
+    return .init("", [[
         "spec": parsed[0],
         "products": parsed[1...]
     ]])
@@ -70,10 +70,10 @@ fileprivate func process_install_substitute(template: inout PythonObject, line_i
     } catch PythonError.exception(let error, let traceback) {
         let e = PythonError.exception(error, traceback: traceback)
         
-        if e.__class__ == Python.KeyError {
+        if error.__class__ == Python.KeyError {
             throw PackageInstallException(
                 "Line \(line_index + 1): Invalid template argument \(e)")
-        } else if e.__class__ == Python.ValueError {
+        } else if error.__class__ == Python.ValueError {
             throw PackageInstallException(
                 "Line \(line_index + 1): \(e)")
         } else {
