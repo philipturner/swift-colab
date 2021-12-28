@@ -157,4 +157,5 @@ let JKRegisterKernel = unsafeBitCast(JKRegisterKernelRef, to: JKRegisterKernelTy
 JKRegisterKernel()
 
 // Move include files
+try fm.removeItemIfExists(atPath: "/opt/swift/include")
 try fm.moveItem(atPath: "/opt/swift/swift-colab/Sources/SwiftColab/include", toPath: "/opt/swift/include")
