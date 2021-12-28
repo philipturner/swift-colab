@@ -90,8 +90,8 @@ do {
 //     let destination = try fm.destinationOfSymbolicLink(atPath: originalPath)
 //     try? fm.createSymbolicLink(atPath: newPath, withDestinationPath: destination)
     
-    let sourcePath = try fm.destinationOfSymbolicLink(atPath: "/opt/swift/toolchain/usr/lib/python3/dist-packages/lldb/_lldb.so")
-//     let sourcePath = "/opt/swift/toolchain/usr/lib/liblldb.so.1"
+//     let sourcePath = try fm.destinationOfSymbolicLink(atPath: "/opt/swift/toolchain/usr/lib/python3/dist-packages/lldb/_lldb.so")
+    let sourcePath = "/opt/swift/toolchain/usr/lib/liblldb.so.10.0.0git"
     let targetPath = "/usr/local/lib/python3.7/dist-packages/lldb/_lldb.so"
     
     try? fm.removeItem(atPath: targetPath)
