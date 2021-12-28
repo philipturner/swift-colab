@@ -112,21 +112,19 @@ func install_packages(_ selfRef: PythonObject, packages: [PythonObject], swiftpm
             }
         }
         
-        do {
+        let iopub_socket = selfRef.iopub_socket
+        
+        func send_response(_ message: String) throws {
             let function = selfRef.send_response.throwing
-            let iopub_socket = selfRef.iopub_socket
-            
-            func send_response(_ message: String) throws {
-                try function.dynamicallyCall(withArguments: iopub_socket, "stream", [
-                    "name": "stdout",
-                    "text": message
-                ])
-            }
-            
-            send_response("Installing packages:\n\(packages_human_description)")
-            send_response("With SwiftPM flags: \(swiftpm_flags)\n")
-            send_response("Working in: \(scratcwork_base_path)\n")
+            try function.dynamicallyCall(withArguments: iopub_socket, "stream", [
+                "name": "stdout",
+                "text": message
+            ])
         }
+        
+        send_response("Installing packages:\n\(packages_human_description)")
+        send_response("With SwiftPM flags: \(swiftpm_flags)\n")
+        send_response("Working in: \(scratcwork_base_path)\n")
         
         let package_swift = """
         // swift-tools-version:4.2
@@ -159,5 +157,9 @@ func install_packages(_ selfRef: PythonObject, packages: [PythonObject], swiftpm
             f.write("// intentionally blank")
             f.close()
         }
+        
+        // == Ask SwiftPM to build the package ==
+        
+        
     }
 }
