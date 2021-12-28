@@ -4,6 +4,7 @@ import PythonKit
 fileprivate let json = Python.import("json")
 fileprivate let os = Python.import("os")
 fileprivate let shlex = Python.import("shlex")
+fileprivate let shutil = Python.import("shutil")
 fileprivate let sqlite3 = Python.import("sqlite3")
 fileprivate let subprocess = Python.import("subprocess")
 fileprivate let tempfile = Python.import("tempfile")
@@ -244,6 +245,14 @@ func install_packages(_ selfRef: PythonObject, packages: [PythonObject], swiftpm
     }
     
     // Process *.swiftmodules files
+    let swift_modules = queryDatabase("%.swiftModule")
+    for filename in swift_modules {
+        shutil.copy(filename, swift_module_search_path)
+    }
     
-    let swift_modules = 
+    // Process modulemap files
+    let modulemap_files = queryDatabase("%/module.modulemap")
+    for index in 0..<modulemap_files.count {
+        let filename = modulemap_files[index]
+    }
 }
