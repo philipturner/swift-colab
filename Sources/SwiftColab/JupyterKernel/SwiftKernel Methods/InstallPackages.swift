@@ -240,9 +240,7 @@ func install_packages(_ selfRef: PythonObject, packages: [PythonObject], swiftpm
     
     func queryDatabase(_ input: String) -> [PythonObject] {
         cursor.execute(SQL_FILES_SELECT, [input])
-        return cursor.fetchall().compactMap { row -> PythonObject? in
-            let first_row = row[0]
-            return is_valid_dependenc
+        return cursor.fetchall().map { $0[0] }.filter(is_valid_dependency)
     }
     
     // Process *.swiftmodules files
