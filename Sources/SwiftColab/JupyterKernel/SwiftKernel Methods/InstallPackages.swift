@@ -4,6 +4,7 @@ import PythonKit
 fileprivate let json = Python.import("json")
 fileprivate let os = Python.import("os")
 fileprivate let shlex = Python.import("shlex")
+fileprivate let sqlite3 = Python.import("sqlite3")
 fileprivate let subprocess = Python.import("subprocess")
 fileprivate let tempfile = Python.import("tempfile")
 
@@ -213,4 +214,20 @@ func install_packages(_ selfRef: PythonObject, packages: [PythonObject], swiftpm
         
         return paths
     }
+    
+    // Make list of paths where we expect .swiftmodule and .modulemap files of dependencies
+    var dependencies_paths = flatten_deps_paths(dependencies_obj)
+    dependencies_paths = Python.list(Python.set(dependencies_paths))
+    
+    func is_valid_dependency(_ path: PythonObject) -> Bool {
+        for p in dependencies_paths {
+            if path.startswith(p) {
+                return true
+            }
+        }
+        
+        return false
+    }
+    
+    
 }
