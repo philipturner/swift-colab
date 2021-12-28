@@ -159,7 +159,7 @@ fileprivate func process_system_command_line(_ selfRef: PythonObject, _ line: in
     let regexExpression: PythonObject = ###"""
     ^\s*%system (.*)$
     """###
-    guard let system_match = PythonObject?(re.match(regexExpression, line)) else {
+    guard let system_match = Optional<PythonObject>(re.match(regexExpression, line)) else {
         return
     }
     
