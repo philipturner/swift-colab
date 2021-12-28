@@ -169,7 +169,7 @@ fileprivate func process_system_command_line(_ selfRef: PythonObject, _ line: in
     }
     
     guard let rest_of_line = system_match.checking[dynamicMember: "group"]?(1) else {
-        fatalError("debugging checkpoint #7")
+        fatalError("debugging checkpoint #7: \(Python.repr(system_match)) ----- \(Python.repr(line))")
     }
     
     let process = subprocess.Popen(rest_of_line,
