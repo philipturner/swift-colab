@@ -1,6 +1,5 @@
 import Foundation
 import PythonKit
-import SwiftPythonBridge
 
 func do_execute(_ kwargs: PythonObject) throws -> PythonObject {
     let selfRef = kwargs["self"]
@@ -19,6 +18,11 @@ func do_execute(_ kwargs: PythonObject) throws -> PythonObject {
         "payload": [],
         "user_expressions": [:],
     ]
+}
+
+fileprivate struct Exception: LocalizedError {
+    var errorDescription: String?
+    init(_ message: String) { errorDescription = message }
 }
 
 fileprivate func after_successful_execution(_ selfRef: PythonObject) throws {
