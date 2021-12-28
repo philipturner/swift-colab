@@ -29,7 +29,7 @@ fileprivate struct Exception: LocalizedError {
 
 fileprivate func init_repl_process(_ selfRef: PythonObject) throws {
     let debugger = lldb.SBDebugger.Create()
-    guard debuger != Python.None else {
+    guard debugger != Python.None else {
         throw Exception("could not start debugger")
     }
     
