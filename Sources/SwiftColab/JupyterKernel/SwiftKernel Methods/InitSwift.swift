@@ -54,7 +54,7 @@ fileprivate func init_repl_process(_ selfRef: PythonObject) throws {
     
     selfRef.target = target
     
-    let main_bp = target.BreakpointCreateByName("repl_main", target.GetExecutable().GetFileName())
+    let main_bp = target.BreakpointCreateByName("repl_main", target.GetExecutable().GetFilename())
     guard main_bp != Python.None else {
         throw Exception("Could not set breakpoint")
     }
