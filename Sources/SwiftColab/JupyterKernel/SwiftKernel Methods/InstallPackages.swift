@@ -1,8 +1,3 @@
-
-if true {
-    print("hello world")
-} 
-
 import Foundation
 import PythonKit
 
