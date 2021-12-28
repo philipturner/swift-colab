@@ -52,28 +52,25 @@ fileprivate func preprocess(_ selfRef: PythonObject, code: PythonObject) throws 
 /// Does not process "%install" directives, because those need to be
 /// handled before everything else.
 fileprivate func preprocess_line(_ selfRef: PythonObject, line_index: PythonObject, line: PythonObject) throws -> PythonObject {
-    var regexExpression: PythonObject = ###"""
+    let include_match = re.match(###"""
     ^\s*%include (.*)$
-    """###
-    if let include_match = Optional(re.match(regexExpression, line)) {
-        guard let include_match_group = include_match.checking.group?(1) else {
-            fatalError("debugging checkpoint #1")
-        }
-        return try read_include(selfRef, line_index: line_index, rest_of_line: include_match_group)
+    """###, line)
+    if include_match != Python.None {
+        return try read_include(selfRef, line_index: line_index, rest_of_line: include_match.group(1))
     }
     
-    regexExpression = ###"""
+    let disable_completion_match = re.match(###"""
     ^\s*%disableCompletion\s*$
-    """###
-    if let _ = Optional(re.match(regexExpression, line)) {
+    """###, line)
+    if disable_completion_match != Python.None {
         try handle_disable_completion(selfRef)
         return ""
     }
     
-    regexExpression = ###"""
+    let enable_completion_match = re.match(###"""
     ^\s*%enableCompletion\s*$
-    """###
-    if let _ = Optional(re.match(regexExpression, line)) {
+    """###, line)
+    if enable_completion_match != Python.None {
         try handle_enable_completion(selfRef)
         return ""
     }
