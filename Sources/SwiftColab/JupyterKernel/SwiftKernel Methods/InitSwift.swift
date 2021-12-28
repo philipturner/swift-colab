@@ -37,7 +37,7 @@ fileprivate func init_repl_process(_ selfRef: PythonObject) throws {
     debugger.SetAsync(false)
     
     if let search_path = selfRef.checking.swift_module_search_path {
-        debugger.HandleCommand("setings append target.swift-module-search-paths \(search_path)")
+        debugger.HandleCommand("settings append target.swift-module-search-paths \(search_path)")
     }
     
     // LLDB crashes while trying to load some Python stuff on Mac. Maybe
