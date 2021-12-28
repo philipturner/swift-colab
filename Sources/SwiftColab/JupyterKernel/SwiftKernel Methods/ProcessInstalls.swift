@@ -91,6 +91,10 @@ fileprivate func process_system_command_line(_ selfRef: PythonObject, line: Pyth
     return ""
 }
 
+fileprivate func link_extra_includes(_ selfRef: PythonObject, _ swift_module_search_path: PythonObject, _ include_dir: PythonObject) throws {
+    
+}
+
 // Addition by Philip Turner
 
 fileprivate func process_install_substitute(template: inout PythonObject, line_index: PythonObject) throws {
