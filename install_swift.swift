@@ -84,11 +84,13 @@ do {
 }
 
 do {
-    let originalPath = "\(lldbSourceDirectory)/lldb/_lldb.so"
-    let newPath = "\(pythonSearchPath)/lldb/_lldb.so"
+//     let originalPath = "\(lldbSourceDirectory)/lldb/_lldb.so"
+//     let newPath = "\(pythonSearchPath)/lldb/_lldb.so"
     
-    let destination = try fm.destinationOfSymbolicLink(atPath: originalPath)
-    try? fm.createSymbolicLink(atPath: newPath, withDestinationPath: destination)
+//     let destination = try fm.destinationOfSymbolicLink(atPath: originalPath)
+//     try? fm.createSymbolicLink(atPath: newPath, withDestinationPath: destination)
+    
+    try fm.createSymbolicLink(atPath: "/usr/local/lib/python3.7/dist-packages/lldb/_lldb.so", withDestinationPath: "/opt/swift/toolchain/usr/lib/liblldb.so.10git")
 }
 
 try fm.createDirectory(atPath: "/opt/swift/tmp", withIntermediateDirectories: true)
