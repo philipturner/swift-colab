@@ -24,7 +24,7 @@ func install_packages(_ selfRef: PythonObject, packages: [PythonObject], swiftpm
             "SWIFT_BUILD_PATH is not specified.")
     }
     
-    guard let swift_package_path = Optional(os.environ.get("SWIFT_PACKAGE_PATH")) else {
+    guard Optional(os.environ.get("SWIFT_PACKAGE_PATH")) != nil else {
         throw PackageInstallException(
             "Install Error: Cannot install packages because " +
             "SWIFT_PACKAGE_PATH is not specified.")
