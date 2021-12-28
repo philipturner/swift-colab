@@ -56,3 +56,6 @@ fileprivate func process_install_swiftpm_flags_line(_ selfRef: PythonObject, lin
     }
 }
 
+fileprivate func process_install_line(_ selfRef: PythonObject, line_index: PythonObject, line: PythonObject) throws -> PythonObject {
+    
+}
