@@ -82,8 +82,12 @@ fileprivate func process_install_location_line(_ selfRef: PythonObject, _ line_i
     let regexExpression: PythonObject = ###"""
     ^\s*%install-location (.*)$
     """###
-    guard var install_location = Optional(re.match(regexExpression, line))?[dynamicMember: "group"](1) else {
+    guard let install_location_match = Optional(re.match(regexExpression, line)) else {
         return nil
+    }
+    
+    guard var install_location = install_location_match.checking[dynamicMember: "group"]?(1) else {
+        fatalError("debugging checkpoint #3")
     }
     
     try process_install_substitute(template: &install_location, line_index: line_index)
@@ -96,7 +100,11 @@ fileprivate func process_extra_include_command_line(_ selfRef: PythonObject, _ l
     let regexExpression: PythonObject = ###"""
     ^\s*%install-extra-include-command (.*)$
     """###
-    if let extra_include_command = Optional(re.match(regexExpression, line))?[dynamicMember: "group"](1) {
+    if let extra_include_command_match = Optional(re.match(regexExpression, line)) {
+        guard let extra_include_command = extra_include_command_match.checking[dynamicMember: "group"]?(1) else {
+            fatalError("debugging checkpoint #4")
+        }
+        
         line = ""
         return extra_include_command
     } else {
@@ -108,7 +116,11 @@ fileprivate func process_install_swiftpm_flags_line(_ selfRef: PythonObject, _ l
     let regexExpression: PythonObject = ###"""
     ^\s*%install-swiftpm-flags (.*)$
     """###
-    if let flags = Optional(re.match(regexExpression, line))?[dynamicMember: "group"](1) {
+    if let flags_match = Optional(re.match(regexExpression, line)) {
+        guard let flags = flags_match.checking[dynamicMember: "group"]?(1) else {
+            fatalError("debugging checkpoint #5")
+        }
+        
         line = ""
         return Array(flags)
     } else {
@@ -124,7 +136,11 @@ fileprivate func process_install_line(_ selfRef: PythonObject, _ line_index: Pyt
         return []
     }
     
-    let parsed = shlex[dynamicMember: "split"](install_match[dynamicMember: "group"](1))
+    guard let install = install_match.checking[dynamicMember: "group"]?(1) else {
+        fatalError("debugging checkpoint #6)
+    }
+    
+    let parsed = shlex[dynamicMember: "split"](install)
     guard Python.len(parsed) >= 2 else {
         throw PackageInstallException(
             "Line: \(line_index + 1): %install usage: SPEC PRODUCT [PRODUCT ...]")
@@ -152,7 +168,10 @@ fileprivate func process_system_command_line(_ selfRef: PythonObject, _ line: in
             "System commands can only run in the first cell.")
     }
     
-    let rest_of_line = system_match[dynamicMember: "group"](1)
+    guard let rest_of_line = system_match.checking[dynamicMember: "group"]?(1) else {
+        fatalError("debugging checkpoint #7")
+    }
+    
     let process = subprocess.Popen(rest_of_line,
                                    stdout: subprocess.PIPE,
                                    stderr: subprocess.STDOUT,
