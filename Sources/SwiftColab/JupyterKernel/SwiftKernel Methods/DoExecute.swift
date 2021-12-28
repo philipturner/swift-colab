@@ -52,7 +52,7 @@ fileprivate func read_display_message(_ selfRef: PythonObject, _ sbvalue: Python
     sbvalue.map { part in try read_byte_array(selfRef, part) }.pythonObject
 }
 
-fileprivate func read_byte_array(_ selfRef: PythonObject, _ sbvalue: PythonObject) throws -> PythonObject) {
+fileprivate func read_byte_array(_ selfRef: PythonObject, _ sbvalue: PythonObject) throws -> PythonObject {
     let get_address_error = lldb.SBError()
     let address = sbvalue
         .GetChildMemberWithName("address")
