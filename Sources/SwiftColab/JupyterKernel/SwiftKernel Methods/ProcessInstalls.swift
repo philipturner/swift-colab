@@ -129,18 +129,12 @@ fileprivate func process_install_swiftpm_flags_line(_ selfRef: PythonObject, _ l
 }
 
 fileprivate func process_install_line(_ selfRef: PythonObject, _ line_index: PythonObject, _ line: inout PythonObject) throws -> [PythonObject] {
-    let regexExpression: PythonObject = ###"""
+    let install_match = re.match(###"""
     ^\s*%install (.*)$
-    """###
-    guard let install_match = Optional(re.match(regexExpression, line)) else {
-        return []
-    }
+    """###, line)
+    guard install_match != Python.None else { return [] }
     
-    guard let install = install_match.checking[dynamicMember: "group"]?(1) else {
-        fatalError("debugging checkpoint #6")
-    }
-    
-    let parsed = shlex[dynamicMember: "split"](install)
+    let parsed = shlex[dynamicMember: "split"](install_match.group(1))
     guard Python.len(parsed) >= 2 else {
         throw PackageInstallException(
             "Line: \(line_index + 1): %install usage: SPEC PRODUCT [PRODUCT ...]")
@@ -156,13 +150,10 @@ fileprivate func process_install_line(_ selfRef: PythonObject, _ line_index: Pyt
 }
 
 fileprivate func process_system_command_line(_ selfRef: PythonObject, _ line: inout PythonObject) throws {
-    let regexExpression: PythonObject = ###"""
+    let system_match = re.match(###"""
     ^\s*%system (.*)$
-    """###
-    let system_match = re.match(regexExpression, line)
-    guard system_match != Python.None else {
-        return
-    }
+    """###, line)
+    guard system_match != Python.None else { return }
     
     if selfRef.checking.debugger != nil {
         throw PackageInstallException(
