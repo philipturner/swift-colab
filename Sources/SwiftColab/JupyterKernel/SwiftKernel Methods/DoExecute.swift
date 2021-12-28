@@ -59,6 +59,8 @@ func do_execute(_ kwargs: PythonObject) throws -> PythonObject {
         try send_exception_report(selfRef, "execute_cell", e)
         throw e
     }
+    
+    // Send values/errors and status to the client.
 }
 
 fileprivate struct Exception: LocalizedError {
