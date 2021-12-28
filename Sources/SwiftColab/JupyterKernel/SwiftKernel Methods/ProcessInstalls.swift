@@ -6,7 +6,7 @@ let re = Python.import("re")
 let shlex = Python.import("shlex")
 let subprocess = Python.import("subprocess")
 
-fileprivate func process_install_location_line(_ selfRef: PythonObject, line: PythonObject) throws -> PythonObject {
+fileprivate func process_install_location_line(_ selfRef: PythonObject, line_index: PythonObject, line: PythonObject) throws -> PythonObject {
     let regexExpression: PythonObject = ###"""
     ^\s*%install-location (.*)$
     """###
@@ -19,6 +19,16 @@ fileprivate func process_install_location_line(_ selfRef: PythonObject, line: Py
         install_location = try function.dynamicallyCall(withArguments: ["cwd": os.getcwd()])
     } catch PythonError.exception(let error, let traceback) {
         let e = PythonError.exception(error, traceback: traceback)
+        
+        if e.__class__ == Python.KeyError {
+            throw PackageInstallException(
+                "Line \(line_index + 1): Invalid template argument \(e)")
+        } else if e.__class__ == Python.ValueError {
+            throw PackageInstallException(
+                "Line \(line_index + 1): \(e)")
+        } else {
+            throw e
+        }
     }
     
     return ("", install_location)
