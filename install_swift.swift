@@ -37,6 +37,27 @@ func doCommand(_ args: [String], directory: String? = nil) throws {
     command.waitUntilExit()
 }
 
+// Copy lldb package to swift-colab/PythonPackages - may need to dlopen _lldb.so somewhere
+let lldbSourceDirectory = "/opt/swift/toolchain/usr/lib/python3/dist-packages"
+let lldbTargetDirectory = "/opt/swift/swift-colab/PythonPackages/lldb"
+
+print("began ls command")
+try doCommand(["ls", lldbSourceDirectory])
+print("ended ls command")
+
+for subpath in try fm.contentsOfDirectory(atPath: lldbSourceDirectory) {
+    let sourcePath = "\(lldbSourceDirectory)/\(subpath)"
+    let targetPath = "\(lldbTargetDirectory)/\(subpath)"
+    
+    if !fm.fileExists(atPath: targetpath) {
+        try fm.copyItem(atPath: sourcePath, toPath: targetPath)
+    }
+}
+
+print("began ls command")
+try doCommand(["ls", lldbTargetDirectory])
+print("ended ls command")
+
 // Install Python packages
 try fm.createDirectory(atPath: "/env/python", withIntermediateDirectories: true)
 
@@ -155,7 +176,7 @@ guard let JKRegisterKernelRef = dlsym(libJupyterKernel, "JKRegisterKernel") else
 
 typealias JKRegisterKernelType = @convention(c) () -> Void
 let JKRegisterKernel = unsafeBitCast(JKRegisterKernelRef, to: JKRegisterKernelType.self)
-JKRegisterKernel()
+// JKRegisterKernel()
 
 // Move include files
 try fm.removeItemIfExists(atPath: "/opt/swift/include")
