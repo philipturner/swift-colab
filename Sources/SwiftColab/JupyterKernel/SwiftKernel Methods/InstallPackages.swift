@@ -39,4 +39,12 @@ func install_packages(_ selfRef: PythonObject,
     
     let scratchwork_base_path = os.path.dirname(swift_module_search_path)
     let package_base_path = os.path.join(scratchwork_base_path, "package")
+    
+    // If the user has specified a custom install location, make a link from
+    // the scratchwork base path to it.
+    if let user_install_location = user_install_location {
+        // symlink to the specified location
+        // Remove existing base if it is already a symlink
+        os.makedirs(user_install_location, exist_ok: true)
+    }
 }
