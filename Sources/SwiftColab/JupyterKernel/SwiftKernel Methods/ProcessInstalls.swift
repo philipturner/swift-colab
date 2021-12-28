@@ -14,20 +14,23 @@ func process_installs(_ selfRef: PythonObject, code: PythonObject) throws -> Pyt
     var all_packages: [PythonObject] = []
     var all_swiftpm_flags: [PythonObject] = []
     var extra_include_commands: [PythonObject] = []
-    var user_install_location = Python.None
+    var user_install_location: PythonObject?
     
     for (index, line) in Python.enumerate(code[dynamicMember: "split"]("\n")) {
         var line = process_system_command_line(selfRef, line: line)
-        var install_location: PythonObject? = nil
-        var swiftpm_flags: PythonObject? = nil
-        var packages: PythonObject? = nil
-        var extra_include_command: PythonObject? = nil
         
-        (line, install_location) = process_install_location_line(selfRef, line: line)
-        (line, swiftpm_flags) = process_install_swiftpm_flags(selfRef, line: line)
-        all_swiftpm_flags += swiftpm_flags!
+        if let install_location = try process_install_location_line(selfRef, line: &line) {
+            user_install_location = install_location
+        }
         
-        (line, packages) = process_install_line
+        all_swiftpm_flags += try process_install_swiftpm_flags(selfRef, line: &line)
+        all_packages += try process_install_line(selfRef, line_index: index, line: &line)
+        
+        if let extra_include_command = try process_extra_include_command_line(selfRef, line: &line) {
+            extra_include_commands.append(extra_include_command)
+        }
+        
+        processed_lines.append(line)
     }
 }
 
