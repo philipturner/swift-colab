@@ -2,6 +2,7 @@ import Foundation
 import PythonKit
 
 fileprivate let os = Python.import("os")
+fileprivate let subprocess = Python.import("subprocess")
 fileprivate let tempfile = Python.import("tempfile")
 
 func install_packages(_ selfRef: PythonObject,
@@ -19,13 +20,13 @@ func install_packages(_ selfRef: PythonObject,
             "first cell execution. Restart the kernel to install packages.")
     }
     
-    guard let swift_build_path = os.environ.get("SWIFT_BUILD_PATH") else {
+    guard let swift_build_path = Optional(os.environ.get("SWIFT_BUILD_PATH")) else {
         throw PackageInstallException(
             "Install Error: Cannot install packages because " +
             "SWIFT_BUILD_PATH is not specified.")
     }
     
-    guard let swift_package_path = os.environ.get("SWIFT_PACKAGE_PATH") else {
+    guard let swift_package_path = Optional(os.environ.get("SWIFT_PACKAGE_PATH")) else {
         throw PackageInstallException(
             "Install Error: Cannot install packages because " +
             "SWIFT_PACKAGE_PATH is not specified.")
