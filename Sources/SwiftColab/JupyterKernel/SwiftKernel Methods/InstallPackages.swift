@@ -129,7 +129,25 @@ func install_packages(_ selfRef: PythonObject, packages: [PythonObject], swiftpm
         }
         
         let package_swift = """
-        
+        // swift-tools-version:4.2
+        import PackageDescription
+        let package = Package(
+            name: "jupyterInstalledPackages",
+            products: [
+                .library(
+                    name: "jupyterInstalledPackages",
+                    type: .dynamic,
+                    targets: ["jupyterInstalledPackages"]),
+            ],
+            dependencies: [\(packages_specs)],
+            targets: [
+                .target(
+                    name: "jupyterInstalledPackages",
+                    dependencies: [\(packages_products)],
+                    path: ".",
+                    sources: ["jupyterInstalledPackages.swift"]),
+            ]
+        )
         """
     }
 }
