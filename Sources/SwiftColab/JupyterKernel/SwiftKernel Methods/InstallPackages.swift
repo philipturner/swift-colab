@@ -191,7 +191,8 @@ func install_packages(_ selfRef: PythonObject, packages: [PythonObject], swiftpm
         os.path.join(bin_dir, "..", "build.db"),
         os.path.join(package_base_path, ".build", "build.db"),
     ]
-    guard let build_db_file = Python.next(Python.filter(os.path.exists, build_db_candidates), Python.None) else {
+    let filtered_db_candidates = Python.filter(os.path.exists, build_db_candidates)
+    guard let build_db_file = Optional(Python.next(filtered_db_candidates, Python.None)) else {
         throw PackageInstallException("build.db is missing")
     }
     
@@ -221,7 +222,7 @@ func install_packages(_ selfRef: PythonObject, packages: [PythonObject], swiftpm
     
     func is_valid_dependency(_ path: PythonObject) -> Bool {
         for p in dependencies_paths {
-            if path.startswith(p) {
+            if Bool(path.startswith(p))! {
                 return true
             }
         }
