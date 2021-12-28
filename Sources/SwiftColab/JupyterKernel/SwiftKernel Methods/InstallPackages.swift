@@ -1,6 +1,7 @@
 import Foundation
 import PythonKit
 
+fileprivate let json = Python.import("json")
 fileprivate let os = Python.import("os")
 fileprivate let shlex = Python.import("shlex")
 fileprivate let subprocess = Python.import("subprocess")
@@ -106,7 +107,8 @@ func install_packages(_ selfRef: PythonObject, packages: [PythonObject], swiftpm
             packages_human_description += "\t\(spec)\n"
             
             for target in package["products"] {
-                packages_products += "\(),\n"
+                packages_products += "\(json.dumps(target)),\n"
+                packages_human_description += "\t\t\(target)\n"
             }
         }
     }
