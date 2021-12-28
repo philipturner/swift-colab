@@ -23,9 +23,9 @@ then
   cd packages
   git clone --single-branch -b master https://github.com/philipturner/PythonKit
   
-  # # Not installing Backtrace because I don't see it helping anything.
-  git clone --single-branch -b main https://github.com/philipturner/swift-backtrace
-  cd ../
+  # Not installing Backtrace because I don't see it helping anything.
+#   git clone --single-branch -b main https://github.com/philipturner/swift-backtrace
+#   cd ../
 fi
 
 # Execute setup script
