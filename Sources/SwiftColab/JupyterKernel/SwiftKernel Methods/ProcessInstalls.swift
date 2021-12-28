@@ -16,7 +16,9 @@ func process_installs(_ selfRef: PythonObject, code: PythonObject) throws -> Pyt
     var extra_include_commands: [PythonObject] = []
     var user_install_location = Python.None
     
-    
+    for (index, line) in Python.enumerate(code[dynamicMember: "split"]("\n")) {
+        
+    }
 }
 
 func call_unlink(link_name: PythonObject) throws {
