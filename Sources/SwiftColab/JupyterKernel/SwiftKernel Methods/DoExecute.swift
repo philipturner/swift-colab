@@ -80,11 +80,9 @@ func do_execute(_ kwargs: PythonObject) throws -> PythonObject {
         ])
         
         return emptyResponse
-    }
-    else if result is SuccessWithoutValue {
+    } else if result is SuccessWithoutValue {
         return emptyResponse
-    }
-    else if let result = result as? ExecutionResultError {
+    } else if let result = result as? ExecutionResultError {
         if !Bool(selfRef.process.is_alive)! {
             selfRef.send_iopub_error_message(selfRef, ["Process killed"])
             
@@ -106,10 +104,19 @@ func do_execute(_ kwargs: PythonObject) throws -> PythonObject {
             // figure out how to suppress), so this block of code only needs
             // to add a traceback.
             let stackTrace = get_pretty_main_thread_stack_trace(selfRef)
-            let traceback = ["Current stack trace"].pythonObject + stackTrace.map {
-                PythonObject("\t\($0)")
-            }
+            let traceback = PythonObject(["Current stack trace:"] + stackTrace.map { "\t\($0)" })
+            
+            try send_iopub_error_message(selfRef, traceback)
+            return make_execute_reply_error_message(selfRef, traceback)
         }
+        
+        // There is no stdout, so it must be a compile error. Simply return
+        // the error without trying to get a stack trace.
+        let array = [result.description].pythonObject
+        try send_iopub_error_message(selfRef, array)
+        return make_execute_reply_error_message(selfRef, array)
+    } else {
+        fatalError("`execute()` produced an unexpected return type.")
     }
 }
 
