@@ -281,5 +281,11 @@ func install_packages(_ selfRef: PythonObject, packages: [PythonObject], swiftpm
                                     """###, modulemap_contents)
         let module_name = (module_match != Python.None) ? module_match[dynamicMember: "group"](1) : Python.str(index)
         let modulemap_dest = os.path.join(swift_module_search_path, "modulemap-\(module_name)")
+        os.makedirs(modulemap_dest, exist_ok: true)
+        
+        let dst_path = os.path.join(modulemap_dest, src_filename)
+        let outfile = Python.open(dst_path, "w", encoding: "utf8")
+        outfile.write(modulemap_contents)
+        outfile.close()
     }
 }
