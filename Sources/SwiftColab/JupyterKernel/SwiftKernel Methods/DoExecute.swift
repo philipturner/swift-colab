@@ -132,3 +132,13 @@ fileprivate func get_pretty_main_thread_stack_trace(_ selfRef: PythonObject) -> 
     
     return stack_trace
 }
+
+fileprivate func make_execute_reply_error_message(_ selfRef: PythonObject, _ traceback: PythonObject) -> PythonObject {
+    [
+        "status": "error",
+        "execution_count": selfRef.execution_count,
+        "ename": "",
+        "evalue": "",
+        "traceback": traceback
+    ]
+}
