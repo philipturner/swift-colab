@@ -92,3 +92,11 @@ fileprivate func read_byte_array(_ selfRef: PythonObject, _ sbvalue: PythonObjec
     
     return data
 }
+
+fileprivate func send_jupyter_messages(_ selfRef: PythonObject, _ messages: PythonObject) throws {
+    let function = selfRef.iopub_socket.send_multipart.throwing
+    try messages["display_message"].forEach(function.dynamicallyCall(withArguments:))
+//     for display_message in messages["display_messages"] {
+//         try function.dynamicallyCall(withArguments
+//     }
+}
