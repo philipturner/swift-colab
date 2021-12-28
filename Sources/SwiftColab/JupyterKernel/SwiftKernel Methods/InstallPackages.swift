@@ -161,4 +161,18 @@ func install_packages(_ selfRef: PythonObject, packages: [PythonObject], swiftpm
 
     // == Ask SwiftPM to build the package ==
     
+    let build_p = subprocess.Popen([swift_build_path] + swiftpm_flags,
+                                   stdout: subprocess.PIPE,
+                                   stderr: subprocess.STDOUT,
+                                   cwd: package_base_path)
+    
+    for build_output_line in Python.iter(build_p.stdout.readline, PythonBytes(Data())) {
+        send_response(String(build_output_line.decode("utf8")))
+    }
+    
+    let build_returncode = build_p.wait()
+    guard build_returncode != 0 else {
+        throw PackageInstallException(
+            "Install Error: swift-build returned nonzero exit code \(build_returncode)")
+    }
 }
