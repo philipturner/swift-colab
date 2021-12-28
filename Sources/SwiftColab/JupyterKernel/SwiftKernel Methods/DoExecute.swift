@@ -44,12 +44,12 @@ fileprivate func after_successful_execution(_ selfRef: PythonObject) throws {
 
 fileprivate func read_jupyter_messages(_ selfRef: PythonObject, _ sbvalue: PythonObject) throws -> PythonObject {
     ["display_messages": try sbvalue.map { 
-        display_message_sbvalue in read_display_message(selfRef, display_message_sbvalue)
+        display_message_sbvalue in try read_display_message(selfRef, display_message_sbvalue)
     }].pythonObject
 }
 
 fileprivate func read_display_message(_ selfRef: PythonObject, _ sbvalue: PythonObject) throws -> PythonObject {
-    try sbvalue.map { part in read_byte_array(selfRef, part) }.pythonObject
+    try sbvalue.map { part in try read_byte_array(selfRef, part) }.pythonObject
 }
 
 fileprivate func read_byte_array(_ selfRef: PythonObject, _ sbvalue: PythonObject) throws -> PythonObject {
