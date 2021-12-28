@@ -63,9 +63,9 @@ try fm.createDirectory(atPath: "/opt/swift/tmp", withIntermediateDirectories: tr
 try fm.createDirectory(atPath: "/opt/swift/lib", withIntermediateDirectories: true)
 try fm.createDirectory(atPath: "/opt/swift/packages", withIntermediateDirectories: true)
 
-// Not installing Backtrace because I don't see it helping anything.
+// // Not installing Backtrace because I don't see it helping anything.
 
-/*
+
 // Install philipturner/swift-backtrace
 try doCommand(["swift", "build"], directory: "/opt/swift/packages/swift-backtrace")
 let backtraceProductsPath = "/opt/swift/packages/swift-backtrace/.build/debug"
@@ -75,7 +75,7 @@ try doCommand(["swiftc", "/opt/swift/swift-colab/Sources/SwiftColab/InstallBackt
                "-Onone"],
                directory: "/opt/swift/tmp")
 try doCommand(["/opt/swift/tmp/InstallBacktrace"])
-*/
+
 
 // Install philipturner/PythonKit
 let pythonKitProductsPath = "/opt/swift/packages/PythonKit/.build/release"
