@@ -18,7 +18,7 @@ func process_installs(_ selfRef: PythonObject, code: PythonObject) throws -> Pyt
     
     let lines = code[dynamicMember: "split"]("\n")
     
-    for index in 0..<lines.count {
+    for index in (0..<lines.count).map(PythonObject.init) {
         var line = lines[index]
         try process_system_command_line(selfRef, &line)
         
