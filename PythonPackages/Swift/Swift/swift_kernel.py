@@ -3,6 +3,7 @@ import Swift
 from wurlitzer import sys_pipes
 from ctypes import *
 
+import os
 import signal
 import sys
 import threading
@@ -57,6 +58,11 @@ class SwiftKernel(Kernel):
             "cursor_pos": cursor_pos,
         })
     
+    def lambda1(src_folder):
+        return lambda m: f"header \"{
+            m.group(1) if os.path.isabs(m.group(1)) else os.path.abspath(os.path.join(src_folder, m.group(1)))
+        }\""
+                        
 
 if __name__ == "__main__":
     # Jupyter sends us SIGINT when the user requests execution interruption.
