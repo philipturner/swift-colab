@@ -33,7 +33,9 @@ fileprivate func after_successful_execution(_ selfRef: PythonObject) throws {
 }
 
 fileprivate func read_jupyter_messages(_ selfRef: PythonObject, _ sbvalue: PythonObject) throws -> PythonObject {
-    
+    ["display_messages": sbvalue.map { 
+        display_message_sbvalue in try read_display_message(selfRef, display_message_sbvalue)
+    }].pythonObject
 }
 
 fileprivate func read_display_message(_ selfRef: PythonObject, _ sbvalue: PythonObject) throws -> PythonObject {
