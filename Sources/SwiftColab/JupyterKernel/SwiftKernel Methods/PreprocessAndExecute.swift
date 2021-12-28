@@ -110,23 +110,14 @@ fileprivate func read_include(_ selfRef: PythonObject, line_index: PythonObject,
     for include_path in include_paths {
         do {
             let path = os.path.join(include_path, name)
-            var f: PythonObject
-            
-            do {
-                f = try Python.open.throwing
+            let f = try Python.open.throwing
                 .dynamicallyCall(withArguments: path, "r")
-            } catch {
-                fatalError("debug checkpoint 0.0.1 --- \(path) --- \(include_path) --- \(String(reflecting: include_paths)) --- \(name) --- \(String(reflecting: error))")
-            }
             
-            do {
-                code = try f.read.throwing.dynamicallyCall(withArguments: [])
-            } catch {
-                fatalError("debug checkpoint 0.0.2")
-            }
+            code = try f.read.throwing.dynamicallyCall(withArguments: [])
             f.close()
         } catch PythonError.exception(let error, let traceback) {
             guard error.__class__ == Python.IOError else {
+                fatalError("This should never happen! \(Python.repr(error)), \(Python.repr(traceback)), \(Python.repr(error.__class__))")
                 throw PythonError.exception(error, traceback: traceback)
             }
         }
