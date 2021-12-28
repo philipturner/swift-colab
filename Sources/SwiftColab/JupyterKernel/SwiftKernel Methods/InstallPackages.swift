@@ -288,4 +288,8 @@ func install_packages(_ selfRef: PythonObject, packages: [PythonObject], swiftpm
         outfile.write(modulemap_contents)
         outfile.close()
     }
+    
+    // == dlopen the shared lib ==
+    send_response("Initializing Swift...\n")
+    init_swift(selfRef)
 }
