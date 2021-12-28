@@ -91,7 +91,7 @@ fileprivate func read_include(_ selfRef: PythonObject, line_index: PythonObject,
     }
     
     guard let name = name_match.checking.group?(1) else {
-        fatalError("debugging checkpoint 2")
+        fatalError("debugging checkpoint #2")
     }
     
     let include_paths = [
