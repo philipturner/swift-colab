@@ -77,7 +77,11 @@ for metadata in packageMetadata {
 var pythonSearchPath = "/usr/local/lib"
 
 do {
+    do {
     let possibleFolders = try fm.contentsOfDirectory(atPath: pythonSearchPath).filter { $0.hasPrefix("python3.") }
+    } catch {
+        fatalError("debug marker 1")
+    }
     let folderNumbers = possibleFolders.map { $0.dropFirst("python3.".count) }
     let pythonVersion = "python3.\(folderNumbers.max()!)"
     pythonSearchPath += "/\(pythonVersion)/distpackages"
@@ -86,14 +90,26 @@ do {
 let lldbSearchPath = pythonSearchPath + "/lldb"
 
 do {
+    do {
     let originalSubpaths = try fm.contentsOfDirectory(atPath: lldbTargetDirectory)
+    } catch {
+        fatalError("debug marker 2")
+    }
+    do {
     let newSubpaths = try fm.contentsOfDirectory(atPath: lldbSearchPath)
+    } catch {
+        fatalError("debug marker 3")
+    }
     
     for missedSubpath in originalSubpaths where !newSubpaths.contains(missedSubpath) {
         let originalPath = "\(lldbTargetDirectory)/\(missedSubpath)"
-        let newPath = "\(lldbTargetDirectory)/\(missedSubpath)"
+        let newPath = "\(lldbSearchPath)/\(missedSubpath)"
         
+        do {
         try fm.copyItem(atPath: originalPath, toPath: newPath)
+        } catch {
+            fatalError("debug marker 4")
+        }
     }
 }
 
