@@ -25,11 +25,12 @@ func do_execute(_ kwargs: PythonObject) throws -> PythonObject {
     // Package installs must be done before initializing Swift (see doc
     // comment in `init_swift`).
     do {
-        code = try process_installs(code)
+        code = try process_installs(selfRef, code: code)
     } catch let e as PackageInstallException {
         let array = [String(describing: e)].pythonObject
-        try send_iopub_error_message(array)
-        return make_execute_reply_error_message(array)
+        
+        try send_iopub_error_message(selfRef, array)
+        return make_execute_reply_error_message(selfRef, array)
     } catch let e {
         try send_exception_report(selfRef, "process_installs", e)
         throw e
@@ -43,7 +44,7 @@ func do_execute(_ kwargs: PythonObject) throws -> PythonObject {
     let stdout_handler = SwiftModule.StdoutHandler(selfRef)
     stdout_handler.start()
     
-    var result: PythonObject
+    var result: Any
     
     // Execute the cell, handle unexpected exceptions, and make sure to
     // always clean up the stdout handler.
