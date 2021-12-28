@@ -128,6 +128,8 @@ func install_packages(_ selfRef: PythonObject, packages: [PythonObject], swiftpm
             send_response("Working in: \(scratcwork_base_path)\n")
         }
         
+        let package_swift = """
         
+        """
     }
 }
