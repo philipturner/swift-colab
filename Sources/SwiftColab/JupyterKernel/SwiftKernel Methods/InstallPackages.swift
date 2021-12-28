@@ -180,4 +180,23 @@ func install_packages(_ selfRef: PythonObject, packages: [PythonObject], swiftpm
                                               stdout: subprocess.PIPE, 
                                               stderr: subproces.PIPE,
                                               cwd: package_base_path)
+    let bin_dir = show_bin_path_result.stdout.decode("utf8").strip()
+    let lib_filename = os.path.join(bin_dir, "libjupyterInstalledPackages.so")
+    
+    // == Copy .swiftmodule and modulemap files to SWIFT_IMPORT_SEARCH_PATH ==
+    
+    // Search for build.db
+    let build_db_candidates = [
+        os.path.join(bin_dir, '..', 'build.db'),
+        os.path.join(package_base_path, '.build', 'build.db'),
+    ]
+    guard let build_db_file = Python.next(Python.filter(os.path.exists, build_db_candidates), Python.None) else {
+        throw PackageInstallException("build.db is missing")
+    }
+    
+    // Execute swift-package show-dependencies to get all dependencies' paths
+    let dependencies_result = subprocess.run([swift_package_path, 'show-dependencies', '--format', 'json'],
+                                             stdout: subprocess.PIPE, 
+                                             stderr: subprocess.PIPE,
+                                             cwd: package_base_path)
 }
