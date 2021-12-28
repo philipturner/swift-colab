@@ -97,7 +97,14 @@ fileprivate func link_extra_includes(_ selfRef: PythonObject, _ swift_module_sea
         let target = os.path.join(include_dir, include_dir)
         
         do {
+            func call(_ function: PythonObject, _ param: PythonObject) throws -> PythonObject {
+                try function.throwing.dynamicallyCall(withArguments: param)
+            }
             
+            let st_mode = try call(os.lstat, link_name)
+            if Bool(try call(stat.S_ISLNK, st_mode))! {
+                call(os.unlink, link_name)
+            }
         } catch PythonError.exception(let error, let traceback) {
             let e = PythonError.exception(error, traceback: traceback)
             
