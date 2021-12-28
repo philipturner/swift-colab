@@ -62,7 +62,12 @@ func install_packages(_ selfRef: PythonObject, packages: [PythonObject], swiftpm
         
         if result.returncode != 0 {
             let returncode = result.returncode
-            let 
+            let stdout = result.stdout.decode("utf8")
+            let stderr = result.stderr.decode("utf8")
+            
+            throw PackageInstallException(
+                "%install-extra-include-command returned nonzero " +
+                "exit code: \(returncode)\nStdout:\n\(stdout)\nStderr:\n\(stderr)\n")
         }
         
         // proceed
