@@ -17,7 +17,17 @@ func process_installs(_ selfRef: PythonObject, code: PythonObject) throws -> Pyt
     var user_install_location = Python.None
     
     for (index, line) in Python.enumerate(code[dynamicMember: "split"]("\n")) {
+        var line = process_system_command_line(selfRef, line: line)
+        var install_location: PythonObject? = nil
+        var swiftpm_flags: PythonObject? = nil
+        var packages: PythonObject? = nil
+        var extra_include_command: PythonObject? = nil
         
+        (line, install_location) = process_install_location_line(selfRef, line: line)
+        (line, swiftpm_flags) = process_install_swiftpm_flags(selfRef, line: line)
+        all_swiftpm_flags += swiftpm_flags!
+        
+        (line, packages) = process_install_line
     }
 }
 
@@ -44,16 +54,18 @@ func call_unlink(link_name: PythonObject) throws {
     }
 }
 
-fileprivate func process_install_location_line(_ selfRef: PythonObject, line_index: PythonObject, line: PythonObject) throws -> PythonObject {
+fileprivate func process_install_location_line(_ selfRef: PythonObject, line_index: PythonObject, line: inout PythonObject) throws -> PythonObject {
     let regexExpression: PythonObject = ###"""
     ^\s*%install-location (.*)$
     """###
     guard var install_location = Optional(re.match(regexExpression, line))?[dynamicMember: "group"](1) else {
-        return .init(tupleOf: line, Python.None)
+        return Python.None
     }
     
     try process_install_substitute(template: &install_location, line_index: line_index)
-    return .init(tupleOf: "", install_location)
+    
+    line = ""
+    return install_location
 }
 
 fileprivate func process_extra_include_command_line(_ selfRef: PythonObject, line: PythonObject) -> PythonObject {
