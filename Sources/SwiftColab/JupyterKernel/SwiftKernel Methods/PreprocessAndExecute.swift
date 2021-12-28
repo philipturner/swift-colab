@@ -56,7 +56,10 @@ fileprivate func preprocess_line(_ selfRef: PythonObject, line_index: PythonObje
     ^\s*%include (.*)$
     """###
     if let include_match = Optional(re.match(regexExpression, line)) {
-        return try read_include(selfRef, line_index: line_index, rest_of_line: include_match.group(1))
+        guard let include_match_group = include_match.checking.group?(1) else {
+            fatalError("debugging checkpoint #1")
+        }
+        return try read_include(selfRef, line_index: line_index, rest_of_line: include_match_group)
     }
     
     regexExpression = ###"""
@@ -82,9 +85,13 @@ fileprivate func read_include(_ selfRef: PythonObject, line_index: PythonObject,
     let regexExpression: PythonObject = ###"""
     ^\s*"([^"]+)"\s*$
     """###
-    guard let name = Optional(re.match(regexExpression, rest_of_line))?.group(1) else {
+    guard let name_match = Optional(re.match(regexExpression, rest_of_line)) else {
         throw PreprocessorException(
             "Line \(line_index + 1): %include must be followed by a name in quotes")
+    }
+    
+    guard let name = name_match.checking.group?(1) else {
+        fatalError("debugging checkpoint 2")
     }
     
     let include_paths = [
