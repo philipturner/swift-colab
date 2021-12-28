@@ -214,7 +214,8 @@ fileprivate func get_pretty_main_thread_stack_trace(_ selfRef: PythonObject) -> 
         // Do not include frames without source location information. These
         // are frames in libraries and frames that belong to the LLDB
         // expression execution implementation.
-        guard let file = Optional(frame.line_entry.file) else {
+        let file = frame.line_entry.file
+        guard file != Python.None else {
             continue
         }
         
