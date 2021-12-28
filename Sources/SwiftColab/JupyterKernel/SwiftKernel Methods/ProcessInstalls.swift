@@ -44,3 +44,15 @@ fileprivate func process_extra_include_command_line(_ selfRef: PythonObject, lin
         return (line, Python.None)
     }
 }
+
+fileprivate func process_install_swiftpm_flags_line(_ selfRef: PythonObject, line: PythonObject) -> PythonObject {
+    let regexExpression: PythonObject = ###"""
+    ^\s*%install-swiftpm-flags (.*)$
+    """###
+    if let flags = Optional(re.match(regexExpression, line))?.group(1) {
+        return ("", flags)
+    } else {
+        return (line, [])
+    }
+}
+
