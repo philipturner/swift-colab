@@ -279,6 +279,7 @@ func install_packages(_ selfRef: PythonObject, packages: [PythonObject], swiftpm
         let module_match = re.match(###"""
                                     module\s+([^\s]+)\s.*{
                                     """###, modulemap_contents)
-        let module_name = (module_match != Python.None) ? os.path.join(swift_module_search_path) : Python.str(index)
+        let module_name = (module_match != Python.None) ? module_match[dynamicMember: "group"](1) : Python.str(index)
+        let modulemap_dest = os.path.join(swift_module_search_path, "modulemap-\(module_name)")
     }
 }
