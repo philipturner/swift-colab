@@ -10,7 +10,16 @@ fileprivate func process_install_location_line(_ selfRef: PythonObject, line: Py
     let regexExpression: PythonObject = ###"""
     ^\s*%install-location (.*)$
     """###
-    guard let install_location = Optional(re.match(regexExpression, line)?.group(1) else {
+    guard var install_location = Optional(re.match(regexExpression, line))?.group(1) else {
         return (line, Python.None)
     }
+    
+    do {
+        let function = Python.string.Template(install_location).substitute.throwing
+        install_location = try function.dynamicallyCall(withArguments: ["cwd": os.getcwd()])
+    } catch PythonError.exception(let error, let traceback) {
+        let e = PythonError.exception(error, traceback: traceback)
+    }
+    
+    return ("", install_location)
 }
