@@ -116,7 +116,7 @@ fileprivate func read_include(_ selfRef: PythonObject, line_index: PythonObject,
             code = try f.read.throwing.dynamicallyCall(withArguments: [])
             f.close()
         } catch PythonError.exception(let error, let traceback) {
-            guard error.__class__ == Python.IOError else {
+            guard Bool(Python.isinstance(error, Python.IOError))! else {
                 fatalError("This should never happen! \(Python.repr(error)), \(Python.repr(traceback)), \(Python.repr(error.__class__))")
                 throw PythonError.exception(error, traceback: traceback)
             }
