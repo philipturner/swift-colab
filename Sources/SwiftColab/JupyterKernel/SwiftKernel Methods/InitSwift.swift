@@ -14,7 +14,11 @@ fileprivate let sys = Python.import("sys")
 func init_swift(_ selfRef: PythonObject) throws {
     try init_repl_process(selfRef)
     try init_kernel_communicator(selfRef)
-    try init_int_bitwidth(selfRef)
+    do {
+        try init_int_bitwidth(selfRef)
+    } catch {
+        fatalError("debug checkpoint 3")
+    }
     init_sigint_handler(selfRef)
     
     // We do completion by default when the toolchain has the SBTarget.CompleteCode API.
@@ -104,8 +108,16 @@ fileprivate func init_repl_process(_ selfRef: PythonObject) throws {
 }
 
 fileprivate func init_kernel_communicator(_ selfRef: PythonObject) throws {
-    if let result = try preprocess_and_execute(selfRef, code:
-        "%include \"KernelCommunicator.swift\"".pythonObject) as? ExecutionResultError {
+    var preresult: PythonObject
+    
+    do {
+        preresult = try preprocess_and_execute(selfRef, code:
+        "%include \"KernelCommunicator.swift\"".pythonObject)
+    } catch {
+        fatalError("debug checkpoint 1")
+    }
+    
+    if let result = preresult as? ExecutionResultError {
         throw Exception("Error initializing KernelCommunicator: \(String(reflecting: result))")
     }
     
@@ -122,7 +134,15 @@ fileprivate func init_kernel_communicator(_ selfRef: PythonObject) throws {
     }
     """)
     
-    if let result = try preprocess_and_execute(selfRef, code: decl_code) as? ExecutionResultError {
+    var result: PythonObject
+    
+    do {
+        result = try preprocess_and_execute(selfRef, code: decl_code)
+    } catch {
+        fatalError("debugging checkpoint 2")
+    }
+    
+    if let result = result as? ExecutionResultError {
         throw Exception("Error declaring JupyterKernel: \(String(reflecting: result))")
     }
 }
