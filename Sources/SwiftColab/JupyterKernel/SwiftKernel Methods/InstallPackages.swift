@@ -131,7 +131,7 @@ func install_packages(_ selfRef: PythonObject, packages: [PythonObject], swiftpm
     try send_response("Working in: \(scratchwork_base_path)\n")
 
     let package_swift = """
-    // swift-tools-version:5.5
+    // swift-tools-version:4.2
     import PackageDescription
     let package = Package(
         name: "jupyterInstalledPackages",
