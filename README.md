@@ -1,6 +1,6 @@
 # Swift-Colab
 
-## How to run Swift on Google Colab
+## How to run Swift on Google Colaboratory
 
 Copy [this template](https://colab.research.google.com/drive/1EACIWrk9IWloUckRm3wu973bKUBXQDKR?usp=sharing) of a Swift Colab notebook. Do not create one directly from Google Drive, as notebooks are configured for Python by default. Copy the following command into the first code cell and run it:
 
@@ -24,20 +24,22 @@ In the output stream, you will see:
 (a brief message about why Google Colab restarted)
 ```
 
-The kernel will crash and automatically reconnect. That's expected, because it refreshes the runtime and lets Swift override the Python kernel. Sometimes, Colab will pause indefinitely while waiting to restart, so you may need to manually restart it.
+The kernel will crash and automatically reconnect. That's expected, because it refreshes the runtime and lets Swift override the Python kernel. Sometimes, Colab pauses indefinitely while waiting to restart, so you may need to manually restart it.
 
-> Tip: If you factory reset the runtime or exceed the time limit, Colab will restart in Python mode. Just re-run the first code cell, and you will return to Swift mode.
+> Tip: If you factory reset the runtime or exceed the time limit, Colab will restart in Python mode. Just re-run the first code cell and to return to Swift mode.
 
-Type the following code into the next code cell:
+## Example of usage
+
+Type the following code into the second code cell:
 
 ```swift
 Int.bitWidth
 ```
 
-For output, it shows:
+After running it, the following output appears:
 
 ```
 64
 ```
 
-At this time, Swift-Colab has only been tested with the line shown above. I am currently changing the package loader to accomodate for recent changes to SwiftPM. For more guidance on how to use Swift on Google Colab, check the [google/swift-jupyter](https://github.com/google/swift-jupyter). I cannot guarantee that side-loading Swift is stable right now, as I have barely tested it.
+At this time, Swift-Colab has only been tested with the line shown above. I am currently changing the package loader to accomodate recent changes to SwiftPM. For more guidance on how to use Swift on Google Colab, check the [google/swift-jupyter](https://github.com/google/swift-jupyter). I cannot guarantee that side-loading Swift is stable right now, as it has not been thoroughly tested.
