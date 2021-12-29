@@ -120,8 +120,10 @@ fileprivate func process_install_line(_ selfRef: PythonObject, _ line_index: Pyt
     
     let parsed = shlex[dynamicMember: "split"](install_match.group(1))
     guard Python.len(parsed) >= 2 else {
-        throw PackageInstallException(
-            "Line: \(line_index + 1): %install usage: SPEC PRODUCT [PRODUCT ...]")
+        throw PackageInstallException("""
+            Line: \(line_index + 1): %install usage: '.package(name: PRODUCT, ...)'
+            
+            """
     }
     
     try process_install_substitute(template: &parsed[0], line_index: line_index)
