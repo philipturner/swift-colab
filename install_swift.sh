@@ -7,6 +7,16 @@ fi
 
 cd /opt/swift
 
+if [[ -e version.txt ]]
+then
+  if [[ $1 -ne `cat version.txt` ]]
+  then
+    echo "not equal"
+  fi
+fi
+
+echo $1 > version.txt
+
 if [[ ! -d toolchain ]]
 then  
   # $1 is the Swift version (e.g. 5.5.2)
