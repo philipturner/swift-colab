@@ -303,9 +303,24 @@ func install_packages(_ selfRef: PythonObject, packages: [PythonObject], swiftpm
     try send_response("Initializing Swift...\n")
     try init_swift(selfRef)
     
-    guard let _ = dlopen(String(lib_filename)!, RTLD_NOW) else {
-        throw PackageInstallException("Install error: dlopen error: \(String(cString: dlerror()))")
+    let dynamic_load_code = """
+    import func Glibc.dlopen
+    import var Glibc.RTLD_NOW
+    dlopen("\(String(lib_filename))", RTLD_NOW)
+    """
+    let dynamic_load_result = execute(selfRef, code: dynamic_load_code)
+    guard let dynamic_load_result = dynamic_load_result as? SuccessWithValue else {
+        throw PackageInstallException("Install error: dlopen crashed: \(dynamic_load_result)")
     }
+    
+    if Bool(dynamic_load_result.value_description().endswith("nil"))! {
+        let error = execute(selfRef, code: "String(cString: dlerror())")
+        throw PackageInstallException("Install error: dlopen returned `nil`: \(error.result.GetValue())")
+    }
+    
+//     guard let _ = dlopen(String(lib_filename)!, RTLD_NOW) else {
+//         throw PackageInstallException("Install error: dlopen error: \(String(cString: dlerror()))")
+//     }
     
     try send_response("Installation complete!\n")
     selfRef.already_installed_packages = true
