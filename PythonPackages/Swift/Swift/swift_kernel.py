@@ -1,13 +1,10 @@
 #!/usr/bin/python3
-import Swift
-from wurlitzer import sys_pipes
-from ctypes import *
-
 import os
 import signal
 import sys
-import threading
 
+import Swift
+from ctypes import *
 from ipykernel.kernelbase import Kernel
 
 class SwiftKernel(Kernel):
@@ -37,8 +34,8 @@ class SwiftKernel(Kernel):
         def extract(input):
             return input
         return extract(lambda m: 'header "%s"' %
-                          (m.group(1) if os.path.isabs(m.group(1)) else os.path.abspath(os.path.join(src_folder, m.group(1))))
-                      )
+            (m.group(1) if os.path.isabs(m.group(1)) else os.path.abspath(os.path.join(src_folder, m.group(1))))
+        )
                         
 
 if __name__ == "__main__":
