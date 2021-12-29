@@ -50,4 +50,4 @@ fi
 git clone --single-branch -b main https://github.com/philipturner/swift-colab
 
 export PATH="/opt/swift/toolchain/usr/bin:$PATH"
-swift swift-colab/install_swift.swift should_reinstall
+swift swift-colab/install_swift.swift $should_reinstall
