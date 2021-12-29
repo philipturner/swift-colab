@@ -122,7 +122,13 @@ fileprivate func process_install_line(_ selfRef: PythonObject, _ line_index: Pyt
     guard install_match != Python.None else { return nil }
     
     let parsed = shlex[dynamicMember: "split"](install_match.group(1))
-    guard Python.len(parsed) == 1 else {
+    
+    func parsedIsValid() -> Bool {
+        let str = String(parsed[0])!
+        return str.range(of: "name:") != nil
+    }
+    
+    guard Python.len(parsed) == 1 && parsedIsValid() else {
         throw PackageInstallException("""
             Line: \(line_index + 1): %install usage: '.package(name: PRODUCT, url: URL, ...)'
                 PRODUCT must specified placed in the 'name' parameter.
