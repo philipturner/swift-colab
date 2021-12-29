@@ -164,10 +164,19 @@ func install_packages(_ selfRef: PythonObject, packages: [PythonObject], swiftpm
     
     // == Ask SwiftPM to build the package ==
     
+    let swiftpm_env = os.environ
+    let libuuid_path = "/lib/x86_64-linux-gnu/libuuid.so.1"
+    swiftpm_env["LD_PRELOAD"] = libuuid_path
+    
+    guard Bool(os.path.isfile(libuuid_path))! else {
+        fatalError("The library \(libuuid_path) was not found!")
+    }
+    
     let build_p = subprocess.Popen([swift_build_path] + swiftpm_flags,
                                    stdout: subprocess.PIPE,
                                    stderr: subprocess.STDOUT,
-                                   cwd: package_base_path)
+                                   cwd: package_base_path,
+                                   env: swiftpm_env)
     
     for build_output_line in Python.iter(build_p.stdout.readline, PythonBytes(Data())) {
         try send_response(String(build_output_line.decode("utf8"))!)
