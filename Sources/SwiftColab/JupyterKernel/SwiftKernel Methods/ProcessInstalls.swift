@@ -5,6 +5,7 @@ fileprivate let os = Python.import("os")
 fileprivate let re = Python.import("re")
 fileprivate let shlex = Python.import("shlex")
 fileprivate let stat = Python.import("stat")
+fileprivate let string = Python.import("string")
 fileprivate let subprocess = Python.import("subprocess")
 
 /// Handles all "%install" directives, and returns `code` with all
@@ -162,7 +163,7 @@ fileprivate func process_system_command_line(_ selfRef: PythonObject, _ line: in
 
 fileprivate func process_install_substitute(template: inout PythonObject, line_index: PythonObject) throws {
     do {
-        let function = Python.string.Template(template).substitute.throwing
+        let function = string.Template(template).substitute.throwing
         template = try function.dynamicallyCall(withArguments: ["cwd": os.getcwd()])
     } catch PythonError.exception(let error, let traceback) {
         let e = PythonError.exception(error, traceback: traceback)
