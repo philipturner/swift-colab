@@ -6,12 +6,14 @@ then
 fi
 
 cd /opt/swift
+should_reinstall="false"
 
 if [[ -e version.txt ]]
 then
   if [[ "$1" != `cat version.txt` ]]
   then
     rm -r toolchain
+    should_reinstall="true"
   fi
 fi
 
@@ -48,4 +50,4 @@ fi
 git clone --single-branch -b main https://github.com/philipturner/swift-colab
 
 export PATH="/opt/swift/toolchain/usr/bin:$PATH"
-swift swift-colab/install_swift.swift
+swift swift-colab/install_swift.swift should_reinstall
