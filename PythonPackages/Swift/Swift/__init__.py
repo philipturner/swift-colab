@@ -74,7 +74,9 @@ class StdoutHandler(threading.Thread):
     def run(self):
         self.swift_delegate.call("run", self)
 
-# From swifts_shell
+        
+        
+# From swift_shell
 
 from ipykernel.zmqshell import ZMQInteractiveShell
 from jupyter_client.session import Session
