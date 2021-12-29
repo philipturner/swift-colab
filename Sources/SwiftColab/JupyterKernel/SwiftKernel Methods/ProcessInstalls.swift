@@ -12,7 +12,7 @@ fileprivate let subprocess = Python.import("subprocess")
 /// "%install" directives removed.
 func process_installs(_ selfRef: PythonObject, code: PythonObject) throws -> PythonObject {
     var processed_lines: [PythonObject] = []
-    var all_packages: [PythonObject] = []
+    var packages: [PythonObject] = []
     var all_swiftpm_flags: [PythonObject] = []
     var extra_include_commands: [PythonObject] = []
     var user_install_location: PythonObject?
@@ -28,7 +28,10 @@ func process_installs(_ selfRef: PythonObject, code: PythonObject) throws -> Pyt
         }
         
         all_swiftpm_flags += process_install_swiftpm_flags_line(selfRef, &line)
-        all_packages += try process_install_line(selfRef, index, &line)
+        
+        if let package = try process_install_line(selfRef, index, &line) {
+            packages.append(package)
+        }
         
         if let extra_include_command = process_extra_include_command_line(selfRef, &line) {
             extra_include_commands.append(extra_include_command)
@@ -38,7 +41,7 @@ func process_installs(_ selfRef: PythonObject, code: PythonObject) throws -> Pyt
     }
     
     try install_packages(selfRef, 
-                         packages: all_packages,
+                         packages: packages,
                          swiftpm_flags: all_swiftpm_flags,
                          extra_include_commands: extra_include_commands,
                          user_install_location: user_install_location)
@@ -112,11 +115,11 @@ fileprivate func process_install_swiftpm_flags_line(_ selfRef: PythonObject, _ l
     return Array(flags_match.group(1))
 }
 
-fileprivate func process_install_line(_ selfRef: PythonObject, _ line_index: PythonObject, _ line: inout PythonObject) throws -> [PythonObject] {
+fileprivate func process_install_line(_ selfRef: PythonObject, _ line_index: PythonObject, _ line: inout PythonObject) throws -> PythonObject? {
     let install_match = re.match(###"""
     ^\s*%install (.*)$
     """###, line)
-    guard install_match != Python.None else { return [] }
+    guard install_match != Python.None else { return nil }
     
     let parsed = shlex[dynamicMember: "split"](install_match.group(1))
     guard Python.len(parsed) == 1 else {
@@ -128,13 +131,11 @@ fileprivate func process_install_line(_ selfRef: PythonObject, _ line_index: Pyt
             """)
     }
     
-    try process_install_substitute(template: &parsed[0], line_index: line_index)
+    var spec = parsed[0]
+    try process_install_substitute(template: &spec, line_index: line_index)
     
     line = ""
-    return [[
-        "spec": parsed[0],
-//         "products": parsed[1...]
-    ]]
+    return spec
 }
 
 fileprivate func process_system_command_line(_ selfRef: PythonObject, _ line: inout PythonObject) throws {
