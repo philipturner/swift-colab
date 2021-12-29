@@ -5,9 +5,9 @@ import Swift
 import sys
 
 from ctypes import *
-from ipykernel.kernelbase import Kernel
+from ipykernel.kernelbase import IPythonKernel
 
-class SwiftKernel(Kernel):
+class SwiftKernel(IPythonKernel):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         Swift.call_compiled_func("/opt/swift/lib/libJupyterKernel.so", "JKCreateKernel", self)
