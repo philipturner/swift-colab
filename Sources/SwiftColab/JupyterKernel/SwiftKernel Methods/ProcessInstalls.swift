@@ -122,9 +122,9 @@ fileprivate func process_install_line(_ selfRef: PythonObject, _ line_index: Pyt
     guard Python.len(parsed) == 1 else {
         throw PackageInstallException("""
             Line: \(line_index + 1): %install usage: '.package(name: PRODUCT, url: URL, ...)'
-                                      PRODUCT must specified placed in the 'name' parameter.
-                                      You gave the following syntax, which is no longer supported:
-                                          '.package(url: URL, ...)' PRODUCT  
+                PRODUCT must specified placed in the 'name' parameter.
+                You gave the following syntax, which is no longer supported:
+                    '.package(url: URL, ...)' PRODUCT  
             """)
     }
     
