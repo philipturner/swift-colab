@@ -2,8 +2,9 @@ import Foundation
 
 print()
 print("=== Swift successfully downloaded ===")
-print(CommandLine.arguments[1])
 defer { print("=== Swift successfully installed ===") }
+
+let shouldReinstall = CommandLine.arguments[1] == "true"
 
 let fm = FileManager.default
 precondition(fm.currentDirectoryPath == "/opt/swift", "Called `install_swift.swift` when the working directory was not `/opt/swift`.")
@@ -46,7 +47,7 @@ try fm.createDirectory(atPath: "/env/python", withIntermediateDirectories: true)
 let packageSourceDirectory = "/opt/swift/swift-colab/PythonPackages"
 let packageMetadata = [
     (name: "Swift", forceReinstall: false),
-    (name: "lldb", forceReinstall: false)
+    (name: "lldb", forceReinstall: shouldReinstall)
 ]
 
 for metadata in packageMetadata {
@@ -114,7 +115,9 @@ let spbProductsPath = "/opt/swift/packages/SwiftPythonBridge"
 let spbLibPath = "/opt/swift/lib/libSwiftPythonBridge.so"
 let spbSourcePath = "/opt/swift/swift-colab/Sources/SwiftColab/SwiftPythonBridge"
 
-// try fm.removeItemIfExists(atPath: spbProductsPath)
+if shouldReinstall {
+    try? fm.removeItem(atPath: spbProductsPath)
+}
 try fm.createDirectory(atPath: spbProductsPath, withIntermediateDirectories: true)
 
 let spbSourceFilePaths = try fm.subpathsOfDirectory(atPath: spbSourcePath).filter {
