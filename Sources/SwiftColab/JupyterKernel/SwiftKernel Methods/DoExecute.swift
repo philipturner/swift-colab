@@ -198,7 +198,11 @@ fileprivate func send_jupyter_messages(_ selfRef: PythonObject, _ messages: Pyth
 }
 
 fileprivate func set_parent_message(_ selfRef: PythonObject) throws {
-    let jsonDumps = json.dumps(json.dumps(squash_dates(selfRef._parent_header)))
+    func encode(_ input: PythonObject) throws -> PythonObject {
+        try json.dumps.throwing.dynamicallyCall(withArguments: input)
+    }
+    
+    let jsonDumps = try encode(try encode(squash_dates(selfRef._parent_header)))
     let result = execute(selfRef, code: PythonObject("""
                          JupyterKernel.communicator.updateParentMessage(
                              to: KernelCommunicator.ParentMessage(json: \(jsonDumps)))
