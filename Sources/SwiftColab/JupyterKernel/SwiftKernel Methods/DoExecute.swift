@@ -14,7 +14,7 @@ func do_execute(_ kwargs: PythonObject) throws -> PythonObject {
     
     // Return early if the code is empty or whitespace, to avoid
     // initializing Swift and preventing package installs.
-    if Python.len(code) == 0 || Bool(code.isspace())! {
+    if Int(Python.len(code))! == 0 || Bool(code.isspace())! {
         return [
             "status": "ok",
             "execution_count": selfRef.execution_count,
