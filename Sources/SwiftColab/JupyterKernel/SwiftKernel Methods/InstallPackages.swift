@@ -303,8 +303,21 @@ func install_packages(_ selfRef: PythonObject, packages: [PythonObject], swiftpm
     try send_response("Initializing Swift...\n")
     try init_swift(selfRef)
     
-    guard let _ = dlopen(String(try encode(lib_filename)), RTLD_NOW) else {
-        throw PackageInstallException("Install error: dlopen error: \(String(cString: dlerror())) --- \(String(bin_dir)!) --- \(try? FileManager.default.contentsOfDirectory(atPath: String(bin_dir)!) ?? []) --- \(try? FileManager.default.subpathsOfDirectory(atPath: String(bin_dir)!) ?? [])")
+    do {
+        let fm = FileManager.default
+        let sourcePath = String(try encode(lib_filename))
+        let targetPath = "/opt/swift/lib/libjupyterInstalledPackages.so"
+        
+        do {
+            try? fm.removeItem(atPath: targetPath)
+            try fm.copyItem(atPath: sourcePath, toPath: targetPath)
+        } catch {
+            fatalError("copy checkpoint: sourcePath=\(sourcePath), targetPath=\(targetPath), error=\(error.localizedDescription)")
+        }
+        
+        guard let _ = dlopen(targetPath), RTLD_NOW) else {
+            throw PackageInstallException("Install error: dlopen error: \(String(cString: dlerror()))")
+        }
     }
     
     try send_response("Installation complete!\n")
