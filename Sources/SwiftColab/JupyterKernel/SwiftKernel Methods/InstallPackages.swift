@@ -129,7 +129,9 @@ func install_packages(
     try send_response("With SwiftPM flags: \(swiftpm_flags)\n")
     try send_response("Working in: \(scratchwork_base_path)\n")
     
-    let swiftVersionData = FileManager.default.contents(atPath: "/opt/swift/version.txt")!
+    // Make the Swift Package Manager compile in a way that matches the installed toolchain
+    
+    let swiftVersionData = FileManager.default.contents(atPath: "/opt/swift/swiftpm-version.txt")!
     let swiftVersionRaw = String(data: swiftVersionData, encoding: .utf8)!
     
     let swiftVersionComponents = swiftVersionRaw.split(separator: ".")
