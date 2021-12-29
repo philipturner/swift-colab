@@ -305,7 +305,7 @@ func install_packages(_ selfRef: PythonObject, packages: [PythonObject], swiftpm
     
     do {
         let fm = FileManager.default
-        let sourcePath = String(try encode(lib_filename))
+        let sourcePath = String(try encode(lib_filename))!
         let targetPath = "/opt/swift/lib/libjupyterInstalledPackages.so"
         
         do {
