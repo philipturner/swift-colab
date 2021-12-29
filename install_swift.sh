@@ -8,9 +8,9 @@ fi
 cd /opt/swift
 should_reinstall="false"
 
-if [[ -e version.txt ]]
+if [[ -e "swiftpm-version.txt" ]]
 then
-  if [[ "$1" != `cat version.txt` ]]
+  if [[ "$1" != `cat "swiftpm-version.txt"` ]]
   then
     rm -r toolchain
     should_reinstall="true"
