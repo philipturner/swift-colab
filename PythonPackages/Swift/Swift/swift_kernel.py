@@ -1,9 +1,9 @@
 #!/usr/bin/python3
 import os
 import signal
+import Swift
 import sys
 
-import Swift
 from ctypes import *
 from ipykernel.kernelbase import Kernel
 
