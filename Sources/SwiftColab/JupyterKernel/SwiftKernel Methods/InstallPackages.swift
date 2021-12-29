@@ -202,7 +202,13 @@ func install_packages(_ selfRef: PythonObject, packages: [PythonObject], swiftpm
                                              stderr: subprocess.PIPE,
                                              cwd: package_base_path)
     let dependencies_json = dependencies_result.stdout.decode("utf8")
-    let dependencies_obj = json.loads(dependencies_json)
+    var dependencies_obj: PythonObject
+    
+    do {
+        dependencies_obj = try json.loads.throwing.dynamicallyCall(withArguments: dependencies_json)
+    } catch {
+        fatalError("JSON decoding error. dependencies_json was \(dependencies_json) and error was \(error.localizedDescription)")
+    }
     
     func flatten_deps_paths(_ dep: PythonObject) -> PythonObject {
         let paths: PythonObject = [dep["path"]]
