@@ -68,7 +68,7 @@ func install_packages(_ selfRef: PythonObject, packages: [PythonObject], swiftpm
         let returncode = result.returncode
         let stdout = result.stdout.decode("utf8")
         
-        if returncode != 0 {
+        if Int(returncode)! != 0 {
             let stderr = result.stderr.decode("utf8")
             
             throw PackageInstallException(
