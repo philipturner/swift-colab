@@ -10,10 +10,6 @@ fileprivate let sqlite3 = Python.import("sqlite3")
 fileprivate let subprocess = Python.import("subprocess")
 fileprivate let tempfile = Python.import("tempfile")
 
-fileprivate func encode(_ input: PythonObject) throws -> PythonObject {
-    try json.dumps.throwing.dynamicallyCall(withArguments: input)
-}
-
 fileprivate func decode(_ input: PythonObject) throws -> PythonObject {
     try json.loads.throwing.dynamicallyCall(withArguments: input)
 }
@@ -305,7 +301,7 @@ func install_packages(_ selfRef: PythonObject, packages: [PythonObject], swiftpm
     
     do {
         let fm = FileManager.default
-        var sourcePath = String(try encode(lib_filename))!
+        var sourcePath = String(lib_filename)!
         let targetPath = "/opt/swift/lib/libjupyterInstalledPackages.so"
         
         do {
