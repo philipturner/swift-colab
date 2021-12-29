@@ -11,9 +11,7 @@ if [[ -e version.txt ]]
 then
   if [[ "$1" != `cat version.txt` ]]
   then
-    echo "not equal"
-  else
-    echo "equal"
+    rm -r toolchain
   fi
 fi
 
