@@ -52,8 +52,8 @@ class SwiftReturnValue:
 # Interrupts currently-executing code whenever the process receives a SIGINT.
 class SIGINTHandler(threading.Thread):
     def __init__(self, kernel):
-        self.daemon = True
         super().__init__()
+        self.daemon = True
         self.kernel = kernel
 
     def run(self):
@@ -67,7 +67,6 @@ class SIGINTHandler(threading.Thread):
 # Collects stdout from the Swift process and sends it to the client.
 class StdoutHandler(threading.Thread):
     def __init__(self, kernel):
-        self.daemon = True
         super().__init__()
         Swift.call_compiled_func("/opt/swift/lib/libJupyterKernel.so", "JKCreateStdoutHandler", [self, kernel])
     
