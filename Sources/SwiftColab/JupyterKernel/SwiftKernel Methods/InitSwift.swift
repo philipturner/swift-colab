@@ -157,6 +157,6 @@ fileprivate func init_int_bitwidth(_ selfRef: PythonObject) throws {
 }
 
 fileprivate func init_sigint_handler(_ selfRef: PythonObject) {
-    selfRef.sigint_handler = SwiftModule.SIGINTHandler(selfRef)
+    selfRef.sigint_handler = SwiftModule.swift_kernel.SIGINTHandler(selfRef)
     selfRef.sigint_handler.start()
 }
