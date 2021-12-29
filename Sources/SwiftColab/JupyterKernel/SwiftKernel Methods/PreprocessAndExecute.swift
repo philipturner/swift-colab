@@ -59,7 +59,7 @@ fileprivate func preprocess_line(_ selfRef: PythonObject, line_index: PythonObje
         do {
             return try read_include(selfRef, line_index: line_index, rest_of_line: include_match.group(1))
         } catch {
-            fatalError("debug checkpoint 0.1")
+            fatalError("debug checkpoint 2.1 (preprocess_line - include_match)")
         }
     }
     
@@ -70,7 +70,7 @@ fileprivate func preprocess_line(_ selfRef: PythonObject, line_index: PythonObje
         do {
             try handle_disable_completion(selfRef)
         } catch {
-            fatalError("debug checkpoint 0.2")
+            fatalError("debug checkpoint 2.2 (preprocess_line - disable_completion)")
         }
         return ""
     }
@@ -82,7 +82,7 @@ fileprivate func preprocess_line(_ selfRef: PythonObject, line_index: PythonObje
         do {
             try handle_enable_completion(selfRef)
         } catch {
-            fatalError("debug checkpoint 0.3")
+            fatalError("debug checkpoint 2.3 (preprocess_line - enable_completion)")
         }
         return ""
     }
