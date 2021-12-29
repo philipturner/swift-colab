@@ -315,12 +315,8 @@ func install_packages(_ selfRef: PythonObject, packages: [PythonObject], swiftpm
     
     if Bool(dynamic_load_result.value_description().endswith("nil"))! {
         let error = execute(selfRef, code: "String(cString: dlerror())")
-        throw PackageInstallException("Install error: dlopen returned `nil`: \(String(describing: error))")
+        throw PackageInstallException("Install error: dlopen returned `nil`: \(String(reflecting: error))")
     }
-    
-//     guard let _ = dlopen(String(lib_filename)!, RTLD_NOW) else {
-//         throw PackageInstallException("Install error: dlopen error: \(String(cString: dlerror()))")
-//     }
     
     try send_response("Installation complete!\n")
     selfRef.already_installed_packages = true
