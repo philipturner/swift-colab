@@ -10,6 +10,10 @@ fileprivate let sqlite3 = Python.import("sqlite3")
 fileprivate let subprocess = Python.import("subprocess")
 fileprivate let tempfile = Python.import("tempfile")
 
+fileprivate func encode(_ input: PythonObject) throws -> PythonObject {
+    try json.dumps.throwing.dynamicallyCall(withArguments: input)
+}
+
 fileprivate func decode(_ input: PythonObject) throws -> PythonObject {
     try json.loads.throwing.dynamicallyCall(withArguments: input)
 }
