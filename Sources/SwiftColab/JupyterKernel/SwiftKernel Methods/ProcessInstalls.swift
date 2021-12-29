@@ -129,7 +129,7 @@ fileprivate func process_install_line(_ selfRef: PythonObject, _ line_index: Pyt
     line = ""
     return [[
         "spec": parsed[0],
-        "products": parsed[1...]
+//         "products": parsed[1...]
     ]]
 }
 
