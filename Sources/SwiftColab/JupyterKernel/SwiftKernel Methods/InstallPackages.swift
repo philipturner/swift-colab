@@ -130,7 +130,7 @@ func install_packages(
     try send_response("Working in: \(scratchwork_base_path)\n")
     
     let swiftVersionData = FileManager.default.contents(atPath: "/opt/swift/version.txt")!
-    let swiftVersionRaw = String(data: swiftVersionData, encoding: .utf8)
+    let swiftVersionRaw = String(data: swiftVersionData, encoding: .utf8)!
     
     let swiftVersionComponents = swiftVersionRaw.split(separator: ".")
     let swiftVersionShort = swiftVersionComponents[0] + "." + swiftVersionComponents[1]
