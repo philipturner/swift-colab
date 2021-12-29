@@ -56,22 +56,14 @@ fileprivate func preprocess_line(_ selfRef: PythonObject, line_index: PythonObje
     ^\s*%include (.*)$
     """###, line)
     if include_match != Python.None {
-        do {
-            return try read_include(selfRef, line_index: line_index, rest_of_line: include_match.group(1))
-        } catch {
-            fatalError("debug checkpoint 2.1 (preprocess_line - include_match)")
-        }
+        return try read_include(selfRef, line_index: line_index, rest_of_line: include_match.group(1))
     }
     
     let disable_completion_match = re.match(###"""
     ^\s*%disableCompletion\s*$
     """###, line)
     if disable_completion_match != Python.None {
-        do {
-            try handle_disable_completion(selfRef)
-        } catch {
-            fatalError("debug checkpoint 2.2 (preprocess_line - disable_completion)")
-        }
+        try handle_disable_completion(selfRef)
         return ""
     }
     
@@ -79,11 +71,7 @@ fileprivate func preprocess_line(_ selfRef: PythonObject, line_index: PythonObje
     ^\s*%enableCompletion\s*$
     """###, line)
     if enable_completion_match != Python.None {
-        do {
-            try handle_enable_completion(selfRef)
-        } catch {
-            fatalError("debug checkpoint 2.3 (preprocess_line - enable_completion)")
-        }
+        try handle_enable_completion(selfRef)
         return ""
     }
     
@@ -110,8 +98,7 @@ fileprivate func read_include(_ selfRef: PythonObject, line_index: PythonObject,
     for include_path in include_paths {
         do {
             let path = os.path.join(include_path, name)
-            let f = try Python.open.throwing
-                .dynamicallyCall(withArguments: path, "r")
+            let f = try Python.open.throwing.dynamicallyCall(withArguments: path, "r")
             
             code = try f.read.throwing.dynamicallyCall(withArguments: [])
             f.close()
