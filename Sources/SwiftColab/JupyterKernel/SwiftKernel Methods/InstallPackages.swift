@@ -304,7 +304,7 @@ func install_packages(_ selfRef: PythonObject, packages: [PythonObject], swiftpm
     try init_swift(selfRef)
     
     guard let _ = dlopen(String(try encode(lib_filename)), RTLD_NOW) else {
-        throw PackageInstallException("Install error: dlopen error: \(String(cString: dlerror()))")
+        throw PackageInstallException("Install error: dlopen error: \(String(cString: dlerror())) --- \(Filemanager.default.contentsOfDirectory(atPath: String(bin_dir)!)) --- \(Filemanager.default.subpathsOfDirectory(atPath: String(bin_dir)!))")
     }
     
     try send_response("Installation complete!\n")
