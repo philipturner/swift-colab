@@ -132,7 +132,7 @@ fileprivate func read_include(_ selfRef: PythonObject, line_index: PythonObject,
     return PythonObject("\n").join([
         "#sourceLocation(file: \"\(name)\", line: 1)".pythonObject,
         code,
-        "#sourceLocation(file: \"\(secondName)\", line: \(line_index + 1)".pythonObject,
+        "#sourceLocation(file: \"\(secondName)\", line: \(line_index + 1))".pythonObject,
         ""
     ])
 }
