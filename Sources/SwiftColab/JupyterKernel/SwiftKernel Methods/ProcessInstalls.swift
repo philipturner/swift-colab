@@ -139,11 +139,6 @@ fileprivate func process_system_command_line(_ selfRef: PythonObject, _ line: in
     """###, line)
     guard system_match != Python.None else { return }
     
-//     if selfRef.checking.debugger != nil {
-//         throw PackageInstallException(
-//             "System commands can only run in the first cell.")
-//     }
-    
     let rest_of_line = system_match.group(1) 
     let process = subprocess.Popen(rest_of_line,
                                    stdout: subprocess.PIPE,
