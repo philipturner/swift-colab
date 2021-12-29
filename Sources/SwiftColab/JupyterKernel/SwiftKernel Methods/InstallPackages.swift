@@ -315,7 +315,7 @@ func install_packages(_ selfRef: PythonObject, packages: [PythonObject], swiftpm
             fatalError("copy checkpoint: sourcePath=\(sourcePath), targetPath=\(targetPath), error=\(error.localizedDescription)")
         }
         
-        guard let _ = dlopen(targetPath), RTLD_NOW) else {
+        guard let _ = dlopen(targetPath, RTLD_NOW) else {
             throw PackageInstallException("Install error: dlopen error: \(String(cString: dlerror()))")
         }
     }
