@@ -101,10 +101,10 @@ try doCommand(["/opt/swift/tmp/InstallBacktrace"])
 */
 
 // Install philipturner/PythonKit
-let pythonKitProductsPath = "/opt/swift/packages/PythonKit/.build/release"
+let pythonKitProductsPath = "/opt/swift/packages/PythonKit/.build/debug"
 let pythonKitLibPath = "/opt/swift/lib/libPythonKit.so"
 
-try doCommand(["swift", "build", "-c", "release", "-Xswiftc", "-Onone"],
+try doCommand(["swift", "build", /* "-c", "release", */ "-Xswiftc", "-Onone"],
               directory: "/opt/swift/packages/PythonKit")
 
 try? fm.removeItem(atPath: pythonKitLibPath)
@@ -126,7 +126,7 @@ let spbSourceFilePaths = try fm.subpathsOfDirectory(atPath: spbSourcePath).filte
     "\(spbSourcePath)/\($0)"
 }
 
-try doCommand(["swiftc", "-Onone"] + spbSourceFilePaths + [
+try doCommand(["swiftc", "-DDEBUG"] + spbSourceFilePaths + [
                "-L", pythonKitProductsPath, "-lPythonKit",
                "-I", pythonKitProductsPath,
                "-emit-module", "-emit-library",
@@ -152,7 +152,7 @@ let jupyterSourceFilePaths = try fm.subpathsOfDirectory(atPath: jupyterSourcePat
     "\(jupyterSourcePath)/\($0)"
 }
 
-try doCommand(["swiftc", "-Onone"] + jupyterSourceFilePaths + [
+try doCommand(["swiftc", "-DDEBUG"] + jupyterSourceFilePaths + [
                "-L", pythonKitProductsPath, "-lPythonKit",
                "-I", pythonKitProductsPath,
                "-L", spbProductsPath, "-lSwiftPythonBridge",
