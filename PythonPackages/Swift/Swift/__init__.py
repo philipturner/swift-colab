@@ -1,5 +1,6 @@
 import IPython
 import os
+import signal
 import threading
 
 from ctypes import *
