@@ -5,7 +5,7 @@ import Swift
 import sys
 
 from ctypes import *
-from ipykernel.ipykernel import IPythonKernel as Kernel
+from ipykernel.ipkernel import IPythonKernel as Kernel
 
 class SwiftKernel(Kernel):
     def __init__(self, **kwargs):
