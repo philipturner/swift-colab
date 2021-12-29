@@ -12,14 +12,10 @@ fileprivate let sys = Python.import("sys")
 /// This must happen after package installation, because the ClangImporter
 /// does not see modulemap files that appear after it has started.
 func init_swift(_ selfRef: PythonObject) throws {
-    do {
-        try init_repl_process(selfRef)
-        try init_kernel_communicator(selfRef)
-        try init_int_bitwidth(selfRef)
-        init_sigint_handler(selfRef)
-    } catch {
-        fatalError("debug checkpoint 1 (init_swift)")
-    }
+    try init_repl_process(selfRef)
+    try init_kernel_communicator(selfRef)
+    try init_int_bitwidth(selfRef)
+    init_sigint_handler(selfRef)
     
     // We do completion by default when the toolchain has the SBTarget.CompleteCode API.
     // The user can disable/enable using "%disableCompletion" and "%enableCompletion".
@@ -113,10 +109,14 @@ fileprivate func init_kernel_communicator(_ selfRef: PythonObject) throws {
         throw Exception("Error initializing KernelCommunicator: \(String(reflecting: result))")
     }
     
+    func encode(_ input: PythonObject) throws -> PythonObject {
+        try json.dumps.throwing.dynamicallyCall(withArguments: input)
+    }
+    
     let session = selfRef.session
-    let id = json.dumps(session.session)
-    let key = json.dumps(session.key.decode("utf8"))
-    let username = json.dumps(session.username)
+    let id = try encode(session.session)
+    let key = try encode(session.key.decode("utf8"))
+    let username = try encode(session.username)
     
     let decl_code = PythonObject("""
     enum JupyterKernel {
