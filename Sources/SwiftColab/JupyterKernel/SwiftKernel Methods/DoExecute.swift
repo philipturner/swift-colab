@@ -28,7 +28,7 @@ func do_execute(_ kwargs: PythonObject) throws -> PythonObject {
     do {
         code = try process_installs(selfRef, code: code)
     } catch let e as PackageInstallException {
-        let array = [String(describing: e)].pythonObject
+        let array = [e.localizedDescription].pythonObject
         
         try send_iopub_error_message(selfRef, array)
         return make_execute_reply_error_message(selfRef, array)
