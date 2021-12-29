@@ -46,3 +46,28 @@ class SwiftReturnValue:
             assert(isinstance(self.__error, SwiftError), "A SwiftReturnValue's error was not a SwiftError object.")
             raise self.__error
         return self.__wrapped
+
+# Interrupts currently-executing code whenever the process receives a SIGINT.
+class SIGINTHandler(threading.Thread):
+    def __init__(self, kernel):
+        self.daemon = True
+        super().__init__()
+        self.kernel = kernel
+
+    def run(self):
+        try:
+            while True:
+                signal.sigwait([signal.SIGINT])
+                self.kernel.process.SendAsyncInterrupt()
+        except Exception as e:
+            self.kernel.log.error(f"Exception in SIGINTHandler: {str(e)}")
+
+# Collects stdout from the Swift process and sends it to the client.
+class StdoutHandler(threading.Thread):
+    def __init__(self, kernel):
+        self.daemon = True
+        super().__init__()
+        Swift.call_compiled_func("/opt/swift/lib/libJupyterKernel.so", "JKCreateStdoutHandler", [self, kernel])
+    
+    def run(self):
+        self.swift_delegate.call("run", self)
