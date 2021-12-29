@@ -114,4 +114,4 @@ def create_shell(username, session_id, key):
     shell = SwiftShell.instance()
     shell.display_pub.session = session
     shell.display_pub.pub_socket = socket
-    return (socket, shell)
+    return [socket, shell]
