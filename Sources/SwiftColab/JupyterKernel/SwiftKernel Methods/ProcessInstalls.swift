@@ -168,12 +168,14 @@ fileprivate func process_install_substitute(template: inout PythonObject, line_i
     } catch PythonError.exception(let error, let traceback) {
         let e = PythonError.exception(error, traceback: traceback)
         
-        if Python.isinstance(error, Python.KeyError) {
+        if Bool(Python.isinstance(error, Python.KeyError))! {
             throw PackageInstallException(
                 "Line \(line_index + 1): Invalid template argument \(e)")
-        } else if Python.isinstance(error, Python.ValueError) {
+            
+        } else if Bool(Python.isinstance(error, Python.ValueError))! {
             throw PackageInstallException(
                 "Line \(line_index + 1): \(e)")
+            
         } else {
             throw e
         }
