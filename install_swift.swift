@@ -2,7 +2,7 @@ import Foundation
 
 print()
 print("=== Swift successfully downloaded ===")
-print(CommandLine.arguments[2])
+print(CommandLine.arguments[1])
 defer { print("=== Swift successfully installed ===") }
 
 let fm = FileManager.default
