@@ -103,8 +103,13 @@ func install_packages(_ selfRef: PythonObject, packages: [PythonObject], swiftpm
         packages_human_description += "\t\(spec)\n"
 
         for target in package["products"] {
-            packages_products += "\(json.dumps(target)),\n"
-            packages_human_description += "\t\t\(target)\n"
+            do {
+                let dumps = try json.dumps.throwing.dynamicallyCall(withArguments: target)
+                packages_products += "\(dumps),\n"
+                packages_human_description += "\t\t\(target)\n"
+            } catch {
+                fatalError("JSON decoding error. target was \(target) and error was \(error.localizedDescription)")
+            }
         }
     }
 
@@ -186,7 +191,8 @@ func install_packages(_ selfRef: PythonObject, packages: [PythonObject], swiftpm
         os.path.join(package_base_path, ".build", "build.db"),
     ]
     let filtered_db_candidates = Python.filter(os.path.exists, build_db_candidates)
-    guard let build_db_file = Optional(Python.next(filtered_db_candidates, Python.None)) else {
+    let build_db_file = Python.next(filtered_db_candidates, Python.None)
+    guard build_db_file != Python.None else {
         throw PackageInstallException("build.db is missing")
     }
     
