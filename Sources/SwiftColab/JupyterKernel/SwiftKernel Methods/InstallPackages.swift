@@ -129,11 +129,14 @@ func install_packages(
     try send_response("With SwiftPM flags: \(swiftpm_flags)\n")
     try send_response("Working in: \(scratchwork_base_path)\n")
     
-//     let swiftVersionData = FileManager.default.contents(atPath: "/opt/swift/version.txt")!
-//     let swiftVersion = String(data: swiftVersionData, encoding: .utf8)
+    let swiftVersionData = FileManager.default.contents(atPath: "/opt/swift/version.txt")!
+    let swiftVersionRaw = String(data: swiftVersionData, encoding: .utf8)
+    
+    let swiftVersionComponents = swiftVersionRaw.split(separator: ".")
+    let swiftVersionShort = swiftVersionComponents[0] + "." + swiftVersionComponents[1]
 
     let package_swift = """
-    // swift-tools-version:5.5.2
+    // swift-tools-version:\(swiftVersionShort)
     import PackageDescription
     
     let deps: [Package.Dependency] = [\(packages_specs)]
