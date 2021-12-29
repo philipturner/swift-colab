@@ -68,7 +68,7 @@ class SIGINTHandler(threading.Thread):
 class StdoutHandler(threading.Thread):
     def __init__(self, kernel):
         super().__init__()
-        Swift.call_compiled_func("/opt/swift/lib/libJupyterKernel.so", "JKCreateStdoutHandler", [self, kernel])
+        call_compiled_func("/opt/swift/lib/libJupyterKernel.so", "JKCreateStdoutHandler", [self, kernel])
     
     def run(self):
         self.swift_delegate.call("run", self)
