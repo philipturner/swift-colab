@@ -74,13 +74,10 @@ class StdoutHandler(threading.Thread):
     def run(self):
         self.swift_delegate.call("run", self)
 
-        
-        
 # From swift_shell
 
 from ipykernel.zmqshell import ZMQInteractiveShell
 from jupyter_client.session import Session
-
 
 class CapturingSocket:
     """Simulates a ZMQ socket, saving messages instead of sending them.
@@ -106,7 +103,6 @@ class SwiftShell(ZMQInteractiveShell):
         """
         pass
 
-    
 def create_shell(username, session_id, key):
     """Instantiates a CapturingSocket and SwiftShell and hooks them up.
     
