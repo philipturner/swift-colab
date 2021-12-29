@@ -15,10 +15,10 @@ func install_packages(_ selfRef: PythonObject, packages: [PythonObject], swiftpm
         return
     }
     
-    if selfRef.checking.debugger != Python.None {
+    if selfRef.checking.debugger != nil {
         throw PackageInstallException(
             "Install Error: Packages can only be installed during the " +
-            "first cell execution. Restart the kernel to install packages.")
+            "first cell execution (debugger: \(selfRef.checking.debugger)). Restart the kernel to install packages.")
     }
     
     let swift_toolchain = "/opt/swift/toolchain"
