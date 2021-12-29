@@ -174,7 +174,7 @@ func install_packages(_ selfRef: PythonObject, packages: [PythonObject], swiftpm
     }
     
     let build_returncode = build_p.wait()
-    guard build_returncode != 0 else {
+    guard Int(build_returncode)! != 0 else {
         throw PackageInstallException(
             "Install Error: swift-build returned nonzero exit code \(build_returncode)")
     }
