@@ -63,9 +63,8 @@ extension IPythonDisplay {
     }
 
     hasRealBytesType = Bool(Python.isinstance(PythonObject("t").encode("utf8")[0], Python.int))!
-
-    let swift_shell = Python.import("swift_shell")
-    let socketAndShell = swift_shell.create_shell(
+    
+    let socketAndShell = Python.import("Swift").create_shell(
       username: JupyterKernel.communicator.jupyterSession.username,
       session_id: JupyterKernel.communicator.jupyterSession.id,
       key: PythonObject(JupyterKernel.communicator.jupyterSession.key).encode("utf8"))
