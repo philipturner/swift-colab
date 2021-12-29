@@ -1,7 +1,9 @@
-from ctypes import *
-from wurlitzer import sys_pipes
 import IPython
 import os
+import threading
+
+from ctypes import *
+from wurlitzer import sys_pipes
 
 def precondition(ignored_argument):
     os.remove("/content/install_swift.sh")
