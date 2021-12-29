@@ -139,6 +139,9 @@ func install_packages(
     let package_swift = """
     // swift-tools-version:5.5
     import PackageDescription
+    
+    let deps: [Package.Dependency] = [\(packages_specs)]
+    
     let package = Package(
         name: "jupyterInstalledPackages",
         products: [
@@ -147,11 +150,11 @@ func install_packages(
                 type: .dynamic,
                 targets: ["jupyterInstalledPackages"]),
         ],
-        dependencies: [\(packages_specs)],
+        dependencies: deps,
         targets: [
             .target(
                 name: "jupyterInstalledPackages",
-                dependencies: [\(packages_products)],
+                dependencies: deps.map { .byName(name: $0.name!) },
                 path: ".",
                 sources: ["jupyterInstalledPackages.swift"]),
         ]
