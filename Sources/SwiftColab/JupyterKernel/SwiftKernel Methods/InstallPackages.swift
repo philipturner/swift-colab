@@ -286,6 +286,12 @@ func install_packages(_ selfRef: PythonObject, packages: [PythonObject], swiftpm
     try send_response("Initializing Swift...\n")
     try init_swift(selfRef)
     
+    do {
+         _ = try json.dumps.throwing.dynamicallyCall(withArguments: lib_filename) 
+    } catch {
+        fatalError("JSON decoding failed. lib_filename was \(lib_filename) and error was \(error.localizedDescription))")
+    }
+    
     guard let _ = dlopen(String(json.dumps(lib_filename)), RTLD_NOW) else {
         throw PackageInstallException("Install error: dlopen error: \(String(cString: dlerror()))")
     }
