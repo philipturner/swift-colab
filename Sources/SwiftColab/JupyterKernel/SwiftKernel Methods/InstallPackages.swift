@@ -315,7 +315,15 @@ func install_packages(_ selfRef: PythonObject, packages: [PythonObject], swiftpm
     
     if Bool(dynamic_load_result.value_description().endswith("nil"))! {
         let error = execute(selfRef, code: "String(cString: dlerror())")
-        throw PackageInstallException("Install error: dlopen returned `nil`: \(String(reflecting: error))")
+        var message: PythonObject
+        
+        if let error = error as? SuccessWithValue {
+            message = error.result.GetValue()
+        } else {
+            message = PythonObject(String(reflecting: error))
+        }
+        
+        throw PackageInstallException("Install error: dlopen returned `nil`: \(message)")
     }
     
     try send_response("Installation complete!\n")
