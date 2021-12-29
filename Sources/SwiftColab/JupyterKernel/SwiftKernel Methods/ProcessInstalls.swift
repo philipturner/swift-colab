@@ -124,7 +124,7 @@ fileprivate func process_install_line(_ selfRef: PythonObject, _ line_index: Pyt
             Line: \(line_index + 1): %install usage: '.package(name: PRODUCT, url: URL, ...)'
                 PRODUCT must specified placed in the 'name' parameter.
                 You gave the following syntax, which is no longer supported:
-                    '.package(url: URL, ...)' PRODUCT  
+                    %install '.package(url: URL, ...)' PRODUCT  
             """)
     }
     
