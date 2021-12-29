@@ -17,7 +17,7 @@ then
   fi
 fi
 
-echo $1 > version.txt
+echo $1 > "swiftpm-version.txt"
 
 if [[ ! -d toolchain ]]
 then  
