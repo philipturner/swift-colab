@@ -10,6 +10,14 @@ fileprivate let sqlite3 = Python.import("sqlite3")
 fileprivate let subprocess = Python.import("subprocess")
 fileprivate let tempfile = Python.import("tempfile")
 
+fileprivate func encode(_ input: PythonObject) throws -> PythonObject {
+    try json.dumps.throwing.dynamicallyCall(withArguments: input)
+}
+
+fileprivate func decode(_ input: PythonObject) throws -> PythonObject {
+    try json.loads.throwing.dynamicallyCall(withArguments: input)
+}
+
 func install_packages(_ selfRef: PythonObject, packages: [PythonObject], swiftpm_flags: [PythonObject], extra_include_commands: [PythonObject], user_install_location: PythonObject?) throws {
     if packages.count == 0 && swiftpm_flags.count == 0 {
         return
@@ -103,13 +111,8 @@ func install_packages(_ selfRef: PythonObject, packages: [PythonObject], swiftpm
         packages_human_description += "\t\(spec)\n"
 
         for target in package["products"] {
-            do {
-                let dumps = try json.dumps.throwing.dynamicallyCall(withArguments: target)
-                packages_products += "\(dumps),\n"
-                packages_human_description += "\t\t\(target)\n"
-            } catch {
-                fatalError("JSON decoding error. target was \(target) and error was \(error.localizedDescription)")
-            }
+            packages_products += "\(try encode(target)),\n"
+            packages_human_description += "\t\t\(target)\n"
         }
     }
 
@@ -186,12 +189,11 @@ func install_packages(_ selfRef: PythonObject, packages: [PythonObject], swiftpm
     // == Copy .swiftmodule and modulemap files to SWIFT_IMPORT_SEARCH_PATH ==
     
     // Search for build.db
-    let build_db_candidates = [
+    let db_candidates = Python.filter(os.path.exists, [
         os.path.join(bin_dir, "..", "build.db"),
         os.path.join(package_base_path, ".build", "build.db"),
-    ]
-    let filtered_db_candidates = Python.filter(os.path.exists, build_db_candidates)
-    let build_db_file = Python.next(filtered_db_candidates, Python.None)
+    ])
+    let build_db_file = Python.next(db_candidates, Python.None)
     guard build_db_file != Python.None else {
         throw PackageInstallException("build.db is missing")
     }
@@ -202,13 +204,7 @@ func install_packages(_ selfRef: PythonObject, packages: [PythonObject], swiftpm
                                              stderr: subprocess.PIPE,
                                              cwd: package_base_path)
     let dependencies_json = dependencies_result.stdout.decode("utf8")
-    var dependencies_obj: PythonObject
-    
-    do {
-        dependencies_obj = try json.loads.throwing.dynamicallyCall(withArguments: dependencies_json)
-    } catch {
-        fatalError("JSON decoding error. dependencies_json was \(dependencies_json) and error was \(error.localizedDescription)")
-    }
+    let dependencies_obj = try decode(dependencies_json)
     
     func flatten_deps_paths(_ dep: PythonObject) -> PythonObject {
         let paths: PythonObject = [dep["path"]]
@@ -298,13 +294,7 @@ func install_packages(_ selfRef: PythonObject, packages: [PythonObject], swiftpm
     try send_response("Initializing Swift...\n")
     try init_swift(selfRef)
     
-    do {
-         _ = try json.dumps.throwing.dynamicallyCall(withArguments: lib_filename) 
-    } catch {
-        fatalError("JSON decoding failed. lib_filename was \(lib_filename) and error was \(error.localizedDescription))")
-    }
-    
-    guard let _ = dlopen(String(json.dumps(lib_filename)), RTLD_NOW) else {
+    guard let _ = dlopen(String(try encode(lib_filename)), RTLD_NOW) else {
         throw PackageInstallException("Install error: dlopen error: \(String(cString: dlerror()))")
     }
     
