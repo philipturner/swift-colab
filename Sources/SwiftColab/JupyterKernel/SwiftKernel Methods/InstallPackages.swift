@@ -18,7 +18,13 @@ fileprivate func decode(_ input: PythonObject) throws -> PythonObject {
     try json.loads.throwing.dynamicallyCall(withArguments: input)
 }
 
-func install_packages(_ selfRef: PythonObject, packages: [PythonObject], swiftpm_flags: [PythonObject], extra_include_commands: [PythonObject], user_install_location: PythonObject?) throws {
+func install_packages(
+    _ selfRef: PythonObject, 
+    packages: [PythonObject], 
+    swiftpm_flags: [PythonObject], 
+    extra_include_commands: [PythonObject], 
+    user_install_location: PythonObject?
+) throws {
     if packages.count == 0 && swiftpm_flags.count == 0 {
         return
     }
