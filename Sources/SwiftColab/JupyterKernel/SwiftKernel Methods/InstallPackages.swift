@@ -305,14 +305,14 @@ func install_packages(_ selfRef: PythonObject, packages: [PythonObject], swiftpm
     
     do {
         let fm = FileManager.default
-        let sourcePath = String(try encode(lib_filename))!
+        var sourcePath = String(try encode(lib_filename))!
         let targetPath = "/opt/swift/lib/libjupyterInstalledPackages.so"
         
         do {
             try? fm.removeItem(atPath: targetPath)
             try fm.copyItem(atPath: sourcePath, toPath: targetPath)
         } catch {
-            fatalError("copy checkpoint: sourcePath=\(sourcePath), targetPath=\(targetPath), error=\(error.localizedDescription)")
+            fatalError("copy checkpoint 2: lib_filename=\(lib_filename) sourcePath=\(sourcePath), targetPath=\(targetPath), error=\(error.localizedDescription)")
         }
         
         guard let _ = dlopen(targetPath, RTLD_NOW) else {
