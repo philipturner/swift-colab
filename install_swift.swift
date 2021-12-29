@@ -46,7 +46,7 @@ try fm.createDirectory(atPath: "/env/python", withIntermediateDirectories: true)
 
 let packageSourceDirectory = "/opt/swift/swift-colab/PythonPackages"
 let packageMetadata = [
-    (name: "Swift", forceReinstall: false),
+    (name: "Swift", forceReinstall: true), // change back to false once Swift Python module is stable
     (name: "lldb", forceReinstall: shouldReinstall)
 ]
 
