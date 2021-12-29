@@ -9,7 +9,7 @@ cd /opt/swift
 
 if [[ -e version.txt ]]
 then
-  if [[ "$1" -ne `cat version.txt` ]]
+  if [[ "$1" = `cat version.txt` ]]
   then
     echo "not equal"
   fi
