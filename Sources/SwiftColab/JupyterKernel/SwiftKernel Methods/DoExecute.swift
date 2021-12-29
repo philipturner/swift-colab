@@ -177,7 +177,7 @@ fileprivate func read_byte_array(_ selfRef: PythonObject, _ sbvalue: PythonObjec
     
     // ReadMemory requires that count is positive, so early-return an empty
     // byte array when count is 0.
-    if count == 0 {
+    if Int(count)! == 0 {
         return Python.bytes()
     }
     
