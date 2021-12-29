@@ -12,6 +12,7 @@ public func JKCreateStdoutHandler(_ argsRef: OwnedPyObjectPointer) -> OwnedPyObj
     
     let args = PythonObject(argsRef)
     let (handler, kernel) = (args[0], args[1])
+    handler.daemon = true
     handler.kernel = kernel
     handler.stop_event = threading.Event()
     handler.had_stdout = false
