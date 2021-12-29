@@ -165,7 +165,7 @@ func install_packages(_ selfRef: PythonObject, packages: [PythonObject], swiftpm
     // == Ask SwiftPM to build the package ==
     
     let swiftpm_env = os.environ
-    let libuuid_path = "/lib/x86_64-linux-gnu/libuuid.so.1"
+    let libuuid_path: PythonObject = "/lib/x86_64-linux-gnu/libuuid.so.1"
     swiftpm_env["LD_PRELOAD"] = libuuid_path
     
     guard Bool(os.path.isfile(libuuid_path))! else {
