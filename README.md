@@ -26,6 +26,8 @@ In the output stream, you will see:
 
 The kernel will crash and automatically reconnect. That's expected, because it refreshes the runtime and lets Swift override the Python kernel. Sometimes, Colab pauses indefinitely while waiting to restart, so you may need to manually restart it.
 
+> Note: I am planning to remove the part where Colab automatically crashes because it's unreliable and sometimes removes the ability to browse files. Furthermore, the unnecessary crashing it not very professional :-)
+
 > Tip: If you factory reset the runtime or exceed the time limit, Colab will restart in Python mode. Just re-run the first code cell and to return to Swift mode.
 
 ## Example of usage
