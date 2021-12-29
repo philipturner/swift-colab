@@ -225,7 +225,7 @@ fileprivate func get_pretty_main_thread_stack_trace(_ selfRef: PythonObject) -> 
         
         // Do not include <compiler-generated> frames. These are
         // specializations of library functions.
-        guard file.fullpath != "<compiler-generated>" else {
+        guard String(file.fullpath)! != "<compiler-generated>" else {
             continue
         }
         
