@@ -85,7 +85,14 @@ fileprivate func init_repl_process(_ selfRef: PythonObject) throws {
         environment["SOURCEKIT_LOGGING"] = "3"
         environment["SOURCEKIT_TOOLCHAIN_PATH"] = "/opt/swift/toolchain"
         
+        let lsp = Process()
+        process.executableURL = .init(fileURLWithPath: "/opt/swift/toolchain/usr/bin/sourcekit-lsp")
+        process.arguments = []
         
+        try lsp.run()
+        let filePath = Python.open("/content/install_swift.sh", "w")
+        filePath.write(String(describing: lsp.processIdentifier))
+        filePath.close()
     }
     
     let process = target.LaunchSimple(["-w", "-n", "sourcekit-lsp"], PythonObject(repl_env), os.getcwd())
