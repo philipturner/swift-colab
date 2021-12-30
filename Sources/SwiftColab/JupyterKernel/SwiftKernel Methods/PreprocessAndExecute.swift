@@ -8,8 +8,13 @@ fileprivate let sys = Python.import("sys")
 
 func preprocess_and_execute(_ selfRef: PythonObject, code: PythonObject) throws -> Any {
     do {
-        let preprocessed = try preprocess(selfRef, code: code)
-        return execute(selfRef, code: preprocessed)
+        let (includes, other) = try preprocess(selfRef, code: code)
+        
+        if let includes = includes {
+            _ = execute(selfRef, code: includes)
+        }
+        
+        return execute(selfRef, code: other)
     } catch let e as PreprocessorException {
         return PreprocessorError(exception: e)
     }
