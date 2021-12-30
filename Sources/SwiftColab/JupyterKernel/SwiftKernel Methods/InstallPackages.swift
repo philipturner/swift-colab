@@ -171,12 +171,12 @@ func install_packages(
     // == Ask SwiftPM to build the package ==
     
     let swiftpm_env = os.environ
-    let libuuid_path: PythonObject = "/lib/x86_64-linux-gnu/libuuid.so.1"
-    swiftpm_env["LD_PRELOAD"] = libuuid_path
+//     let libuuid_path: PythonObject = "/lib/x86_64-linux-gnu/libuuid.so.1"
+//     swiftpm_env["LD_PRELOAD"] = libuuid_path
     
-    guard Bool(os.path.isfile(libuuid_path))! else {
-        fatalError("The library \(libuuid_path) was not found!")
-    }
+//     guard Bool(os.path.isfile(libuuid_path))! else {
+//         fatalError("The library \(libuuid_path) was not found!")
+//     }
     
     let build_p = subprocess.Popen([swift_build_path] + swiftpm_flags,
                                    stdout: subprocess.PIPE,
