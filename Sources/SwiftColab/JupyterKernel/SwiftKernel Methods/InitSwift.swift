@@ -102,7 +102,7 @@ fileprivate func init_repl_process(_ selfRef: PythonObject) throws {
     }
     do {
         let error = lldb.SBError()
-        target.AttachToProcessWithID(processID, error)// else {
+        target.AttachToProcessWithID(Python.None, processID, error)// else {
 //             let stderror = process.GetSTDERR()
 //             fatalError("debug checkpoint number 1: \(stderror)")
 //         }
