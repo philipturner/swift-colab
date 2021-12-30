@@ -6,10 +6,6 @@ import threading
 from ctypes import *
 from wurlitzer import sys_pipes
 
-def precondition(ignored_argument):
-    os.remove("/content/install_swift.sh")
-    IPython.Application.instance().kernel.do_shutdown(True)
-
 def run(swift_string):
     with sys_pipes():
         call_compiled_func("/opt/swift/lib/libSwiftPythonBridge.so", "runSwiftAsString", swift_string)
