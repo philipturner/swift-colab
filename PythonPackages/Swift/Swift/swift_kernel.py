@@ -30,7 +30,7 @@ class SwiftKernel(Kernel):
             "cursor_pos": cursor_pos,
         })
     
-    def lambda1(src_folder):
+    def lambda1(self, src_folder):
         def extract(input):
             return input
         return extract(lambda m: 'header "%s"' %
