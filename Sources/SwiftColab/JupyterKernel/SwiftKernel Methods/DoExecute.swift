@@ -70,11 +70,14 @@ func do_execute(_ kwargs: PythonObject) throws -> PythonObject {
     
     // Send values/errors and status to the client.
     if let result = result as? SuccessWithValue {
+        let object = result.result.GetValue()
+        let string = (object == Python.None) ? "" : String(describing: object)
+        
         try selfRef.send_response.throwing
             .dynamicallyCall(withArguments: selfRef.iopub_socket, "execute_result", [
             "execution_count": selfRef.execution_count,
             "data": [
-                "text/plain": String(describing: result.result.GetValue()).pythonObject
+                "text/plain": PythonObject(string)
             ],
             "metadata": [:]
         ])
