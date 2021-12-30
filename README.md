@@ -43,8 +43,12 @@ For more guidance on how to use Swift on Google Colab, check out [google/swift-j
 
 ## Installing packages
 
-To install packages, go to Runtime > Restart runtime. Then, run this cell before any others. You may import additional packages, but there are a good way to start off:
+To use Python interop or automatic differentiation, you must explicitly import their packages in first cell executed in Swift mode. Also, you cannot include `EnableJupyterDisplay.swift` (include `EnableIPythonDisplay.swift` instead). This differss from [google/swift-jupyter](https://github.com/google/swift-jupyter):
 
 ```swift
-
+%install '.package(url: "https://github.com/pvieito/PythonKit.git", .branch("master"))' PythonKit
+%install '.package(url: "https://github.com/philipturner/differentiation", .branch("main"))' _Differentiation
+%include "EnableIPythonDisplay.swift"
+import PythonKit
+import Differentiation
 ```
