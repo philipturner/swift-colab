@@ -101,7 +101,7 @@ fileprivate func read_include(_ selfRef: PythonObject, line_index: PythonObject,
     
     for include_path in include_paths {
         do {
-            let path = String(os.path.join(include_path, name))
+            let path = String(os.path.join(include_path, name))!
             if previouslyReadPaths.contains(path) { continue }
             
             let f = try Python.open.throwing.dynamicallyCall(withArguments: path, "r")
