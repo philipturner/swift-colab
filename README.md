@@ -40,3 +40,11 @@ After running it, the following output appears:
 ```
 
 For more guidance on how to use Swift on Google Colab, check out [google/swift-jupyter](https://github.com/google/swift-jupyter). Swift-Colab is still unstable, so you may experience unexpected bugs or crashes for the time being.
+
+## Installing packages
+
+To install packages, go to Runtime > Restart runtime. Then, run this cell before any others. You may import additional packages, but there are a good way to start off:
+
+```swift
+
+```
