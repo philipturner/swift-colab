@@ -92,8 +92,8 @@ fileprivate func read_include(_ selfRef: PythonObject, line_index: PythonObject,
     let name = name_match.group(1)
     
     let include_paths = [
-        PythonObject("/opt/swift/include")
-        os.path.realpath("."),
+        PythonObject("/opt/swift/include"),
+        os.path.realpath(".")
     ]
     
     var code = Python.None
@@ -121,7 +121,7 @@ fileprivate func read_include(_ selfRef: PythonObject, line_index: PythonObject,
             "Line \(line_index + 1): Could not find \"\(name)\". Searched \(include_paths).")
     }
     
-    previouslyReadPaths.append(path)
+    previouslyReadPaths.append(chosenPath)
     let secondName = file_name_for_source_location(selfRef)
     
     return PythonObject("\n").join([
