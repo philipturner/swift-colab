@@ -40,6 +40,7 @@ func process_installs(_ selfRef: PythonObject, code: PythonObject) throws -> Pyt
         processed_lines.append(line)
     }
     
+    #if false
     if !installedBasicPackages {
         processed_lines += [
             "import PythonKit",
@@ -63,6 +64,7 @@ func process_installs(_ selfRef: PythonObject, code: PythonObject) throws -> Pyt
         try installDependency(name: "PythonKit", command: commands[0])
         try installDependency(name: "_Differentiation", command: commands[1])
     }
+    #endif
     
     try install_packages(selfRef, 
                          packages: packages,
