@@ -24,6 +24,7 @@ class SwiftKernel(Kernel):
         })
     
     def do_complete(self, code, cursor_pos):
+        raise Exception("Never called")
         return self.swift_delegate.call("do_complete", {
             "self": self,
             "code": code,
