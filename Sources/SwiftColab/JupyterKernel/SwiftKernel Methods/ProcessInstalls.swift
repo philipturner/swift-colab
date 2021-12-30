@@ -41,7 +41,7 @@ func process_installs(_ selfRef: PythonObject, code: PythonObject) throws -> Pyt
     }
     
     if !installedBasicPackages {
-        preprocessed_lines.append([
+        preprocessed_lines += [
             "import PythonKit",
             "import Differentiation"
         ]
