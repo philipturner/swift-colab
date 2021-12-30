@@ -108,11 +108,17 @@ func install_packages(
     // == Create the SwiftPM package ==
     
     var packages_specs = ""
+    var packages_products = ""
     var packages_human_description = ""
 
     for package in packages {
-        packages_specs += "\(package),\n"
-        packages_human_description += "\t\(package)\n"
+        packages_specs += "\(package["spec"]),\n"
+        packages_human_description += "\t\(package["spec"])\n"
+        
+        for target in package["products"] {
+            packages_products += "\(try encode(target)),\n"
+            packages_human_description += "\t\t\(target)\n"
+        }
     }
 
     let iopub_socket = selfRef.iopub_socket
