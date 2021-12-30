@@ -104,3 +104,5 @@ You can also test some tutorial notebooks on [tensorflow/swift](https://github.c
 | [Protocol-Oriented Programming & Generics](https://colab.research.google.com/github/tensorflow/swift/blob/main/docs/site/tutorials/protocol_oriented_generics.ipynb) | ✅ | Swift 5.5.2 (December 2021) |
 | [Python Interoperablity](https://colab.research.google.com/github/tensorflow/swift/blob/main/docs/site/tutorials/python_interoperability.ipynb) | ❌ (skipping TensorFlow cells) | Swift 5.5.2 (December 2021) |
 | [Custom Differentiation](https://colab.research.google.com/github/tensorflow/swift/blob/main/docs/site/tutorials/custom_differentiation.ipynb) | ❌ (skipping TensorFlow cells) | Swift 5.5.2 (December 2021) |
+
+Python Interoperability and Sharp Edges in Differentiability can be made to pass with minor tweaks.
