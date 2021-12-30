@@ -12,7 +12,7 @@ fileprivate let subprocess = Python.import("subprocess")
 /// "%install" directives removed.
 func process_installs(_ selfRef: PythonObject, code: PythonObject) throws -> PythonObject {
     var processed_lines: [PythonObject] = []
-    var packages: [PythonObject] = []
+    var all_packages: [PythonObject] = []
     var all_swiftpm_flags: [PythonObject] = []
     var extra_include_commands: [PythonObject] = []
     var user_install_location: PythonObject?
@@ -28,10 +28,7 @@ func process_installs(_ selfRef: PythonObject, code: PythonObject) throws -> Pyt
         }
         
         all_swiftpm_flags += process_install_swiftpm_flags_line(selfRef, &line)
-        
-        if let package = try process_install_line(selfRef, index, &line) {
-            packages.append(package)
-        }
+        all_packages += try process_install_line(selfRef, index, &line)
         
         if let extra_include_command = process_extra_include_command_line(selfRef, &line) {
             extra_include_commands.append(extra_include_command)
@@ -115,33 +112,25 @@ fileprivate func process_install_swiftpm_flags_line(_ selfRef: PythonObject, _ l
     return Array(flags_match.group(1))
 }
 
-fileprivate func process_install_line(_ selfRef: PythonObject, _ line_index: PythonObject, _ line: inout PythonObject) throws -> PythonObject? {
+fileprivate func process_install_line(_ selfRef: PythonObject, _ line_index: PythonObject, _ line: inout PythonObject) throws -> [PythonObject] {
     let install_match = re.match(###"""
     ^\s*%install (.*)$
     """###, line)
-    guard install_match != Python.None else { return nil }
+    guard install_match != Python.None else { return [] }
     
     let parsed = shlex[dynamicMember: "split"](install_match.group(1))
-    
-    func parsedIsValid() -> Bool {
-        let str = String(parsed[0])!
-        return str.range(of: "name:") != nil
+    guard Python.len(parsed) >= 2 else {
+        throw PackageInstallException(
+            "Line: \(line_index + 1): %install usage: SPEC PRODUCT [PRODUCT ...]")
     }
     
-    guard Python.len(parsed) == 1 && parsedIsValid() else {
-        throw PackageInstallException("""
-            Line: \(line_index + 1): %install usage: '.package(name: PRODUCT, url: URL, ...)'
-                PRODUCT must specified placed in the 'name' parameter.
-                You gave the following syntax, which is no longer supported:
-                    %install '.package(url: URL, ...)' PRODUCT  
-            """)
-    }
-    
-    var spec = parsed[0]
-    try process_install_substitute(template: &spec, line_index: line_index)
+    try process_install_substitute(template: &parsed[0], line_index: line_index)
     
     line = ""
-    return spec
+    return [[
+        "spec": parsed[0],
+        "products": parsed[1...]
+    ]]
 }
 
 fileprivate func process_system_command_line(_ selfRef: PythonObject, _ line: inout PythonObject) throws {
