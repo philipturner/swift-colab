@@ -88,7 +88,7 @@ And add these statements to the bottom of the code cell that imports PythonKit a
 
 To test Swift-Colab against recent Swift toolchains and ensure support is never dropped from Colab again, you can run the following tests. These Colab notebooks originated from Python [unit tests](https://github.com/google/swift-jupyter/tree/main/test/tests) in google/swift-jupyter:
 
-| Test | Passing/Failing | Last Tested |
+| Test | Passing | Last Tested |
 | ---- | --------------- | ----------- |
 | [kernel_tests](https://colab.research.google.com/drive/1vooU1XVHSpolOSmVUKM4Wj6opEJBt7zs?usp=sharing) | ✅ | Swift 5.5.2 (December 2021) |
 | [own_kernel_tests](https://colab.research.google.com/drive/1nHitEZm9QZNheM-ALajARyRZY2xpZr00?usp=sharing) | ✅ | Swift 5.5.2 (December 2021) |
@@ -98,7 +98,7 @@ You can also test some tutorial notebooks on [tensorflow/swift](https://github.c
 
 <!-- Emoji shortcuts for reference: ✅ ❌ -->
 
-| Tutorial | Passing/Failing | Last Tested |
+| Tutorial | Passing | Last Tested |
 | -------- | --------------- | ----------- |
 | [A Swift Tour](https://colab.research.google.com/github/tensorflow/swift/blob/main/docs/site/tutorials/a_swift_tour.ipynb) | ✅ | Swift 5.5.2 (December 2021) |
 | [Protocol-Oriented Programming & Generics](https://colab.research.google.com/github/tensorflow/swift/blob/main/docs/site/tutorials/protocol_oriented_generics.ipynb) | ✅ | Swift 5.5.2 (December 2021) |
