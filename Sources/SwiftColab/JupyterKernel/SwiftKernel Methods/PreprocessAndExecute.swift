@@ -11,7 +11,8 @@ func preprocess_and_execute(_ selfRef: PythonObject, code: PythonObject) throws 
         let (includes, other) = try preprocess(selfRef, code: code)
         
         if let includes = includes {
-            _ = execute(selfRef, code: includes)
+            let returnVal = execute(selfRef, code: includes)
+            if returnVal is SwiftError { return returnVal } 
         }
         
         return execute(selfRef, code: other)
@@ -42,7 +43,7 @@ fileprivate func file_name_for_source_location(_ selfRef: PythonObject) -> Strin
     "<Cell \(selfRef.execution_count)>"
 }
 
-typealias PreprocessReturn = (PythonObject?, PythonObject)
+fileprivate typealias PreprocessReturn = (PythonObject?, PythonObject)
 
 fileprivate func preprocess(_ selfRef: PythonObject, code: PythonObject) throws -> PreprocessReturn {
     let lines = Array(code[dynamicMember: "split"]("\n"))
