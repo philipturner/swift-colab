@@ -98,4 +98,4 @@ You can also test some tutorial notebooks on [tensorflow/swift](https://github.c
 
 | Tutorial | Passing/Failing | Last Tested |
 | -------- | --------------- | ----------- |
-| A Swift Tour | ??? | December 2021 |
+| [A Swift Tour](https://colab.research.google.com/github/tensorflow/swift/blob/main/docs/site/tutorials/a_swift_tour.ipynb) | ??? | December 2021 |
