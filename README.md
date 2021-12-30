@@ -39,7 +39,7 @@ After running it, the following output appears:
 64
 ```
 
-For more guidance on how to use Swift on Google Colab, check out [google/swift-jupyter](https://github.com/google/swift-jupyter). Swift-Colab is still unstable, so you may experience unexpected bugs or crashes for the time being.
+For more guidance on how to use Swift on Google Colab, check out [Usage Instructions](https://github.com/google/swift-jupyter#usage-instructions) on [google/swift-jupyter](https://github.com/google/swift-jupyter). Swift-Colab is still unstable, so you may experience unexpected bugs or crashes for the time being. There are some modifications you must make to how you use Swift on Google Colab, which are explained below:
 
 ## Installing packages
 
