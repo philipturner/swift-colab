@@ -39,4 +39,4 @@ After running it, the following output appears:
 64
 ```
 
-At this time, Swift-Colab has only been tested with the line shown above. I am currently changing the package loader to accomodate recent changes to SwiftPM. For more guidance on how to use Swift on Google Colab, check the [google/swift-jupyter](https://github.com/google/swift-jupyter). I cannot guarantee that side-loading Swift is stable right now, as it has not been thoroughly tested.
+For more guidance on how to use Swift on Google Colab, check out [google/swift-jupyter](https://github.com/google/swift-jupyter). Swift-Colab is still unstable, so you may experience unexpected bugs or crashes for the time being.
