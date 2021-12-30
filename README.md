@@ -6,7 +6,7 @@ Copy [this template](https://colab.research.google.com/drive/1EACIWrk9IWloUckRm3
 
 ```swift
 !curl "https://raw.githubusercontent.com/philipturner/swift-colab/pre-release/0.2/install_swift.sh" --output "install_swift.sh" && bash "install_swift.sh" "5.5.2" #// Replace 5.5.2 with newest Swift version
-// After this command finishes, go to Runtime > Restart runtime.
+#// After this command finishes, go to Runtime > Restart runtime.
 ```
 
 > Warning: The main branch frequently changes and may break Colab support. The above command pulls from the [`pre-release/0.2`](https://github.com/philipturner/swift-colab/tree/pre-release/0.2) branch.
@@ -21,7 +21,7 @@ In the output stream, you will see:
 === Swift successfully installed ===
 ```
 
-You will be instructed to restart the runtime, in order to overwrite the Python kernel with the Swift kernel.
+You will be instructed to restart the runtime. This is necessary because it shuts down the Python kernel and starts up the Swift kernel.
 
 > Tip: If you factory reset the runtime or exceed the time limit, Colab will restart in Python mode. Just re-run the first code cell and to return to Swift mode.
 
