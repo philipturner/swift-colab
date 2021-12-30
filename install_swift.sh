@@ -24,10 +24,8 @@ then
   # $1 is the Swift version (e.g. 5.5.2)
   echo "=== Downloading Swift ==="
   tar_file="swift-$1-RELEASE-ubuntu18.04"
-#   tar_file="swift-DEVELOPMENT-SNAPSHOT-2021-12-23-a-ubuntu18.04"
   
   curl "https://download.swift.org/swift-$1-release/ubuntu1804/swift-$1-RELEASE/${tar_file}.tar.gz" | tar -xz
-#   curl "https://download.swift.org/development/ubuntu1804/swift-DEVELOPMENT-SNAPSHOT-2021-12-23-a/${tar_file}.tar.gz" | tar -xz
   mv "${tar_file}" toolchain
   
   apt install patchelf
@@ -37,7 +35,7 @@ then
   then
     mkdir packages
     cd packages
-    git clone --single-branch -b master https://github.com/philipturner/PythonKit
+    git clone --single-branch -b pre-release/0.3 https://github.com/philipturner/PythonKit
     cd ../
   fi
 fi
@@ -49,7 +47,7 @@ then
   rm -r swift-colab
 fi
 
-git clone --single-branch -b main https://github.com/philipturner/swift-colab
+git clone --single-branch -b pre-release/0.3 https://github.com/philipturner/swift-colab
 
 export PATH="/opt/swift/toolchain/usr/bin:$PATH"
 swift swift-colab/install_swift.swift $should_reinstall

@@ -8,9 +8,6 @@ fileprivate let stat = Python.import("stat")
 fileprivate let string = Python.import("string")
 fileprivate let subprocess = Python.import("subprocess")
 
-fileprivate var installedBasicPackages = false
-fileprivate var importedBasicPackages = false
-
 /// Handles all "%install" directives, and returns `code` with all
 /// "%install" directives removed.
 func process_installs(_ selfRef: PythonObject, code: PythonObject) throws -> PythonObject {
@@ -40,39 +37,11 @@ func process_installs(_ selfRef: PythonObject, code: PythonObject) throws -> Pyt
         processed_lines.append(line)
     }
     
-    #if false
-    if !installedBasicPackages {
-        processed_lines += [
-            "import PythonKit",
-            "import Differentiation"
-        ]
-        
-        func installDependency(name: PythonObject, command: PythonObject) throws {
-            if !packages.contains(where: { $0["products"].contains(name) }) {
-                var line = command
-                packages += try process_install_line(selfRef, -1000, &line)
-            }
-        }
-        
-        let commands: [PythonObject] = [###"""
-            %install '.package(url: "https://github.com/pvieito/PythonKit.git", .branch("master"))' PythonKit
-            """###, ###"""
-            %install '.package(url: "https://github.com/philipturner/differentiation", .branch("main"))' _Differentiation
-            """###,
-        ]
-        
-        try installDependency(name: "PythonKit", command: commands[0])
-        try installDependency(name: "_Differentiation", command: commands[1])
-    }
-    #endif
-    
     try install_packages(selfRef, 
                          packages: packages,
                          swiftpm_flags: swiftpm_flags,
                          extra_include_commands: extra_include_commands,
                          user_install_location: user_install_location)
-    
-    installedBasicPackages = true
     
     return PythonObject("\n").join(processed_lines)
 }
