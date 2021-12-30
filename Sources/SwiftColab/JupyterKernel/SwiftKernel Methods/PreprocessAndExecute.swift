@@ -37,7 +37,9 @@ fileprivate func file_name_for_source_location(_ selfRef: PythonObject) -> Strin
     "<Cell \(selfRef.execution_count)>"
 }
 
-fileprivate func preprocess(_ selfRef: PythonObject, code: PythonObject) throws -> PythonObject {
+typealias PreprocessReturn = (PythonObject?, PythonObject)
+
+fileprivate func preprocess(_ selfRef: PythonObject, code: PythonObject) throws -> PreprocessReturn {
     let lines = Array(code[dynamicMember: "split"]("\n"))
     var preprocessed_includes: [PythonObject] = []
     var preprocessed_other: [PythonObject] = []
@@ -60,7 +62,12 @@ fileprivate func preprocess(_ selfRef: PythonObject, code: PythonObject) throws 
 //         return try preprocess_line(selfRef, line_index: PythonObject(i), line: line)
 //     }
     
-    return PythonObject("\n").join(preprocessed_lines)
+    let includes_output = preprocessed_includes.count > 0 ? PythonObject("\n").join(preprocessed_includes) : nil
+    let other_output = PythonObject("\n").join(preprocessed_other)
+    
+    return (includes_output, other_output)
+    
+//     return PythonObject("\n").join(preprocessed_lines)
 }
 
 // Goal: swap the role of system commands and %include commands.
