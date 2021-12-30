@@ -78,6 +78,13 @@ extension PythonObject {
   }
 }
 
+func display(base64EncodedPNG: String) {
+  let displayImage = Python.import("IPython.display")
+  let codecs = Python.import("codecs")
+  let imageData = codecs.decode(Python.bytes(base64EncodedPNG, encoding: "utf8"), encoding: "base64")
+  displayImage.Image(data: imageData, format: "png").display()
+}
+
 #if canImport(SwiftPlot)
 let __cannot_include_both_ipython_display_and_jupyter_display_if_imported_SwiftPlot__restart_session_to_fix = true
 
