@@ -123,17 +123,16 @@ enum JupyterDisplay {
         }
     }
 
-    struct MessageContent<Data>: Encodable where Data: Encodable {
+    struct MessageContent<T: Encodable>: Encodable {
         let metadata = "{}"
         let transient = "{}"
-        let data: Data
+        let data: T
         var json: String {
             let encoder = JSONEncoder()
             encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
             encoder.keyEncodingStrategy = .convertToSnakeCase
             guard let jsonData = try? encoder.encode(self) else { return "{}" }
-            var jsonString = String(data: jsonData, encoding: .utf8)!
-            return jsonString
+            return String(data: jsonData, encoding: .utf8)!
         }
     }
 
