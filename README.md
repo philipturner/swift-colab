@@ -88,11 +88,11 @@ And add these statements to the bottom of the code cell that imports PythonKit a
 
 To test Swift-Colab against recent Swift toolchains and ensure support is never dropped from Colab again, you can run the following tests. These Colab notebooks originated from Python [unit tests](https://github.com/google/swift-jupyter/tree/main/test/tests) in google/swift-jupyter:
 
-| Test | Last Tested |
-| ---- | ----------- |
-| [kernel_tests](https://colab.research.google.com/drive/1vooU1XVHSpolOSmVUKM4Wj6opEJBt7zs?usp=sharing) | December 2021 |
-| [own_kernel_tests](https://colab.research.google.com/drive/1nHitEZm9QZNheM-ALajARyRZY2xpZr00?usp=sharing) | December 2021 |
-| [simple_notebook_tests](https://colab.research.google.com/drive/18316eFVMw-NIlA9OandB7djvp0J4jI0-?usp=sharing) | December 2021 |
+| Test | Passing/Failing | Last Tested |
+| ---- | --------------- | ----------- |
+| [kernel_tests](https://colab.research.google.com/drive/1vooU1XVHSpolOSmVUKM4Wj6opEJBt7zs?usp=sharing) | ✅ | Swift 5.5.2 (December 2021) |
+| [own_kernel_tests](https://colab.research.google.com/drive/1nHitEZm9QZNheM-ALajARyRZY2xpZr00?usp=sharing) | ✅ | Swift 5.5.2 (December 2021) |
+| [simple_notebook_tests](https://colab.research.google.com/drive/18316eFVMw-NIlA9OandB7djvp0J4jI0-?usp=sharing) | ✅ | Swift 5.5.2 (December 2021) |
 
 You can also test some tutorial notebooks on [tensorflow/swift](https://github.com/tensorflow/swift) that don't import TensorFlow. Paste the contents of [Swift-Template](https://colab.research.google.com/drive/1EACIWrk9IWloUckRm3wu973bKUBXQDKR?usp=sharing) into the top of each S4TF tutorial.
 
@@ -100,4 +100,4 @@ You can also test some tutorial notebooks on [tensorflow/swift](https://github.c
 
 | Tutorial | Passing/Failing | Last Tested |
 | -------- | --------------- | ----------- |
-| [A Swift Tour](https://colab.research.google.com/github/tensorflow/swift/blob/main/docs/site/tutorials/a_swift_tour.ipynb) | ✅ | December 2021 |
+| [A Swift Tour](https://colab.research.google.com/github/tensorflow/swift/blob/main/docs/site/tutorials/a_swift_tour.ipynb) | ✅ | Swift 5.5.2 (December 2021) |
