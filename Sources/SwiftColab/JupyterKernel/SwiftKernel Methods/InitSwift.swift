@@ -102,13 +102,13 @@ fileprivate func init_repl_process(_ selfRef: PythonObject) throws {
     }
     do {
         let error = lldb.SBError()
-        guard Bool(process.RemoteAttachToProcessWithID(processID, error))! else {
-            let stderror = process.GetSTDERR()
-            fatalError("debug checkpoint number 1: \(stderror)")
-        }
+        process.RemoteAttachToProcessWithID(processID, error)// else {
+//             let stderror = process.GetSTDERR()
+//             fatalError("debug checkpoint number 1: \(stderror)")
+//         }
         
         guard Bool(error.Success())! else {
-            fatalError("debug checkpoint number 2")
+            fatalError("debug checkpoint number 2: \(error) \(error.GetCString())")
         }
     }
     
