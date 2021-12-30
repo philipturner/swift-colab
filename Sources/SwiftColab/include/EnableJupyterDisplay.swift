@@ -18,7 +18,7 @@ import Cryptor
 
 import Foundation
 
-var __cannot_import_both_ipython_display_and_jupyter_display = true
+var __cannot_include_both_ipython_display_and_jupyter_display = true
 
 enum JupyterDisplay {
     struct Header: Encodable {
