@@ -52,3 +52,30 @@ To use Python interop or automatic differentiation, you must explicitly import t
 import PythonKit
 import Differentiation
 ```
+
+## Sample Code
+
+The code on the README of google/swift-jupyter about SwiftPlot will not compile. Replace it with the following:
+```swift
+import Foundation
+import SwiftPlot
+import AGGRenderer
+
+func function(_ x: Float) -> Float {
+    return 1.0 / x
+}
+
+var aggRenderer = AGGRenderer()
+var lineGraph = LineGraph()
+lineGraph.addFunction(
+    function,
+    minX: -5.0,
+    maxX: 5.0,
+    numberOfSamples: 400,
+    clampY: -50...50,
+    label: "1/x",
+    color: .orange)
+lineGraph.plotTitle.title = "FUNCTION"
+lineGraph.drawGraph(renderer: aggRenderer)
+display(base64EncodedPNG: aggRenderer.base64Png())
+```
