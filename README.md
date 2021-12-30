@@ -6,7 +6,7 @@ Copy [this template](https://colab.research.google.com/drive/1EACIWrk9IWloUckRm3
 
 ```swift
 !curl "https://raw.githubusercontent.com/philipturner/swift-colab/pre-release/0.2/install_swift.sh" --output "install_swift.sh" && bash "install_swift.sh" "5.5.2" #// Replace 5.5.2 with newest Swift version
-// After this command finishes, go to Runtime > Restart runtime
+// After this command finishes, go to Runtime > Restart runtime.
 ```
 
 > Warning: The main branch frequently changes and may break Colab support. The above command pulls from the [`pre-release/0.2`](https://github.com/philipturner/swift-colab/tree/pre-release/0.2) branch.
