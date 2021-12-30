@@ -80,8 +80,13 @@ fileprivate func init_repl_process(_ selfRef: PythonObject) throws {
     launch_info.SetLaunchFlags(launch_flags & ~lldb.eLaunchFlagDisableASLR)
     target.SetLaunchInfo(launch_info)
     
-    repl_env.append("SOURCEKIT_LOGGING=3")
-    repl_env.append("SOURCEKIT_TOOLCHAIN_PATH=/opt/swift/toolchain")
+    do {
+        var environment = ProcessInfo.processInfo.environment
+        environment["SOURCEKIT_LOGGING"] = "3"
+        environment["SOURCEKIT_TOOLCHAIN_PATH"] = "/opt/swift/toolchain"
+        
+        
+    }
     
     let process = target.LaunchSimple(["-w", "-n", "sourcekit-lsp"], PythonObject(repl_env), os.getcwd())
 //     let process = target.LaunchSimple(Python.None, PythonObject(repl_env), os.getcwd())
