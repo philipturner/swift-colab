@@ -106,4 +106,4 @@ You can also test some tutorial notebooks on [tensorflow/swift](https://github.c
 | [Custom Differentiation](https://colab.research.google.com/github/tensorflow/swift/blob/main/docs/site/tutorials/custom_differentiation.ipynb) | ❌ | Swift 5.5.2 (December 2021) |
 | [Sharp Edges In Differentiability](https://colab.research.google.com/github/tensorflow/swift/blob/main/docs/site/tutorials/Swift_autodiff_sharp_edges.ipynbb) | ❌ | Swift 5.5.2 (December 2021) |
 
-Python Interoperability and Sharp Edges in Differentiability can be made to pass with minor tweaks.
+Python Interoperability and Sharp Edges in Differentiability can be made to pass with minor tweaks. Custom Differentation must be entirely overhauled.
