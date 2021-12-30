@@ -146,11 +146,7 @@ fileprivate func read_jupyter_messages(_ selfRef: PythonObject, _ sbvalue: Pytho
         output.append(try read_display_message(selfRef, display_message_sbvalue))
     }
     
-    return ["display_messages": output.pythonObject].pythonObject
-    
-//     ["display_messages": try sbvalue.map { 
-//         display_message_sbvalue in try read_display_message(selfRef, display_message_sbvalue)
-//     }].pythonObject
+    return ["display_messages": output.pythonObject]
 }
 
 fileprivate func read_display_message(_ selfRef: PythonObject, _ sbvalue: PythonObject) throws -> PythonObject {
@@ -161,8 +157,6 @@ fileprivate func read_display_message(_ selfRef: PythonObject, _ sbvalue: Python
     }
     
     return output.pythonObject
-    
-//     try sbvalue.map { part in try read_byte_array(selfRef, part) }.pythonObject
 }
 
 fileprivate func read_byte_array(_ selfRef: PythonObject, _ sbvalue: PythonObject) throws -> PythonObject {
