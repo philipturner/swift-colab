@@ -23,7 +23,7 @@ In the output stream, you will see:
 
 You will be instructed to restart the runtime. This is necessary because it shuts down the Python kernel and starts up the Swift kernel.
 
-> Tip: If you factory reset the runtime or exceed the time limit, Colab will restart in Python mode. Just re-run the first code cell and to return to Swift mode.
+> Tip: If you factory reset the runtime or exceed the time limit, Colab will restart in Python mode. Just re-run the first code cell to return to Swift mode.
 
 ## Example of usage
 
