@@ -77,3 +77,9 @@ lineGraph.plotTitle.title = "FUNCTION"
 lineGraph.drawGraph(renderer: aggRenderer)
 display(base64EncodedPNG: aggRenderer.base64Png())
 ```
+
+And add these statements to the bottom of the code cell that imports PythonKit and Differentiation:
+```swift
+%install-swiftpm-flags -Xcc -isystem/usr/include/freetype2 -Xswiftc -lfreetype
+%install '.package(url: "https://github.com/KarthikRIyer/swiftplot", .branch("master"))' SwiftPlot AGGRenderer
+```
