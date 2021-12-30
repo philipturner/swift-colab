@@ -122,7 +122,7 @@ fileprivate func read_include(_ selfRef: PythonObject, line_index: PythonObject,
     
     guard code != Python.None else {
         if rejectedAPath {
-            return
+            return ""
         }
         
         throw PreprocessorException(
