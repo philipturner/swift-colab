@@ -39,29 +39,10 @@ fileprivate func file_name_for_source_location(_ selfRef: PythonObject) -> Strin
 
 fileprivate func preprocess(_ selfRef: PythonObject, code: PythonObject) throws -> PythonObject {
     let lines = Array(code[dynamicMember: "split"]("\n"))
-//     var preprocessed_includes: [PythonObject] = []
-//     var preprocessed_other: [PythonObject] = []
-    
-//     for i in 0..<lines.count {
-//         let line = lines[i]
-//         let (isInclude, returnLine) = try preprocess_line(selfRef, line_index: PythonObject(i), line: line)
-        
-//         if isInclude {
-//             preprocessed_includes.append(returnLine)
-//         } else {
-//             preprocessed_other.append(returnLine)
-//         }
-//     }
-    
     let preprocessed_lines = try (0..<lines.count).map { i -> PythonObject in
         let line = lines[i]
         return try preprocess_line(selfRef, line_index: PythonObject(i), line: line)
     }
-    
-//     let includes_output = preprocessed_includes.count > 0 ? PythonObject("\n").join(preprocessed_includes) : nil
-//     let other_output = PythonObject("\n").join(preprocessed_other)
-    
-//     return (includes_output, other_output)
     
     return PythonObject("\n").join(preprocessed_lines)
 }
