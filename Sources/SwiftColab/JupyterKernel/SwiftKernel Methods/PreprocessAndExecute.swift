@@ -78,6 +78,8 @@ fileprivate func preprocess_line(_ selfRef: PythonObject, line_index: PythonObje
     return line
 }
 
+fileprivate var previouslyReadPaths: [String] = []
+
 fileprivate func read_include(_ selfRef: PythonObject, line_index: PythonObject, rest_of_line: PythonObject) throws -> PythonObject {
     let name_match = re.match(###"""
     ^\s*"([^"]+)"\s*$
@@ -90,18 +92,23 @@ fileprivate func read_include(_ selfRef: PythonObject, line_index: PythonObject,
     let name = name_match.group(1)
     
     let include_paths = [
-        os.path.realpath("."),
         PythonObject("/opt/swift/include")
+        os.path.realpath("."),
     ]
+    
     var code = Python.None
+    var chosenPath: String = ""
     
     for include_path in include_paths {
         do {
-            let path = os.path.join(include_path, name)
-            let f = try Python.open.throwing.dynamicallyCall(withArguments: path, "r")
+            let path = String(os.path.join(include_path, name))
+            if previouslyReadPaths.contains(path) { continue }
             
+            let f = try Python.open.throwing.dynamicallyCall(withArguments: path, "r")
             code = try f.read.throwing.dynamicallyCall(withArguments: [])
             f.close()
+            
+            chosenPath = path
         } catch PythonError.exception(let error, let traceback) {
             guard Bool(Python.isinstance(error, Python.IOError))! else {
                 throw PythonError.exception(error, traceback: traceback)
@@ -114,6 +121,7 @@ fileprivate func read_include(_ selfRef: PythonObject, line_index: PythonObject,
             "Line \(line_index + 1): Could not find \"\(name)\". Searched \(include_paths).")
     }
     
+    previouslyReadPaths.append(path)
     let secondName = file_name_for_source_location(selfRef)
     
     return PythonObject("\n").join([
