@@ -9,6 +9,7 @@ fileprivate let string = Python.import("string")
 fileprivate let subprocess = Python.import("subprocess")
 
 fileprivate var installedBasicPackages = false
+fileprivate var importedBasicPackages = false
 
 /// Handles all "%install" directives, and returns `code` with all
 /// "%install" directives removed.
@@ -40,6 +41,11 @@ func process_installs(_ selfRef: PythonObject, code: PythonObject) throws -> Pyt
     }
     
     if !installedBasicPackages {
+        preprocessed_lines.append([
+            "import PythonKit",
+            "import Differentiation"
+        ]
+        
         func installDependency(name: PythonObject, command: PythonObject) throws {
             if !packages.contains(where: { $0["products"].contains(name) }) {
                 var line = command
