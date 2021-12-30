@@ -64,15 +64,10 @@ public func JKRegisterKernel() -> Void {
         
         print("""
         |
-        |
-        |
-        ===-----------------------------------------------------------------------------------------------===
-        === Swift-Colab overwrote the Python kernel with Swift.                                           ===
-        === Automatically crashing and restarting the runtime to enter Swift mode.                        ===
-        === If the runtime does not restart, go to Runtime > Restart runtime (NOT Factory reset runtime). ===
-        ===-----------------------------------------------------------------------------------------------===
-        |
-        |
+        ===----------------------------------------------------------------------------------------===
+        === Swift-Colab overwrote the Python kernel with Swift, but Colab is still in Python mode. ===
+        === To enter Swift mode, go to Runtime > Restart runtime (NOT Factory reset runtime).      ===
+        ===----------------------------------------------------------------------------------------===
         |
         """)
     } else {
