@@ -100,8 +100,13 @@ fileprivate func init_repl_process(_ selfRef: PythonObject) throws {
     guard process != Python.None else {
         throw Exception("Could not launch process")
     }
-    
-    precondition(Bool(process.RemoteAttachToProcessWithID(processID))!)
+    do {
+        let error = lldb.SBError()
+        precondition(Bool(process.RemoteAttachToProcessWithID(processID, error))!, "debug checkpoint number 1")
+        guard Bool(error.Success())! else {
+            fatalError("debug checkpoint number 2")
+        }
+    }
     
     selfRef.process = process
     
