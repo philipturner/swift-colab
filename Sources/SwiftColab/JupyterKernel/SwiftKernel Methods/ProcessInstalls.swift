@@ -8,6 +8,8 @@ fileprivate let stat = Python.import("stat")
 fileprivate let string = Python.import("string")
 fileprivate let subprocess = Python.import("subprocess")
 
+fileprivate var didInstallPythonKit = false
+
 /// Handles all "%install" directives, and returns `code` with all
 /// "%install" directives removed.
 func process_installs(_ selfRef: PythonObject, code: PythonObject) throws -> PythonObject {
@@ -38,6 +40,10 @@ func process_installs(_ selfRef: PythonObject, code: PythonObject) throws -> Pyt
     }
     
     if !didInstallPythonKit && !packages.contains(where: { $0.products.contains("PythonKit") }) {
+        var line: PythonObject = ###"""
+        %install '.package(url: "https://github.com/pvieito/PythonKit.git", .branch("master"))' PythonKit
+        """###
+        packages += try process_install_line(selfRef, -1000, &line)
     }
     
     try install_packages(selfRef, 
@@ -45,6 +51,8 @@ func process_installs(_ selfRef: PythonObject, code: PythonObject) throws -> Pyt
                          swiftpm_flags: swiftpm_flags,
                          extra_include_commands: extra_include_commands,
                          user_install_location: user_install_location)
+    
+    didInstallPythonKit = true
     
     return PythonObject("\n").join(processed_lines)
 }
