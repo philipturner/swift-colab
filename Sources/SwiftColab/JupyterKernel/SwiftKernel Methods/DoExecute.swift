@@ -71,7 +71,7 @@ func do_execute(_ kwargs: PythonObject) throws -> PythonObject {
     // Send values/errors and status to the client.
     if let result = result as? SuccessWithValue {
         let object = result.result.GetValue()
-        let string = (object == Python.None) ? String(describing: result.result) : String(describing: object)
+        let string = (object == Python.None) ? result.debugDescription : String(describing: object)
         
         try selfRef.send_response.throwing
             .dynamicallyCall(withArguments: selfRef.iopub_socket, "execute_result", [
