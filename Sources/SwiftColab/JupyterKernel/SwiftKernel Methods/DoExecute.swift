@@ -70,7 +70,7 @@ func do_execute(_ kwargs: PythonObject) throws -> PythonObject {
     
     // Send values/errors and status to the client.
     if let result = result as? SuccessWithValue {
-        var description = String(result.result.description)!
+        var description = String(result.result[dynamicMember: "description"])!
         if description == "None" { description = "" }
         
         try selfRef.send_response.throwing
