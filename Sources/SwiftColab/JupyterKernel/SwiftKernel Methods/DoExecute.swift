@@ -235,6 +235,7 @@ fileprivate func get_pretty_main_thread_stack_trace(_ selfRef: PythonObject) -> 
         
         guard let str = String(file.fullpath) else {
             fatalError("Failed to process filepath: \(file) \(Python.repr(file)) \(file.fullpath) \(String(file.fullpath))")
+        }
         
         // Do not include <compiler-generated> frames. These are
         // specializations of library functions.
