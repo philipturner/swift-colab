@@ -54,8 +54,8 @@ func process_installs(_ selfRef: PythonObject, code: PythonObject) throws -> Pyt
             """###,
         ]
         
-        installDependency(name: "PythonKit", command: commands[0])
-        installDependency(name: "_Differentiation", command: commands[1])
+        try installDependency(name: "PythonKit", command: commands[0])
+        try installDependency(name: "_Differentiation", command: commands[1])
     }
     
     try install_packages(selfRef, 
