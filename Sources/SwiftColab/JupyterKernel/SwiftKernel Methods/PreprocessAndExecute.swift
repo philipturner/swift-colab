@@ -61,8 +61,6 @@ fileprivate func preprocess(_ selfRef: PythonObject, code: PythonObject) throws 
         }
     }
     
-    let preprocessed_lines = preprocessed_includes + preprocessed_other
-    
 //     let preprocessed_lines = try (0..<lines.count).map { i -> PythonObject in
 //         let line = lines[i]
 //         return try preprocess_line(selfRef, line_index: PythonObject(i), line: line)
