@@ -25,8 +25,6 @@ You will be instructed to restart the runtime. This is necessary because it shut
 
 > Tip: If you factory reset the runtime or exceed the time limit, Colab will restart in Python mode. Just re-run the first code cell to return to Swift mode.
 
-## Example of usage
-
 Type the following code into the second code cell:
 
 ```swift
