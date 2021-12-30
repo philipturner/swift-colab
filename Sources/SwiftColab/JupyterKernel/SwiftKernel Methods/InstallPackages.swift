@@ -257,7 +257,14 @@ func install_packages(
     
     func queryDatabase(_ input: String) -> [PythonObject] {
         cursor.execute(SQL_FILES_SELECT, [input])
-        return cursor.fetchall().map { $0[0] }.filter(is_valid_dependency)
+        var output: [PythonObject] = []
+        
+        for row in cursor.fetchall() {
+            output.append(row[0])
+        }
+        
+        return output.filter(is_valid_dependency)
+//         return cursor.fetchall().map { $0[0] }.filter(is_valid_dependency)
     }
     
     // Process *.swiftmodules files
