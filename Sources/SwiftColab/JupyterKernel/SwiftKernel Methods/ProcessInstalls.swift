@@ -37,6 +37,9 @@ func process_installs(_ selfRef: PythonObject, code: PythonObject) throws -> Pyt
         processed_lines.append(line)
     }
     
+    if !didInstallPythonKit && !packages.contains(where: { $0.products.contains("PythonKit") }) {
+    }
+    
     try install_packages(selfRef, 
                          packages: packages,
                          swiftpm_flags: swiftpm_flags,
