@@ -1,3 +1,0 @@
-import Backtrace
-
-Backtrace.install()
