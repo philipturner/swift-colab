@@ -6,7 +6,7 @@ fileprivate let SwiftModule = Python.import("Swift")
 @_cdecl("JKCreateKernel")
 public func JKCreateKernel(_ jupyterKernelRef: OwnedPyObjectPointer) -> OwnedPyObjectPointer {
     let noneObject = Python.None
-    var errorObject = noneObject
+    let errorObject = noneObject
     
     let kernel = PythonObject(jupyterKernelRef)
     kernel.implementation = "SwiftKernel"
@@ -31,25 +31,6 @@ public func JKCreateKernel(_ jupyterKernelRef: OwnedPyObjectPointer) -> OwnedPyO
     kernel.swift_delegate = SwiftModule.SwiftDelegate()
     kernel.registerFunction(name: "do_execute", function: do_execute)
     kernel.registerFunction(name: "do_complete", function: do_complete)
-    
-    func doCommand(_ args: [String], directory: String? = nil) throws {
-        let command = Process()
-        command.executableURL = .init(fileURLWithPath: "/usr/bin/env")
-        command.arguments = args
-
-        if let directory = directory {
-            command.currentDirectoryURL = .init(fileURLWithPath: directory)
-        }
-
-        try command.run()
-        command.waitUntilExit()
-    }
-    
-    do {
-        try doCommand(["/opt/swift/toolchain/usr/bin/sourcekit-lsp"])
-    } catch {
-        errorObject = SwiftModule.SwiftError(error.localizedDescription)
-    }
     
     return SwiftModule.SwiftReturnValue(noneObject, errorObject).ownedPyObject
 }
