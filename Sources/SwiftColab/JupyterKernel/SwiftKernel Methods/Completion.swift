@@ -26,8 +26,6 @@ fileprivate func send_response(_ selfRef: PythonObject, text: String) throws {
 }
 
 func do_complete(_ kwargs: PythonObject) -> PythonObject {
-    fatalError("Ensuring this fails")
-    
     let selfRef = kwargs["self"]
     let cursor_pos = kwargs["cursor_pos"]
     
