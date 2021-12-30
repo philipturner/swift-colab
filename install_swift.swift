@@ -87,10 +87,10 @@ try fm.createDirectory(atPath: "/opt/swift/lib", withIntermediateDirectories: tr
 try fm.createDirectory(atPath: "/opt/swift/packages", withIntermediateDirectories: true)
 
 // Install philipturner/PythonKit
-let pythonKitProductsPath = "/opt/swift/packages/PythonKit/.build/debug"
+let pythonKitProductsPath = "/opt/swift/packages/PythonKit/.build/release"
 let pythonKitLibPath = "/opt/swift/lib/libPythonKit.so"
 
-try doCommand(["swift", "build", /* "-c", "release", */ "-Xswiftc", "-Onone"],
+try doCommand(["swift", "build", "-c", "release", "-Xswiftc", "-Onone"],
               directory: "/opt/swift/packages/PythonKit")
 
 try? fm.removeItem(atPath: pythonKitLibPath)
@@ -112,7 +112,7 @@ let spbSourceFilePaths = try fm.subpathsOfDirectory(atPath: spbSourcePath).filte
     "\(spbSourcePath)/\($0)"
 }
 
-try doCommand(["swiftc", "-DDEBUG"] + spbSourceFilePaths + [
+try doCommand(["swiftc", "-Onone"] + spbSourceFilePaths + [
                "-L", pythonKitProductsPath, "-lPythonKit",
                "-I", pythonKitProductsPath,
                "-emit-module", "-emit-library",
@@ -138,7 +138,7 @@ let jupyterSourceFilePaths = try fm.subpathsOfDirectory(atPath: jupyterSourcePat
     "\(jupyterSourcePath)/\($0)"
 }
 
-try doCommand(["swiftc", "-DDEBUG"] + jupyterSourceFilePaths + [
+try doCommand(["swiftc", "-Onone"] + jupyterSourceFilePaths + [
                "-L", pythonKitProductsPath, "-lPythonKit",
                "-I", pythonKitProductsPath,
                "-L", spbProductsPath, "-lSwiftPythonBridge",
