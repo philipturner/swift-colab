@@ -96,6 +96,6 @@ To test Swift-Colab against recent Swift toolchains and ensure support is never 
 
 You can also test some tutorial notebooks on [tensorflow/swift](https://github.com/tensorflow/swift) that don't import TensorFlow. Paste the installation and package importing commands before all other cells in the notebooks:
 
-| Tutorial | Passing/Failing |
-| -------- | --------------- |
-| A Swift Tour | ??? |
+| Tutorial | Passing/Failing | Last Tested |
+| -------- | ---         --- | ----------- |
+| A Swift Tour | ??? | December 2021 |
