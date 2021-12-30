@@ -17,8 +17,6 @@
 
 import PythonKit
 
-var __cannot_include_both_ipython_display_and_jupyter_display___restart_session_to_fix = true
-
 enum IPythonDisplay {
   static var socket: PythonObject = Python.None
   static var shell: PythonObject = Python.None
@@ -81,9 +79,11 @@ extension PythonObject {
 }
 
 #if canImport(SwiftPlot)
+let __cannot_include_both_ipython_display_and_jupyter_display_if_imported_SwiftPlot__restart_session_to_fix = true
+
 import SwiftPlot
 import AGGRenderer
-var __agg_renderer = AGGRenderer()
+let __agg_renderer = AGGRenderer()
 extension Plot {
   func display(size: Size = Size(width: 1000, height: 660)) {
     drawGraph(size: size, renderer: __agg_renderer)
