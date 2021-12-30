@@ -64,7 +64,7 @@ func function(_ x: Float) -> Float {
 }
 
 var aggRenderer = AGGRenderer()
-var lineGraph = LineGraph()
+var lineGraph = LineGraph<Float, Float>()
 lineGraph.addFunction(
     function,
     minX: -5.0,
