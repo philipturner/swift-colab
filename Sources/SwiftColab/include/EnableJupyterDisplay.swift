@@ -149,8 +149,8 @@ extension JupyterDisplay {
     private static func updateParentMessage(to parentMessage: KernelCommunicator.ParentMessage) {
         do {
             let jsonData = (parentMessage.json).data(using: .utf8, allowLossyConversion: false)
-            let jsonDict = try JSONSerialization.jsonObject(with: jsonData!) as? NSDictionary
-            let headerData = try JSONSerialization.data(withJSONObject: jsonDict!["header"],
+            let jsonDict = try JSONSerialization.jsonObject(with: jsonData!) as! NSDictionary
+            let headerData = try JSONSerialization.data(withJSONObject: jsonDict["header"],
                                                         options: .prettyPrinted)
             parentHeader = String(data: headerData, encoding: .utf8)!
         } catch {
