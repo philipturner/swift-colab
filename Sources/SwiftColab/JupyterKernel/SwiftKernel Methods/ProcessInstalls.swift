@@ -108,8 +108,10 @@ fileprivate func process_install_swiftpm_flags_line(_ selfRef: PythonObject, _ l
     """###, line)
     guard flags_match != Python.None else { return [] }
     
+    let flags = shlex[dynamicMember: "split"](flags_match.group(1))
+    
     line = ""
-    return Array(flags_match.group(1))
+    return Array(flags)
 }
 
 fileprivate func process_install_line(_ selfRef: PythonObject, _ line_index: PythonObject, _ line: inout PythonObject) throws -> [PythonObject] {
