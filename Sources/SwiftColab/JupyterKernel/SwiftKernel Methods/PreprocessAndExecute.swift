@@ -39,24 +39,45 @@ fileprivate func file_name_for_source_location(_ selfRef: PythonObject) -> Strin
 
 fileprivate func preprocess(_ selfRef: PythonObject, code: PythonObject) throws -> PythonObject {
     let lines = Array(code[dynamicMember: "split"]("\n"))
-    let preprocessed_lines = try (0..<lines.count).map { i -> PythonObject in
+    var preprocessed_includes: [PythonObject] = []
+    var preprocessed_other: [PythonObject] = []
+    
+    for i in 0..<lines.count {
         let line = lines[i]
-        return try preprocess_line(selfRef, line_index: PythonObject(i), line: line)
+        let (isInclude, returnLine) = try preprocess_line(selfRef, line_index: PythonObject(i), line: line)
+        
+        if isInclude {
+            preprocessed_includes.append(returnLine)
+        } else {
+            preprocessed_other.append(returnLine)
+        }
     }
+    
+    let preprocessed_lines = preprocessed_includes + preprocessed_other
+    
+//     let preprocessed_lines = try (0..<lines.count).map { i -> PythonObject in
+//         let line = lines[i]
+//         return try preprocess_line(selfRef, line_index: PythonObject(i), line: line)
+//     }
     
     return PythonObject("\n").join(preprocessed_lines)
 }
+
+// Goal: swap the role of system commands and %include commands.
+// For now, sort out the %include commands and execute them first.
+// Then, work into executing them in process_installs
+fileprivate typealias PreprocessReturn = (isInclude: Bool, line: PythonObject)
 
 /// Returns the preprocessed line.
 ///
 /// Does not process "%install" directives, because those need to be
 /// handled before everything else.
-fileprivate func preprocess_line(_ selfRef: PythonObject, line_index: PythonObject, line: PythonObject) throws -> PythonObject {
+fileprivate func preprocess_line(_ selfRef: PythonObject, line_index: PythonObject, line: PythonObject) throws -> PreprocessReturn {
     let include_match = re.match(###"""
     ^\s*%include (.*)$
     """###, line)
     if include_match != Python.None {
-        return try read_include(selfRef, line_index: line_index, rest_of_line: include_match.group(1))
+        return (true, try read_include(selfRef, line_index: line_index, rest_of_line: include_match.group(1)))
     }
     
     let disable_completion_match = re.match(###"""
@@ -64,7 +85,7 @@ fileprivate func preprocess_line(_ selfRef: PythonObject, line_index: PythonObje
     """###, line)
     if disable_completion_match != Python.None {
         try handle_disable_completion(selfRef)
-        return ""
+        return (false, "")
     }
     
     let enable_completion_match = re.match(###"""
@@ -72,10 +93,10 @@ fileprivate func preprocess_line(_ selfRef: PythonObject, line_index: PythonObje
     """###, line)
     if enable_completion_match != Python.None {
         try handle_enable_completion(selfRef)
-        return ""
+        return (false, "")
     }
     
-    return line
+    return (false, line)
 }
 
 fileprivate var previouslyReadPaths: [String] = []
