@@ -98,11 +98,15 @@ fileprivate func read_include(_ selfRef: PythonObject, line_index: PythonObject,
     
     var code = Python.None
     var chosenPath: String = ""
+    var rejectedAPath = false
     
     for include_path in include_paths {
         do {
             let path = String(os.path.join(include_path, name))!
-            if previouslyReadPaths.contains(path) { continue }
+            if previouslyReadPaths.contains(path) { 
+                rejectedAPath = true
+                continue 
+            }
             
             let f = try Python.open.throwing.dynamicallyCall(withArguments: path, "r")
             code = try f.read.throwing.dynamicallyCall(withArguments: [])
@@ -117,6 +121,10 @@ fileprivate func read_include(_ selfRef: PythonObject, line_index: PythonObject,
     }
     
     guard code != Python.None else {
+        if rejectedAPath {
+            return
+        }
+        
         throw PreprocessorException(
             "Line \(line_index + 1): Could not find \"\(name)\". Searched \(include_paths).")
     }
