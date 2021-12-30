@@ -95,8 +95,8 @@ fileprivate func init_repl_process(_ selfRef: PythonObject) throws {
         processID = lsp.processIdentifier
     }
     
-    let process = target.LaunchSimple(["-w", "-n", "sourcekit-lsp"], PythonObject(repl_env), os.getcwd())
-//     let process = target.LaunchSimple(Python.None, PythonObject(repl_env), os.getcwd())
+//     let process = target.LaunchSimple(["-w", "-n", "sourcekit-lsp"], PythonObject(repl_env), os.getcwd())
+    let process = target.LaunchSimple(Python.None, PythonObject(repl_env), os.getcwd())
     guard process != Python.None else {
         throw Exception("Could not launch process")
     }
