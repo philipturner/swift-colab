@@ -49,7 +49,7 @@ import PythonKit
 import Differentiation
 ```
 
-## Sample Code
+## Sample code
 
 The code on the README of google/swift-jupyter about SwiftPlot will not compile. Replace it with the following:
 
