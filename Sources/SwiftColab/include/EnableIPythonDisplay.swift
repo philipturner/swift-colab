@@ -91,11 +91,13 @@ extension Plot {
     drawGraph(size: size, renderer: __agg_renderer)
     let image_b64 = __agg_renderer.base64Png()
     
-    let displayImage = Python.import("IPython.display")
+    let display = Python.import("IPython.display")
+    let Image = display.Image
     let codecs = Python.import("codecs")
+    
     let imageData = codecs.decode(Python.bytes(image_b64, encoding: "utf8"),
                                   encoding: "base64")
-    displayImage.Image(data: imageData, format: "png").display()
+    display.display(Image(data: imageData, format: "png"))
   }
 }
 #endif
