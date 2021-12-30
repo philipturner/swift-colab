@@ -17,7 +17,7 @@
 
 import PythonKit
 
-var __cannot_import_both_ipython_display_and_jupyter_display = true
+var __cannot_include_both_ipython_display_and_jupyter_display___restart_session_to_fix = true
 
 enum IPythonDisplay {
   static var socket: PythonObject = Python.None
