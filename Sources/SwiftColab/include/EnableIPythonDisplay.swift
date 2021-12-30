@@ -73,12 +73,6 @@ extension IPythonDisplay {
   }
 }
 
-extension PythonObject {
-  func display() {
-    Python.import("IPython.display")[dynamicMember: "display"](pythonObject)
-  }
-}
-
 func display(base64EncodedPNG: String) {
   let displayImage = Python.import("IPython.display")
   let codecs = Python.import("codecs")
