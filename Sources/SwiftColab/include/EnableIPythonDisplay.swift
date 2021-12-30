@@ -15,6 +15,7 @@
 /// Hooks IPython to the KernelCommunicator, so that it can send display
 /// messages to Jupyter.
 
+#if canImport(PythonKit)
 import PythonKit
 
 enum IPythonDisplay {
@@ -106,3 +107,4 @@ extension Plot {
 #endif
 
 IPythonDisplay.enable()
+#endif
