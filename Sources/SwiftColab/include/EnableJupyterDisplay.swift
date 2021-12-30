@@ -18,8 +18,6 @@ import Cryptor
 
 import Foundation
 
-var __cannot_include_both_ipython_display_and_jupyter_display___restart_session_to_fix = true
-
 enum JupyterDisplay {
     struct Header: Encodable {
         let messageID: String
@@ -182,6 +180,8 @@ func display(base64EncodedPNG: String) {
 }
 
 #if canImport(SwiftPlot)
+var __cannot_include_both_ipython_display_and_jupyter_display_if_imported_SwiftPlot__restart_session_to_fix = true
+
 import SwiftPlot
 import AGGRenderer
 var __agg_renderer = AGGRenderer()
