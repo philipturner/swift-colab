@@ -39,7 +39,7 @@ func process_installs(_ selfRef: PythonObject, code: PythonObject) throws -> Pyt
         processed_lines.append(line)
     }
     
-    if !didInstallPythonKit && !packages.contains(where: { $0.products.contains("PythonKit") }) {
+    if !didInstallPythonKit && !packages.contains(where: { $0["products"].contains("PythonKit") }) {
         var line: PythonObject = ###"""
         %install '.package(url: "https://github.com/pvieito/PythonKit.git", .branch("master"))' PythonKit
         """###
