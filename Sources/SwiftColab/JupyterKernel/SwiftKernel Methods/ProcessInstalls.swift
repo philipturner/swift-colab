@@ -8,7 +8,7 @@ fileprivate let stat = Python.import("stat")
 fileprivate let string = Python.import("string")
 fileprivate let subprocess = Python.import("subprocess")
 
-fileprivate var didInstallPythonKit = false
+fileprivate var installedBasicPackages = false
 
 /// Handles all "%install" directives, and returns `code` with all
 /// "%install" directives removed.
@@ -39,11 +39,23 @@ func process_installs(_ selfRef: PythonObject, code: PythonObject) throws -> Pyt
         processed_lines.append(line)
     }
     
-    if !didInstallPythonKit && !packages.contains(where: { $0["products"].contains("PythonKit") }) {
-        var line: PythonObject = ###"""
-        %install '.package(url: "https://github.com/pvieito/PythonKit.git", .branch("master"))' PythonKit
-        """###
-        packages += try process_install_line(selfRef, -1000, &line)
+    if !installedBasicPackages {
+        func installDependency(name: PythonObject, command: PythonObject) throws {
+            if !packages.contains(where: { $0["products"].contains(name) }) {
+                var line = command
+                packages += try process_install_line(selfRef, -1000, &line)
+            }
+        }
+        
+        let commands: [PythonObject] = [###"""
+            %install '.package(url: "https://github.com/pvieito/PythonKit.git", .branch("master"))' PythonKit
+            """###, ###"""
+            %install '.package(url: "https://github.com/philipturner/differentiation", .branch("main"))' _Differentiation
+            """###,
+        ]
+        
+        installDependency(name: "PythonKit", command: commands[0])
+        installDependency(name: "_Differentiation", command: commands[1])
     }
     
     try install_packages(selfRef, 
@@ -52,7 +64,7 @@ func process_installs(_ selfRef: PythonObject, code: PythonObject) throws -> Pyt
                          extra_include_commands: extra_include_commands,
                          user_install_location: user_install_location)
     
-    didInstallPythonKit = true
+    installedBasicPackages = true
     
     return PythonObject("\n").join(processed_lines)
 }
