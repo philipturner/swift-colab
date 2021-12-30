@@ -9,8 +9,6 @@ Copy [this template](https://colab.research.google.com/drive/1EACIWrk9IWloUckRm3
 #// After this command finishes, go to Runtime > Restart runtime.
 ```
 
-> Warning: The main branch frequently changes and may break Colab support. The above command pulls from the [`release/latest`](https://github.com/philipturner/swift-colab/tree/release/latest) branch.
-
 In the output stream, you will see:
 
 ```
@@ -54,6 +52,7 @@ import Differentiation
 ## Sample Code
 
 The code on the README of google/swift-jupyter about SwiftPlot will not compile. Replace it with the following:
+
 ```swift
 import Foundation
 import SwiftPlot
@@ -79,6 +78,7 @@ display(base64EncodedPNG: aggRenderer.base64Png())
 ```
 
 And add these statements to the bottom of the code cell that imports PythonKit and Differentiation:
+
 ```swift
 %install-swiftpm-flags -Xcc -isystem/usr/include/freetype2 -Xswiftc -lfreetype
 %install '.package(url: "https://github.com/KarthikRIyer/swiftplot", .branch("master"))' SwiftPlot AGGRenderer
