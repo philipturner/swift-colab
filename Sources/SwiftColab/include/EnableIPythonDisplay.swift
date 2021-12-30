@@ -74,7 +74,7 @@ extension IPythonDisplay {
 }
 
 func display(base64EncodedPNG: String) {
-  let displayImage = Python.import("IPython.display")
+  let display = Python.import("IPython.display")
   let codecs = Python.import("codecs")
   let Image = display.Image
   
@@ -87,11 +87,10 @@ import SwiftPlot
 import AGGRenderer
 
 extension Plot {
-  private static let __agg_renderer = AGGRenderer()
-  
   func display(size: Size = Size(width: 1000, height: 660)) {
-    drawGraph(size: size, renderer: Self.__agg_renderer)
-    display(base64EncodedPNG: Self.__agg_renderer.base64Png())
+    let renderer = AGGRenderer()
+    drawGraph(size: size, renderer: renderer)
+    display(base64EncodedPNG: renderer.base64Png())
   }
 }
 #endif
