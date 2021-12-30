@@ -80,6 +80,8 @@ fileprivate func init_repl_process(_ selfRef: PythonObject) throws {
     launch_info.SetLaunchFlags(launch_flags & ~lldb.eLaunchFlagDisableASLR)
     target.SetLaunchInfo(launch_info)
     
+    var processID: Int32
+    
     do {
         var environment = ProcessInfo.processInfo.environment
         environment["SOURCEKIT_LOGGING"] = "3"
@@ -90,16 +92,16 @@ fileprivate func init_repl_process(_ selfRef: PythonObject) throws {
         lsp.arguments = []
         
         try lsp.run()
-        let filePath = Python.open("/content/install_swift.sh", "w")
-        filePath.write(String(describing: lsp.processIdentifier))
-        filePath.close()
+        processID = lsp.processIdentifier
     }
     
-    let process = target.LaunchSimple(["-w", "-n", "sourcekit-lsp"], PythonObject(repl_env), os.getcwd())
-//     let process = target.LaunchSimple(Python.None, PythonObject(repl_env), os.getcwd())
+//     let process = target.LaunchSimple(["-w", "-n", "sourcekit-lsp"], PythonObject(repl_env), os.getcwd())
+    let process = target.LaunchSimple(Python.None, PythonObject(repl_env), os.getcwd())
     guard process != Python.None else {
         throw Exception("Could not launch process")
     }
+    
+    precondition(Bool(process.RemoteAttachToProcessWithID(processID))!)
     
     selfRef.process = process
     
