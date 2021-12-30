@@ -80,36 +80,9 @@ fileprivate func init_repl_process(_ selfRef: PythonObject) throws {
     launch_info.SetLaunchFlags(launch_flags & ~lldb.eLaunchFlagDisableASLR)
     target.SetLaunchInfo(launch_info)
     
-    var processID: Int32
-    
-    do {
-        var environment = ProcessInfo.processInfo.environment
-        environment["SOURCEKIT_LOGGING"] = "3"
-        environment["SOURCEKIT_TOOLCHAIN_PATH"] = "/opt/swift/toolchain"
-        
-        let lsp = Process()
-        lsp.executableURL = .init(fileURLWithPath: "/opt/swift/toolchain/usr/bin/sourcekit-lsp")
-        lsp.arguments = []
-        
-        try lsp.run()
-        processID = lsp.processIdentifier
-    }
-    
-//     let process = target.LaunchSimple(["-w", "-n", "sourcekit-lsp"], PythonObject(repl_env), os.getcwd())
     let process = target.LaunchSimple(Python.None, PythonObject(repl_env), os.getcwd())
     guard process != Python.None else {
         throw Exception("Could not launch process")
-    }
-    do {
-        let error = lldb.SBError()
-        target.AttachToProcessWithID(lldb.SBListener(), processID, error)// else {
-//             let stderror = process.GetSTDERR()
-//             fatalError("debug checkpoint number 1: \(stderror)")
-//         }
-        
-        guard Bool(error.Success())! else {
-            fatalError("debug checkpoint number 2: \(error) \(error.GetCString())")
-        }
     }
     
     selfRef.process = process
