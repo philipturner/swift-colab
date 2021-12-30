@@ -90,7 +90,17 @@ extension Plot {
   func display(size: Size = Size(width: 1000, height: 660)) {
     let renderer = AGGRenderer()
     drawGraph(size: size, renderer: renderer)
-    display(base64EncodedPNG: renderer.base64Png())
+    
+    func display_bypassSymbolDuplication(base64EncodedPNG: String) {
+      let display = Python.import("IPython.display")
+      let codecs = Python.import("codecs")
+      let Image = display.Image
+
+      let imageData = codecs.decode(Python.bytes(base64EncodedPNG, encoding: "utf8"), encoding: "base64")
+      display.display(Image(data: imageData, format: "png"))
+    }
+    
+    display_bypassSymbolDuplication(base64EncodedPNG: renderer.base64Png())
   }
 }
 #endif
