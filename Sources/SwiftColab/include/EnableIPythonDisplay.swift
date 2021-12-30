@@ -15,11 +15,7 @@
 /// Hooks IPython to the KernelCommunicator, so that it can send display
 /// messages to Jupyter.
 
-#if canImport(PythonKit)
-    import PythonKit
-#else
-    import Python
-#endif
+import PythonKit
 
 enum IPythonDisplay {
   static var socket: PythonObject = Python.None
