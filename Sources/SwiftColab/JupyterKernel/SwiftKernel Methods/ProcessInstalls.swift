@@ -12,8 +12,8 @@ fileprivate let subprocess = Python.import("subprocess")
 /// "%install" directives removed.
 func process_installs(_ selfRef: PythonObject, code: PythonObject) throws -> PythonObject {
     var processed_lines: [PythonObject] = []
-    var all_packages: [PythonObject] = []
-    var all_swiftpm_flags: [PythonObject] = []
+    var packages: [PythonObject] = []
+    var swiftpm_flags: [PythonObject] = []
     var extra_include_commands: [PythonObject] = []
     var user_install_location: PythonObject?
     
@@ -27,8 +27,8 @@ func process_installs(_ selfRef: PythonObject, code: PythonObject) throws -> Pyt
             user_install_location = install_location
         }
         
-        all_swiftpm_flags += process_install_swiftpm_flags_line(selfRef, &line)
-        all_packages += try process_install_line(selfRef, index, &line)
+        swiftpm_flags += process_install_swiftpm_flags_line(selfRef, &line)
+        packages += try process_install_line(selfRef, index, &line)
         
         if let extra_include_command = process_extra_include_command_line(selfRef, &line) {
             extra_include_commands.append(extra_include_command)
@@ -39,7 +39,7 @@ func process_installs(_ selfRef: PythonObject, code: PythonObject) throws -> Pyt
     
     try install_packages(selfRef, 
                          packages: packages,
-                         swiftpm_flags: all_swiftpm_flags,
+                         swiftpm_flags: swiftpm_flags,
                          extra_include_commands: extra_include_commands,
                          user_install_location: user_install_location)
     
