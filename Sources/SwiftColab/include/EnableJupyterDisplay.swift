@@ -190,7 +190,7 @@ let __agg_renderer = AGGRenderer()
 extension Plot {
   func display(size: Size = Size(width: 1000, height: 660)) {
     drawGraph(size: size, renderer: __agg_renderer)
-    ___enablejupyterdisplay_suppress_display_symbol_duplication_error(base64EncodedPNG: __agg_renderer.base64Png())
+    ___enablejupyterdisplay_suppress_display_symbol_duplication_error(__agg_renderer.base64Png())
   }
 }
 #endif
