@@ -86,8 +86,8 @@ fileprivate func init_repl_process(_ selfRef: PythonObject) throws {
         environment["SOURCEKIT_TOOLCHAIN_PATH"] = "/opt/swift/toolchain"
         
         let lsp = Process()
-        process.executableURL = .init(fileURLWithPath: "/opt/swift/toolchain/usr/bin/sourcekit-lsp")
-        process.arguments = []
+        lsp.executableURL = .init(fileURLWithPath: "/opt/swift/toolchain/usr/bin/sourcekit-lsp")
+        lsp.arguments = []
         
         try lsp.run()
         let filePath = Python.open("/content/install_swift.sh", "w")
