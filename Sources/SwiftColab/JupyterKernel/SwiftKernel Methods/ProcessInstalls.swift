@@ -170,6 +170,18 @@ fileprivate func process_system_command_line(_ selfRef: PythonObject, _ line: in
     """###, line)
     guard system_match != Python.None else { return }
     
+    func sendResponse(_ message: String) throws {
+        try selfRef.send_response.throwing
+            .dynamicallyCall(withArguments: selfRef.iopub_socket, "stream", [
+            "name": "stdout",
+            "text": message
+        ])
+    }
+    
+//     if selfRef.checking.debugger != nil {
+//          try sendResponse("%system commands called after the first cell will execute before 
+//     }
+    
     let rest_of_line = system_match.group(1) 
     let process = subprocess.Popen(rest_of_line,
                                    stdout: subprocess.PIPE,
@@ -178,12 +190,7 @@ fileprivate func process_system_command_line(_ selfRef: PythonObject, _ line: in
     process.wait()
     
     let command_result = process.stdout.read().decode("utf-8")
-    try selfRef.send_response.throwing
-        .dynamicallyCall(withArguments: selfRef.iopub_socket, "stream", [
-        "name": "stdout",
-        "text": "\(command_result)"
-    ])
-    
+    try sendResponse("\(command_result)")
     line = ""
 }
 
