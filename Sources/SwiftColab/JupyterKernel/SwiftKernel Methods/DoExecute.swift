@@ -69,12 +69,12 @@ func do_execute(_ kwargs: PythonObject) throws -> PythonObject {
     ]
     
     // Send values/errors and status to the client.
-    if result is SuccessWithValue {
+    if let result = result as? SuccessWithValue {
         try selfRef.send_response.throwing
             .dynamicallyCall(withArguments: selfRef.iopub_socket, "execute_result", [
             "execution_count": selfRef.execution_count,
             "data": [
-                "text/plain": "Use `print()` to show values.\n"
+                "text/plain": result.result[dynamicMember: "description"]//"Use `print()` to show values.\n"
             ],
             "metadata": [:]
         ])
