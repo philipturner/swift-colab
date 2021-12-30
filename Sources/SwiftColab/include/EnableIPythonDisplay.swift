@@ -17,6 +17,8 @@
 
 import PythonKit
 
+var __cannot_import_both_ipython_display_and_jupyter_display = true
+
 enum IPythonDisplay {
   static var socket: PythonObject = Python.None
   static var shell: PythonObject = Python.None
@@ -95,7 +97,5 @@ extension Plot {
   }
 }
 #endif
-
-var __cannot_import_both_ipythondisplay_and_jupyter_display = true
 
 IPythonDisplay.enable()
