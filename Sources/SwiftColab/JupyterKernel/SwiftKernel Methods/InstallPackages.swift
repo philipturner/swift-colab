@@ -18,8 +18,6 @@ fileprivate func decode(_ input: PythonObject) throws -> PythonObject {
     try json.loads.throwing.dynamicallyCall(withArguments: input)
 }
 
-fileprivate var didInstallPythonKit = false
-
 func install_packages(
     _ selfRef: PythonObject, 
     packages: [PythonObject], 
