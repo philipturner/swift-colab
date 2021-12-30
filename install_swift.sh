@@ -35,7 +35,7 @@ then
   then
     mkdir packages
     cd packages
-    git clone --single-branch -b main https://github.com/philipturner/PythonKit
+    git clone --single-branch -b master https://github.com/philipturner/PythonKit
     cd ../
   fi
 fi
