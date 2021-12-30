@@ -135,19 +135,9 @@ func install_packages(
     try send_response("With SwiftPM flags: \(swiftpm_flags)\n")
     try send_response("Working in: \(scratchwork_base_path)\n")
     
-    // Make the Swift Package Manager compile in a way that matches the installed toolchain
-    
-    let swiftVersionData = FileManager.default.contents(atPath: "/opt/swift/swiftpm-version.txt")!
-    let swiftVersionRaw = String(data: swiftVersionData, encoding: .utf8)!
-    
-    let swiftVersionComponents = swiftVersionRaw.split(separator: ".")
-    let swiftVersionShort = swiftVersionComponents[0] + "." + swiftVersionComponents[1]
-
     let package_swift = """
-    // swift-tools-version:\(swiftVersionShort)
+    // swift-tools-version:4.2
     import PackageDescription
-    
-    let deps: [Package.Dependency] = [\(packages_specs)]
     
     let package = Package(
         name: "jupyterInstalledPackages",
@@ -157,11 +147,11 @@ func install_packages(
                 type: .dynamic,
                 targets: ["jupyterInstalledPackages"]),
         ],
-        dependencies: deps,
+        dependencies: [\(packages_specs)],
         targets: [
             .target(
                 name: "jupyterInstalledPackages",
-                dependencies: deps.map { .byName(name: $0.name!) },
+                dependencies: [\(packages_products)],
                 path: ".",
                 sources: ["jupyterInstalledPackages.swift"]),
         ]
