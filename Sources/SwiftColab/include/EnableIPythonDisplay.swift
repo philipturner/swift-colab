@@ -96,4 +96,6 @@ extension Plot {
 }
 #endif
 
+var __cannot_import_both_ipythondisplay_and_jupyter_display = true
+
 IPythonDisplay.enable()
