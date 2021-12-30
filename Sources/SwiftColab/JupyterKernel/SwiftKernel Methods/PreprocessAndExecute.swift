@@ -77,13 +77,13 @@ fileprivate func preprocess(_ selfRef: PythonObject, code: PythonObject) throws 
 // Goal: swap the role of system commands and %include commands.
 // For now, sort out the %include commands and execute them first.
 // Then, work into executing them in process_installs
-fileprivate typealias PreprocessReturn = (isInclude: Bool, line: PythonObject)
+fileprivate typealias PreprocessLineReturn = (isInclude: Bool, line: PythonObject)
 
 /// Returns the preprocessed line.
 ///
 /// Does not process "%install" directives, because those need to be
 /// handled before everything else.
-fileprivate func preprocess_line(_ selfRef: PythonObject, line_index: PythonObject, line: PythonObject) throws -> PreprocessReturn {
+fileprivate func preprocess_line(_ selfRef: PythonObject, line_index: PythonObject, line: PythonObject) throws -> PreprocessLineReturn {
     let include_match = re.match(###"""
     ^\s*%include (.*)$
     """###, line)
