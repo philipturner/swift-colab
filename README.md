@@ -5,11 +5,9 @@
 Copy [this template](https://colab.research.google.com/drive/1EACIWrk9IWloUckRm3wu973bKUBXQDKR?usp=sharing) of a Swift Colab notebook. Do not create one directly from Google Drive, as notebooks are configured for Python by default. Copy the following command into the first code cell and run it:
 
 ```swift
-!curl "https://raw.githubusercontent.com/philipturner/swift-colab/pre-release/0.3/install_swift.sh" --output "install_swift.sh" && bash "install_swift.sh" "5.5.2" #// Replace 5.5.2 with newest Swift version
+!curl "https://raw.githubusercontent.com/philipturner/swift-colab/release/latest/install_swift.sh" --output "install_swift.sh" && bash "install_swift.sh" "5.5.2" #// Replace 5.5.2 with newest Swift version
 #// After this command finishes, go to Runtime > Restart runtime.
 ```
-
-> Warning: The main branch frequently changes and may break Colab support. The above command pulls from the [`pre-release/0.3`](https://github.com/philipturner/swift-colab/tree/pre-release/0.3) branch.
 
 In the output stream, you will see:
 
@@ -51,9 +49,10 @@ import PythonKit
 import Differentiation
 ```
 
-## Sample Code
+## Sample code
 
 The code on the README of google/swift-jupyter about SwiftPlot will not compile. Replace it with the following:
+
 ```swift
 import Foundation
 import SwiftPlot
@@ -79,7 +78,32 @@ display(base64EncodedPNG: aggRenderer.base64Png())
 ```
 
 And add these statements to the bottom of the code cell that imports PythonKit and Differentiation:
+
 ```swift
 %install-swiftpm-flags -Xcc -isystem/usr/include/freetype2 -Xswiftc -lfreetype
 %install '.package(url: "https://github.com/KarthikRIyer/swiftplot", .branch("master"))' SwiftPlot AGGRenderer
 ```
+
+## Testing
+
+To test Swift-Colab against recent Swift toolchains and ensure support is never dropped from Colab again, you can run the following tests. These Colab notebooks originated from Python [unit tests](https://github.com/google/swift-jupyter/tree/main/test/tests) in google/swift-jupyter:
+
+| Test | Passing | Last Tested |
+| ---- | --------------- | ----------- |
+| [kernel_tests](https://colab.research.google.com/drive/1vooU1XVHSpolOSmVUKM4Wj6opEJBt7zs?usp=sharing) | ✅ | Swift 5.5.2 (December 2021) |
+| [own_kernel_tests](https://colab.research.google.com/drive/1nHitEZm9QZNheM-ALajARyRZY2xpZr00?usp=sharing) | ✅ | Swift 5.5.2 (December 2021) |
+| [simple_notebook_tests](https://colab.research.google.com/drive/18316eFVMw-NIlA9OandB7djvp0J4jI0-?usp=sharing) | ✅ | Swift 5.5.2 (December 2021) |
+
+You can also test some tutorial notebooks on [tensorflow/swift](https://github.com/tensorflow/swift) that don't import TensorFlow. Paste the contents of [Swift-Template](https://colab.research.google.com/drive/1EACIWrk9IWloUckRm3wu973bKUBXQDKR?usp=sharing) into the top of each S4TF tutorial.
+
+<!-- Emoji shortcuts for reference: ✅ ❌ -->
+
+| Tutorial (excluding TensorFlow cells) | Passing | Last Tested |
+| -------- | --------------- | ----------- |
+| [A Swift Tour](https://colab.research.google.com/github/tensorflow/swift/blob/main/docs/site/tutorials/a_swift_tour.ipynb) | ✅ | Swift 5.5.2 (December 2021) |
+| [Protocol-Oriented Programming & Generics](https://colab.research.google.com/github/tensorflow/swift/blob/main/docs/site/tutorials/protocol_oriented_generics.ipynb) | ✅ | Swift 5.5.2 (December 2021) |
+| [Python Interoperablity](https://colab.research.google.com/github/tensorflow/swift/blob/main/docs/site/tutorials/python_interoperability.ipynb) | ❌ | Swift 5.5.2 (December 2021) |
+| [Custom Differentiation](https://colab.research.google.com/github/tensorflow/swift/blob/main/docs/site/tutorials/custom_differentiation.ipynb) | ❌ | Swift 5.5.2 (December 2021) |
+| [Sharp Edges In Differentiability](https://colab.research.google.com/github/tensorflow/swift/blob/main/docs/site/tutorials/Swift_autodiff_sharp_edges.ipynbb) | ❌ | Swift 5.5.2 (December 2021) |
+
+Python Interoperability and Sharp Edges in Differentiability can be made to pass with minor tweaks. Custom Differentation must be entirely overhauled.
