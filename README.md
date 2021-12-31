@@ -1,6 +1,6 @@
 # Swift-Colab
 
-In March 2021, Google ended built-in Swift support on Colab as part of their *attempt* to end S4TF. Less than a year later, the open-source community is resurrecting S4TF, and Colab support is a vital component of that. It allows testing on TPUs and ensuring new modifications don't break existing support for accelerators.
+In March 2021, Google ended built-in Swift support on Colab as part of their *attempt* to end [S4TF](https://github.com/tensorflow/swift). Less than a year later, the open-source community is resurrecting S4TF, and Colab support is a vital component of that. It allows testing on TPUs and ensuring new modifications don't break existing support for accelerators.
 
 Furthermore, Colab is a very accessible way to do programming with Swift. It runs instantly without downloading an IDE, and it can even run on a Chromebook or mobile device.
 
