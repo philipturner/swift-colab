@@ -1,5 +1,9 @@
 # Swift-Colab
 
+In March 2021, Google ended Swift support on Colab as part of their *attempt* to end S4TF. Less than a year later, the open-source community is resurrecting S4TF, and Colab support is a vital component of that. It allows testing on TPUs and ensuring new modifications don't break existing support for accelerators.
+
+Furthermore, Colab is a very accessible way to do programming with Swift. It runs instantly without downloading an IDE, and it can even run on a Chromebook or mobile device.
+
 ## How to run Swift on Google Colaboratory
 
 Copy [this template](https://colab.research.google.com/drive/1EACIWrk9IWloUckRm3wu973bKUBXQDKR?usp=sharing) of a Swift Colab notebook. Do not create one directly from Google Drive, as notebooks are configured for Python by default. Copy the following command into the first code cell and run it:
