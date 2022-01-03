@@ -33,7 +33,7 @@ func doCommand(_ args: [String], directory: String? = nil) throws {
 // Copy lldb package to swift-colab/PythonPackages
 let lldbSourceDirectory = "/opt/swift/toolchain/usr/lib/python3/dist-packages"
 let lldbTargetDirectory = "/opt/swift/swift-colab/PythonPackages/lldb"
-let shouldUpdateLLDB = CommandLine.arguments.count >= 3 && CommandLine.arguments[2] = "false"
+let shouldUpdateLLDB = CommandLine.arguments.count >= 3 && CommandLine.arguments[2] == "false"
 
 if shouldUpdateLLDB {
     for subpath in try fm.contentsOfDirectory(atPath: lldbSourceDirectory) {
