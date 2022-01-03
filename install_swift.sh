@@ -23,7 +23,7 @@ if [[ ! -d toolchain ]]
 then  
   echo "=== Downloading Swift ==="
   
-  if [[ $# >= 2 ]]
+  if [[ "$#" == "2" ]]
   then
     if [[ $2 == "development" ]]
     then
