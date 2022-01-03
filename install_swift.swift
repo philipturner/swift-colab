@@ -35,6 +35,8 @@ let lldbSourceDirectory = "/opt/swift/toolchain/usr/lib/python3/dist-packages"
 let lldbTargetDirectory = "/opt/swift/swift-colab/PythonPackages/lldb"
 let shouldUpdateLLDB = CommandLine.arguments.count >= 3 && CommandLine.arguments[2] == "false"
 
+print("debug checkpoint 0")
+
 if shouldUpdateLLDB {
     for subpath in try fm.contentsOfDirectory(atPath: lldbSourceDirectory) {
         let sourcePath = "\(lldbSourceDirectory)/\(subpath)"
@@ -44,6 +46,8 @@ if shouldUpdateLLDB {
     }
 }
 
+print("debug checkpoint 1")
+
 // Install Python packages
 try fm.createDirectory(atPath: "/env/python", withIntermediateDirectories: true)
 
@@ -52,6 +56,8 @@ let packageMetadata = [
     (name: "Swift", forceReinstall: false),
     (name: "lldb", forceReinstall: shouldReinstall && shouldUpdateLLDB)
 ]
+
+print("debug checkpoint 2")
 
 for metadata in packageMetadata {
     let targetPath = "/env/python/\(metadata.name)"
@@ -66,6 +72,8 @@ for metadata in packageMetadata {
                       directory: targetPath)
     }
 }
+
+print("debug checkpoint 3")
 
 // Move the LLDB binary to Python search path
 var pythonSearchPath = "/usr/local/lib"
@@ -87,6 +95,8 @@ if shouldUpdateLLDB {
     }
 }
 
+print("debug checkpoint 4")
+
 try fm.createDirectory(atPath: "/opt/swift/tmp", withIntermediateDirectories: true)
 try fm.createDirectory(atPath: "/opt/swift/lib", withIntermediateDirectories: true)
 try fm.createDirectory(atPath: "/opt/swift/packages", withIntermediateDirectories: true)
@@ -100,6 +110,8 @@ try doCommand(["swift", "build", "-c", "release", "-Xswiftc", "-Onone"],
 
 try? fm.removeItem(atPath: pythonKitLibPath)
 try fm.copyItem(atPath: "\(pythonKitProductsPath)/libPythonKit.so", toPath: pythonKitLibPath)
+
+print("debug checkpoint 5")
 
 // Install SwiftPythonBridge
 let spbProductsPath = "/opt/swift/packages/SwiftPythonBridge"
