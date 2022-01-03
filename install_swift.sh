@@ -7,6 +7,7 @@ fi
 
 cd /opt/swift
 should_reinstall="false"
+is_development="false"
 
 if [[ -e "swiftpm-version.txt" ]]
 then
@@ -25,6 +26,8 @@ then
   
   if [[ "$#" == "2" ]]
   then
+    is_development="true"
+    
     if [[ $2 == "development" ]]
     then
       # $1 is the snapshot date (e.g. 2021-12-23)
@@ -65,4 +68,4 @@ fi
 git clone --single-branch -b main https://github.com/philipturner/swift-colab
 
 export PATH="/opt/swift/toolchain/usr/bin:$PATH"
-swift swift-colab/install_swift.swift $should_reinstall
+swift swift-colab/install_swift.swift $should_reinstall $is_development
