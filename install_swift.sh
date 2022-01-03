@@ -21,11 +21,26 @@ echo $1 > "swiftpm-version.txt"
 
 if [[ ! -d toolchain ]]
 then  
-  # $1 is the Swift version (e.g. 5.5.2)
   echo "=== Downloading Swift ==="
-  tar_file="swift-$1-RELEASE-ubuntu18.04"
   
-  curl "https://download.swift.org/swift-$1-release/ubuntu1804/swift-$1-RELEASE/${tar_file}.tar.gz" | tar -xz
+  if [[ $# >= 2 ]]
+  then
+    if [[ $2 == "development" ]]
+    then
+      # $1 is the snapshot date (e.g. 2021-12-23)
+      tar_file="swift-DEVELOPMENT-SNAPSHOT-$2-a-ubuntu18.04"
+      curl "https://download.swift.org/development/ubuntu1804/swift-DEVELOPMENT-SNAPSHOT-$2-a/${tar_file}.tar.gz" | tar -xz
+    else
+      # You chose something custom and must specify both the URL and tar file name
+      tar_file = $2
+      curl $1 | tar -xz
+    fi
+  else
+    # $1 is the Swift version (e.g. 5.5.2)
+    tar_file="swift-$1-RELEASE-ubuntu18.04"
+    curl "https://download.swift.org/swift-$1-release/ubuntu1804/swift-$1-RELEASE/${tar_file}.tar.gz" | tar -xz
+  fi
+  
   mv "${tar_file}" toolchain
   
   apt install patchelf
