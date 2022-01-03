@@ -33,12 +33,15 @@ func doCommand(_ args: [String], directory: String? = nil) throws {
 // Copy lldb package to swift-colab/PythonPackages
 let lldbSourceDirectory = "/opt/swift/toolchain/usr/lib/python3/dist-packages"
 let lldbTargetDirectory = "/opt/swift/swift-colab/PythonPackages/lldb"
+let shouldUpdateLLDB = CommandLine.arguments.count >= 3 && CommandLine.arguments[2] = "false"
 
-for subpath in try fm.contentsOfDirectory(atPath: lldbSourceDirectory) {
-    let sourcePath = "\(lldbSourceDirectory)/\(subpath)"
-    let targetPath = "\(lldbTargetDirectory)/\(subpath)"
-    
-    try? fm.copyItem(atPath: sourcePath, toPath: targetPath)
+if shouldUpdateLLDB {
+    for subpath in try fm.contentsOfDirectory(atPath: lldbSourceDirectory) {
+        let sourcePath = "\(lldbSourceDirectory)/\(subpath)"
+        let targetPath = "\(lldbTargetDirectory)/\(subpath)"
+
+        try? fm.copyItem(atPath: sourcePath, toPath: targetPath)
+    }
 }
 
 // Install Python packages
@@ -47,7 +50,7 @@ try fm.createDirectory(atPath: "/env/python", withIntermediateDirectories: true)
 let packageSourceDirectory = "/opt/swift/swift-colab/PythonPackages"
 let packageMetadata = [
     (name: "Swift", forceReinstall: false),
-    (name: "lldb", forceReinstall: shouldReinstall)
+    (name: "lldb", forceReinstall: shouldReinstall && shouldUpdateLLDB)
 ]
 
 for metadata in packageMetadata {
@@ -67,19 +70,21 @@ for metadata in packageMetadata {
 // Move the LLDB binary to Python search path
 var pythonSearchPath = "/usr/local/lib"
 
-do {
-    let possibleFolders = try fm.contentsOfDirectory(atPath: pythonSearchPath).filter { $0.hasPrefix("python3.") }
-    let folderNumbers = possibleFolders.map { $0.dropFirst("python3.".count) }
-    let pythonVersion = "python3.\(folderNumbers.max()!)"
-    pythonSearchPath += "/\(pythonVersion)/dist-packages"
-}
+if shouldUpdateLLDB {
+    do {
+        let possibleFolders = try fm.contentsOfDirectory(atPath: pythonSearchPath).filter { $0.hasPrefix("python3.") }
+        let folderNumbers = possibleFolders.map { $0.dropFirst("python3.".count) }
+        let pythonVersion = "python3.\(folderNumbers.max()!)"
+        pythonSearchPath += "/\(pythonVersion)/dist-packages"
+    }
 
-do {
-    let sourcePath = "\(lldbSourceDirectory)/lldb/_lldb.so"
-    let targetPath = "\(pythonSearchPath)/lldb/_lldb.so"
-    
-    try? fm.removeItem(atPath: targetPath)
-    try fm.createSymbolicLink(atPath: targetPath, withDestinationPath: sourcePath)
+    do {
+        let sourcePath = "\(lldbSourceDirectory)/lldb/_lldb.so"
+        let targetPath = "\(pythonSearchPath)/lldb/_lldb.so"
+
+        try? fm.removeItem(atPath: targetPath)
+        try fm.createSymbolicLink(atPath: targetPath, withDestinationPath: sourcePath)
+    }
 }
 
 try fm.createDirectory(atPath: "/opt/swift/tmp", withIntermediateDirectories: true)
