@@ -40,7 +40,7 @@ for subpath in try fm.contentsOfDirectory(atPath: lldbSourceDirectory) {
     
     try? fm.copyItem(atPath: sourcePath, toPath: targetPath)
 }
-
+print("debug checkpoint 1")
 // Install Python packages
 try fm.createDirectory(atPath: "/env/python", withIntermediateDirectories: true)
 
@@ -49,7 +49,7 @@ let packageMetadata = [
     (name: "Swift", forceReinstall: false),
     (name: "lldb", forceReinstall: shouldReinstall)
 ]
-
+print("debug checkpoint 2")
 for metadata in packageMetadata {
     let targetPath = "/env/python/\(metadata.name)"
     
@@ -66,14 +66,14 @@ for metadata in packageMetadata {
 
 // Move the LLDB binary to Python search path
 var pythonSearchPath = "/usr/local/lib"
-
+print("debug checkpoint 3")
 do {
     let possibleFolders = try fm.contentsOfDirectory(atPath: pythonSearchPath).filter { $0.hasPrefix("python3.") }
     let folderNumbers = possibleFolders.map { $0.dropFirst("python3.".count) }
     let pythonVersion = "python3.\(folderNumbers.max()!)"
     pythonSearchPath += "/\(pythonVersion)/dist-packages"
 }
-
+print("debug checkpoint 4")
 do {
     let sourcePath = "\(lldbSourceDirectory)/lldb/_lldb.so"
     let targetPath = "\(pythonSearchPath)/lldb/_lldb.so"
@@ -81,7 +81,7 @@ do {
     try? fm.removeItem(atPath: targetPath)
     try fm.createSymbolicLink(atPath: targetPath, withDestinationPath: sourcePath)
 }
-
+print("debug checkpoint 5")
 try fm.createDirectory(atPath: "/opt/swift/tmp", withIntermediateDirectories: true)
 try fm.createDirectory(atPath: "/opt/swift/lib", withIntermediateDirectories: true)
 try fm.createDirectory(atPath: "/opt/swift/packages", withIntermediateDirectories: true)
@@ -92,7 +92,7 @@ let pythonKitLibPath = "/opt/swift/lib/libPythonKit.so"
 
 try doCommand(["swift", "build", "-c", "release", "-Xswiftc", "-Onone"],
               directory: "/opt/swift/packages/PythonKit")
-
+print("debug checkpoint 6")
 try? fm.removeItem(atPath: pythonKitLibPath)
 try fm.copyItem(atPath: "\(pythonKitProductsPath)/libPythonKit.so", toPath: pythonKitLibPath)
 
@@ -100,7 +100,7 @@ try fm.copyItem(atPath: "\(pythonKitProductsPath)/libPythonKit.so", toPath: pyth
 let spbProductsPath = "/opt/swift/packages/SwiftPythonBridge"
 let spbLibPath = "/opt/swift/lib/libSwiftPythonBridge.so"
 let spbSourcePath = "/opt/swift/swift-colab/Sources/SwiftColab/SwiftPythonBridge"
-
+print("debug checkpoint 7")
 if shouldReinstall {
     try? fm.removeItem(atPath: spbProductsPath)
 }
@@ -111,7 +111,7 @@ let spbSourceFilePaths = try fm.subpathsOfDirectory(atPath: spbSourcePath).filte
 }.map {
     "\(spbSourcePath)/\($0)"
 }
-
+print("debug checkpoint 8")
 try doCommand(["swiftc", "-Onone"] + spbSourceFilePaths + [
                "-L", pythonKitProductsPath, "-lPythonKit",
                "-I", pythonKitProductsPath,
@@ -121,7 +121,7 @@ try doCommand(["swiftc", "-Onone"] + spbSourceFilePaths + [
 
 try? fm.removeItem(atPath: spbLibPath)
 try fm.copyItem(atPath: "\(spbProductsPath)/libSwiftPythonBridge.so", toPath: spbLibPath)
-
+print("debug checkpoint 9")
 try doCommand(["patchelf", "--replace-needed", "libPythonKit.so", pythonKitLibPath, spbLibPath])
 
 // Install JupyterKernel
@@ -131,7 +131,7 @@ let jupyterSourcePath = "/opt/swift/swift-colab/Sources/SwiftColab/JupyterKernel
 
 try? fm.removeItem(atPath: jupyterProductsPath)
 try fm.createDirectory(atPath: jupyterProductsPath, withIntermediateDirectories: true)
-
+print("debug checkpoint 10")
 let jupyterSourceFilePaths = try fm.subpathsOfDirectory(atPath: jupyterSourcePath).filter {
     $0.hasSuffix(".swift") 
 }.map {
