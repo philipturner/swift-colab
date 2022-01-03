@@ -34,7 +34,7 @@ func doCommand(_ args: [String], directory: String? = nil) throws {
 let lldbSourceDirectory = "/opt/swift/toolchain/usr/lib/python3/dist-packages"
 let lldbTargetDirectory = "/opt/swift/swift-colab/PythonPackages/lldb"
 let shouldUpdateLLDB = CommandLine.arguments.count >= 3 && CommandLine.arguments[2] == "false"
-
+print(shouldUpdateLLDB, CommandLine.arguments)
 print("debug checkpoint 0")
 
 if shouldUpdateLLDB {
