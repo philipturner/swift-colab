@@ -28,8 +28,8 @@ then
     if [[ $2 == "development" ]]
     then
       # $1 is the snapshot date (e.g. 2021-12-23)
-      tar_file="swift-DEVELOPMENT-SNAPSHOT-$2-a-ubuntu18.04"
-      curl "https://download.swift.org/development/ubuntu1804/swift-DEVELOPMENT-SNAPSHOT-$2-a/${tar_file}.tar.gz" | tar -xz
+      tar_file="swift-DEVELOPMENT-SNAPSHOT-$1-a-ubuntu18.04"
+      curl "https://download.swift.org/development/ubuntu1804/swift-DEVELOPMENT-SNAPSHOT-$1-a/${tar_file}.tar.gz" | tar -xz
     else
       # You chose something custom and must specify both the URL and tar file name
       tar_file = $2
