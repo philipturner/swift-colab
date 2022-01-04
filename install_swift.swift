@@ -88,7 +88,7 @@ if shouldUpdateLLDB {
     try? fm.removeItem(atPath: targetPath)
     try fm.createSymbolicLink(atPath: targetPath, withDestinationPath: lldbSymbolicLinkPath)
     
-    let lldbRealLinkPath = lldbParentDirectory + "/" + try fm.destinationOfSymbolicLink(atPath: lldbSymbolicLinkPath)
+    let lldbRealLinkPath = "\(lldbParentDirectory)/\(try fm.destinationOfSymbolicLink(atPath: lldbSymbolicLinkPath))"
     do {
         try fm.copyItem(atPath: lldbRealLinkPath, toPath: "\(saveDirectory)/liblldb.so")
     } catch {
