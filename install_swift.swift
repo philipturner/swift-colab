@@ -72,6 +72,8 @@ print("debug checkpoint 3")
 // Move the LLDB binary to Python search path
 
 let lldbSymbolicLinkPath = "/opt/swift/toolchain/usr/lib/liblldb.so"
+let saveDirectory = "/opt/swift/save-lldb"
+try fm.createDirectory(atPath: saveDirectory, withIntermediateDirectories: true)
 
 if shouldUpdateLLDB {
     var targetPath = "/usr/local/lib"
@@ -85,36 +87,44 @@ if shouldUpdateLLDB {
     try? fm.removeItem(atPath: targetPath)
     try fm.createSymbolicLink(atPath: targetPath, withDestinationPath: lldbSymbolicLinkPath)
     
-    // Save LLDB files that aren't included in debug toolchains
-    
-    let saveDirectory = "/opt/swift/save-lldb"
-    try fm.createDirectory(atPath: saveDirectory, withIntermediateDirectories: true)
+    let lldbRealLinkPath = try fm.destinationOfSymbolicLink(atPath: lldbSymbolicLinkPath)
+    do {
+        try fm.copyItem(atPath: lldbRealLinkPath, toPath: "\(saveDirectory)/liblldb.so")
+    } catch {
+        print("couldn't copy item #1: \(error.localizedDescription)")
+    }
+} else {
+    do {
+        try fm.copyItem(atPath: "\(saveDirectory)/liblldb.so", toPath: lldbSymbolicLinkPath)
+    } catch {
+        print("couldn't copy item #2: \(error.localizedDescription)")
+    }
 }
 
-do {
-    var sourceDirectory = "/opt/swift/toolchain/usr/lib"
-    var targetDirectory = "/opt/swift/save-lldb"
-    let tempVar = try? fm.destinationOfSymbolicLink(atPath: "/opt/swift/toolchain/usr/lib/liblldb.so")
-    print(tempVar ?? "no link")
-    let tempVar2 = try? fm.destinationOfSymbolicLink(atPath: tempVar ?? "")
-    print(tempVar2 ?? "no link")
-    try fm.createDirectory(atPath: targetDirectory, withIntermediateDirectories: true)
+// do {
+//     var sourceDirectory = "/opt/swift/toolchain/usr/lib"
+//     var targetDirectory = "/opt/swift/save-lldb"
+//     let tempVar = try? fm.destinationOfSymbolicLink(atPath: "/opt/swift/toolchain/usr/lib/liblldb.so")
+//     print(tempVar ?? "no link")
+//     let tempVar2 = try? fm.destinationOfSymbolicLink(atPath: tempVar ?? "")
+//     print(tempVar2 ?? "no link")
+//     try fm.createDirectory(atPath: targetDirectory, withIntermediateDirectories: true)
     
-    if !shouldUpdateLLDB {
-        swap(&sourceDirectory, &targetDirectory)
-    }
+//     if !shouldUpdateLLDB {
+//         swap(&sourceDirectory, &targetDirectory)
+//     }
     
-    for libFile in try fm.contentsOfDirectory(atPath: sourceDirectory).filter({ $0.starts(with: "liblldb") }) {
-        let sourceLibFilePath = "\(sourceDirectory)/\(libFile)"
-        let targetLibFilePath = "\(targetDirectory)/\(libFile)"
+//     for libFile in try fm.contentsOfDirectory(atPath: sourceDirectory).filter({ $0.starts(with: "liblldb") }) {
+//         let sourceLibFilePath = "\(sourceDirectory)/\(libFile)"
+//         let targetLibFilePath = "\(targetDirectory)/\(libFile)"
         
-        do {
-            try fm.copyItem(atPath: sourceLibFilePath, toPath: targetLibFilePath)
-        } catch {
-            print("Couldn't copy an LLDB lib file: \(error.localizedDescription)")
-        }
-    }
-}
+//         do {
+//             try fm.copyItem(atPath: sourceLibFilePath, toPath: targetLibFilePath)
+//         } catch {
+//             print("Couldn't copy an LLDB lib file: \(error.localizedDescription)")
+//         }
+//     }
+// }
 
 print("debug checkpoint 4")
 
