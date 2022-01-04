@@ -99,7 +99,7 @@ if shouldUpdateLLDB {
         try fm.createDirectory(atPath: saveLLDBDirectory, withIntermediateDirectories: true)
         let libSourceDirectory = "/opt/swift/toolchain/usr/lib"
         
-        for libFile = try fm.contentsOfDirectory(atPath: libSourceDirectory).filter({ $0.starts(with: "liblldb") {
+        for libFile = try fm.contentsOfDirectory(atPath: libSourceDirectory).filter({ $0.starts(with: "liblldb") }) {
             let sourceLibFilePath = "\(libSourceDirectory)/\(libFile)"
             let targetLibFilePath = "\(saveLLDBDirectory)/\(libFile)"
             
@@ -109,6 +109,8 @@ if shouldUpdateLLDB {
                 print("Couldn't copy an LLDB lib file: \(error.localizedDescription)")
             }
         }
+        
+        // TODO: refactor the above to that the code can be reused by release and dev toolchains
         
 //         print("debug checkpoint 3.6")
         
