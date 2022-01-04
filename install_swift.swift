@@ -103,7 +103,7 @@ if shouldUpdateLLDB {
         try fm.copyItem(atPath: truePath, toPath: "\(saveLLDBDirectory)/_lldb.so")
     }
 } else {
-    try fm.createDirectory(atPath: "\(lldbSourceDirectory)/lldb")
+    try fm.createDirectory(atPath: "\(lldbSourceDirectory)/lldb", withIntermediateDirectories: true)
     try fm.copyItem(atPath: "\(saveLLDBDirectory)/_lldb.so", toPath: "\(lldbSourceDirectory)/lldb/_lldb.so")
 }
 
