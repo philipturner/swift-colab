@@ -103,6 +103,7 @@ if shouldUpdateLLDB {
             try fm.createSymbolicLink(atPath: targetPath, withDestinationPath: sourcePath)
         } catch {
             fatalError("\(targetPath) --- \(sourcePath) --- \(error.localizedDescription)")
+        }
         
         
         print("debug checkpoint 3.5")
