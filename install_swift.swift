@@ -74,17 +74,16 @@ print("debug checkpoint 3")
 let lldbSymbolicLinkPath = "/opt/swift/toolchain/usr/lib/liblldb.so"
 
 if shouldUpdateLLDB {
-    var pythonSearchPath = "/usr/local/lib"
+    var targetPath = "/usr/local/lib"
     
-    let possibleFolders = try fm.contentsOfDirectory(atPath: pythonSearchPath).filter { $0.hasPrefix("python3.") }
+    let possibleFolders = try fm.contentsOfDirectory(atPath: targetPath).filter { $0.hasPrefix("python3.") }
     let folderNumbers = possibleFolders.map { $0.dropFirst("python3.".count) }
     let pythonVersion = "python3.\(folderNumbers.max()!)"
-    pythonSearchPath += "/\(pythonVersion)/dist-packages"
-
-    let targetPath = "\(pythonSearchPath)/lldb/_lldb.so"
+    
+    targetPath += "/\(pythonVersion)/dist-packages/lldb/_lldb.so"
     
     try? fm.removeItem(atPath: targetPath)
-    try fm.createSymbolicLink(atPath: targetPath, withDestinationPath: "/opt/swift/toolchain/usr/lib/liblldb.so")
+    try fm.createSymbolicLink(atPath: targetPath, withDestinationPath: lldbSymbolicLinkPath)
 }
 
 do {
