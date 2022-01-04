@@ -72,10 +72,8 @@ print("debug checkpoint 3")
 // Move the LLDB binary to Python search path
 
 let lldbParentDirectory = "/opt/swift/toolchain/usr/lib"
-let lldbSymbolicLinkPath = "\(lldbParentDirectory)/liblldb.so"
-
-let saveDirectory = "/opt/swift/save-lldb"
-try fm.createDirectory(atPath: saveDirectory, withIntermediateDirectories: true)
+let lldbSaveDirectory = "/opt/swift/save-lldb"
+try fm.createDirectory(atPath: lldbSaveDirectory, withIntermediateDirectories: true)
 
 if shouldUpdateLLDB {
     var targetPath = "/usr/local/lib"
@@ -85,7 +83,8 @@ if shouldUpdateLLDB {
     let pythonVersion = "python3.\(folderNumbers.max()!)"
     targetPath += "/\(pythonVersion)/dist-packages/lldb/_lldb.so"
     
-    let realLibName = 
+    let lldbSymbolicLinkPath = "\(lldbParentDirectory)/liblldb.so"
+    let realLibName = try fm.destinationOfSymbolicLink(atPath: lldbSymbolicLinkPath)
     
     // comment out everything below
     
