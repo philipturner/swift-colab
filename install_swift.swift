@@ -89,20 +89,22 @@ if shouldUpdateLLDB {
         try fm.createSymbolicLink(atPath: targetPath, withDestinationPath: sourcePath)
     }
 } else {
-    try fm.createDirectory(atPath: "\(lldbSourceDirectory)/lldb", withIntermediateDirectories: true)
-    try fm.copyItem(atPath: "\(saveLLDBDirectory)/_lldb.so", toPath: "\(lldbSourceDirectory)/lldb/_lldb.so")
+//     try fm.createDirectory(atPath: "\(lldbSourceDirectory)/lldb", withIntermediateDirectories: true)
+//     try fm.copyItem(atPath: "\(saveLLDBDirectory)/_lldb.so", toPath: "\(lldbSourceDirectory)/lldb/_lldb.so")
 }
 
 do {
-    let saveLLDBDirectory = "/opt/swift/save-lldb"
+    var sourceDirectory = "/opt/swift/toolchain/usr/lib"
+    var targetDirectory = "/opt/swift/save-lldb"
+    try fm.createDirectory(atPath: targetDirectory, withIntermediateDirectories: true)
     
-    // Save LLDB binary for if using development toolchain next, as only release toolchains come with it
-    try fm.createDirectory(atPath: saveLLDBDirectory, withIntermediateDirectories: true)
-    let libSourceDirectory = "/opt/swift/toolchain/usr/lib"
+    if !shouldUpdateLLDB {
+        swap(&sourceDirectory, &targetDirectory)
+    }
     
-    for libFile in try fm.contentsOfDirectory(atPath: libSourceDirectory).filter({ $0.starts(with: "liblldb") }) {
-        let sourceLibFilePath = "\(libSourceDirectory)/\(libFile)"
-        let targetLibFilePath = "\(saveLLDBDirectory)/\(libFile)"
+    for libFile in try fm.contentsOfDirectory(atPath: sourceDirectory).filter({ $0.starts(with: "liblldb") }) {
+        let sourceLibFilePath = "\(sourceDirectory)/\(libFile)"
+        let targetLibFilePath = "\(targetDirectory)/\(libFile)"
         
         do {
             try fm.copyItem(atPath: sourceLibFilePath, toPath: targetLibFilePath)
