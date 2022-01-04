@@ -76,16 +76,17 @@ for metadata in packageMetadata {
 print("debug checkpoint 3")
 
 // Move the LLDB binary to Python search path
-var pythonSearchPath = "/usr/local/lib"
 
 if shouldUpdateLLDB {
+    var pythonSearchPath = "/usr/local/lib"
+    
     do {
         let possibleFolders = try fm.contentsOfDirectory(atPath: pythonSearchPath).filter { $0.hasPrefix("python3.") }
         let folderNumbers = possibleFolders.map { $0.dropFirst("python3.".count) }
         let pythonVersion = "python3.\(folderNumbers.max()!)"
         pythonSearchPath += "/\(pythonVersion)/dist-packages"
     }
-
+    
     do {
         let sourcePath = "\(lldbSourceDirectory)/lldb/_lldb.so"
         let targetPath = "\(pythonSearchPath)/lldb/_lldb.so"
@@ -93,6 +94,8 @@ if shouldUpdateLLDB {
         try? fm.removeItem(atPath: targetPath)
         try fm.createSymbolicLink(atPath: targetPath, withDestinationPath: sourcePath)
     }
+} else {
+    
 }
 
 print("debug checkpoint 4")
