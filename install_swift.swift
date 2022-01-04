@@ -129,7 +129,7 @@ if shouldUpdateLLDB {
 //     try? fm.removeItem(atPath: targetPath)
 //     try fm.createSymbolicLink(atPath: targetPath, withDestinationPath: "/opt/swift/liblldb.so.10git")
 } else {
-    for fileName in ["liblldb.so.10git", "liblldb.so.10.0.0git"] {
+    for fileName in fm.contentsOfDirectory(atPath: lldbSaveDirectory) {
         let sourcePath = "\(lldbSaveDirectory)/\(fileName)"
         let targetPath = "\(lldbParentDirectory)/\(fileName)"
         
