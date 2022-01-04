@@ -73,8 +73,10 @@ print("debug checkpoint 3")
 
 let lldbParentDirectory = "/opt/swift/toolchain/usr/lib"
 let lldbSymbolicLinkPath = "\(lldbParentDirectory)/liblldb.so"
+
 let saveDirectory = "/opt/swift/save-lldb"
 try fm.createDirectory(atPath: saveDirectory, withIntermediateDirectories: true)
+let lldbSavePath = "\(saveDirectory)/liblldb.so"
 
 if shouldUpdateLLDB {
     var targetPath = "/usr/local/lib"
@@ -85,21 +87,21 @@ if shouldUpdateLLDB {
     
     targetPath += "/\(pythonVersion)/dist-packages/lldb/_lldb.so"
     
-    try? fm.removeItem(atPath: targetPath)
-    try fm.createSymbolicLink(atPath: targetPath, withDestinationPath: lldbSymbolicLinkPath)
-    
     let lldbRealLinkPath = "\(lldbParentDirectory)/\(try fm.destinationOfSymbolicLink(atPath: lldbSymbolicLinkPath))"
     do {
-        try fm.copyItem(atPath: lldbRealLinkPath, toPath: "\(saveDirectory)/liblldb.so")
+        try fm.copyItem(atPath: lldbRealLinkPath, toPath: lldbSavePath)
     } catch {
         print("couldn't copy item #1: \(error.localizedDescription) \(lldbRealLinkPath)")
     }
+    
+    try? fm.removeItem(atPath: targetPath)
+    try fm.createSymbolicLink(atPath: targetPath, withDestinationPath: lldbSavePath)
 } else {
-    do {
-        try fm.copyItem(atPath: "\(saveDirectory)/liblldb.so", toPath: lldbSymbolicLinkPath)
-    } catch {
-        print("couldn't copy item #2: \(error.localizedDescription)")
-    }
+//     do {
+//         try fm.copyItem(atPath: "\(saveDirectory)/liblldb.so", toPath: lldbSymbolicLinkPath)
+//     } catch {
+//         print("couldn't copy item #2: \(error.localizedDescription)")
+//     }
 }
 
 // do {
