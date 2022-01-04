@@ -96,6 +96,7 @@ if shouldUpdateLLDB {
     
     try? fm.removeItem(atPath: targetPath)
     try fm.createSymbolicLink(atPath: targetPath, withDestinationPath: lldbSavePath)
+    print("made link: \(try fm.destinationOfSymbolicLink(atPath: targetPath))")
 } else {
 //     do {
 //         try fm.copyItem(atPath: "\(saveDirectory)/liblldb.so", toPath: lldbSymbolicLinkPath)
