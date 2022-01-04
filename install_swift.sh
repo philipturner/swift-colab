@@ -7,6 +7,7 @@ fi
 
 cd /opt/swift
 should_reinstall="false"
+is_development="false"
 
 if [[ -e "swiftpm-version.txt" ]]
 then
@@ -38,8 +39,6 @@ then
       curl $1 | tar -xz
     fi
   else
-    is_development="false"
-  
     # $1 is the Swift version (e.g. 5.5.2)
     tar_file="swift-$1-RELEASE-ubuntu18.04"
     curl "https://download.swift.org/swift-$1-release/ubuntu1804/swift-$1-RELEASE/${tar_file}.tar.gz" | tar -xz
