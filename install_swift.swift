@@ -95,7 +95,7 @@ if shouldUpdateLLDB {
     }
     
     try? fm.removeItem(atPath: targetPath)
-    try fm.createSymbolicLink(atPath: targetPath, withDestinationPath: lldbSavePath)
+    try fm.createSymbolicLink(atPath: targetPath, withDestinationPath: lldbSymbolicLinkPath)
     print("made link: \(try fm.destinationOfSymbolicLink(atPath: targetPath))")
 } else {
 //     do {
