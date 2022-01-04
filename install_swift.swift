@@ -99,7 +99,7 @@ if shouldUpdateLLDB {
         try fm.createDirectory(atPath: saveLLDBDirectory, withIntermediateDirectories: true)
         let libSourceDirectory = "/opt/swift/toolchain/usr/lib"
         
-        for libFile = try fm.contentsOfDirectory(atPath: libSourceDirectory).filter({ $0.starts(with: "liblldb") }) {
+        for libFile in try fm.contentsOfDirectory(atPath: libSourceDirectory).filter({ $0.starts(with: "liblldb") }) {
             let sourceLibFilePath = "\(libSourceDirectory)/\(libFile)"
             let targetLibFilePath = "\(saveLLDBDirectory)/\(libFile)"
             
