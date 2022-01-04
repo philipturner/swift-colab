@@ -71,7 +71,8 @@ print("debug checkpoint 3")
 
 // Move the LLDB binary to Python search path
 
-let lldbSymbolicLinkPath = "/opt/swift/toolchain/usr/lib/liblldb.so"
+let lldbParentDirectory = "/opt/swift/toolchain/usr/lib"
+let lldbSymbolicLinkPath = "\(lldbParentDirectory)/liblldb.so"
 let saveDirectory = "/opt/swift/save-lldb"
 try fm.createDirectory(atPath: saveDirectory, withIntermediateDirectories: true)
 
@@ -87,7 +88,7 @@ if shouldUpdateLLDB {
     try? fm.removeItem(atPath: targetPath)
     try fm.createSymbolicLink(atPath: targetPath, withDestinationPath: lldbSymbolicLinkPath)
     
-    let lldbRealLinkPath = try fm.destinationOfSymbolicLink(atPath: lldbSymbolicLinkPath)
+    let lldbRealLinkPath = lldbParentDirectory + "/" + try fm.destinationOfSymbolicLink(atPath: lldbSymbolicLinkPath)
     do {
         try fm.copyItem(atPath: lldbRealLinkPath, toPath: "\(saveDirectory)/liblldb.so")
     } catch {
