@@ -95,14 +95,19 @@ if shouldUpdateLLDB {
         try? fm.removeItem(atPath: targetPath)
         try fm.createSymbolicLink(atPath: targetPath, withDestinationPath: sourcePath)
         
+        print("debug checkpoint 3.5")
+        
         // Save LLDB binary for if using development toolchain next, as only release toolchains come with it
         try fm.createDirectory(atPath: saveLLDBDirectory, withIntermediateDirectories: true)
         
+        print("debug checkpoint 3.6")
+        
         let truePath = try fm.destinationOfSymbolicLink(atPath: sourcePath)
+        print("debug checkpoint 3.7")
         try fm.copyItem(atPath: truePath, toPath: "\(saveLLDBDirectory)/_lldb.so")
+        print("debug checkpoint 3.8")
     }
 } else {
-    preconditionFailure("\(CommandLine.arguments)")
     try fm.createDirectory(atPath: "\(lldbSourceDirectory)/lldb", withIntermediateDirectories: true)
     try fm.copyItem(atPath: "\(saveLLDBDirectory)/_lldb.so", toPath: "\(lldbSourceDirectory)/lldb/_lldb.so")
 }
