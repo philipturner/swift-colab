@@ -98,6 +98,8 @@ do {
     var targetDirectory = "/opt/swift/save-lldb"
     let tempVar = try? fm.destinationOfSymbolicLink(atPath: "/opt/swift/toolchain/usr/lib/liblldb.so")
     print(tempVar ?? "no link")
+    let tempVar2 = try? fm.destinationOfSymbolicLink(atPath: tempVar ?? "")
+    print(tempVar2 ?? "no link")
     try fm.createDirectory(atPath: targetDirectory, withIntermediateDirectories: true)
     
     if !shouldUpdateLLDB {
