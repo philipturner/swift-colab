@@ -83,11 +83,15 @@ if shouldUpdateLLDB {
     print("debug checkpoint 3.1")
     
     do {
+        print("debug checkpoint 3.2")
         let possibleFolders = try fm.contentsOfDirectory(atPath: pythonSearchPath).filter { $0.hasPrefix("python3.") }
+        print("debug checkpoint 3.3")
         let folderNumbers = possibleFolders.map { $0.dropFirst("python3.".count) }
         let pythonVersion = "python3.\(folderNumbers.max()!)"
         pythonSearchPath += "/\(pythonVersion)/dist-packages"
     }
+    
+    print("debug checkpoint 3.4")
     
     do {
         let sourcePath = "\(lldbSourceDirectory)/lldb/_lldb.so"
