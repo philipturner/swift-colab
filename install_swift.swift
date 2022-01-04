@@ -76,7 +76,6 @@ let lldbSymbolicLinkPath = "\(lldbParentDirectory)/liblldb.so"
 
 let saveDirectory = "/opt/swift/save-lldb"
 try fm.createDirectory(atPath: saveDirectory, withIntermediateDirectories: true)
-let lldbSavePath = "\(saveDirectory)/liblldb.so.10git"
 
 if shouldUpdateLLDB {
     var targetPath = "/usr/local/lib"
@@ -84,8 +83,11 @@ if shouldUpdateLLDB {
     let possibleFolders = try fm.contentsOfDirectory(atPath: targetPath).filter { $0.hasPrefix("python3.") }
     let folderNumbers = possibleFolders.map { $0.dropFirst("python3.".count) }
     let pythonVersion = "python3.\(folderNumbers.max()!)"
-    
     targetPath += "/\(pythonVersion)/dist-packages/lldb/_lldb.so"
+    
+    let realLibName = 
+    
+    // comment out everything below
     
     let lldbRealLinkPath = "\(lldbParentDirectory)/\(try fm.destinationOfSymbolicLink(atPath: lldbSymbolicLinkPath))"
     do {
