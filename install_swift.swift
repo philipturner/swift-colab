@@ -103,10 +103,10 @@ if shouldUpdateLLDB {
     try? fm.removeItem(atPath: targetPath)
     try fm.createSymbolicLink(atPath: targetPath, withDestinationPath: "/opt/swift/toolchain/usr/lib/liblldb.so.10git")
     
-//     try? fm.copyItem(atPath: "/opt/swift/toolchain/usr/lib/liblldb.so.10git", toPath: "/opt/swift/liblldb.so")
+    try? fm.copyItem(atPath: "/opt/swift/toolchain/usr/lib/liblldb.so.10git", toPath: "/opt/swift/liblldb.so.10git")
     
-//     try? fm.removeItem(atPath: targetPath)
-//     try fm.createSymbolicLink(atPath: targetPath, withDestinationPath: "/opt/swift/liblldb.so")
+    try? fm.removeItem(atPath: targetPath)
+    try fm.createSymbolicLink(atPath: targetPath, withDestinationPath: "/opt/swift/liblldb.so.10git")
 } else {
 //     do {
 //         try fm.copyItem(atPath: "\(saveDirectory)/liblldb.so", toPath: lldbSymbolicLinkPath)
