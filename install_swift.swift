@@ -99,7 +99,11 @@ if shouldUpdateLLDB {
 
         try? fm.removeItem(atPath: targetPath)
         print("debug checkpoint 3.4.5")
-        try fm.createSymbolicLink(atPath: targetPath, withDestinationPath: sourcePath)
+        do {
+            try fm.createSymbolicLink(atPath: targetPath, withDestinationPath: sourcePath)
+        } catch {
+            fatalError("\(targetPath) --- \(sourcePath) --- \(error.localizedDescription)")
+        
         
         print("debug checkpoint 3.5")
         
