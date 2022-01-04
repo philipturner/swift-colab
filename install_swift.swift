@@ -86,6 +86,17 @@ if shouldUpdateLLDB {
     let lldbSymbolicLinkPath = "\(lldbParentDirectory)/liblldb.so"
     let realLibName = try fm.destinationOfSymbolicLink(atPath: lldbSymbolicLinkPath)
     
+    for libFile in try fm.contentsOfDirectory(atPath: lldbParentDirectory).filter({ $0.starts(with: "liblldb") }) {
+        let sourcePath = "\(lldbParentDirectory)/\(libFile)"
+        let targetPath = "\(lldbSaveDirectory)/\(libFile)"
+        
+        do {
+            try fm.copyItem(atPath: sourcePath, toPath: targetPath)
+        } catch {
+            print("Couldn't copy an LLDB lib file from \(sourcePath) to \(targetPath): \(error.localizedDescription)")
+        }
+    }
+    
     // comment out everything below
     
     let lldbRealLinkPath = "\(lldbParentDirectory)/\(try fm.destinationOfSymbolicLink(atPath: lldbSymbolicLinkPath))"
