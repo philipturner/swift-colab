@@ -7,7 +7,6 @@ fi
 
 cd /opt/swift
 should_reinstall="false"
-is_development="false"
 
 if [[ -e "swiftpm-version.txt" ]]
 then
@@ -22,28 +21,11 @@ echo $1 > "swiftpm-version.txt"
 
 if [[ ! -d toolchain ]]
 then  
+  # $1 is the Swift version (e.g. 5.5.2)
   echo "=== Downloading Swift ==="
+  tar_file="swift-$1-RELEASE-ubuntu18.04"
   
-  if [[ "$#" == "2" ]]
-  then
-    is_development="true"
-    
-    if [[ $2 == "development" ]]
-    then
-      # $1 is the snapshot date (e.g. 2021-12-23)
-      tar_file="swift-DEVELOPMENT-SNAPSHOT-$1-a-ubuntu18.04"
-      curl "https://download.swift.org/development/ubuntu1804/swift-DEVELOPMENT-SNAPSHOT-$1-a/${tar_file}.tar.gz" | tar -xz
-    else
-      # You chose something custom and must specify both the URL and tar file name
-      tar_file = $2
-      curl $1 | tar -xz
-    fi
-  else
-    # $1 is the Swift version (e.g. 5.5.2)
-    tar_file="swift-$1-RELEASE-ubuntu18.04"
-    curl "https://download.swift.org/swift-$1-release/ubuntu1804/swift-$1-RELEASE/${tar_file}.tar.gz" | tar -xz
-  fi
-  
+  curl "https://download.swift.org/swift-$1-release/ubuntu1804/swift-$1-RELEASE/${tar_file}.tar.gz" | tar -xz
   mv "${tar_file}" toolchain
   
   apt install patchelf
@@ -68,4 +50,4 @@ fi
 git clone --single-branch -b main https://github.com/philipturner/swift-colab
 
 export PATH="/opt/swift/toolchain/usr/bin:$PATH"
-swift swift-colab/install_swift.swift $should_reinstall $is_development
+swift swift-colab/install_swift.swift $should_reinstall
