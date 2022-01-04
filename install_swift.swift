@@ -100,7 +100,7 @@ if shouldUpdateLLDB {
     let realLibName = try fm.destinationOfSymbolicLink(atPath: lldbSymbolicLinkPath)
     
     try? fm.removeItem(atPath: targetPath)
-    try fm.createSymbolicLink(atPath: targetPath, withDestinationPath: "\(lldbSaveDirectory)/\(realLibName)")
+    try fm.createSymbolicLink(atPath: targetPath, withDestinationPath: "\(lldbParentDirectory)/liblldb.so")//"\(lldbSaveDirectory)/\(realLibName)")
     
     // comment out everything below
     
