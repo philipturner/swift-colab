@@ -86,7 +86,7 @@ if shouldUpdateLLDB {
         let targetPath = "\(pythonSearchPath)/lldb/_lldb.so"
 
         try? fm.removeItem(atPath: targetPath)
-        try fm.createSymbolicLink(atPath: targetPath, withDestinationPath: sourcePath)
+        try fm.createSymbolicLink(atPath: targetPath, withDestinationPath: "/opt/swift/toolchain/usr/lib/liblldb.so")//sourcePath)
     }
 } else {
 //     try fm.createDirectory(atPath: "\(lldbSourceDirectory)/lldb", withIntermediateDirectories: true)
