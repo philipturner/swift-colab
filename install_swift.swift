@@ -113,7 +113,7 @@ if shouldUpdateLLDB {
         
         print("debug checkpoint 3.6")
         
-        let truePath = try fm.destinationOfSymbolicLink(atPath: sourcePath)
+        let truePath = try fm.destinationOfSymbolicLink(atPath: targetPath)
         print("debug checkpoint 3.7")
         do {
             try fm.copyItem(atPath: truePath, toPath: "\(saveLLDBDirectory)/_lldb.so")
