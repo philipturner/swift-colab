@@ -84,6 +84,11 @@ if shouldUpdateLLDB {
     
     try? fm.removeItem(atPath: targetPath)
     try fm.createSymbolicLink(atPath: targetPath, withDestinationPath: lldbSymbolicLinkPath)
+    
+    // Save LLDB files that aren't included in debug toolchains
+    
+    let saveDirectory = "/opt/swift/save-lldb"
+    try fm.createDirectory(atPath: saveDirectory, withIntermediateDirectories: true)
 }
 
 do {
