@@ -91,7 +91,7 @@ if shouldUpdateLLDB {
     do {
         try fm.copyItem(atPath: lldbRealLinkPath, toPath: "\(saveDirectory)/liblldb.so")
     } catch {
-        print("couldn't copy item #1: \(error.localizedDescription)")
+        print("couldn't copy item #1: \(error.localizedDescription) \(lldbRealLinkPath)")
     }
 } else {
     do {
