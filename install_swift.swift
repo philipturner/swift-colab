@@ -85,7 +85,7 @@ if shouldUpdateLLDB {
     
     print(try fm.contentsOfDirectory(atPath: lldbParentDirectory))
     
-    for libFile in try fm.contentsOfDirectory(atPath: lldbParentDirectory).filter({ $0.starts(with: "liblldb") }) {
+    for libFile in try fm.contentsOfDirectory(atPath: lldbParentDirectory)/*.filter({ $0.starts(with: "liblldb") })*/ {
         let sourcePath = "\(lldbParentDirectory)/\(libFile)"
         let targetPath = "\(lldbSaveDirectory)/\(libFile)"
         
