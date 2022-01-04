@@ -34,7 +34,6 @@ func doCommand(_ args: [String], directory: String? = nil) throws {
 let lldbSourceDirectory = "/opt/swift/toolchain/usr/lib/python3/dist-packages"
 let lldbTargetDirectory = "/opt/swift/swift-colab/PythonPackages/lldb"
 let shouldUpdateLLDB = CommandLine.arguments[2] == "false"
-print("debug checkpoint 0")
 
 if shouldUpdateLLDB {
     for subpath in try fm.contentsOfDirectory(atPath: lldbSourceDirectory) {
@@ -45,8 +44,6 @@ if shouldUpdateLLDB {
     }
 }
 
-print("debug checkpoint 1")
-
 // Install Python packages
 try fm.createDirectory(atPath: "/env/python", withIntermediateDirectories: true)
 
@@ -55,8 +52,6 @@ let packageMetadata = [
     (name: "Swift", forceReinstall: false),
     (name: "lldb", forceReinstall: shouldReinstall && shouldUpdateLLDB)
 ]
-
-print("debug checkpoint 2")
 
 for metadata in packageMetadata {
     let targetPath = "/env/python/\(metadata.name)"
@@ -80,49 +75,53 @@ let saveLLDBDirectory = "/opt/swift/save-lldb"
 
 if shouldUpdateLLDB {
     var pythonSearchPath = "/usr/local/lib"
-    print("debug checkpoint 3.1")
     
     do {
-        print("debug checkpoint 3.2")
         let possibleFolders = try fm.contentsOfDirectory(atPath: pythonSearchPath).filter { $0.hasPrefix("python3.") }
-        print("debug checkpoint 3.3")
         let folderNumbers = possibleFolders.map { $0.dropFirst("python3.".count) }
         let pythonVersion = "python3.\(folderNumbers.max()!)"
         pythonSearchPath += "/\(pythonVersion)/dist-packages"
     }
-    
-    print("debug checkpoint 3.4")
     
     do {
         let sourcePath = "\(lldbSourceDirectory)/lldb/_lldb.so"
         let targetPath = "\(pythonSearchPath)/lldb/_lldb.so"
 
         try? fm.removeItem(atPath: targetPath)
-        print("debug checkpoint 3.4.5")
+        
         do {
             try fm.createSymbolicLink(atPath: targetPath, withDestinationPath: sourcePath)
         } catch {
             fatalError("\(targetPath) --- \(sourcePath) --- \(error.localizedDescription)")
         }
         
-        
-        print("debug checkpoint 3.5")
-        
         // Save LLDB binary for if using development toolchain next, as only release toolchains come with it
         try fm.createDirectory(atPath: saveLLDBDirectory, withIntermediateDirectories: true)
+        let libSourceDirectory = "/opt/swift/toolchain/usr/lib"
         
-        print("debug checkpoint 3.6")
-        
-        let truePath = try fm.destinationOfSymbolicLink(atPath: targetPath)
-        print("debug checkpoint 3.7")
-        do {
-            try fm.copyItem(atPath: truePath, toPath: "\(saveLLDBDirectory)/_lldb.so")
-        } catch {
-            let ___var = "\(saveLLDBDirectory)/_lldb.so"
-            fatalError("\(truePath) --- \(fm.fileExists(atPath: truePath)) --- \(___var) --- \(fm.fileExists(atPath: ___var)) --- \(error.localizedDescription) --- \(try? fm.destinationOfSymbolicLink(atPath: truePath))")
+        for libFile = try fm.contentsOfDirectory(atPath: libSourceDirectory).filter({ $0.starts(with: "liblldb") {
+            let sourceLibFilePath = "\(libSourceDirectory)/\(libFile)"
+            let targetLibFilePath = "\(saveLLDBDirectory)/\(libFile)"
+            
+            do {
+                try fm.copyItem(atPath: sourceLibFilePath, toPath: targetLibFilePath)
+            } catch {
+                print("Couldn't copy an LLDB lib file: \(error.localizedDescription)")
+            }
         }
         
-        print("debug checkpoint 3.8")
+//         print("debug checkpoint 3.6")
+        
+//         let truePath = try fm.destinationOfSymbolicLink(atPath: targetPath)
+//         print("debug checkpoint 3.7")
+//         do {
+//             try fm.copyItem(atPath: truePath, toPath: "\(saveLLDBDirectory)/_lldb.so")
+//         } catch {
+//             let ___var = "\(saveLLDBDirectory)/_lldb.so"
+//             fatalError("\(truePath) --- \(fm.fileExists(atPath: truePath)) --- \(___var) --- \(fm.fileExists(atPath: ___var)) --- \(error.localizedDescription) --- \(try? fm.destinationOfSymbolicLink(atPath: truePath))")
+//         }
+        
+//         print("debug checkpoint 3.8")
     }
 } else {
     try fm.createDirectory(atPath: "\(lldbSourceDirectory)/lldb", withIntermediateDirectories: true)
