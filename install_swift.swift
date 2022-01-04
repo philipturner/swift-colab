@@ -71,8 +71,6 @@ print("debug checkpoint 3")
 
 // Move the LLDB binary to Python search path
 
-let saveLLDBDirectory = "/opt/swift/save-lldb"
-
 if shouldUpdateLLDB {
     var pythonSearchPath = "/usr/local/lib"
     
@@ -88,46 +86,30 @@ if shouldUpdateLLDB {
         let targetPath = "\(pythonSearchPath)/lldb/_lldb.so"
 
         try? fm.removeItem(atPath: targetPath)
-        
-        do {
-            try fm.createSymbolicLink(atPath: targetPath, withDestinationPath: sourcePath)
-        } catch {
-            fatalError("\(targetPath) --- \(sourcePath) --- \(error.localizedDescription)")
-        }
-        
-        // Save LLDB binary for if using development toolchain next, as only release toolchains come with it
-        try fm.createDirectory(atPath: saveLLDBDirectory, withIntermediateDirectories: true)
-        let libSourceDirectory = "/opt/swift/toolchain/usr/lib"
-        
-        for libFile in try fm.contentsOfDirectory(atPath: libSourceDirectory).filter({ $0.starts(with: "liblldb") }) {
-            let sourceLibFilePath = "\(libSourceDirectory)/\(libFile)"
-            let targetLibFilePath = "\(saveLLDBDirectory)/\(libFile)"
-            
-            do {
-                try fm.copyItem(atPath: sourceLibFilePath, toPath: targetLibFilePath)
-            } catch {
-                print("Couldn't copy an LLDB lib file: \(error.localizedDescription)")
-            }
-        }
-        
-        // TODO: refactor the above to that the code can be reused by release and dev toolchains
-        
-//         print("debug checkpoint 3.6")
-        
-//         let truePath = try fm.destinationOfSymbolicLink(atPath: targetPath)
-//         print("debug checkpoint 3.7")
-//         do {
-//             try fm.copyItem(atPath: truePath, toPath: "\(saveLLDBDirectory)/_lldb.so")
-//         } catch {
-//             let ___var = "\(saveLLDBDirectory)/_lldb.so"
-//             fatalError("\(truePath) --- \(fm.fileExists(atPath: truePath)) --- \(___var) --- \(fm.fileExists(atPath: ___var)) --- \(error.localizedDescription) --- \(try? fm.destinationOfSymbolicLink(atPath: truePath))")
-//         }
-        
-//         print("debug checkpoint 3.8")
+        try fm.createSymbolicLink(atPath: targetPath, withDestinationPath: sourcePath)
     }
 } else {
     try fm.createDirectory(atPath: "\(lldbSourceDirectory)/lldb", withIntermediateDirectories: true)
     try fm.copyItem(atPath: "\(saveLLDBDirectory)/_lldb.so", toPath: "\(lldbSourceDirectory)/lldb/_lldb.so")
+}
+
+do {
+    let saveLLDBDirectory = "/opt/swift/save-lldb"
+    
+    // Save LLDB binary for if using development toolchain next, as only release toolchains come with it
+    try fm.createDirectory(atPath: saveLLDBDirectory, withIntermediateDirectories: true)
+    let libSourceDirectory = "/opt/swift/toolchain/usr/lib"
+    
+    for libFile in try fm.contentsOfDirectory(atPath: libSourceDirectory).filter({ $0.starts(with: "liblldb") }) {
+        let sourceLibFilePath = "\(libSourceDirectory)/\(libFile)"
+        let targetLibFilePath = "\(saveLLDBDirectory)/\(libFile)"
+        
+        do {
+            try fm.copyItem(atPath: sourceLibFilePath, toPath: targetLibFilePath)
+        } catch {
+            print("Couldn't copy an LLDB lib file: \(error.localizedDescription)")
+        }
+    }
 }
 
 print("debug checkpoint 4")
