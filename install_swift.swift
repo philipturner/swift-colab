@@ -80,6 +80,7 @@ let saveLLDBDirectory = "/opt/swift/save-lldb"
 
 if shouldUpdateLLDB {
     var pythonSearchPath = "/usr/local/lib"
+    print("debug checkpoint 3.1")
     
     do {
         let possibleFolders = try fm.contentsOfDirectory(atPath: pythonSearchPath).filter { $0.hasPrefix("python3.") }
