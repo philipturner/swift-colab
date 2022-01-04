@@ -71,26 +71,20 @@ print("debug checkpoint 3")
 
 // Move the LLDB binary to Python search path
 
+let lldbSymbolicLinkPath = "/opt/swift/toolchain/usr/lib/liblldb.so"
+
 if shouldUpdateLLDB {
     var pythonSearchPath = "/usr/local/lib"
     
-    do {
-        let possibleFolders = try fm.contentsOfDirectory(atPath: pythonSearchPath).filter { $0.hasPrefix("python3.") }
-        let folderNumbers = possibleFolders.map { $0.dropFirst("python3.".count) }
-        let pythonVersion = "python3.\(folderNumbers.max()!)"
-        pythonSearchPath += "/\(pythonVersion)/dist-packages"
-    }
-    
-    do {
-        let sourcePath = "\(lldbSourceDirectory)/lldb/_lldb.so"
-        let targetPath = "\(pythonSearchPath)/lldb/_lldb.so"
+    let possibleFolders = try fm.contentsOfDirectory(atPath: pythonSearchPath).filter { $0.hasPrefix("python3.") }
+    let folderNumbers = possibleFolders.map { $0.dropFirst("python3.".count) }
+    let pythonVersion = "python3.\(folderNumbers.max()!)"
+    pythonSearchPath += "/\(pythonVersion)/dist-packages"
 
-        try? fm.removeItem(atPath: targetPath)
-        try fm.createSymbolicLink(atPath: targetPath, withDestinationPath: "/opt/swift/toolchain/usr/lib/liblldb.so")//sourcePath)
-    }
-} else {
-//     try fm.createDirectory(atPath: "\(lldbSourceDirectory)/lldb", withIntermediateDirectories: true)
-//     try fm.copyItem(atPath: "\(saveLLDBDirectory)/_lldb.so", toPath: "\(lldbSourceDirectory)/lldb/_lldb.so")
+    let targetPath = "\(pythonSearchPath)/lldb/_lldb.so"
+    
+    try? fm.removeItem(atPath: targetPath)
+    try fm.createSymbolicLink(atPath: targetPath, withDestinationPath: "/opt/swift/toolchain/usr/lib/liblldb.so")
 }
 
 do {
