@@ -83,9 +83,6 @@ if shouldUpdateLLDB {
     let pythonVersion = "python3.\(folderNumbers.max()!)"
     targetPath += "/\(pythonVersion)/dist-packages/lldb/_lldb.so"
     
-    let lldbSymbolicLinkPath = "\(lldbParentDirectory)/liblldb.so"
-    let realLibName = try fm.destinationOfSymbolicLink(atPath: lldbSymbolicLinkPath)
-    
     for libFile in try fm.contentsOfDirectory(atPath: lldbParentDirectory).filter({ $0.starts(with: "liblldb") }) {
         let sourcePath = "\(lldbParentDirectory)/\(libFile)"
         let targetPath = "\(lldbSaveDirectory)/\(libFile)"
@@ -97,32 +94,38 @@ if shouldUpdateLLDB {
         }
     }
     
+    let lldbSymbolicLinkPath = "\(lldbParentDirectory)/liblldb.so"
+    let realLibName = try fm.destinationOfSymbolicLink(atPath: lldbSymbolicLinkPath)
+    
+    try? fm.removeItem(atPath: targetPath)
+    try fm.createSymbolicLink(atPath: targetPath, withDestinationPath: "\(lldbSaveDirectory)/\(realLibName)")
+    
     // comment out everything below
     
-    let lldbRealLinkPath = "\(lldbParentDirectory)/\(try fm.destinationOfSymbolicLink(atPath: lldbSymbolicLinkPath))"
-    do {
-        try fm.copyItem(atPath: lldbRealLinkPath, toPath: lldbSavePath)
-    } catch {
-        print("couldn't copy item #1: \(error.localizedDescription) \(lldbRealLinkPath)")
-    }
+//     let lldbRealLinkPath = "\(lldbParentDirectory)/\(try fm.destinationOfSymbolicLink(atPath: lldbSymbolicLinkPath))"
+//     do {
+//         try fm.copyItem(atPath: lldbRealLinkPath, toPath: lldbSavePath)
+//     } catch {
+//         print("couldn't copy item #1: \(error.localizedDescription) \(lldbRealLinkPath)")
+//     }
     
-    try? fm.removeItem(atPath: targetPath)
-    try fm.createSymbolicLink(atPath: targetPath, withDestinationPath: lldbSymbolicLinkPath)
-    print("made link: \(try fm.destinationOfSymbolicLink(atPath: targetPath))")
-    print("real link path: \(lldbRealLinkPath)")
-    print("validate real link path: \(try fm.destinationOfSymbolicLink(atPath: lldbSymbolicLinkPath))")
+//     try? fm.removeItem(atPath: targetPath)
+//     try fm.createSymbolicLink(atPath: targetPath, withDestinationPath: lldbSymbolicLinkPath)
+//     print("made link: \(try fm.destinationOfSymbolicLink(atPath: targetPath))")
+//     print("real link path: \(lldbRealLinkPath)")
+//     print("validate real link path: \(try fm.destinationOfSymbolicLink(atPath: lldbSymbolicLinkPath))")
     
-    try? fm.removeItem(atPath: targetPath)
-    try fm.createSymbolicLink(atPath: targetPath, withDestinationPath: "/opt/swift/toolchain/usr/lib/liblldb.so.10git")
+//     try? fm.removeItem(atPath: targetPath)
+//     try fm.createSymbolicLink(atPath: targetPath, withDestinationPath: "/opt/swift/toolchain/usr/lib/liblldb.so.10git")
     
-    do {
-        try fm.copyItem(atPath: "/opt/swift/toolchain/usr/lib/liblldb.so.10git", toPath: "/opt/swift/liblldb.so.10git")
-    } catch {
-        print("couldn't copy item #1.5: \(error.localizedDescription)")
-    }
+//     do {
+//         try fm.copyItem(atPath: "/opt/swift/toolchain/usr/lib/liblldb.so.10git", toPath: "/opt/swift/liblldb.so.10git")
+//     } catch {
+//         print("couldn't copy item #1.5: \(error.localizedDescription)")
+//     }
     
-    try? fm.removeItem(atPath: targetPath)
-    try fm.createSymbolicLink(atPath: targetPath, withDestinationPath: "/opt/swift/liblldb.so.10git")
+//     try? fm.removeItem(atPath: targetPath)
+//     try fm.createSymbolicLink(atPath: targetPath, withDestinationPath: "/opt/swift/liblldb.so.10git")
 } else {
 //     do {
 //         try fm.copyItem(atPath: "\(saveDirectory)/liblldb.so", toPath: lldbSymbolicLinkPath)
