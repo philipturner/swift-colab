@@ -98,6 +98,7 @@ if shouldUpdateLLDB {
         let targetPath = "\(pythonSearchPath)/lldb/_lldb.so"
 
         try? fm.removeItem(atPath: targetPath)
+        print("debug checkpoint 3.4.5")
         try fm.createSymbolicLink(atPath: targetPath, withDestinationPath: sourcePath)
         
         print("debug checkpoint 3.5")
