@@ -33,15 +33,12 @@ func doCommand(_ args: [String], directory: String? = nil) throws {
 // Copy lldb package to swift-colab/PythonPackages
 let lldbSourceDirectory = "/opt/swift/toolchain/usr/lib/python3/dist-packages"
 let lldbTargetDirectory = "/opt/swift/swift-colab/PythonPackages/lldb"
-let shouldUpdateLLDB = CommandLine.arguments[2] == "false"
 
-if shouldUpdateLLDB {
-    for subpath in try fm.contentsOfDirectory(atPath: lldbSourceDirectory) {
-        let sourcePath = "\(lldbSourceDirectory)/\(subpath)"
-        let targetPath = "\(lldbTargetDirectory)/\(subpath)"
-
-        try? fm.copyItem(atPath: sourcePath, toPath: targetPath)
-    }
+for subpath in try fm.contentsOfDirectory(atPath: lldbSourceDirectory) {
+    let sourcePath = "\(lldbSourceDirectory)/\(subpath)"
+    let targetPath = "\(lldbTargetDirectory)/\(subpath)"
+    
+    try? fm.copyItem(atPath: sourcePath, toPath: targetPath)
 }
 
 // Install Python packages
@@ -50,7 +47,7 @@ try fm.createDirectory(atPath: "/env/python", withIntermediateDirectories: true)
 let packageSourceDirectory = "/opt/swift/swift-colab/PythonPackages"
 let packageMetadata = [
     (name: "Swift", forceReinstall: false),
-    (name: "lldb", forceReinstall: shouldReinstall && shouldUpdateLLDB)
+    (name: "lldb", forceReinstall: shouldReinstall)
 ]
 
 for metadata in packageMetadata {
@@ -67,112 +64,23 @@ for metadata in packageMetadata {
     }
 }
 
-print("debug checkpoint 3")
-
 // Move the LLDB binary to Python search path
+var pythonSearchPath = "/usr/local/lib"
 
-let lldbParentDirectory = "/opt/swift/toolchain/usr/lib"
-let lldbSaveDirectory = "/opt/swift/save-lldb"
-try fm.createDirectory(atPath: lldbSaveDirectory, withIntermediateDirectories: true)
-
-if shouldUpdateLLDB {
-    var targetPath = "/usr/local/lib"
-    
-    let possibleFolders = try fm.contentsOfDirectory(atPath: targetPath).filter { $0.hasPrefix("python3.") }
+do {
+    let possibleFolders = try fm.contentsOfDirectory(atPath: pythonSearchPath).filter { $0.hasPrefix("python3.") }
     let folderNumbers = possibleFolders.map { $0.dropFirst("python3.".count) }
     let pythonVersion = "python3.\(folderNumbers.max()!)"
-    targetPath += "/\(pythonVersion)/dist-packages/lldb/_lldb.so"
-    
-    print(try fm.contentsOfDirectory(atPath: lldbParentDirectory))
-    
-    for libFile in try fm.contentsOfDirectory(atPath: lldbParentDirectory)/*.filter({ $0.starts(with: "liblldb") })*/ {
-        let sourcePath = "\(lldbParentDirectory)/\(libFile)"
-        let targetPath = "\(lldbSaveDirectory)/\(libFile)"
-        
-        do {
-            try fm.copyItem(atPath: sourcePath, toPath: targetPath)
-        } catch {
-            print("Couldn't copy an LLDB lib file from \(sourcePath) to \(targetPath): \(error.localizedDescription)")
-        }
-    }
-    
-    let lldbSymbolicLinkPath = "\(lldbParentDirectory)/liblldb.so"
-    let realLibName = try fm.destinationOfSymbolicLink(atPath: lldbSymbolicLinkPath)
-    
-    try? fm.removeItem(atPath: targetPath)
-    try fm.createSymbolicLink(atPath: targetPath, withDestinationPath: "\(lldbParentDirectory)/liblldb.so.10git")//"\(lldbSaveDirectory)/\(realLibName)")
-    
-    // comment out everything below
-    
-//     let lldbRealLinkPath = "\(lldbParentDirectory)/\(try fm.destinationOfSymbolicLink(atPath: lldbSymbolicLinkPath))"
-//     do {
-//         try fm.copyItem(atPath: lldbRealLinkPath, toPath: lldbSavePath)
-//     } catch {
-//         print("couldn't copy item #1: \(error.localizedDescription) \(lldbRealLinkPath)")
-//     }
-    
-//     try? fm.removeItem(atPath: targetPath)
-//     try fm.createSymbolicLink(atPath: targetPath, withDestinationPath: lldbSymbolicLinkPath)
-//     print("made link: \(try fm.destinationOfSymbolicLink(atPath: targetPath))")
-//     print("real link path: \(lldbRealLinkPath)")
-//     print("validate real link path: \(try fm.destinationOfSymbolicLink(atPath: lldbSymbolicLinkPath))")
-    
-//     try? fm.removeItem(atPath: targetPath)
-//     try fm.createSymbolicLink(atPath: targetPath, withDestinationPath: "/opt/swift/toolchain/usr/lib/liblldb.so.10git")
-    
-//     do {
-//         try fm.copyItem(atPath: "/opt/swift/toolchain/usr/lib/liblldb.so.10git", toPath: "/opt/swift/liblldb.so.10git")
-//     } catch {
-//         print("couldn't copy item #1.5: \(error.localizedDescription)")
-//     }
-    
-//     try? fm.removeItem(atPath: targetPath)
-//     try fm.createSymbolicLink(atPath: targetPath, withDestinationPath: "/opt/swift/liblldb.so.10git")
-} else {
-    for fileName in try fm.contentsOfDirectory(atPath: lldbSaveDirectory) {
-        let sourcePath = "\(lldbSaveDirectory)/\(fileName)"
-        let targetPath = "\(lldbParentDirectory)/\(fileName)"
-        
-        do {
-            try fm.copyItem(atPath: sourcePath, toPath: targetPath)
-        } catch {
-            print("(#2) Couldn't copy an LLDB lib file from \(sourcePath) to \(targetPath): \(error.localizedDescription)")
-        }
-    }
-//     try fm.copyItem(atPath: "
-//     do {
-//         try fm.copyItem(atPath: "\(saveDirectory)/liblldb.so", toPath: lldbSymbolicLinkPath)
-//     } catch {
-//         print("couldn't copy item #2: \(error.localizedDescription)")
-//     }
+    pythonSearchPath += "/\(pythonVersion)/dist-packages"
 }
 
-// do {
-//     var sourceDirectory = "/opt/swift/toolchain/usr/lib"
-//     var targetDirectory = "/opt/swift/save-lldb"
-//     let tempVar = try? fm.destinationOfSymbolicLink(atPath: "/opt/swift/toolchain/usr/lib/liblldb.so")
-//     print(tempVar ?? "no link")
-//     let tempVar2 = try? fm.destinationOfSymbolicLink(atPath: tempVar ?? "")
-//     print(tempVar2 ?? "no link")
-//     try fm.createDirectory(atPath: targetDirectory, withIntermediateDirectories: true)
+do {
+    let sourcePath = "\(lldbSourceDirectory)/lldb/_lldb.so"
+    let targetPath = "\(pythonSearchPath)/lldb/_lldb.so"
     
-//     if !shouldUpdateLLDB {
-//         swap(&sourceDirectory, &targetDirectory)
-//     }
-    
-//     for libFile in try fm.contentsOfDirectory(atPath: sourceDirectory).filter({ $0.starts(with: "liblldb") }) {
-//         let sourceLibFilePath = "\(sourceDirectory)/\(libFile)"
-//         let targetLibFilePath = "\(targetDirectory)/\(libFile)"
-        
-//         do {
-//             try fm.copyItem(atPath: sourceLibFilePath, toPath: targetLibFilePath)
-//         } catch {
-//             print("Couldn't copy an LLDB lib file: \(error.localizedDescription)")
-//         }
-//     }
-// }
-
-print("debug checkpoint 4")
+    try? fm.removeItem(atPath: targetPath)
+    try fm.createSymbolicLink(atPath: targetPath, withDestinationPath: sourcePath)
+}
 
 try fm.createDirectory(atPath: "/opt/swift/tmp", withIntermediateDirectories: true)
 try fm.createDirectory(atPath: "/opt/swift/lib", withIntermediateDirectories: true)
@@ -187,8 +95,6 @@ try doCommand(["swift", "build", "-c", "release", "-Xswiftc", "-Onone"],
 
 try? fm.removeItem(atPath: pythonKitLibPath)
 try fm.copyItem(atPath: "\(pythonKitProductsPath)/libPythonKit.so", toPath: pythonKitLibPath)
-
-print("debug checkpoint 5")
 
 // Install SwiftPythonBridge
 let spbProductsPath = "/opt/swift/packages/SwiftPythonBridge"
