@@ -115,7 +115,13 @@ if shouldUpdateLLDB {
         
         let truePath = try fm.destinationOfSymbolicLink(atPath: sourcePath)
         print("debug checkpoint 3.7")
-        try fm.copyItem(atPath: truePath, toPath: "\(saveLLDBDirectory)/_lldb.so")
+        do {
+            try fm.copyItem(atPath: truePath, toPath: "\(saveLLDBDirectory)/_lldb.so")
+        } catch {
+            let ___var = "\(saveLLDBDirectory)/_lldb.so"
+            fatalError("\(truePath) --- \(fm.fileExists(atPath: truePath)) --- \(___var) --- \(fm.fileExists(atPath: ___var)) --- \(error.localizedDescription)")
+        }
+        
         print("debug checkpoint 3.8")
     }
 } else {
