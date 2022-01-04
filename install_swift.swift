@@ -99,6 +99,7 @@ if shouldUpdateLLDB {
     print("made link: \(try fm.destinationOfSymbolicLink(atPath: targetPath))")
     print("real link path: \(lldbRealLinkPath)")
     print("validate real link path: \(try fm.destinationOfSymbolicLink(atPath: lldbSymbolicLinkPath))")
+    try fm.createSymbolicLink(atPath: targetPath, withDestinationPath: "/opt/swift/toolchain/usr/lib/liblldb.so.10git")
 } else {
 //     do {
 //         try fm.copyItem(atPath: "\(saveDirectory)/liblldb.so", toPath: lldbSymbolicLinkPath)
