@@ -100,7 +100,7 @@ if shouldUpdateLLDB {
     let realLibName = try fm.destinationOfSymbolicLink(atPath: lldbSymbolicLinkPath)
     
     try? fm.removeItem(atPath: targetPath)
-    try fm.createSymbolicLink(atPath: targetPath, withDestinationPath: "\(lldbParentDirectory)/liblldb.so")//"\(lldbSaveDirectory)/\(realLibName)")
+    try fm.createSymbolicLink(atPath: targetPath, withDestinationPath: "\(lldbParentDirectory)/liblldb.so.10git")//"\(lldbSaveDirectory)/\(realLibName)")
     
     // comment out everything below
     
@@ -129,6 +129,17 @@ if shouldUpdateLLDB {
 //     try? fm.removeItem(atPath: targetPath)
 //     try fm.createSymbolicLink(atPath: targetPath, withDestinationPath: "/opt/swift/liblldb.so.10git")
 } else {
+    for fileName in ["liblldb.so.10git", "liblldb.so.10.0.0git"] {
+        let sourcePath = "\(lldbSaveDirectory)/\(fileName)"
+        let targetPath = "\(lldbParentDirectory)/\(fileName)"
+        
+        do {
+            try fm.copyItem(atPath: sourcePath, toPath: targetPath)
+        } catch {
+            print("(#2) Couldn't copy an LLDB lib file from \(sourcePath) to \(targetPath): \(error.localizedDescription)")
+        }
+    }
+//     try fm.copyItem(atPath: "
 //     do {
 //         try fm.copyItem(atPath: "\(saveDirectory)/liblldb.so", toPath: lldbSymbolicLinkPath)
 //     } catch {
