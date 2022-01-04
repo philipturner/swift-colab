@@ -76,7 +76,7 @@ let lldbSymbolicLinkPath = "\(lldbParentDirectory)/liblldb.so"
 
 let saveDirectory = "/opt/swift/save-lldb"
 try fm.createDirectory(atPath: saveDirectory, withIntermediateDirectories: true)
-let lldbSavePath = "\(saveDirectory)/liblldb.so"
+let lldbSavePath = "\(saveDirectory)/liblldb.so.10git"
 
 if shouldUpdateLLDB {
     var targetPath = "/usr/local/lib"
@@ -103,7 +103,11 @@ if shouldUpdateLLDB {
     try? fm.removeItem(atPath: targetPath)
     try fm.createSymbolicLink(atPath: targetPath, withDestinationPath: "/opt/swift/toolchain/usr/lib/liblldb.so.10git")
     
-    try? fm.copyItem(atPath: "/opt/swift/toolchain/usr/lib/liblldb.so.10git", toPath: "/opt/swift/liblldb.so.10git")
+    do {
+        try fm.copyItem(atPath: "/opt/swift/toolchain/usr/lib/liblldb.so.10git", toPath: "/opt/swift/liblldb.so.10git")
+    } catch {
+        print("couldn't copy item #1.5: \(error.localizedDescription)")
+    }
     
     try? fm.removeItem(atPath: targetPath)
     try fm.createSymbolicLink(atPath: targetPath, withDestinationPath: "/opt/swift/liblldb.so.10git")
