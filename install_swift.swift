@@ -93,6 +93,12 @@ if shouldUpdateLLDB {
 
         try? fm.removeItem(atPath: targetPath)
         try fm.createSymbolicLink(atPath: targetPath, withDestinationPath: sourcePath)
+        
+        // Save LLDB binary for if using development toolchain
+        try fm.createDirectory(atPath: "/opt/swift/preserve-lldb", withIntermediateDirectories: true)
+        
+        let truePath = try fm.destinationOfSymbolicLink(atPath: sourcePath)
+        try fm.copyItem(atPath: truePath, toPath: "/opt/swift/preserve-lldb/_lldb.so")
     }
 } else {
     
