@@ -4,11 +4,11 @@ import SwiftPythonBridge
 fileprivate let SwiftModule = Python.import("Swift")
 
 @_cdecl("JKCreateKernel")
-public func JKCreateKernel(_ jupyterKernelRef: OwnedPyObjectPointer) -> OwnedPyObjectPointer {
+public func JKCreateKernel(_ jupyterKernelRef: OpaquePointer) -> OwnedPyObjectPointer {
     let noneObject = Python.None
     let errorObject = noneObject
     
-    let kernel = PythonObject(jupyterKernelRef)
+    let kernel = PythonObject(jupyterKernelRef as OwnedPyObjectPointer)
     kernel.implementation = "SwiftKernel"
     kernel.implementation_version = "0.1"
     kernel.banner = ""
