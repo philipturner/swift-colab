@@ -10,7 +10,7 @@ Copy [this template](https://colab.research.google.com/drive/1EACIWrk9IWloUckRm3
 
 ```swift
 !curl "https://raw.githubusercontent.com/philipturner/swift-colab/release/latest/install_swift.sh" -o "install_swift.sh"
-!bash "install_swift.sh" "5.5.2" #// Replace 5.5.2 with newest Swift version
+!bash "install_swift.sh" "5.6" #// Replace 5.6 with newest Swift version
 #// After this command finishes, go to Runtime > Restart runtime.
 ```
 
@@ -93,23 +93,16 @@ And add these statements to the bottom of the code cell that imports PythonKit a
 
 To test Swift-Colab against recent Swift toolchains and ensure support is never dropped from Colab again, you can run the following tests. These Colab notebooks originated from Python [unit tests](https://github.com/google/swift-jupyter/tree/main/test/tests) in google/swift-jupyter:
 
+<!-- Emoji shortcuts for reference: ✅ ❌ -->
+
 | Test | Passing | Last Tested |
 | ---- | --------------- | ----------- |
-| [kernel_tests](https://colab.research.google.com/drive/1vooU1XVHSpolOSmVUKM4Wj6opEJBt7zs?usp=sharing) | ✅ | Swift 5.5.3 (March 2022) |
-| [own_kernel_tests](https://colab.research.google.com/drive/1nHitEZm9QZNheM-ALajARyRZY2xpZr00?usp=sharing) | ✅ | Swift 5.5.3 (March 2022) |
-| [simple_notebook_tests](https://colab.research.google.com/drive/18316eFVMw-NIlA9OandB7djvp0J4jI0-?usp=sharing) | ✅ | Swift 5.5.3 (March 2022) |
+| [kernel tests](https://colab.research.google.com/drive/1vooU1XVHSpolOSmVUKM4Wj6opEJBt7zs?usp=sharing) | ✅ | Swift 5.5.3 (March 2022) |
+| [own kernel tests](https://colab.research.google.com/drive/1nHitEZm9QZNheM-ALajARyRZY2xpZr00?usp=sharing) | ✅ | Swift 5.5.3 (March 2022) |
+| [simple notebook tests](https://colab.research.google.com/drive/18316eFVMw-NIlA9OandB7djvp0J4jI0-?usp=sharing) | ✅ | Swift 5.5.3 (March 2022) |
 | [swiftplot tests](https://colab.research.google.com/drive/1Rxs7OfuKIJ_hAm2gUQT2gWSuIcyaeZfz?usp=sharing) | ✅ | Swift 5.5.3 (March 2022) |
 
 You can also test some tutorial notebooks on [tensorflow/swift](https://github.com/tensorflow/swift) that don't require TensorFlow. Paste the contents of [Swift-Template](https://colab.research.google.com/drive/1EACIWrk9IWloUckRm3wu973bKUBXQDKR?usp=sharing) into the top of each S4TF tutorial.
 
-<!-- Emoji shortcuts for reference: ✅ ❌ -->
 
-| Tutorial (excluding TensorFlow cells) | Passing | Last Tested |
-| -------- | --------------- | ----------- |
-| [A Swift Tour](https://colab.research.google.com/github/tensorflow/swift/blob/main/docs/site/tutorials/a_swift_tour.ipynb) | ✅ | Swift 5.5.2 (December 2021) |
-| [Protocol-Oriented Programming & Generics](https://colab.research.google.com/github/tensorflow/swift/blob/main/docs/site/tutorials/protocol_oriented_generics.ipynb) | ✅ | Swift 5.5.2 (December 2021) |
-| [Python Interoperablity](https://colab.research.google.com/github/tensorflow/swift/blob/main/docs/site/tutorials/python_interoperability.ipynb) | ❌* | Swift 5.5.2 (December 2021) |
-| [Custom Differentiation](https://colab.research.google.com/github/tensorflow/swift/blob/main/docs/site/tutorials/custom_differentiation.ipynb) | ❌ | Swift 5.5.2 (December 2021) |
-| [Sharp Edges In Differentiability](https://colab.research.google.com/github/tensorflow/swift/blob/main/docs/site/tutorials/Swift_autodiff_sharp_edges.ipynbb) | ❌* | Swift 5.5.2 (December 2021) |
 
-> \*"Python Interoperability" and "Sharp Edges in Differentiability" can pass with minor changes.
