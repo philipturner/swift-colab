@@ -98,6 +98,7 @@ func display(base64EncodedPNG: String) {
   IPythonDisplay.display(base64EncodedPNG: base64EncodedPNG)
 }
 
+#if canImport(SwiftPlot) && canImport(AGGRenderer)
 import SwiftPlot
 import AGGRenderer
 
@@ -110,6 +111,7 @@ extension Plot {
     IPythonDisplay.display(base64EncodedPNG: renderer.base64Png())
   }
 }
+#endif
 
 IPythonDisplay.enable()
 #endif
