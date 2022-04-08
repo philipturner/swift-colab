@@ -88,7 +88,7 @@ extension IPythonDisplay {
     let Image = display.Image
     
     let imageData = codecs.decode(
-        Python.bytes(base64EncodedPNG, encoding: "utf8"), encoding: "base64")
+      Python.bytes(base64EncodedPNG, encoding: "utf8"), encoding: "base64")
     display.display(Image(data: imageData, format: "png"))
   }
 }
