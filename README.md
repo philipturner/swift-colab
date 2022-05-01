@@ -2,9 +2,9 @@
 
 > Warning: Some of this documentation may be outdated because Swift-Colab is in the middle of a major overhaul. For a 100% reliable guide, check out the README in [swift-colab-dev](https://github.com/philipturner/swift-colab-dev).
 
-In March 2021, Google ended built-in Swift support on Colaboratory as part of their *attempt* to end [Swift for TensorFlow](https://github.com/tensorflow/swift) (S4TF). Less than a year later, the open-source community is resurrecting S4TF, and Colab support is a vital component of that effort. It allows testing on TPUs and ensuring new modifications don't break existing hardware acceleration.
+In March 2021, Google ended built-in Swift support on Colaboratory as part of their *attempt* to end [Swift for TensorFlow (S4TF)](https://github.com/tensorflow/swift). Now that S4TF is coming back to life, Colab support is essential for ensuring new modifications don't break existing TPU support. This repository is the successor to [google/swift-jupyter](https://github.com/google/swift-jupyter), written entirely in Swift and adding several new features.
 
-Furthermore, Colab is a very accessible way to do programming with Swift. It runs instantly without downloading an IDE, and it can even run on a Chromebook or mobile device.
+Swift-Colab is an accessible way to do programming with Swift. You can use it without downloading an IDE, and it takes only 30 seconds to start up. It is perfect for programming on Chromebooks and tablets, which do not have the full functionality of a desktop. You can access a free NVIDIA GPU for machine learning or GPGPU, using the real C bindings for OpenCL and CUDA instead of Python wrappers. In the near future, you will be able to experiment with the [new S4TF](https://github.com/s4tf/s4tf) as well.
 
 ## How to run Swift on Google Colaboratory
 
