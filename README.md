@@ -1,11 +1,18 @@
 # Swift-Colab
 
+> Warning: Some of this documentation may be outdated because Swift-Colab is in the middle of a major overhaul. For a 100% reliable guide, check out the README in [swift-colab-dev](https://github.com/philipturner/swift-colab-dev). To try the faster, undocumented Swift-Colab 2.0, pull from `main` instead of `release/latest` in the first code block described below.
+
+In March 2021, Google ended built-in Swift support on Colaboratory as part of their *attempt* to end [Swift for TensorFlow](https://github.com/tensorflow/swift) (S4TF). Less than a year later, the open-source community is resurrecting S4TF, and Colab support is a vital component of that effort. It allows testing on TPUs and ensuring new modifications don't break existing hardware acceleration.
+
+Furthermore, Colab is a very accessible way to do programming with Swift. It runs instantly without downloading an IDE, and it can even run on a Chromebook or mobile device.
+
 ## How to run Swift on Google Colaboratory
 
-Copy [this template](https://colab.research.google.com/drive/1EACIWrk9IWloUckRm3wu973bKUBXQDKR?usp=sharing) of a Swift Colab notebook. Do not create one directly from Google Drive, as notebooks are configured for Python by default. Copy the following command into the first code cell and run it:
+Copy [this template](https://colab.research.google.com/drive/1EACIWrk9IWloUckRm3wu973bKUBXQDKR?usp=sharing) of a Swift Colab notebook. Do not create one directly from Google Drive, as notebooks are configured for Python by default. Copy the following commands into the first code cell and run it:
 
 ```swift
-!curl "https://raw.githubusercontent.com/philipturner/swift-colab/release/latest/install_swift.sh" --output "install_swift.sh" && bash "install_swift.sh" "5.5.2" #// Replace 5.5.2 with newest Swift version
+!curl "https://raw.githubusercontent.com/philipturner/swift-colab/release/latest/install_swift.sh" -o "install_swift.sh"
+!bash "install_swift.sh" "5.6" #// Replace 5.6 with newest Swift version
 #// After this command finishes, go to Runtime > Restart runtime.
 ```
 
@@ -19,7 +26,7 @@ In the output stream, you will see:
 === Swift successfully installed ===
 ```
 
-You will be instructed to restart the runtime. This is necessary because it shuts down the Python kernel and starts up the Swift kernel.
+You will be instructed to restart the runtime. This is necessary because it shuts down the Python kernel and starts the Swift kernel.
 
 > Tip: If you factory reset the runtime or exceed the time limit, Colab will restart in Python mode. Just re-run the first code cell to return to Swift mode.
 
@@ -35,11 +42,11 @@ After running it, the following output appears:
 64
 ```
 
-For more guidance on how to use Swift on Google Colab, check out [Usage Instructions](https://github.com/google/swift-jupyter#usage-instructions) on [google/swift-jupyter](https://github.com/google/swift-jupyter). There are some modifications you must make to how you use Swift on Google Colab, which are explained in the rest of this document.
+For further guidance on how to use Swift on Google Colab, check out the [usage instructions](https://github.com/google/swift-jupyter#usage-instructions) on [google/swift-jupyter](https://github.com/google/swift-jupyter). You must use Swift on Google Colab in a slightly different way than described on google/swift-jupyter. The differences are explained in the rest of this document.
 
 ## Installing packages
 
-To use Python interop or automatic differentiation, you must explicitly import their packages in first cell executed in Swift mode. Also, you cannot include `EnableJupyterDisplay.swift` (include `EnableIPythonDisplay.swift` instead). This differs from [google/swift-jupyter](https://github.com/google/swift-jupyter):
+To use Python interop or automatic differentiation, you must explicitly import their packages in first cell executed in Swift mode. Also, you cannot include `EnableJupyterDisplay.swift` (include `EnableIPythonDisplay.swift` instead).
 
 ```swift
 %install '.package(url: "https://github.com/pvieito/PythonKit.git", .branch("master"))' PythonKit
@@ -88,22 +95,11 @@ And add these statements to the bottom of the code cell that imports PythonKit a
 
 To test Swift-Colab against recent Swift toolchains and ensure support is never dropped from Colab again, you can run the following tests. These Colab notebooks originated from Python [unit tests](https://github.com/google/swift-jupyter/tree/main/test/tests) in google/swift-jupyter:
 
-| Test | Passing | Last Tested |
-| ---- | --------------- | ----------- |
-| [kernel_tests](https://colab.research.google.com/drive/1vooU1XVHSpolOSmVUKM4Wj6opEJBt7zs?usp=sharing) | ✅ | Swift 5.5.2 (December 2021) |
-| [own_kernel_tests](https://colab.research.google.com/drive/1nHitEZm9QZNheM-ALajARyRZY2xpZr00?usp=sharing) | ✅ | Swift 5.5.2 (December 2021) |
-| [simple_notebook_tests](https://colab.research.google.com/drive/18316eFVMw-NIlA9OandB7djvp0J4jI0-?usp=sharing) | ✅ | Swift 5.5.2 (December 2021) |
-
-You can also test some tutorial notebooks on [tensorflow/swift](https://github.com/tensorflow/swift) that don't import TensorFlow. Paste the contents of [Swift-Template](https://colab.research.google.com/drive/1EACIWrk9IWloUckRm3wu973bKUBXQDKR?usp=sharing) into the top of each S4TF tutorial.
-
 <!-- Emoji shortcuts for reference: ✅ ❌ -->
 
-| Tutorial (excluding TensorFlow cells) | Passing | Last Tested |
-| -------- | --------------- | ----------- |
-| [A Swift Tour](https://colab.research.google.com/github/tensorflow/swift/blob/main/docs/site/tutorials/a_swift_tour.ipynb) | ✅ | Swift 5.5.2 (December 2021) |
-| [Protocol-Oriented Programming & Generics](https://colab.research.google.com/github/tensorflow/swift/blob/main/docs/site/tutorials/protocol_oriented_generics.ipynb) | ✅ | Swift 5.5.2 (December 2021) |
-| [Python Interoperablity](https://colab.research.google.com/github/tensorflow/swift/blob/main/docs/site/tutorials/python_interoperability.ipynb) | ❌ | Swift 5.5.2 (December 2021) |
-| [Custom Differentiation](https://colab.research.google.com/github/tensorflow/swift/blob/main/docs/site/tutorials/custom_differentiation.ipynb) | ❌ | Swift 5.5.2 (December 2021) |
-| [Sharp Edges In Differentiability](https://colab.research.google.com/github/tensorflow/swift/blob/main/docs/site/tutorials/Swift_autodiff_sharp_edges.ipynbb) | ❌ | Swift 5.5.2 (December 2021) |
-
-Python Interoperability and Sharp Edges in Differentiability can be made to pass with minor tweaks. Custom Differentation must be entirely overhauled.
+| Test | Passing | Last Tested |
+| ---- | --------------- | ----------- |
+| [kernel tests](https://colab.research.google.com/drive/1vooU1XVHSpolOSmVUKM4Wj6opEJBt7zs?usp=sharing) | ✅ | Swift 5.5.3 (March 2022) |
+| [own kernel tests](https://colab.research.google.com/drive/1nHitEZm9QZNheM-ALajARyRZY2xpZr00?usp=sharing) | ✅ | Swift 5.5.3 (March 2022) |
+| [simple notebook tests](https://colab.research.google.com/drive/18316eFVMw-NIlA9OandB7djvp0J4jI0-?usp=sharing) | ✅ | Swift 5.5.3 (March 2022) |
+| [swiftplot tests](https://colab.research.google.com/drive/1Rxs7OfuKIJ_hAm2gUQT2gWSuIcyaeZfz?usp=sharing) | ✅ | Swift 5.6 (April 2022) |
