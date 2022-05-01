@@ -5,7 +5,7 @@ In the last meeting of the original Swift for TensorFlow team (accessed from the
 
 ![Screenshot of the last official S4TF presentation, highlighting the statement indicating an end to Swift support on Colab](./ColabSupportSunsets.png)
 
-The official Swift support came from a built-in Jupyter kernel, cloned from [google/swift-jupyter](https://github.com/google/swift-jupyter). Based on that repository's README, Google may have pre-installed the latest custom S4TF toolchain on their Colab servers, ready to be accessed by the kernel. Once the Jupyter kernel was removed, Colab could not execute notebooks in Swift. Instead, it attempted to run them with the Python kernel.
+The official Swift support came from a built-in Jupyter kernel, cloned from [google/swift-jupyter](https://github.com/google/swift-jupyter). Based on that repository's README, Google may have pre-installed the latest custom S4TF toolchain on their Colab servers, ready to be accessed by the kernel. Once the Jupyter kernel was removed, Colab could not execute notebooks written in Swift. Instead, it attempted to run them using the Python kernel.
 
 When Swift [came back](https://forums.swift.org/t/swift-for-tensorflow-resurrection-swift-running-on-colab-again/54158) to Google Colab in January 2022, it used a new Jupyter kernel written in Swift, hosted at [philipturner/swift-colab](https://github.com/philipturner/swift-colab). The kernel downloaded an official Swift toolchain from Apple's servers instead of an unofficial toolchain created by Google. In addition, the new Swift-Colab compiled itself using the downloaded toolchain. This fact meant it had to be optimized for JIT compilation.
 
