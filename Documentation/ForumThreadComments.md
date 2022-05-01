@@ -1,3 +1,7 @@
+## Forum Thread Comments
+
+These were transfered from the Swift-Colab [Swift Forums thread](https://forums.swift.org/t/swift-for-tensorflow-resurrection-swift-running-on-colab-again/54158) for the sake of organization and convenience for the viewer.
+
 ## Comment left to remain
 
 It is possible to set up a semi-automated test...
