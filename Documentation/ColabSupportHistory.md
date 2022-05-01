@@ -4,3 +4,7 @@ In the last meeting of the original Swift for TensorFlow team (accessed fom the 
 
 
 ![Screenshot of the last official S4TF presentation, highlighting the statement indicating an end to Swift support on Colab](./ColabSupportSunsets.png)
+
+The official Swift support came from a built-in Jupyter kernel, cloned from [google/swift-jupyter](https://github.com/google/swift-jupyter). Based on that repository's README, Google may have pre-installed the latest custom S4TF toolchain on their Colab servers, ready to be accessed by the kernel.
+
+When Swift came back to Google Colab in January 2022, 
