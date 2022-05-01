@@ -2,7 +2,7 @@
 
 > Warning: Some of this documentation may be outdated because Swift-Colab is in the middle of a major overhaul. For a 100% reliable guide, check out the README in [swift-colab-dev](https://github.com/philipturner/swift-colab-dev). To try the faster, undocumented Swift-Colab 2.0, pull from `main` instead of `release/latest` in the first code block described below.
 
-In March 2021, Google ended built-in Swift support on Colaboratory as part of their *attempt* to end [S4TF](https://github.com/tensorflow/swift). Less than a year later, the open-source community is resurrecting S4TF, and Colab support is a vital component of that effort. It allows testing on TPUs and ensuring new modifications don't break existing hardware acceleration.
+In March 2021, Google ended built-in Swift support on Colaboratory as part of their *attempt* to end [Swift for TensorFlow](https://github.com/tensorflow/swift) (S4TF). Less than a year later, the open-source community is resurrecting S4TF, and Colab support is a vital component of that effort. It allows testing on TPUs and ensuring new modifications don't break existing hardware acceleration.
 
 Furthermore, Colab is a very accessible way to do programming with Swift. It runs instantly without downloading an IDE, and it can even run on a Chromebook or mobile device.
 
