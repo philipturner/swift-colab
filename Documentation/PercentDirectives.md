@@ -2,7 +2,18 @@
 
 (there are commands, they are here because _ and they do _)
 
-## `%include FILEPATH`
+## `%include`
 
-## `%install SPEC [PRODUCT...]` (TODO: check this is the help guide)
+```
+%include FILEPATH
+```
 
+Description, example of usage
+
+## `%install`
+
+```
+%install SPEC PRODUCT [PRODUCT ...]
+```
+
+Description, example of usage
