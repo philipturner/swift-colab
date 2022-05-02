@@ -2,6 +2,9 @@
 
 (there are commands, they are here because _ and they do _)
 
+Contents
+- [`%include`](#include)
+
 ## `%include`
 
 ```
