@@ -17,3 +17,9 @@ Description, example of usage
 ```
 
 Description, example of usage
+
+## `%install-extra-include-command`
+
+## `%install-location`
+
+## `%install-swiftpm-flags`
