@@ -7,6 +7,7 @@
 - [`%install-extra-include-command`](#install-extra-include-command)
 - [`%install-location`](#install-location)
 - [`%install-swiftpm-flags`](#install-swiftpm-flags)
+- [`%system`](#system)
 
 ## `%include`
 
@@ -29,3 +30,5 @@ Description, example of usage
 ## `%install-location`
 
 ## `%install-swiftpm-flags`
+
+## `%system`
