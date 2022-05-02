@@ -47,9 +47,9 @@ Description, example of usage
 %install-swiftpm-flags
 ```
 
-- The `$clear` flag
-
 Description, example of usage
+
+- The `$clear` flag
 
 ## `%system`
 ```
