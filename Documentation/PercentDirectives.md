@@ -10,7 +10,6 @@
 - [`%system`](#system)
 
 ## `%include`
-
 ```
 %include FILEPATH
 ```
@@ -18,7 +17,6 @@
 Description, example of usage
 
 ## `%install`
-
 ```
 %install SPEC PRODUCT [PRODUCT ...]
 ```
@@ -26,9 +24,29 @@ Description, example of usage
 Description, example of usage
 
 ## `%install-extra-include-command`
+```
+%install SPEC PRODUCT [PRODUCT ...]
+```
+
+Description, example of usage
 
 ## `%install-location`
+```
+%install SPEC PRODUCT [PRODUCT ...]
+```
+
+Description, example of usage
 
 ## `%install-swiftpm-flags`
+```
+%install SPEC PRODUCT [PRODUCT ...]
+```
+
+Description, example of usage
 
 ## `%system`
+```
+%install SPEC PRODUCT [PRODUCT ...]
+```
+
+Description, example of usage
