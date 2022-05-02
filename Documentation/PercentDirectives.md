@@ -21,6 +21,8 @@ Description, example of usage
 %install SPEC PRODUCT [PRODUCT ...]
 ```
 
+- Swift 4.2-style package initializer
+
 Description, example of usage
 
 ## `%install-extra-include-command`
