@@ -8,6 +8,8 @@ Swift-Colab is an accessible way to do programming with Swift. It runs in a brow
 
 For an in-depth look at how and why this repository was created, check out the [summary of its history](./Documentation/ColabSupportHistory.md).
 
+> Parts of this README from here on out are extremely out of date.
+
 ## How to run Swift on Google Colaboratory
 
 Copy [this template](https://colab.research.google.com/drive/1EACIWrk9IWloUckRm3wu973bKUBXQDKR?usp=sharing) of a Swift Colab notebook. Do not create one directly from Google Drive, as notebooks are configured for Python by default. Copy the following commands into the first code cell and run it:
