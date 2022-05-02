@@ -21,7 +21,7 @@ Description, example of usage
 %install SPEC PRODUCT [PRODUCT ...]
 ```
 
-- Swift 4.2-style package initializer for ergonomic and backwards compatibility
+- Swift 4.2-style package initializer for ergonomics and backward compatibility
 
 Description, example of usage
 
