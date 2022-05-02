@@ -25,28 +25,28 @@ Description, example of usage
 
 ## `%install-extra-include-command`
 ```
-%install SPEC PRODUCT [PRODUCT ...]
+%install-extra-include-command
 ```
 
 Description, example of usage
 
 ## `%install-location`
 ```
-%install SPEC PRODUCT [PRODUCT ...]
+%install-location
 ```
 
 Description, example of usage
 
 ## `%install-swiftpm-flags`
 ```
-%install SPEC PRODUCT [PRODUCT ...]
+%install-swiftpm-flags
 ```
 
 Description, example of usage
 
 ## `%system`
 ```
-%install SPEC PRODUCT [PRODUCT ...]
+%system
 ```
 
 Description, example of usage
