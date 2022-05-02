@@ -1,6 +1,6 @@
 # Swift-Colab
 
-> Warning: Some of this documentation may be outdated because Swift-Colab is in the middle of a major overhaul. For a 100% reliable guide, check out the README in [swift-colab-dev](https://github.com/philipturner/swift-colab-dev).
+> Warning: Some of this documentation may be inaccurate because Swift-Colab is in the middle of a major overhaul. For a 100% reliable guide, check out the README in [swift-colab-dev](https://github.com/philipturner/swift-colab-dev).
 
 In March 2021, Google [ended](./Documentation/ColabSupportHistory.md) built-in Swift support on Colaboratory as part of their *attempt* to end [Swift for TensorFlow (S4TF)](https://github.com/tensorflow/swift). Now that new contributors are working on S4TF, Colab support is essential for ensuring new modifications don't break existing TPU support. This repository is the successor to [google/swift-jupyter](https://github.com/google/swift-jupyter), written entirely in Swift and adding several new features.
 
