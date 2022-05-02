@@ -21,9 +21,10 @@ Description, example of usage
 %install SPEC PRODUCT [PRODUCT ...]
 ```
 
-- Swift 4.2-style package initializer for ergonomics and backward compatibility
-
 Description, example of usage
+
+- Swift 4.2-style package initializer for ergonomics and backward compatibility
+- The `$cwd` substitution
 
 ## `%install-extra-include-command`
 ```
@@ -39,10 +40,14 @@ Description, example of usage
 
 Description, example of usage
 
+- The `$cwd` substitution?
+
 ## `%install-swiftpm-flags`
 ```
 %install-swiftpm-flags
 ```
+
+- The `$clear` flag
 
 Description, example of usage
 
