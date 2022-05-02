@@ -16,6 +16,8 @@
 
 Description, example of usage
 
+- Doesn't include a file twice, clarify what that means with an example, explain why it does that
+
 ## `%install`
 ```
 %install SPEC PRODUCT [PRODUCT ...]
@@ -49,7 +51,7 @@ Description, example of usage
 
 Description, example of usage
 
-- The `$clear` flag
+- The `$clear` flag, why it was added
 
 ## `%system`
 ```
