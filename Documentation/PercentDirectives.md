@@ -2,6 +2,8 @@
 
 (there are commands, they are here because _ and they do _). Each should have a description and example of usage.
 
+- Execute before all other code
+
 - [`%include`](#include)
 - [`%install`](#install)
 - [`%install-extra-include-command`](#install-extra-include-command)
@@ -23,6 +25,8 @@
 
 - Swift 4.2-style package initializer for ergonomics and backward compatibility
 - The `$cwd` substitution
+- How to prevent a package from recompiling
+- This is also the command that loads a package into LLDB, so must run before calling `import XXX`
 
 ## `%install-extra-include-command`
 ```
