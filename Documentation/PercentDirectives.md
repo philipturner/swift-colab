@@ -53,7 +53,7 @@
 
 ## `%system`
 ```
-%system
+%system EXECUTABLE [ARGUMENT ...]
 ```
 
 - Executes a command-line command, executes before the code in the cell
