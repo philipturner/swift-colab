@@ -55,3 +55,7 @@
 ```
 %system
 ```
+
+- Executes a command-line command, executes before the code in the cell
+- Does not forward print output (yet), so better to use bash in Python mode right now
+- Does it work with stuff like `mkdir`, `ls`, `touch`?
