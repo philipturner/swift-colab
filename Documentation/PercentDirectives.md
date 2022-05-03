@@ -33,11 +33,14 @@
 %install-extra-include-command
 ```
 
+- Link to forum thread that initiated this
+
 ## `%install-location`
 ```
 %install-location
 ```
 
+- Link to PR that initiated this
 - The `$cwd` substitution?
 
 ## `%install-swiftpm-flags`
