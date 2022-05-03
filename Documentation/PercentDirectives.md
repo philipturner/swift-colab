@@ -25,7 +25,7 @@
 
 - Swift 4.2-style package initializer for ergonomics and backward compatibility
 - The `$cwd` substitution
-- How to prevent a package from recompiling
+- How to prevent a package from recompiling (same toolchain, same SwiftPM flags)
 - This is also the command that loads a package into LLDB, so must run before calling `import XXX`
 
 ## `%install-extra-include-command`
@@ -45,10 +45,11 @@
 
 ## `%install-swiftpm-flags`
 ```
-%install-swiftpm-flags
+%install-swiftpm-flags [FLAG ...]
 ```
 
-- The `$clear` flag, why it was added
+- Appends the arguments to a growing list of flags every time you execute
+- The `$clear` flag, was added to allow emptying SwiftPM flags. If you have `$clear` before other flags, it resets then adds the flags to the right of it.
 
 ## `%system`
 ```
