@@ -1,6 +1,6 @@
 # Built-In "`%`" Directives
 
-(there are commands, they are here because _ and they do _)
+(there are commands, they are here because _ and they do _). Each should have a description and example of usage.
 
 - [`%include`](#include)
 - [`%install`](#install)
@@ -14,16 +14,12 @@
 %include FILEPATH
 ```
 
-Description, example of usage
-
 - Doesn't include a file twice, clarify what that means with an example, explain why it does that
 
 ## `%install`
 ```
 %install SPEC PRODUCT [PRODUCT ...]
 ```
-
-Description, example of usage
 
 - Swift 4.2-style package initializer for ergonomics and backward compatibility
 - The `$cwd` substitution
@@ -33,14 +29,10 @@ Description, example of usage
 %install-extra-include-command
 ```
 
-Description, example of usage
-
 ## `%install-location`
 ```
 %install-location
 ```
-
-Description, example of usage
 
 - The `$cwd` substitution?
 
@@ -49,13 +41,9 @@ Description, example of usage
 %install-swiftpm-flags
 ```
 
-Description, example of usage
-
 - The `$clear` flag, why it was added
 
 ## `%system`
 ```
 %system
 ```
-
-Description, example of usage
