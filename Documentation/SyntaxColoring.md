@@ -12,7 +12,7 @@ Use parentheses when dealing with strings or numbers that are arguments, use par
 
 ## Python
 
-Remedy for off syntax coloring, use:
+This may be easier on the eyes:
 
 ```swift
 #/*
