@@ -8,4 +8,4 @@ Switch modes when restart runtime, but saves the files
 
 ## Python
 
-Needed for Google Drive integration (link), overcoming a possible bug with Pandas DataFrame presentation (link to doc file about inline graphs)
+Needed for Google Drive integration (link to doc file), overcoming a possible bug with Pandas DataFrame presentation (link to doc file about inline graphs)
