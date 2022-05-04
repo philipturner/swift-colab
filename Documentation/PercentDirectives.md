@@ -1,8 +1,6 @@
 # Built-In "`%`" Directives
 
-(there are commands, they are here because _ and they do _). Each should have a description and example of usage.
-
-- Execute before all other code
+Describe why commands are here and what they do. They execute before all other Swift code in a code block, even if the Swift code appears before them. Each should have a description and example of usage.
 
 - [`%include`](#include)
 - [`%install`](#install)
