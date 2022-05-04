@@ -14,7 +14,7 @@ Describe why commands are here and what they do. They execute before all other S
 %include FILEPATH
 ```
 
-- Doesn't include a file twice, clarify what that means with an example, explain why it does that
+- Doesn't include a file twice, clarify what that means with an example, it does that for exclusivity of type objects. LLDB allows re-declaring of symbols, which is fine for local variables but not for type objects which get overwritten.
 
 ## `%install`
 ```
