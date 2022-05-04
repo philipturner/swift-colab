@@ -20,3 +20,10 @@ from google.colab import drive
 drive.mount(...)
 #*/
 ```
+
+vs
+
+```swift
+from google.colab import drive
+drive.mount(...)
+```
