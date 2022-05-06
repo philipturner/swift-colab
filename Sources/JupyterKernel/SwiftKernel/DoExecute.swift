@@ -12,10 +12,23 @@ func doExecute(code: String) throws -> PythonObject? {
   var result: ExecutionResult
   do {
     defer {
+      globalMessages.append("hello world 100.3")
+      updateProgressFile()
+      
       stdoutHandler.stop_event.set()
+      globalMessages.append("hello world 100.4")
+      updateProgressFile()
+      
       stdoutHandler.join()
+      globalMessages.append("hello world 100.5")
+      updateProgressFile()
     }
+    globalMessages.append("hello world 100.1")
+    updateProgressFile()
+    
     result = try executeCell(code: code)
+    globalMessages.append("hello world 100.2")
+    updateProgressFile()
   } catch let error as PackageInstallException {
     let traceback = [error.localizedDescription]
     sendIOPubErrorMessage(traceback)
