@@ -21,8 +21,8 @@ func doExecute(code: String) throws -> PythonObject? {
       globalMessages.append("hello world 100.3")
       updateProgressFile()
       
-      doExecute_lock = true
-//       stdoutHandler.stop_event.set()
+//       doExecute_lock = true
+      stdoutHandler.stop_event.set()
       globalMessages.append("hello world 100.4")
       updateProgressFile()
       
