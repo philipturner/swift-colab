@@ -88,15 +88,15 @@ fileprivate func sendStdout(_ stdout: PythonObject /* String */) {
     let clear_sequence_length = Python.len(clear_sequence)
     
     if clear_sequence_index != -1 {
-        try sendStdout(stdout[(..<clear_sequence_index).pythonObject])
+        sendStdout(stdout[(..<clear_sequence_index).pythonObject])
         
-        try kernel.send_response.throwing.dynamicallyCall(withArguments:
+        try! kernel.send_response.throwing.dynamicallyCall(withArguments:
             kernel.iopub_socket, "clear_output", ["wait": false])
             
 
-        try sendStdout(stdout[((clear_sequence_index + clear_sequence_length)...).pythonObject])
+        sendStdout(stdout[((clear_sequence_index + clear_sequence_length)...).pythonObject])
     } else {
-        try kernel.send_response.throwing.dynamicallyCall(withArguments:
+         try! kernel.send_response.throwing.dynamicallyCall(withArguments:
             kernel.iopub_socket, "stream", ["name": "stdout", "text": stdout])
     }
 }
