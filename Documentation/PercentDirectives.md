@@ -1,6 +1,14 @@
 # Built-In "`%`" Directives
 
-Describe why commands are here and what they do. They execute before all other Swift code in a code block, even if the Swift code appears before them. Each should have a description and example of usage.
+Swift Colab notebooks have various built-in commands for downloading external libraries and interacting with the operating system. Commands with this syntax also appear in Python notebooks. These mirror and substitute the usage of inline Shell code in Python notebooks, with slightly different behavior:
+
+- They start with `%` instead of `!`. The medium-gray syntax coloring makes them stand out from Swift code. (CHECK IF TRUE IN LIGHT MODE).
+- The Swift kernel extracts them from a code block and executes them separately. They execute before all other Swift code in a code block, even if the Swift code appears before them.
+- Regardless of whether a Swift `for` loop surrounds a command, it always executes once. In the Python kernel, Shell code follows the program's control flow. This means it may never run or could run more than once.
+
+The code that handles them can be found in LINK TO SOURCE FILE.
+
+TODO: Each should have a description and example of usage.
 
 - [`%include`](#include)
 - [`%install`](#install)
@@ -15,6 +23,7 @@ Describe why commands are here and what they do. They execute before all other S
 ```
 
 - Doesn't include a file twice, clarify what that means with an example, it does that for exclusivity of type objects. LLDB allows re-declaring of symbols, which is fine for local variables but not for type objects which get overwritten.
+- Does it inject code in the middle of a Swift source file? I don't think so because they are parsed beforehand.
 
 ## `%install`
 ```
