@@ -31,8 +31,8 @@ struct KernelContext {
     UnsafeMutablePointer<Int32>) -> Int32 =
     LLDBProcessLibrary.loadSymbol(name: "get_pretty_stack_trace")
   
-  static let send_async_interrupt: @convention(c) () -> Int32 =
-    LLDBProcessLibrary.loadSymbol(name: "send_async_interrupt")
+  static let async_interrupt_process: @convention(c) () -> Int32 =
+    LLDBProcessLibrary.loadSymbol(name: "async_interrupt_process")
 }
 
 fileprivate struct LLDBProcessLibrary {
