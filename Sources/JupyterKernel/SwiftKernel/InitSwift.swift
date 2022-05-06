@@ -31,8 +31,8 @@ func initSwift() throws {
   try initKernelCommunicator()
   try initBitWidth()
   
-  sigintHandler = SIGINTHandler()
-  sigintHandler.start()
+//   sigintHandler = SIGINTHandler()
+//   sigintHandler.start()
 }
 
 fileprivate func initReplProcess() throws {
