@@ -105,4 +105,7 @@ D
 
 - Executes a command-line command, executes before the code in the cell
 - Does not forward print output (yet), so better to use bash in Python mode right now
-- Does it work with stuff like `mkdir`, `ls`, `touch`?
+```swift
+%system cd "sample_data" && touch "$(uname -m).sh"
+```
+The code above works and makes a file called `x86_64.sh` in `/content/sample_data`.
