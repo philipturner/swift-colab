@@ -5,7 +5,12 @@ fileprivate let threading = Python.import("threading")
 fileprivate var messages: [String] = []
 
 fileprivate func updateProgressFile() {
-  let data = "\(messages)".data(using: .utf8)!
+  var string = ""
+  for message in messages {
+    string += message + "\n"
+  }
+  
+  let data = string.data(using: .utf8)!
   precondition(FileManager.default.createFile(atPath: "/content/progress.txt", contents: data))
 }
 
