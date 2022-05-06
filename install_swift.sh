@@ -47,7 +47,7 @@ then
   rm -r swift-colab
 fi
 
-git clone --single-branch -b release/1.0 https://github.com/philipturner/swift-colab
+git clone --single-branch -b sigint-bug https://github.com/philipturner/swift-colab
 
 export PATH="/opt/swift/toolchain/usr/bin:$PATH"
 swift swift-colab/install_swift.swift $should_reinstall
