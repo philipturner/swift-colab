@@ -3,6 +3,7 @@ fileprivate let json = Python.import("json")
 fileprivate let jsonutil = Python.import("jupyter_client").jsonutil
 
 internal var doExecute_lock: Bool = false
+internal var globalHad_stdout: Bool = false
 internal let syncQueue = DispatchQueue(label: "com.swift-colab.syncQueue")
 
 func doExecute(code: String) throws -> PythonObject? {
@@ -92,7 +93,8 @@ func doExecute(code: String) throws -> PythonObject? {
       // that this execute request can cleanly finish before the kernel exits.
       let loop = Python.import("ioloop").IOLoop.current()
       loop.add_timeout(Python.import("time").time() + 0.1, loop.stop)
-    } else if Bool(stdoutHandler.had_stdout)! {
+    else if globalHad_stdout {
+//     } else if Bool(stdoutHandler.had_stdout)! {
       // When there is stdout, it is a runtime error. Stdout, which we have
       // already sent to the client, contains the error message (plus some other 
       // ugly traceback that we should eventually figure out how to suppress), 
