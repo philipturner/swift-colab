@@ -108,14 +108,6 @@ fileprivate func executeSystemCommand(restOfLine: String) {
     stdout: subprocess.PIPE,
     stderr: subprocess.STDOUT,
     shell: true)
-//   process.wait()
-    
-//   let commandResult = process.stdout.read().decode("utf-8")
-//   let kernel = KernelContext.kernel
-//   kernel.send_response(kernel.iopub_socket, "stream", [
-//     "name": "stdout",
-//     "text": commandResult
-//   ])
   
   for outputLine in Python.iter(process.stdout.readline, PythonBytes(Data())) {
     let str = String(outputLine.decode("utf8"))!
