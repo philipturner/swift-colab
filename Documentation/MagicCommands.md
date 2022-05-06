@@ -26,7 +26,15 @@ for i in 0..<2 {
   print("D")
 }
 ```
-Produces 
+Produces:
+```
+A
+C
+B
+D
+B
+D
+```
 
 ## `%include`
 ```
