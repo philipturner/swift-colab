@@ -6,11 +6,13 @@ internal var doExecute_lock: Bool = false
 internal let syncQueue = DispatchQueue(label: "com.swift-colab.syncQueue")
 
 func doExecute(code: String) throws -> PythonObject? {
-  doExecute_lock = false
+  syncQueue.sync {
+    doExecute_lock = false
+  }
   
   // Start up a new thread to collect stdout.
-  let stdoutHandler = StdoutHandler()
-  stdoutHandler.start()
+//   let stdoutHandler = StdoutHandler()
+//   stdoutHandler.start()
 //   stdoutHandler.stop_event.clear()
 //   stdoutHandler.stop_event.wait(timeout: 0.1)
   
@@ -22,12 +24,14 @@ func doExecute(code: String) throws -> PythonObject? {
       globalMessages.append("hello world 100.3")
       updateProgressFile()
       
-//       doExecute_lock = true
-      stdoutHandler.stop_event.set()
+      syncQueue.sync {
+        doExecute_lock = true
+      }
+//       stdoutHandler.stop_event.set()
       globalMessages.append("hello world 100.4")
       updateProgressFile()
       
-      stdoutHandler.join()
+//       stdoutHandler.join()
       globalMessages.append("hello world 100.5")
       updateProgressFile()
     }
