@@ -66,26 +66,45 @@ fileprivate func getStdout() -> String {
   return String(data: stdout, encoding: .utf8)!
 }
 
-fileprivate func sendStdout(_ stdout: String) {
+fileprivate func sendStdout(_ stdout: PythonObject /* String */) {
+//   let kernel = KernelContext.kernel
+//   if let range = stdout.range(of: "\033[2J") {
+//     sendStdout(String(stdout[..<range.lowerBound]))
+//     kernel.send_response(kernel.iopub_socket, "clear_output", [
+//       "wait": false
+//     ])
+//     sendStdout(String(stdout[range.upperBound...]))
+//   } else {
+//     kernel.send_response(kernel.iopub_socket, "stream", [
+//       "name": "stdout",
+//       "text": stdout
+//     ])
+//   }
+  
   let kernel = KernelContext.kernel
-  if let range = stdout.range(of: "\033[2J") {
-    sendStdout(String(stdout[..<range.lowerBound]))
-    kernel.send_response(kernel.iopub_socket, "clear_output", [
-      "wait": false
-    ])
-    sendStdout(String(stdout[range.upperBound...]))
-  } else {
-    kernel.send_response(kernel.iopub_socket, "stream", [
-      "name": "stdout",
-      "text": stdout
-    ])
-  }
+                            
+    let clear_sequence: PythonObject = "\033[2J"
+    let clear_sequence_index = stdout.find(clear_sequence)
+    let clear_sequence_length = Python.len(clear_sequence)
+    
+    if clear_sequence_index != -1 {
+        try sendStdout(stdout[(..<clear_sequence_index).pythonObject])
+        
+        try kernel.send_response.throwing.dynamicallyCall(withArguments:
+            kernel.iopub_socket, "clear_output", ["wait": false])
+            
+
+        try sendStdout(stdout[((clear_sequence_index + clear_sequence_length)...).pythonObject])
+    } else {
+        try kernel.send_response.throwing.dynamicallyCall(withArguments:
+            kernel.iopub_socket, "stream", ["name": "stdout", "text": stdout])
+    }
 }
 
 fileprivate func getAndSendStdout(handler: PythonObject) {
   let stdout = getStdout()
   if stdout.count > 0 {
     handler.had_stdout = true
-    sendStdout(stdout)
+    sendStdout(PythonObject(stdout))
   }
 }
