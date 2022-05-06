@@ -3,6 +3,8 @@ fileprivate let signal = Python.import("signal")
 fileprivate let threading = Python.import("threading")
 
 internal var globalMessages: [String] = []
+internal var vulnerableProcess: PythonObject = Python.None
+internal var killedVulnerableProcess: Bool = false
 
 internal func updateProgressFile() {
   var string = ""
