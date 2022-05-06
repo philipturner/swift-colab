@@ -18,12 +18,12 @@ Magic commands are implemented in [PreprocessAndExecute.swift](https://github.co
 
 Before executing a code block, the kernel extracts all magic commands and executes them in the order they appear. They are oblivious to the surrounding Swift code, whereas Python Shell commands follow the control flow of Python code.
 
-This code in a Swift notebook: (TODO: does "echo" work?)
+This code in a Swift notebook:
 ```swift
 for i in 0..<2 {
-%system command-that-prints "A"
+%system echo "A"
   print("B")
-%system command-that-prints "C"
+%system echo "C"
   print("D")
 }
 ```
