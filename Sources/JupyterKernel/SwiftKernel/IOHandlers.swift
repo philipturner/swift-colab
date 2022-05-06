@@ -14,7 +14,8 @@ let SIGINTHandler = PythonClass(
     
     "run": PythonInstanceMethod { (`self`: PythonObject) in
       while true {
-        try! signal.sigwait.throwing.dynamicallyCall(withArguments: [signal.SIGINT] as PythonObject)
+//         try! signal.sigwait.throwing.dynamicallyCall(withArguments: [signal.SIGINT] as PythonObject)
+        signal.sigwait([signal.SIGINT])
         _ = KernelContext.async_interrupt_process()
       }
       // Do not need to return anything because this is an infinite loop
