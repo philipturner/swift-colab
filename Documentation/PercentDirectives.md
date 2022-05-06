@@ -31,7 +31,7 @@ TODO: Each should have an example of usage in its description.
 ```
 
 - Swift 4.2-style package initializer for ergonomics and backward compatibility
-- The `$cwd` substitution
+- Has `$cwd` substitution (describe).
 - How to prevent a package from recompiling (same toolchain, same SwiftPM flags)
 - This is also the command that loads a package into LLDB, so must run before calling `import XXX`
 
@@ -48,7 +48,7 @@ TODO: Each should have an example of usage in its description.
 ```
 
 - Link to PR that initiated this
-- The `$cwd` substitution?
+- Has `$cwd` substitution (describe).
 
 ## `%install-swiftpm-flags`
 ```
