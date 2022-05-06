@@ -18,7 +18,7 @@ let SIGINTHandler = PythonClass(
         print("hello world 0")
         try signal.sigwait.throwing.dynamicallyCall(withArguments: [signal.SIGINT] as PythonObject)
         print("hello world 1")
-        _ = KernelContext.send_async_interrupt()
+        //_ = KernelContext.send_async_interrupt()
         print("hello world 2")
       }
       // Do not need to return anything because this is an infinite loop
