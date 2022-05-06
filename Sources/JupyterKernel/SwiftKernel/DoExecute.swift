@@ -7,7 +7,7 @@ func doExecute(code: String) throws -> PythonObject? {
   let stdoutHandler = StdoutHandler()
   stdoutHandler.start()
   stdoutHandler.stop_event.clear()
-  stdoutHandler.stop_event.wait(timeout: 0.0001)
+  stdoutHandler.stop_event.wait(timeout: 0.1)
   
   // Execute the cell, handle unexpected exceptions, and make sure to always 
   // clean up the stdout handler.
