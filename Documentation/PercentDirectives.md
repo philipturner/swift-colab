@@ -2,7 +2,7 @@
 
 Swift Colab notebooks have various built-in commands for downloading external libraries and interacting with the operating system. These mirror and substitute the usage of inline Shell code in Python notebooks, with slightly different behavior:
 
-- They start with `%` instead of `!`. Python also has "magic" commands prefixed by a `%`, which do special things with the kernel (TODO: Show the Wiki on IPython).
+- They start with `%` instead of `!`. Instead of passing the code into a terminal, they function like IPython's ["magic" commands](http://ipython.org/ipython-doc/dev/interactive/magics.html), which also start with `%`.
 - The Swift kernel extracts them from a code block and executes them separately. They execute before all other Swift code in a code block, even if the Swift code appears before them.
 - Regardless of whether a Swift `for` loop surrounds a command, it always executes once. In the Python kernel, Shell code follows the program's control flow. This means it may never run or could run more than once.
 
