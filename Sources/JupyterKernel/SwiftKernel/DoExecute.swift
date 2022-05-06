@@ -2,12 +2,16 @@ import Foundation
 fileprivate let json = Python.import("json")
 fileprivate let jsonutil = Python.import("jupyter_client").jsonutil
 
+internal var doExecute_lock: Bool = false
+
 func doExecute(code: String) throws -> PythonObject? {
+  doExecute_lock = false
+  
   // Start up a new thread to collect stdout.
   let stdoutHandler = StdoutHandler()
   stdoutHandler.start()
-  stdoutHandler.stop_event.clear()
-  stdoutHandler.stop_event.wait(timeout: 0.1)
+//   stdoutHandler.stop_event.clear()
+//   stdoutHandler.stop_event.wait(timeout: 0.1)
   
   // Execute the cell, handle unexpected exceptions, and make sure to always 
   // clean up the stdout handler.
@@ -17,7 +21,8 @@ func doExecute(code: String) throws -> PythonObject? {
       globalMessages.append("hello world 100.3")
       updateProgressFile()
       
-      stdoutHandler.stop_event.set()
+      doExecute_lock = true
+//       stdoutHandler.stop_event.set()
       globalMessages.append("hello world 100.4")
       updateProgressFile()
       
