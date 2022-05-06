@@ -141,6 +141,11 @@ fileprivate func executeSystemCommand(restOfLine: String) throws {
   
   process.wait()
   
+  vulnerableProcess = Python.None
+  if killedVulnerableProcess {
+    throw InterruptException(
+      "User interrupted execution during a `%system` command.")
+  }
 }
 
 fileprivate var previouslyReadPaths: Set<String> = []
