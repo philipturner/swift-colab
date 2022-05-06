@@ -2,8 +2,10 @@
 
 Swift Colab notebooks have various built-in commands for downloading external libraries and interacting with the operating system. These start with `%` and behave like the IPython [magic commands](http://ipython.org/ipython-doc/dev/interactive/magics.html). They take the role of inline Shell commands in Python notebooks, which start with `!`. Before executing a code block, the kernel extracts all magic commands and executes them in the order they appear. They are oblivious to the surrounding Swift code, whereas Python Shell commands follow the control flow of Python code.
 
+
 Percent directives are implemented in [PreprocessAndExecute.swift](https://github.com/philipturner/swift-colab/blob/main/Sources/JupyterKernel/SwiftKernel/PreprocessAndExecute.swift) and [ProcessInstalls.swift](https://github.com/philipturner/swift-colab/blob/main/Sources/JupyterKernel/SwiftKernel/ProcessInstalls.swift).
 
+- [Execution Behavior](#execution-behavior)
 - [`%include`](#include)
 - [`%install`](#install)
 - [`%install-extra-include-command`](#install-extra-include-command)
@@ -12,6 +14,19 @@ Percent directives are implemented in [PreprocessAndExecute.swift](https://githu
 - [`%system`](#system)
 
 TODO: Each should have an example of usage in its description.
+
+## Execution Behavior
+
+This code in a Swift notebook: (TODO: does "echo" work?)
+```swift
+for i in 0..<2 {
+%system command-that-prints "A"
+  print("B")
+%system command-that-prints "C"
+  print("D")
+}
+```
+Produces 
 
 ## `%include`
 ```
