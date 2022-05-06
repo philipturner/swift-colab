@@ -2,7 +2,7 @@
 
 > TODO: Each should have an example of usage in its description.
 
-The Swift interpreter has various built-in commands for downloading dependencies and interacting with the operating system. These start with `%` and behave like the IPython [magic commands](http://ipython.org/ipython-doc/dev/interactive/magics.html). `%system` commands take the role of inline Shell commands in Python notebooks, which start with `!`.
+The Swift interpreter has various built-in commands for downloading dependencies and interacting with the operating system. These start with `%` and behave like the IPython [magic commands](http://ipython.org/ipython-doc/dev/interactive/magics.html). `%system` commands replicate inline Shell commands in Python notebooks, which start with `!`.
 
 - [Execution Behavior](#execution-behavior)
 - [`%include`](#include)
@@ -16,7 +16,7 @@ Magic commands are implemented in [PreprocessAndExecute.swift](https://github.co
 
 ## Execution Behavior
 
-Before executing a code block, the kernel extracts all magic commands and executes them in the order they appear. They are oblivious to the surrounding Swift code, whereas Python Shell commands follow the control flow of Python code.
+Before executing a code block, the kernel extracts all magic commands and executes them in the order they appear. They are oblivious to the surrounding Swift code, while Shell commands in a Python notebook follow the control flow of surrounding code.
 
 This code in a Swift notebook:
 ```swift
