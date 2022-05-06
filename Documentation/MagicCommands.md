@@ -26,14 +26,9 @@ for i in 0..<2 {
   print("D")
 }
 ```
-Produces:
+Produces (replacing newlines with spaces):
 ```
-A
-C
-B
-D
-B
-D
+A C B D B D
 ```
 
 While this code in a Python notebook:
@@ -44,16 +39,9 @@ for i in range 2:
   !echo C
   print('D')
 ```
-Produces:
+Produces (replacing newlines with spaces):
 ```
-A
-B
-C
-D
-A
-B
-C
-D
+A B C D A B C D
 ```
 
 ## `%include`
