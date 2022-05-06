@@ -15,6 +15,7 @@ let SIGINTHandler = PythonClass(
     "run": PythonInstanceMethod { (`self`: PythonObject) in
       print("hello world -1")
       while true {
+        fatalError("test test test")
         print("hello world 0")
         signal.sigwait([signal.SIGINT])
         print("hello world 1")
