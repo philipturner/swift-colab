@@ -3,7 +3,7 @@ fileprivate let json = Python.import("json")
 fileprivate let jsonutil = Python.import("jupyter_client").jsonutil
 
 func doExecute(code: String) throws -> PythonObject? {
-  // TODO(v2.1): Make this happen in the very first cell, regardless of whether
+  // TODO(v3.0): Make this happen in the very first cell, regardless of whether
   // it's whitespace. In fact, just remove the check for whether the code is 
   // blank. Try to initialize Swift in the kernel object's initializer.
   if !KernelContext.debuggerInitialized {
