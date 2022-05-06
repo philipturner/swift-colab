@@ -14,6 +14,11 @@ let SIGINTHandler = PythonClass(
     
     "run": PythonInstanceMethod { (`self`: PythonObject) in
       print("hello world -1")
+      let kernel = KernelContext.kernel
+      kernel.send_response(kernel.iopub_socket, "stream", [
+        "name": "stdout",
+        "text": "hello world -1\n"
+      ])
       while true {
         print("hello world 0")
         signal.sigwait([signal.SIGINT])
