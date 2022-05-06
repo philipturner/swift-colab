@@ -56,12 +56,20 @@ let StdoutHandler = PythonClass(
     },
     
     "run": PythonInstanceMethod { (`self`: PythonObject) in
+       messages.append("hello world 4")
+       updateProgressFile()
        while true {
+         messages.append("hello world 5")
+         updateProgressFile()
          if Bool(`self`.stop_event.wait(0.1))! == true {
+           messages.append("hello world 6")
+           updateProgressFile()
            break
          }
          getAndSendStdout(handler: `self`)
        }
+       messages.append("hello world 7")
+       updateProgressFile()           
        getAndSendStdout(handler: `self`)
        return Python.None
     }
