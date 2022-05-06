@@ -4,7 +4,7 @@ Swift-Colab works with any Jupyter notebook, but Swift ones are better. All code
 
 ## Swift
 
-Comes from Monaco editor (link)
+Comes from Monaco editor "client-side" (link)
 
 ## Shell
 
