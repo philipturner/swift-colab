@@ -29,8 +29,9 @@ func doExecute(code: String) throws -> PythonObject? {
         return doExecute_lock
       }
       if doExecute_lock_ret {
-        return true
+        break
       }
+      altGetAndSendStdout(stdout
     }
     
     semaphore.signal()
