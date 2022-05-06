@@ -61,7 +61,9 @@ let StdoutHandler = PythonClass(
        while true {
          globalMessages.append("hello world 5")
          updateProgressFile()
-         if Bool(`self`.stop_event.wait(timeout: 0.1))! { //== true {
+         usleep(100_000)
+         if doExecute_lock {
+//          if Bool(`self`.stop_event.wait(timeout: 0.1))! { //== true {
            globalMessages.append("hello world 6")
            updateProgressFile()
            break
