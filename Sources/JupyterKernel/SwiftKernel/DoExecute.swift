@@ -9,6 +9,7 @@ internal let syncQueue = DispatchQueue(label: "com.swift-colab.syncQueue")
 func doExecute(code: String) throws -> PythonObject? {
   syncQueue.sync {
     doExecute_lock = false
+    globalHad_stdout = false
   }
   
   // Start up a new thread to collect stdout.
@@ -20,6 +21,17 @@ func doExecute(code: String) throws -> PythonObject? {
   let semaphore = DispatchSemaphore(value: 0)
   
   DispatchQueue.global().async {
+    var localHad_stdout = false
+    
+    while true {
+      usleep(100_000)
+      let doExecute_lock_ret = syncQueue.sync {
+        return doExecute_lock
+      }
+      if doExecute_lock_ret {
+        return true
+      }
+    }
     
     semaphore.signal()
   }
