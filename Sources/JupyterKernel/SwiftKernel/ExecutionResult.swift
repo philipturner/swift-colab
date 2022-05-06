@@ -35,6 +35,11 @@ struct SwiftError: ExecutionResultError {
   var description: String
 }
 
+/// The user interrupted execution.
+struct InterruptError: ExecutionResultError {
+  var description: String
+}
+
 struct Exception: LocalizedError {
   var errorDescription: String?
   init(_ message: String) { errorDescription = message }
