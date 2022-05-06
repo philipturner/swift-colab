@@ -22,15 +22,15 @@ let SIGINTHandler = PythonClass(
     "run": PythonInstanceMethod { (`self`: PythonObject) in
       while true {
 //         try! signal.sigwait.throwing.dynamicallyCall(withArguments: [signal.SIGINT] as PythonObject)
-        messages.append("hello world 0")
-        updateProgressFile()
+        messages.append("hello world 4")
+//         updateProgressFile()
         
         signal.sigwait([signal.SIGINT])
-        messages.append("hello world 1")
+        messages.append("hello world 5")
         updateProgressFile()
         
         _ = KernelContext.async_interrupt_process()
-        messages.append("hello world 2")
+        messages.append("hello world 6")
         updateProgressFile()
       }
       // Do not need to return anything because this is an infinite loop
