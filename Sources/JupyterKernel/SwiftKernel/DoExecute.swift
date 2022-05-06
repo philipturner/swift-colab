@@ -6,6 +6,7 @@ func doExecute(code: String) throws -> PythonObject? {
   // Start up a new thread to collect stdout.
   let stdoutHandler = StdoutHandler()
   stdoutHandler.start()
+  stdoutHandler.stop_event.set()
   
   // Execute the cell, handle unexpected exceptions, and make sure to always 
   // clean up the stdout handler.
