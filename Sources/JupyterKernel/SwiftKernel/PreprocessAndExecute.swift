@@ -93,7 +93,7 @@ fileprivate func preprocess(line: String, index lineIndex: Int) throws -> String
   let systemMatch = re.match(systemRegularExpression, line)
   guard systemMatch == Python.None else {
     let restOfLine = String(systemMatch.group(1))!
-    executeSystemCommand(restOfLine: restOfLine)
+    try executeSystemCommand(restOfLine: restOfLine)
     return ""
   }
   
@@ -108,12 +108,13 @@ fileprivate func preprocess(line: String, index lineIndex: Int) throws -> String
   return line
 }
 
-fileprivate func executeSystemCommand(restOfLine: String) {
+fileprivate func executeSystemCommand(restOfLine: String) throws {
   let process = subprocess.Popen(
     restOfLine,
     stdout: subprocess.PIPE,
     stderr: subprocess.STDOUT,
     shell: true)
+  vulnerableProcess = process
   
 //   while true {
 //     if process.poll() != Python.None {
@@ -137,6 +138,7 @@ fileprivate func executeSystemCommand(restOfLine: String) {
   }
   
   process.wait()
+  
 }
 
 fileprivate var previouslyReadPaths: Set<String> = []
