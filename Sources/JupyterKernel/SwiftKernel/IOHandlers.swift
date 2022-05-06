@@ -16,7 +16,7 @@ let SIGINTHandler = PythonClass(
       print("hello world -1")
       while true {
         print("hello world 0")
-        try? signal.sigwait.throwing.dynamicallyCall(withArguments: [signal.SIGINT] as PythonObject)
+        try signal.sigwait.throwing.dynamicallyCall(withArguments: [signal.SIGINT] as PythonObject)
         print("hello world 1")
         _ = KernelContext.send_async_interrupt()
         print("hello world 2")
