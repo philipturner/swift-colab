@@ -143,6 +143,7 @@ fileprivate func executeSystemCommand(restOfLine: String) throws {
   
   vulnerableProcess = Python.None
   if killedVulnerableProcess {
+    killedVulnerableProcess = false
     throw InterruptException(
       "User interrupted execution during a `%system` command.")
   }
