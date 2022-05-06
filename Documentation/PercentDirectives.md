@@ -6,12 +6,7 @@ Swift Colab notebooks have various built-in commands for downloading external li
 - The Swift kernel extracts them from a code block and executes them separately. They execute before all other Swift code in a code block, even if the Swift code appears before them.
 - Regardless of whether a Swift `for` loop surrounds a command, it always executes once. In the Python kernel, Shell code follows the program's control flow. This means it may never run or could run more than once.
 
-The code that handles them can be found in LINK TO SOURCE FILE.
-
-- https://github.com/philipturner/swift-colab/blob/main/Sources/JupyterKernel/SwiftKernel/PreprocessAndExecute.swift
-- https://github.com/philipturner/swift-colab/blob/main/Sources/JupyterKernel/SwiftKernel/ProcessInstalls.swift
-
-TODO: Each should have a description and example of usage.
+Percent directives are implemented in [PreprocessAndExecute.swift](https://github.com/philipturner/swift-colab/blob/main/Sources/JupyterKernel/SwiftKernel/PreprocessAndExecute.swift) and [ProcessInstalls.swift](https://github.com/philipturner/swift-colab/blob/main/Sources/JupyterKernel/SwiftKernel/ProcessInstalls.swift).
 
 - [`%include`](#include)
 - [`%install`](#install)
@@ -19,6 +14,8 @@ TODO: Each should have a description and example of usage.
 - [`%install-location`](#install-location)
 - [`%install-swiftpm-flags`](#install-swiftpm-flags)
 - [`%system`](#system)
+
+TODO: Each should have an example of usage in its description.
 
 ## `%include`
 ```
