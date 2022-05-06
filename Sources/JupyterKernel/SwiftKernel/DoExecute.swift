@@ -3,6 +3,7 @@ fileprivate let json = Python.import("json")
 fileprivate let jsonutil = Python.import("jupyter_client").jsonutil
 
 internal var doExecute_lock: Bool = false
+internal let syncQueue = DispatchQueue(label: "com.swift-colab.syncQueue")
 
 func doExecute(code: String) throws -> PythonObject? {
   doExecute_lock = false
