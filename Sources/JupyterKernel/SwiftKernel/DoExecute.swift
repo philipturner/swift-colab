@@ -31,7 +31,13 @@ func doExecute(code: String) throws -> PythonObject? {
       if doExecute_lock_ret {
         break
       }
-      altGetAndSendStdout(stdout
+      altGetAndSendStdout(hadStdout: &localHad_stdout)
+    }
+    
+    altGetAndSendStdout(hadStdout: &localHad_stdout)
+    let localHad_stdoutCopy = localHad_stdout
+    syncQueue.sync {
+      globalHad_stdout = localHad_stdoutCopy
     }
     
     semaphore.signal()
