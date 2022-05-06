@@ -84,6 +84,8 @@ fileprivate func getStdout() -> String {
   let scratchBuffer = cachedScratchBuffer ?? .allocate(capacity: bufferSize)
   cachedScratchBuffer = scratchBuffer
   while true {
+    messages.append("hello world 5.1")
+    updateProgressFile()  
     let stdoutSize = KernelContext.get_stdout(scratchBuffer, Int32(bufferSize))
     guard stdoutSize > 0 else {
       break
@@ -134,6 +136,8 @@ fileprivate func sendStdout(_ stdout: PythonObject /* String */) {
 
 fileprivate func getAndSendStdout(handler: PythonObject) {
   let stdout = getStdout()
+  messages.append("hello world 5.2")
+  updateProgressFile()  
   if stdout.count > 0 {
     handler.had_stdout = true
     sendStdout(PythonObject(stdout))
