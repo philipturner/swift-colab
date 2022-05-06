@@ -61,10 +61,13 @@ let StdoutHandler = PythonClass(
        while true {
          globalMessages.append("hello world 5")
          updateProgressFile()
-         if Bool(`self`.stop_event.wait(0.1))! { //== true {
+         if Bool(`self`.stop_event.wait(timeout: 0.1))! { //== true {
            globalMessages.append("hello world 6")
            updateProgressFile()
            break
+         } else {
+           globalMessages.append("hello world 6.2")
+           updateProgressFile()
          }
          getAndSendStdout(handler: `self`)
        }
