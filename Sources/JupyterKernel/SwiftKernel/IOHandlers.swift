@@ -2,6 +2,13 @@ import Foundation
 fileprivate let signal = Python.import("signal")
 fileprivate let threading = Python.import("threading")
 
+fileprivate var messages: [String] = []
+
+fileprivate func updateProgressFile() {
+  let data = "\(messages)".data(using: .utf8)!
+  precondition(FileManager.default.createFile(atPath: "/content/progress.txt", contents: data))
+}
+
 let SIGINTHandler = PythonClass(
   "SIGINTHandler",
   superclasses: [threading.Thread],
@@ -15,8 +22,16 @@ let SIGINTHandler = PythonClass(
     "run": PythonInstanceMethod { (`self`: PythonObject) in
       while true {
 //         try! signal.sigwait.throwing.dynamicallyCall(withArguments: [signal.SIGINT] as PythonObject)
+        messages.append("hello world 0")
+        updateProgressFile()
+        
         signal.sigwait([signal.SIGINT])
+        messages.append("hello world 1")
+        updateProgressFile()
+        
         _ = KernelContext.async_interrupt_process()
+        messages.append("hello world 2")
+        updateProgressFile()
       }
       // Do not need to return anything because this is an infinite loop
     }
