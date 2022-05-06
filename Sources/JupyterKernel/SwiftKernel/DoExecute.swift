@@ -93,7 +93,7 @@ func doExecute(code: String) throws -> PythonObject? {
       // that this execute request can cleanly finish before the kernel exits.
       let loop = Python.import("ioloop").IOLoop.current()
       loop.add_timeout(Python.import("time").time() + 0.1, loop.stop)
-    else if globalHad_stdout {
+    else if syncQueue.sync(execute: { return globalHad_stdout }) {
 //     } else if Bool(stdoutHandler.had_stdout)! {
       // When there is stdout, it is a runtime error. Stdout, which we have
       // already sent to the client, contains the error message (plus some other 
