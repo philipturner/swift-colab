@@ -2,7 +2,7 @@
 
 > TODO: Each should have an example of usage in its description.
 
-The Swift interpreter has various built-in commands for downloading dependencies and interacting with the operating system. These command start with `%` and behave like the IPython [magic commands](http://ipython.org/ipython-doc/dev/interactive/magics.html). They take the role of inline Shell commands in Python notebooks, which start with `!`.
+The Swift kernel has various built-in commands for downloading dependencies and interacting with the operating system. These command start with `%` and behave like the IPython [magic commands](http://ipython.org/ipython-doc/dev/interactive/magics.html). They take the role of inline Shell commands in Python notebooks, which start with `!`.
 
 - [`%include`](#include)
 - [`%install`](#install)
