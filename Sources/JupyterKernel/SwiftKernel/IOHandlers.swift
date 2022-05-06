@@ -155,6 +155,6 @@ internal func altGetAndSendStdout(hadStdout: inout Bool) {
   updateProgressFile()  
   if stdout.count > 0 {
     hadStdout = true
-    sendStdout(PythonObject(stdout))
+    sendStdout(stdout)
   }
 }
