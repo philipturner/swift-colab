@@ -15,7 +15,9 @@ let SIGINTHandler = PythonClass(
     "run": PythonInstanceMethod { (`self`: PythonObject) in
       while true {
         signal.sigwait([signal.SIGINT])
+        print("hello world 1")
         _ = KernelContext.send_async_interrupt()
+        print("hello world 2")
       }
       // Do not need to return anything because this is an infinite loop
     }
