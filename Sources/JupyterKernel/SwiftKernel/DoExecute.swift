@@ -16,6 +16,13 @@ func doExecute(code: String) throws -> PythonObject? {
 //   stdoutHandler.stop_event.clear()
 //   stdoutHandler.stop_event.wait(timeout: 0.1)
   
+  let semaphore = DispatchSemaphore(value: 0)
+  
+  DispatchQueue.global().async {
+    
+    semaphore.signal()
+  }
+  
   // Execute the cell, handle unexpected exceptions, and make sure to always 
   // clean up the stdout handler.
   var result: ExecutionResult
@@ -31,6 +38,7 @@ func doExecute(code: String) throws -> PythonObject? {
       globalMessages.append("hello world 100.4")
       updateProgressFile()
       
+      semaphore.wait()
 //       stdoutHandler.join()
       globalMessages.append("hello world 100.5")
       updateProgressFile()
