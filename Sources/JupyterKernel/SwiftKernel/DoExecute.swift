@@ -65,7 +65,7 @@ func doExecute(code: String) throws -> PythonObject? {
       // ugly traceback that we should eventually figure out how to suppress), 
       // so this block of code only needs to add a traceback.
       traceback = ["Current stack trace:"]
-      traceback += try prettyPrintStackTrace()
+//       traceback += try prettyPrintStackTrace()
       sendIOPubErrorMessage(traceback)      
     } else {
       // There is no stdout, so it must be a compile error. Simply return the 
