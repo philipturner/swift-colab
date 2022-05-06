@@ -6,10 +6,7 @@ func doExecute(code: String) throws -> PythonObject? {
   // TODO(v2.1): Make this happen in the very first cell, regardless of whether
   // it's whitespace. In fact, just remove the check for whether the code is 
   // blank. Try to initialize Swift in the kernel object's initializer.
-  if !KernelContext.debuggerInitialized {
-    try initSwift()
-    KernelContext.debuggerInitialized = true
-  }
+  
   
   // Start up a new thread to collect stdout.
   let stdoutHandler = StdoutHandler()
