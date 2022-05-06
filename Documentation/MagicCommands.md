@@ -16,7 +16,7 @@ Magic commands are implemented in [PreprocessAndExecute.swift](https://github.co
 
 ## Execution Behavior
 
-Before executing a code block, the kernel extracts all magic commands and executes them in the order they appear. They are oblivious to the surrounding Swift code, while Shell commands in a Python notebook follow the control flow of surrounding code.
+Before executing a code block, the kernel extracts all magic commands and executes them in the order they appear. They are oblivious to the surrounding Swift code. In contrast, a Python notebook executes Shell commands according to control flow of their surrounding code.
 
 This code in a Swift notebook:
 ```swift
