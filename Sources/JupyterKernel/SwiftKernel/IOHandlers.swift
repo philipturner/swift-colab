@@ -36,7 +36,7 @@ let StdoutHandler = PythonClass(
     
     "run": PythonInstanceMethod { (`self`: PythonObject) in
        while true {
-         if Bool(`self`.stop_event.wait(0.1)) == true {
+         if Bool(`self`.stop_event.wait(0.1))! == true {
            break
          }
          getAndSendStdout(handler: `self`)
