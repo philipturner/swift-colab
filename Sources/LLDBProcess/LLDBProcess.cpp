@@ -250,7 +250,7 @@ int get_pretty_stack_trace(char ***frames, int *size) {
 }
 
 int async_interrupt_process() {
-//   process.SendAsyncInterrupt();
+  process.SendAsyncInterrupt();
   return 0;
 }
 
