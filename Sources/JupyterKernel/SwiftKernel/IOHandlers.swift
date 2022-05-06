@@ -13,7 +13,9 @@ let SIGINTHandler = PythonClass(
     },
     
     "run": PythonInstanceMethod { (`self`: PythonObject) in
+      print("hello world -1")
       while true {
+        print("hello world 0")
         signal.sigwait([signal.SIGINT])
         print("hello world 1")
         _ = KernelContext.send_async_interrupt()
