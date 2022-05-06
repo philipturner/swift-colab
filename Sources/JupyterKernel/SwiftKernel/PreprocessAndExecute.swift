@@ -115,28 +115,28 @@ fileprivate func executeSystemCommand(restOfLine: String) {
     stderr: subprocess.STDOUT,
     shell: true)
   
-  while true {
-    if process.poll() != Python.None {
-      break
-    }
-  }
-  
-  print("hello world")
-  
-//   for outputLine in Python.iter(process.stdout.readline, PythonBytes(Data())) {
-//     let str = String(outputLine.decode("utf8"))!
-    
-//     let kernel = KernelContext.kernel
-//     kernel.send_response(kernel.iopub_socket, "stream", [
-//       "name": "stdout",
-//       "text": str
-//     ])
-    
-//     // What if the command requires user input? Does a Python notebook's shell
-//     // support sending input?
+//   while true {
+//     if process.poll() != Python.None {
+//       break
+//     }
 //   }
   
-//   process.wait()
+//   print("hello world")
+  
+  for outputLine in Python.iter(process.stdout.readline, PythonBytes(Data())) {
+    let str = String(outputLine.decode("utf8"))!
+    
+    let kernel = KernelContext.kernel
+    kernel.send_response(kernel.iopub_socket, "stream", [
+      "name": "stdout",
+      "text": str
+    ])
+    
+    // What if the command requires user input? Does a Python notebook's shell
+    // support sending input?
+  }
+  
+  process.wait()
 }
 
 fileprivate var previouslyReadPaths: Set<String> = []
