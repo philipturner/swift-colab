@@ -36,6 +36,26 @@ B
 D
 ```
 
+While this code in a Python notebook:
+```python
+for i in range 2:
+  !echo A
+  print('B')
+  !echo C
+  print('D')
+```
+Produces:
+```
+A
+B
+C
+D
+A
+B
+C
+D
+```
+
 ## `%include`
 ```
 %include FILEPATH
