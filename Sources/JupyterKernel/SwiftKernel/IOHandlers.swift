@@ -23,7 +23,10 @@ let SIGINTHandler = PythonClass(
       while true {
 //         try! signal.sigwait.throwing.dynamicallyCall(withArguments: [signal.SIGINT] as PythonObject)
         messages.append("hello world 4")
-//         updateProgressFile()
+        updateProgressFile()
+        
+        messages.append("hello world 4.5")
+        updateProgressFile()
         
         signal.sigwait([signal.SIGINT])
         messages.append("hello world 5")
