@@ -51,10 +51,15 @@ public func JupyterKernel_constructSwiftKernelClass(_ classObj: OpaquePointer) {
     "version": ""
   ]
   
-  SwiftKernel.do_execute = PythonInstanceMethod { (args: [PythonObject]) in
+  SwiftKernel.do_execute = PythonInstanceMethod { args in
     KernelContext.kernel = args[0]
     let code = args[1]
     var response: PythonObject?
+    
+    if !KernelContext.debuggerInitialized {
+      try initSwift()
+      KernelContext.debuggerInitialized = true
+    }
     
     if Python.len(code) > 0 && 
        Bool(code.isspace()) == false {
