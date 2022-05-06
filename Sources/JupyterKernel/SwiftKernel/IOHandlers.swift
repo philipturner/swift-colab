@@ -2,11 +2,11 @@ import Foundation
 fileprivate let signal = Python.import("signal")
 fileprivate let threading = Python.import("threading")
 
-fileprivate var messages: [String] = []
+internal var globalMessages: [String] = []
 
-fileprivate func updateProgressFile() {
+internal func updateProgressFile() {
   var string = ""
-  for message in messages {
+  for message in globalMessages {
     string += message + "\n"
   }
   
@@ -27,15 +27,15 @@ let SIGINTHandler = PythonClass(
     "run": PythonInstanceMethod { (`self`: PythonObject) in
       while true {
 //         try! signal.sigwait.throwing.dynamicallyCall(withArguments: [signal.SIGINT] as PythonObject)
-        messages.append("hello world 0")
+        globalMessages.append("hello world 0")
         updateProgressFile()
         
         signal.sigwait([signal.SIGINT])
-        messages.append("hello world 1")
+        globalMessages.append("hello world 1")
         updateProgressFile()
         
         _ = KernelContext.async_interrupt_process()
-        messages.append("hello world 2")
+        globalMessages.append("hello world 2")
         updateProgressFile()
       }
       // Do not need to return anything because this is an infinite loop
@@ -56,19 +56,19 @@ let StdoutHandler = PythonClass(
     },
     
     "run": PythonInstanceMethod { (`self`: PythonObject) in
-       messages.append("hello world 4")
+       globalMessages.append("hello world 4")
        updateProgressFile()
        while true {
-         messages.append("hello world 5")
+         globalMessages.append("hello world 5")
          updateProgressFile()
-         if Bool(`self`.stop_event.wait(0.1))! == true {
-           messages.append("hello world 6")
+         if Bool(`self`.stop_event.wait(0.1))! { //== true {
+           globalMessages.append("hello world 6")
            updateProgressFile()
            break
          }
          getAndSendStdout(handler: `self`)
        }
-       messages.append("hello world 7")
+       globalMessages.append("hello world 7")
        updateProgressFile()           
        getAndSendStdout(handler: `self`)
        return Python.None
@@ -84,7 +84,7 @@ fileprivate func getStdout() -> String {
   let scratchBuffer = cachedScratchBuffer ?? .allocate(capacity: bufferSize)
   cachedScratchBuffer = scratchBuffer
   while true {
-    messages.append("hello world 5.1")
+    globalMessages.append("hello world 5.1")
     updateProgressFile()  
     let stdoutSize = KernelContext.get_stdout(scratchBuffer, Int32(bufferSize))
     guard stdoutSize > 0 else {
@@ -136,7 +136,7 @@ fileprivate func sendStdout(_ stdout: PythonObject /* String */) {
 
 fileprivate func getAndSendStdout(handler: PythonObject) {
   let stdout = getStdout()
-  messages.append("hello world 5.2")
+  globalMessages.append("hello world 5.2")
   updateProgressFile()  
   if stdout.count > 0 {
     handler.had_stdout = true
