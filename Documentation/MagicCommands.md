@@ -31,7 +31,7 @@ A C B D B D
 
 While this code in a Python notebook:
 ```python
-for i in range 2:
+for i in range(2):
   !echo A
   print('B')
   !echo C
