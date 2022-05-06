@@ -22,8 +22,14 @@ func execute(code: String, lineIndex: Int? = nil) -> ExecutionResult {
   }
   let codeWithLocationDirective = locationDirective + "\n" + code
   
+  globalMessages.append("hello world 300.0")
+  updateProgressFile()
+  
   var descriptionPtr: UnsafeMutablePointer<CChar>?
   let error = KernelContext.execute(codeWithLocationDirective, &descriptionPtr)
+  
+  globalMessages.append("hello world 300.1")
+  updateProgressFile()
   
   var description: String?
   if let descriptionPtr = descriptionPtr {
