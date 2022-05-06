@@ -54,3 +54,8 @@ struct PackageInstallException: LocalizedError {
   var errorDescription: String?
   init(_ message: String) { errorDescription = message }
 }
+
+struct InterruptException: LocalizedError {
+  var errorDescription: String?
+  init(_ message: String) { errorDescription = message }
+}
