@@ -9,6 +9,7 @@ Swift Colab notebooks have various built-in commands for downloading external li
 The code that handles them can be found in LINK TO SOURCE FILE.
 
 - https://github.com/philipturner/swift-colab/blob/main/Sources/JupyterKernel/SwiftKernel/PreprocessAndExecute.swift
+- https://github.com/philipturner/swift-colab/blob/main/Sources/JupyterKernel/SwiftKernel/ProcessInstalls.swift
 
 TODO: Each should have a description and example of usage.
 
