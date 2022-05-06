@@ -4,7 +4,6 @@
 
 The Swift interpreter has various built-in commands for downloading dependencies and interacting with the operating system. These start with `%` and behave like the IPython [magic commands](http://ipython.org/ipython-doc/dev/interactive/magics.html). `%system` commands replicate inline Shell commands in Python notebooks, which start with `!`.
 
-- [Execution Behavior](#execution-behavior)
 - [`%include`](#include)
 - [`%install`](#install)
 - [`%install-extra-include-command`](#install-extra-include-command)
