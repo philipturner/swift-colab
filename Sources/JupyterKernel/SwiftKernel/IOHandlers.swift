@@ -148,3 +148,13 @@ fileprivate func getAndSendStdout(handler: PythonObject) {
     sendStdout(PythonObject(stdout))
   }
 }
+
+internal func altGetAndSendStdout(hadStdout: inout Bool) {
+  let stdout = getStdout()
+  globalMessages.append("hello world 5.2")
+  updateProgressFile()  
+  if stdout.count > 0 {
+    hadStdout = true
+    sendStdout(PythonObject(stdout))
+  }
+}
