@@ -151,10 +151,24 @@ fileprivate func sendIOPubErrorMessage(_ message: [String]) {
 }
 
 fileprivate func executeCell(code: String) throws -> ExecutionResult {
+  globalMessages.append("hello world 200.0")
+  updateProgressFile()
+  
   try setParentMessage()
+  globalMessages.append("hello world 200.1")
+  updateProgressFile()
+  
   let result = try preprocessAndExecute(code: code, isCell: true)
+  globalMessages.append("hello world 200.2")
+  updateProgressFile()
+  
   if result is ExecutionResultSuccess {
     try afterSuccessfulExecution()
+    globalMessages.append("hello world 200.3")
+    updateProgressFile()
   }
+  globalMessages.append("hello world 200.4")
+  updateProgressFile()
+  
   return result
 }
