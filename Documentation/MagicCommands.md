@@ -1,10 +1,6 @@
-# Built-In "`%`" Directives
+# Magic Commands
 
-Swift Colab notebooks have various built-in commands for downloading external libraries and interacting with the operating system. These mirror and substitute the usage of inline Shell code in Python notebooks, with slightly different behavior:
-
-- The Swift kernel extracts them from a code block and executes them separately. They execute before all other Swift code in a code block, even if the Swift code appears before them.
-- Regardless of whether a Swift `for` loop surrounds a command, it always executes once. In the Python kernel, Shell code follows the program's control flow. This means it may never run or could run more than once.
-- They start with `%` instead of `!`. Instead of passing the code into a terminal, they function like IPython's ["magic" commands](http://ipython.org/ipython-doc/dev/interactive/magics.html), which also start with `%`.
+Swift Colab notebooks have various built-in commands for downloading external libraries and interacting with the operating system. These start with `%` and behave like the IPython [magic commands](http://ipython.org/ipython-doc/dev/interactive/magics.html). They take the role of inline Shell commands in Python notebooks, which start with `!`. Before executing a code block, the kernel extracts all magic commands and executes them in the order they appear. They are oblivious to the surrounding Swift code, whereas Python Shell commands follow the control flow of Python code.
 
 Percent directives are implemented in [PreprocessAndExecute.swift](https://github.com/philipturner/swift-colab/blob/main/Sources/JupyterKernel/SwiftKernel/PreprocessAndExecute.swift) and [ProcessInstalls.swift](https://github.com/philipturner/swift-colab/blob/main/Sources/JupyterKernel/SwiftKernel/ProcessInstalls.swift).
 
