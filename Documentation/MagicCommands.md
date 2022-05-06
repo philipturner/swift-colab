@@ -1,8 +1,8 @@
 # Magic Commands
 
-The Swift interpreter has various built-in commands for downloading dependencies and interacting with the operating system. These start with `%` and behave like the IPython [magic commands](http://ipython.org/ipython-doc/dev/interactive/magics.html). They take the role of inline Shell commands in Python notebooks, which start with `!`.
+> TODO: Each should have an example of usage in its description.
 
-Magic commands are implemented in [PreprocessAndExecute.swift](https://github.com/philipturner/swift-colab/blob/main/Sources/JupyterKernel/SwiftKernel/PreprocessAndExecute.swift) and [ProcessInstalls.swift](https://github.com/philipturner/swift-colab/blob/main/Sources/JupyterKernel/SwiftKernel/ProcessInstalls.swift).
+The Swift interpreter has various built-in commands for downloading dependencies and interacting with the operating system. These start with `%` and behave like the IPython [magic commands](http://ipython.org/ipython-doc/dev/interactive/magics.html). They take the role of inline Shell commands in Python notebooks, which start with `!`.
 
 - [Execution Behavior](#execution-behavior)
 - [`%include`](#include)
@@ -12,7 +12,7 @@ Magic commands are implemented in [PreprocessAndExecute.swift](https://github.co
 - [`%install-swiftpm-flags`](#install-swiftpm-flags)
 - [`%system`](#system)
 
-TODO: Each should have an example of usage in its description.
+Magic commands are implemented in [PreprocessAndExecute.swift](https://github.com/philipturner/swift-colab/blob/main/Sources/JupyterKernel/SwiftKernel/PreprocessAndExecute.swift) and [ProcessInstalls.swift](https://github.com/philipturner/swift-colab/blob/main/Sources/JupyterKernel/SwiftKernel/ProcessInstalls.swift).
 
 ## Execution Behavior
 
