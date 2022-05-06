@@ -37,7 +37,16 @@ let SIGINTHandler = PythonClass(
         updateProgressFile()
         
         _ = KernelContext.async_interrupt_process()
-        globalMessages.append("hello world 2")
+        globalMessages.append("hello world 2.1")
+        updateProgressFile()
+        
+        if vulnerableProcess != Python.None {
+          vulnerableProcess.send_signal(signal.SIGINT)
+          killedVulnerableProcess = true
+          globalMessages.append("hello world 2.2")
+        } else {
+          globalMessages.append("hello world 2.3")
+        }
         updateProgressFile()
       }
       // Do not need to return anything because this is an infinite loop
