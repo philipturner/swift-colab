@@ -12,7 +12,7 @@ func doExecute(code: String) throws -> PythonObject? {
   var result: ExecutionResult
   do {
     defer {
-      handler.stop_event.set()
+      handler.should_stop = true
       handler.join()
       KernelContext.flushResponses()
     }
