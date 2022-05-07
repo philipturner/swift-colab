@@ -4,6 +4,7 @@ fileprivate let threading = Python.import("threading")
 
 // keep this as a debugging mechanism for the future, but
 // make it part of KernelContext
+// "KernelContext.log(_:)"
 internal var globalMessages: [String] = []
 
 internal func updateProgressFile() {
