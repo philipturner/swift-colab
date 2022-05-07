@@ -5,23 +5,16 @@ fileprivate let jsonutil = Python.import("jupyter_client").jsonutil
 func doExecute(code: String) throws -> PythonObject? {
   KernelContext.interruptStatus = .running
   should_stop = false
-  KernelContext.log("g")
   let handler = StdoutHandler()
-  KernelContext.log("h")
   handler.start()
-  KernelContext.log("i")
   
   // Execute the cell, handle unexpected exceptions, and make sure to always 
   // clean up the stdout handler.
   var result: ExecutionResult
   do {
     defer {
-      KernelContext.log("q")
-      KernelContext.log("e.2")
       should_stop = true
 //       handler.stop()
-      KernelContext.log("f")
-      KernelContext.log("f.2")
       KernelContext.flushResponses()
     }
     result = try executeCell(code: code)
