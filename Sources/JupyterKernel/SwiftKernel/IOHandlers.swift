@@ -43,12 +43,12 @@ class StdoutHandler {
       let interval: Double = 0.1
       var deadline = Date().advanced(by: interval)
       while true {
+        Thread.sleep(until: deadline)
         KernelContext.sendResponse("stream", [
           "name": "stdout",
           "text": ""
         ])
         
-        Thread.sleep(until: deadline)
         if shouldStop {
           break
         }
