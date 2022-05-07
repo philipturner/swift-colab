@@ -39,6 +39,7 @@ class StdoutHandler {
       // mechanism, it would slightly creep off by ~0.105 seconds, causing the
       // output to seem jumpy for any loop synchronized with a multiple of 0.1
       // second.
+      // TODO: bc it's paired with the flush loop in preprocessAndExecute
       let interval: Double = 0.1
       var deadline = Date().advanced(by: interval)
       while true {
