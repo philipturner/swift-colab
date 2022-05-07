@@ -7,13 +7,13 @@ internal var vulnerableProcess: PythonObject = Python.None
 internal var killedVulnerableProcess: Bool = false
 
 internal func updateProgressFile() {
-//   var string = ""
-//   for message in globalMessages {
-//     string += message + "\n"
-//   }
+  var string = ""
+  for message in globalMessages {
+    string += message + "\n"
+  }
   
-//   let data = string.data(using: .utf8)!
-//   precondition(FileManager.default.createFile(atPath: "/content/progress.txt", contents: data))
+  let data = string.data(using: .utf8)!
+  precondition(FileManager.default.createFile(atPath: "/content/progress.txt", contents: data))
 }
 
 let SIGINTHandler = PythonClass(
