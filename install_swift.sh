@@ -218,6 +218,7 @@ JupyterKernel_registerSwiftKernel()
 '
   echo "$register_kernel" > register_kernel.swift
   swift register_kernel.swift
+  rm register_kernel.swift
   
   touch "progress/registered-jupyter-kernel"
 fi
