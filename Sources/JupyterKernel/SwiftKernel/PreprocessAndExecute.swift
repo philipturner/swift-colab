@@ -23,9 +23,9 @@ func execute(code: String, lineIndex: Int? = nil) -> ExecutionResult {
   let codeWithLocationDirective = locationDirective + "\n" + code
   var descriptionPtr: UnsafeMutablePointer<CChar>?
   
-  KernelContext.pythonSemaphore.signal()
+//   KernelContext.pythonSemaphore.signal()
   let error = KernelContext.execute(codeWithLocationDirective, &descriptionPtr)
-  KernelContext.pythonSemaphore.wait()
+//   KernelContext.pythonSemaphore.wait()
   
   var description: String?
   if let descriptionPtr = descriptionPtr {
@@ -116,31 +116,6 @@ fileprivate func executeSystemCommand(restOfLine: String) throws {
   let flush = Python.import("sys").stdout.flush // TODO: move this import to top
   let patterns = [pexpect.TIMEOUT, pexpect.EOF]
   var outSize: Int = 0
-  
-//   func tryForceKill() -> Bool {
-//     guard KernelContext.interruptStatus == .interrupted else {
-//       return false
-//     }
-    
-//     process.sendline(Python.chr(3))
-//     outSize = Int(Python.len(process.before))!
-//     process.expect_list(patterns, 0.2)
-    
-//     // fuse this code with the similar code below it, but ensuring
-//     // the `interruptStatus` check happens before reading anything
-//     let str = String(process.before[outSize...].decode("utf8", "replace"))!
-    
-//     let kernel = KernelContext.kernel
-//     kernel.send_response(kernel.iopub_socket, "stream", [
-//       "name": "stdout",
-//       "text": str
-//     ])
-    
-//     flush()
-    
-//     process.terminate(force: true)
-//     return true
-//   }
   
   while true {
     var waitTime: Double = 0.05
