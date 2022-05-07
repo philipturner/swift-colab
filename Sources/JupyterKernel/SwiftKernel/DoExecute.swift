@@ -5,9 +5,11 @@ fileprivate let jsonutil = Python.import("jupyter_client").jsonutil
 func doExecute(code: String) throws -> PythonObject? {
   KernelContext.interruptStatus = .running
   should_stop = false
-  KernelContext.log("h")
+  KernelContext.log("g")
   let handler = StdoutHandler()
+  KernelContext.log("h")
   handler.start()
+  KernelContext.log("i")
   
   // Execute the cell, handle unexpected exceptions, and make sure to always 
   // clean up the stdout handler.
