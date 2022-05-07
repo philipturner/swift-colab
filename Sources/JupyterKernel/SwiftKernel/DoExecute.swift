@@ -12,7 +12,9 @@ func doExecute(code: String) throws -> PythonObject? {
   var result: ExecutionResult
   do {
     defer {
+      KernelContext.log("e")
       handler.stop()
+      KernelContext.log("f")
       KernelContext.flushResponses()
     }
     result = try executeCell(code: code)
