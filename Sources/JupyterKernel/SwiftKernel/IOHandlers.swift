@@ -26,94 +26,6 @@ let SIGINTHandler = PythonClass(
   ]
 ).pythonObject
 
-// // A stored reference to the StdoutHandler type object, used as a workaround for 
-// // the fact that it must be initialized in Python code.
-// fileprivate var preservedStdoutHandlerRef: PythonObject!
-
-// @_cdecl("JupyterKernel_constructStdoutHandlerClass")
-// public func JupyterKernel_constructStdoutHandlerClass(_ classObj: OpaquePointer) {
-//   let StdoutHandler = PythonObject(OwnedPyObjectPointer(classObj))
-//   preservedStdoutHandlerRef = StdoutHandler
-  
-//   StdoutHandler.run = PythonInstanceMethod { (`self`: PythonObject) in
-//     var hadStdout = false
-//     KernelContext.log("marker 0")
-//     while true {
-//       let stop_event = `self`.stop_event
-//       KernelContext.log("marker 1")
-// //       usleep(100_000)
-//       time.sleep(0.1)
-// //       stop_event.wait(timeout: 0.1)
-//       KernelContext.log("marker 2")
-// //         time.sleep(0.1)
-//       if Bool(`self`.should_stop)! {
-// //       if Bool(stop_event.is_set())! == true { 
-//         break
-//       }
-//       getAndSendStdout(hadStdout: &hadStdout)
-//     }
-//     getAndSendStdout(hadStdout: &hadStdout)
-//     `self`.had_stdout = hadStdout.pythonObject
-//     `self`.did_stop = true
-// //       `self`.stop_event.set()
-//     KernelContext.log("marker 7")
-//     return Python.None
-//   }.pythonObject
-// }
-
-// let StdoutHandler = { () -> PythonObject in
-//   PyRun_SimpleString("""
-//   from ctypes import *; import threading;
-//   class StdoutHandler(threading.Thread):
-//       def __init__(self, **kwargs):
-//           super().__init__(**kwargs)
-//           self.daemon = True
-//           self.stop_event = threading.Event()
-//           self.had_stdout = False
-//           self.should_stop = False
-//           self.did_stop = False
-   
-//   func = PyDLL("/opt/swift/lib/libJupyterKernel.so").JupyterKernel_constructStdoutHandlerClass
-//   func.argtypes = [c_void_p]; func(c_void_p(id(StdoutHandler)))
-//   """)
-  
-//   return preservedStdoutHandlerRef
-// }()
-
-// let StdoutHandler = PythonClass(
-//   "StdoutHandler",
-//   superclasses: [threading.Thread],
-//   members: [
-//     "__init__": PythonInstanceMethod { (`self`: PythonObject) in
-//       threading.Thread.__init__(`self`)
-//       `self`.daemon = true
-//       `self`.stop_event = threading.Event()
-//       `self`.stop_event.clear()
-//       `self`.had_stdout = false
-//       `self`.should_stop = false
-//       return Python.None
-//     },
-    
-//     "run": PythonInstanceMethod { (`self`: PythonObject) in
-//       var hadStdout = false
-//       while true {
-// //         let stop_event = `self`.stop_event
-// //         stop_event.wait(timeout: 0.1)
-//         time.sleep(0.1)
-//         if Bool(`self`.should_stop)! == true {
-// //         if Bool(stop_event.is_set())! == true { 
-//           break
-//         }
-//         getAndSendStdout(hadStdout: &hadStdout)
-//       }
-//       getAndSendStdout(hadStdout: &hadStdout)
-//       `self`.had_stdout = hadStdout.pythonObject
-//       `self`.stop_event.set()
-//       return Python.None
-//     }
-//   ]
-// ).pythonObject
-
 class StdoutHandler {
   private var semaphore = DispatchSemaphore(value: 0)
   private var shouldStop = false
@@ -124,19 +36,16 @@ class StdoutHandler {
   
   init() {
     DispatchQueue.global().async { [self] in
-      KernelContext.log("marker 0.q")
       while true {
-        KernelContext.log("marker 1.q")
         usleep(100_000)
         if shouldStop {
           break
         }
+        // TODO: time how long this operation takes
         getAndSendStdout(hadStdout: &hadStdout)
       }
-      KernelContext.log("marker 2.q")
       getAndSendStdout(hadStdout: &hadStdout)
       semaphore.signal()
-      KernelContext.log("marker 7.q")
     }
   }
   
