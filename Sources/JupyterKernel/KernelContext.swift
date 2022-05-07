@@ -39,10 +39,18 @@ struct KernelContext {
   private static let pythonQueue = DispatchQueue(
     label: "com.philipturner.swift-colab.KernelContext.pythonQueue")
 //   static let pythonSemaphore = DispatchSemaphore(value: 1)
-  
-  static func sendResponse(_ header: String, _ response: PythonConvertible) {
-    _ = pythonQueue.sync {
+
+  static func sendResponse(
+    _ header: String, 
+    _ response: PythonConvertible, 
+    manuallySynchronize: Bool = false
+  ) {
+    if manuallySynchronize {
       kernel.send_response(kernel.iopub_socket, header, response)
+    } else {
+      _ = pythonQueue.sync {
+        kernel.send_response(kernel.iopub_socket, header, response)
+      }
     }
   }
   
