@@ -52,6 +52,7 @@ let StdoutHandler = PythonClass(
       }
       getAndSendStdout(hadStdout: &hadStdout)
       `self`.had_stdout = hadStdout.pythonObject
+      return Python.None
     }
   ]
 ).pythonObject
