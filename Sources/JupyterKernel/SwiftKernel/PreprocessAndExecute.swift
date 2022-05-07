@@ -134,7 +134,6 @@ fileprivate func executeSystemCommand(restOfLine: String) throws {
     ])
     
     if process.poll() != Python.None {
-//     if killedVulnerableProcess {
       break
     }
     
@@ -142,17 +141,14 @@ fileprivate func executeSystemCommand(restOfLine: String) throws {
     // support sending input?
   }
   
-//   if !killedVulnerableProcess {
-    process.wait()
-//   }
+  process.wait()
   vulnerableProcess = Python.None
   
   if killedVulnerableProcess {
     killedVulnerableProcess = false
     throw InterruptException(
-      "User interrupted execution during a `%system` command. : \(process.poll())")
+      "User interrupted execution during a `%system` command.")
   }
-//   process.wait()
 }
 
 fileprivate var previouslyReadPaths: Set<String> = []
