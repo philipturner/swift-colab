@@ -5,6 +5,7 @@ fileprivate let jsonutil = Python.import("jupyter_client").jsonutil
 func doExecute(code: String) throws -> PythonObject? {
   KernelContext.interruptStatus = .running
   should_stop = false
+  KernelContext.log("h")
   let handler = StdoutHandler()
   handler.start()
   
