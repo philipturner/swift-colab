@@ -24,7 +24,7 @@ func execute(code: String, lineIndex: Int? = nil) -> ExecutionResult {
   var descriptionPtr: UnsafeMutablePointer<CChar>?
   
   let error = KernelContext.execute(codeWithLocationDirective, &descriptionPtr)
-  KernelContext.flushResponses()
+//   KernelContext.flushResponses()
   
   var description: String?
   if let descriptionPtr = descriptionPtr {
