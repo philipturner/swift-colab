@@ -51,7 +51,7 @@ public func JupyterKernel_constructSwiftKernelClass(_ classObj: OpaquePointer) {
     `self`.had_stdout = hadStdout.pythonObject
 //       `self`.stop_event.set()
     return Python.None
-  }
+  }.pythonObject
 }
 
 let StdoutHandler = { () -> PythonObject in
