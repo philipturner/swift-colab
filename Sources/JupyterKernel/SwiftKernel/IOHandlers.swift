@@ -44,10 +44,10 @@ let StdoutHandler = PythonClass(
         if Bool(`self`.should_stop)! {
           break
         }
-        getAndSendStdout(hadStdout: &hadStdout)
+        getAndSendStdout(hadStdout: &localHadStdout)
         `self`.had_stdout = localHadStdout.pythonObject
       }
-      getAndSendStdout(hadStdout: &hadStdout)
+      getAndSendStdout(hadStdout: &localHadStdout)
       `self`.had_stdout = localHadStdout.pythonObject
       return Python.None
     },
