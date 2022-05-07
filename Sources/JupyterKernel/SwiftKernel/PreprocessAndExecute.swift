@@ -9,6 +9,7 @@ fileprivate var executeResult: ExecutionResult?
 func preprocessAndExecute(code: String, isCell: Bool = false) throws -> ExecutionResult {
   do {
     let preprocessed = try preprocess(code: code)
+    KernelContext.log("preprocessed: \(code)")
     var finishedExecution = false
     executeQueue.sync { executeResult = nil }
     
