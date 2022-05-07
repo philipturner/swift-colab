@@ -2,75 +2,17 @@ import Foundation
 fileprivate let json = Python.import("json")
 fileprivate let jsonutil = Python.import("jupyter_client").jsonutil
 
-// internal var doExecute_lock: Bool = false
-// internal var globalHad_stdout: Bool = false
-// internal let syncQueue = DispatchQueue(label: "com.swift-colab.syncQueue")
-
 func doExecute(code: String) throws -> PythonObject? {
-//   syncQueue.sync {
-//     doExecute_lock = false
-//     globalHad_stdout = false
-//   }
   KernelContext.interruptStatus = .running
-  
   let handler = StdoutHandler()
-//   handler.start()
-  
-//   // TODO: Clean this up, put it in IOHandlers.swift.
-//   // Same with `syncQueue`.
-//   let semaphore = DispatchSemaphore(value: 0)
-  
-//   DispatchQueue.global().async {
-//     var localHad_stdout = false
-    
-//     while true {
-//       usleep(100_000)
-//       let doExecute_lock_ret = syncQueue.sync {
-//         return doExecute_lock
-//       }
-//       if doExecute_lock_ret {
-//         break
-//       }
-//       getAndSendStdout(hadStdout: &localHad_stdout)
-//     }
-    
-//     getAndSendStdout(hadStdout: &localHad_stdout)
-//     let localHad_stdoutCopy = localHad_stdout
-//     syncQueue.sync {
-//       globalHad_stdout = localHad_stdoutCopy
-//     }
-    
-//     semaphore.signal()
-//   }
   
   // Execute the cell, handle unexpected exceptions, and make sure to always 
   // clean up the stdout handler.
   var result: ExecutionResult
-  let time = Python.import("time")
   do {
     defer {
       handler.stop()
       KernelContext.log("marker 5.v")
-//       handler.should_stop = true
-// //       handler.stop_event.set()
-// //       handler.join()
-// //       syncQueue.sync {
-// //         doExecute_lock = true
-// //       }
-      
-//       KernelContext.log("marker 5")
-      
-//       while true {
-//         time.sleep(0.1)
-// //         usleep(100_000)
-//         if Bool(handler.did_stop)! {
-//           break
-//         }
-//       }
-      
-//       KernelContext.log("marker 6")
-
-//       semaphore.wait()
     }
     KernelContext.log("marker 3.v")
     result = try executeCell(code: code)
