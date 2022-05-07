@@ -43,7 +43,7 @@ class StdoutHandler {
       // second. This solution synchronizes the scan loop with 0.1 seconds, but
       // jumps ahead by something indivisible by 0.1 if the thread misses the
       // mark???
-      var deadline = Date().advanced(by: 0.1)
+      var deadline = Date().advanced(by: 0.25)
       while true {
         Thread.sleep(until: deadline)
         if shouldStop {
@@ -52,9 +52,9 @@ class StdoutHandler {
         getAndSendStdout(hadStdout: &hadStdout)
         let previousDeadline = deadline
         
-        deadline = deadline.advanced(by: 0.1)
+        deadline = deadline.advanced(by: 0.25)
         while deadline < Date() {
-          deadline = deadline.advanced(by: 0.1)
+          deadline = deadline.advanced(by: 0.25)
         }
         
         KernelContext.log("\(deadline.timeIntervalSince(previousDeadline) * 1e6)")
