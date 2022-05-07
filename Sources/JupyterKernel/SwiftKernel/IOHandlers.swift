@@ -51,7 +51,7 @@ class StdoutHandler {
         
         deadline = deadline.advanced(by: interval)
         while deadline < Date() {
-          deadline = deadline.advanced(by: interval)
+          deadline = Date().advanced(by: interval)//deadline.advanced(by: interval)
         }
       }
       getAndSendStdout(hadStdout: &hadStdout)
