@@ -125,7 +125,7 @@ fileprivate func executeSystemCommand(restOfLine: String) throws {
     }
     
     process.sendline(Python.chr(3))
-    outSize = Python.len(process.before)
+    outSize = Int(Python.len(process.before))!
     process.expect_list(patterns, 0.2)
     
     let str_pre = process.before[outSize...]
