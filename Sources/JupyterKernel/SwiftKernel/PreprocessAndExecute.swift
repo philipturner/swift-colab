@@ -114,14 +114,16 @@ fileprivate func preprocess(line: String, index lineIndex: Int) throws -> String
 // TODO: Separate this functionality into IOHandlers.swift to share it with
 // package installation process?
 fileprivate func executeSystemCommand(restOfLine: String) throws {
-  let process = pexpect.spawn("/bin/sh", args: ["-c", restOfLine])
+  KernelContext.interruptStatus = .accepting
+  defer { KernelContext.interruptStatus = .notAccepting }
   
+  let process = pexpect.spawn("/bin/sh", args: ["-c", restOfLine])
   let flush = Python.import("sys").stdout.flush // TODO: move this import to top
   let patterns = [pexpect.TIMEOUT, pexpect.EOF]
   var outSize: Int = 0
   
   func tryForceKill() -> Bool {
-    guard KernelContext.interruptedExecution else {
+    guard KernelContext.interruptStatus == .activated else {
       return false
     }
     
@@ -134,6 +136,8 @@ fileprivate func executeSystemCommand(restOfLine: String) throws {
     outSize = Int(Python.len(process.before))!
     process.expect_list(patterns, 0.2)
     
+    // fuse this code with the similar code below it, but ensuring
+    // the `interruptStatus` check happens before reading anything
     let str_pre = process.before[outSize...]
     let str_pre2 = str_pre.decode("utf8", "replace")
     let str = String(str_pre2)!
@@ -216,8 +220,7 @@ fileprivate func executeSystemCommand(restOfLine: String) throws {
   globalMessages.append("hello world 400.1")
   updateProgressFile()
   
-  if KernelContext.interruptedExecution {
-    KernelContext.interruptedExecution = false
+  if KernelContext.interruptStatus == .activated {
     // TODO: Stop this error from being put into stdout
     throw InterruptException(
       "User interrupted execution during a `%system` command.")
