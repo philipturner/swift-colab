@@ -50,7 +50,7 @@ func doExecute(code: String) throws -> PythonObject? {
   do {
     defer {
       handler.stop()
-      KernelContext.log("marker 5")
+      KernelContext.log("marker 5.v")
 //       handler.should_stop = true
 // //       handler.stop_event.set()
 // //       handler.join()
@@ -72,9 +72,9 @@ func doExecute(code: String) throws -> PythonObject? {
 
 //       semaphore.wait()
     }
-    KernelContext.log("marker 3")
+    KernelContext.log("marker 3.v")
     result = try executeCell(code: code)
-    KernelContext.log("marker 4")
+    KernelContext.log("marker 4.v")
   } catch _ as InterruptException {
     return nil
   } catch let error as PackageInstallException {
