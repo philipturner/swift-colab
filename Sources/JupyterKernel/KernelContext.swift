@@ -12,13 +12,21 @@ struct KernelContext {
   
   static var interruptStatus: InterruptStatus = .running
   
+  private static var logInitialized = false
+  
   static func log(_ message: String) {
     let fm = FileManager.default
-    let logData = fm.contents(atPath: "/opt/swift/log") ?? Data()
-    let messageData = (message + "\n").data(using: .utf8)!
+    var logData: Data!
+    if logInitialized {
+      logData = fm.contents(atPath: "/opt/swift/log") ?? Data()
+    } else {
+      logData = Data()
+      logInitialized = true
+    }
     
+    let messageData = (message + "\n").data(using: .utf8)!
     guard fm.createFile(
-          atPath: "/opt/swift/log", contents: logData + messageData) else {
+          atPath: "/opt/swift/log", contents: logData! + messageData) else {
       fatalError("Could not write to Swift-Colab log file.")
     }
   }
