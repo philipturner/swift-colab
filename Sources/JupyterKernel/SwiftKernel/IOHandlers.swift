@@ -2,6 +2,8 @@ import Foundation
 fileprivate let signal = Python.import("signal")
 fileprivate let threading = Python.import("threading")
 
+// keep this as a debugging mechanism for the future, but
+// make it part of KernelContext
 internal var globalMessages: [String] = []
 
 internal func updateProgressFile() {
@@ -38,8 +40,12 @@ let SIGINTHandler = PythonClass(
         globalMessages.append("hello world 2.1")
         updateProgressFile()
         
-        KernelContext.interruptedExecution = true
-        globalMessages.append("hello world 2.2")
+        if KernelContext.interruptStatus == .accepting {
+          KernelContext.interruptStatus = .activated
+          globalMessages.append("hello world 2.2")
+        } else {
+          globalMessages.append("hello world 2.3")
+        }
         updateProgressFile()
       }
       // Do not need to return anything because this is an infinite loop
