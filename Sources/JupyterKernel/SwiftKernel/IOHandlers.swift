@@ -56,7 +56,7 @@ public func JupyterKernel_constructSwiftKernelClass(_ classObj: OpaquePointer) {
 
 let StdoutHandler = {
   PyRun_SimpleString("""
-  from ctypes import *; import threading; from ipykernel.kernelbase import Kernel
+  from ctypes import *; import threading;
   class StdoutHandler(threading.Thread):
       def __init__(self, **kwargs):
           super().__init__(**kwargs)
