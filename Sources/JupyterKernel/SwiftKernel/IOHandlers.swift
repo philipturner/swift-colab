@@ -26,6 +26,9 @@ let SIGINTHandler = PythonClass(
   ]
 ).pythonObject
 
+// A stored reference to the StdoutHandler type object, used as a workaround for 
+// the fact that it must be initialized in Python code.
+
 let StdoutHandler = PythonClass(
   "StdoutHandler",
   superclasses: [threading.Thread],
