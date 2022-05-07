@@ -40,11 +40,13 @@ struct KernelContext {
     label: "com.philipturner.swift-colab.KernelContext.pythonQueue")
   static let pythonSemaphore = DispatchSemaphore(value: 1)
   
-  static func sendResponse(type: String, _ response: PythonConvertible) {
+  static func sendResponse(_ header: String, _ response: PythonConvertible) {
     pythonQueue.sync {
-      kernel.send_response(kernel.iopub_socket, type, response)
+      kernel.send_response(kernel.iopub_socket, header, response)
     }
   }
+  
+  // Dynamically loaded LLDB bringing functions
   
   static let init_repl_process: @convention(c) (
     OpaquePointer, UnsafePointer<CChar>) -> Int32 = 
