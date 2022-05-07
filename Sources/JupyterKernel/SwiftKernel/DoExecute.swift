@@ -12,6 +12,7 @@ func doExecute(code: String) throws -> PythonObject? {
   do {
     defer {
       handler.stop()
+      KernelContext.flushResponses()
     }
     result = try executeCell(code: code)
   } catch _ as InterruptException {
