@@ -42,7 +42,7 @@ let StdoutHandler = PythonClass(
       var localHadStdout = false
       while true {
         KernelContext.log("a")
-        usleep(100_000)
+        Python.import("time").sleep(0.1)
         KernelContext.log("b")
         if Bool(should_stop)! {
           break
