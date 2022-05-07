@@ -65,7 +65,7 @@ struct KernelContext {
     let iopub_socket = kernel.iopub_socket
     for response in responses {
       send_response(iopub_socket, response.0, response.1)
-      KernelContext.log("a flushed response")
+//       KernelContext.log("a flushed response")
     }
   }
   
