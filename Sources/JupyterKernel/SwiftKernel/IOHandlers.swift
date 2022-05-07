@@ -88,14 +88,18 @@ fileprivate func getStdout() -> String {
 fileprivate func sendStdout(_ stdout: String) {
   if let range = stdout.range(of: "\033[2J") {
     sendStdout(String(stdout[..<range.lowerBound]))
-    KernelContext.sendResponse("clear_output", [
+    KernelContext.sendAsyncResponse("clear_output", [
       "wait": false
     ])
     sendStdout(String(stdout[range.upperBound...]))
   } else {
-    KernelContext.sendResponse("stream", [
+    KernelContext.sendAsyncResponse("stream", [
       "name": "stdout",
       "text": stdout
+    ])
+    KernelContext.sendResponse("stream", [
+      "name": "stdout",
+      "text": ""
     ])
   }
 }
