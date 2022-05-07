@@ -47,14 +47,14 @@ class StdoutHandler {
         if shouldStop {
           break
         }
-//         getAndSendStdout(hadStdout: &hadStdout)
+        getAndSendStdout(hadStdout: &hadStdout)
         
         deadline = deadline.advanced(by: interval)
         while deadline < Date() {
           deadline = deadline.advanced(by: interval)
         }
       }
-//       getAndSendStdout(hadStdout: &hadStdout)
+      getAndSendStdout(hadStdout: &hadStdout)
       semaphore.signal()
     }
   }
@@ -102,10 +102,10 @@ fileprivate func sendStdout(_ stdout: String) {
 
 fileprivate func getAndSendStdout(hadStdout: inout Bool) {
   let stdout = getStdout()
-  if stdout.count > 0 {
-    hadStdout = true
-    KernelContext.responseQueue.sync {
-      sendStdout(stdout)
-    }
-  }
+//   if stdout.count > 0 {
+//     hadStdout = true
+//     KernelContext.responseQueue.sync {
+//       sendStdout(stdout)
+//     }
+//   }
 }
