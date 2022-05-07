@@ -146,13 +146,16 @@ fileprivate func executeSystemCommand(restOfLine: String) throws {
     let str_pre2 = str_pre.decode("utf8", "replace")
     let str = String(str_pre2)!
     
-    let kernel = KernelContext.kernel
-    kernel.send_response(kernel.iopub_socket, "stream", [
-      "name": "stdout",
-      "text": str
-    ])
+    if str.count > 0 {
+      let kernel = KernelContext.kernel
+      kernel.send_response(kernel.iopub_socket, "stream", [
+        "name": "stdout",
+        "text": str
+      ])
+
+      flush()
+    }
     
-    flush()
     if Int(resIdx)! == 1 {
       break
     }
