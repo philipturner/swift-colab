@@ -56,7 +56,9 @@ struct KernelContext {
   
   static func flushResponses() {
     let responses = responseQueue.sync {
-      cachedResponses
+      let output = cachedResponses
+      cachedResponses = []
+      return output
     }
     
     let send_response = kernel.send_response
