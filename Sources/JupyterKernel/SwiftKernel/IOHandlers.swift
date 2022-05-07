@@ -36,7 +36,7 @@ class StdoutHandler {
   init() {
     DispatchQueue.global().async { [self] in
       while true {
-        usleep(50_000)
+        usleep(200_000)
         if shouldStop {
           break
         }
