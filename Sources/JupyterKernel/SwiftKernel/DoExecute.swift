@@ -103,7 +103,7 @@ func doExecute(code: String) throws -> PythonObject? {
       // that this execute request can cleanly finish before the kernel exits.
       let loop = Python.import("ioloop").IOLoop.current()
       loop.add_timeout(Python.import("time").time() + 0.1, loop.stop)
-    } else if handler.had_stdout {
+    } else if Bool(handler.had_stdout)! {
       // The conditional check above could cause a data race, as it may retrieve
       // `hadStdout` without proper synchronization.
       
