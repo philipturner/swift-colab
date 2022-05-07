@@ -43,6 +43,7 @@ let StdoutHandler = PythonClass(
     "run": PythonInstanceMethod { (`self`: PythonObject) in
       var localHadStdout = false
       while true {
+        usleep(100_000)
         KernelContext.log("a")
         KernelContext.log("a.2")
         time.sleep(0.1)
