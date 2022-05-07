@@ -50,10 +50,17 @@ func doExecute(code: String) throws -> PythonObject? {
     defer {
       handler.should_stop = true
 //       handler.stop_event.set()
-      handler.join()
+//       handler.join()
 //       syncQueue.sync {
 //         doExecute_lock = true
 //       }
+      
+      while true {
+        usleep(100_000)
+        if handler.did_stop = true {
+          break
+        }
+      }
 
 //       semaphore.wait()
     }
