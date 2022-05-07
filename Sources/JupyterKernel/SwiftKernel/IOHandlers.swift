@@ -124,15 +124,19 @@ class StdoutHandler {
   
   init() {
     DispatchQueue.global().async { [self] in
+      KernelContext.log("marker 0")
       while true {
-        usleep(200_000)
+        KernelContext.log("marker 1")
+        usleep(100_000)
         if shouldStop {
           break
         }
         getAndSendStdout(hadStdout: &hadStdout)
       }
+      KernelContext.log("marker 2")
       getAndSendStdout(hadStdout: &hadStdout)
       semaphore.signal()
+      KernelContext.log("marker 5")
     }
   }
   
