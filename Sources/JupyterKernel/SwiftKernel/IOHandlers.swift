@@ -40,7 +40,8 @@ class StdoutHandler {
       while true {
 //         usleep(100_000)
         KernelContext.pythonSemaphore.wait()
-        time.sleep(0.1)
+        usleep(100_000)
+//         time.sleep(0.1)
         KernelContext.pythonSemaphore.signal()
         if shouldStop {
           break
