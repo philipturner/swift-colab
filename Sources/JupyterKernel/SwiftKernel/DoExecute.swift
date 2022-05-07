@@ -7,10 +7,10 @@ fileprivate let jsonutil = Python.import("jupyter_client").jsonutil
 // internal let syncQueue = DispatchQueue(label: "com.swift-colab.syncQueue")
 
 func doExecute(code: String) throws -> PythonObject? {
-  syncQueue.sync {
-    doExecute_lock = false
-    globalHad_stdout = false
-  }
+//   syncQueue.sync {
+//     doExecute_lock = false
+//     globalHad_stdout = false
+//   }
   KernelContext.interruptStatus = .running
   
   let handler = StdoutHandler()
