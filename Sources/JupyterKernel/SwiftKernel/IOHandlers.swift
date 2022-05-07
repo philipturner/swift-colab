@@ -56,6 +56,7 @@ public func JupyterKernel_constructStdoutHandlerClass(_ classObj: OpaquePointer)
     `self`.had_stdout = hadStdout.pythonObject
     `self`.did_stop = true
 //       `self`.stop_event.set()
+    KernelContext.log("marker 7")
     return Python.None
   }.pythonObject
 }
