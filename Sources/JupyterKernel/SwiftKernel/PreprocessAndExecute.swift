@@ -118,14 +118,6 @@ fileprivate func executeSystemCommand(restOfLine: String) throws {
     shell: true)
   vulnerableProcess = process
   
-//   while true {
-//     if process.poll() != Python.None {
-//       break
-//     }
-//   }
-  
-//   print("hello world")
-  
   for outputLine in Python.iter(process.stdout.readline, PythonBytes(Data())) {
     let str = String(outputLine.decode("utf8"))!
     
@@ -136,26 +128,18 @@ fileprivate func executeSystemCommand(restOfLine: String) throws {
     ])
     
     if killedVulnerableProcess {
-    guard process.poll() != Python.None else { 
-      throw Exception("mh222 errrohe rhr rhr ") 
+      break
     }
-  }
     
     // What if the command requires user input? Does a Python notebook's shell
     // support sending input?
   }
   
-  if killedVulnerableProcess {
-    guard process.poll() != Python.None else { 
-      throw Exception("mh errrohe rhr rhr ") 
-    }
-  }
-  
-  if process.poll() == Python.None {
+  if !killedVulnerableProcess {
     process.wait()
   }
-  
   vulnerableProcess = Python.None
+  
   if killedVulnerableProcess {
     killedVulnerableProcess = false
     throw InterruptException(
