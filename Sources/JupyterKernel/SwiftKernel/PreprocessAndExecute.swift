@@ -133,9 +133,9 @@ fileprivate func executeSystemCommand(restOfLine: String) throws {
       "text": str
     ])
     
-//     if killedVulnerableProcess {
-//       break
-//     }
+    if killedVulnerableProcess {
+      break
+    }
     
     // What if the command requires user input? Does a Python notebook's shell
     // support sending input?
@@ -149,7 +149,7 @@ fileprivate func executeSystemCommand(restOfLine: String) throws {
   if killedVulnerableProcess {
     killedVulnerableProcess = false
     throw InterruptException(
-      "User interrupted execution during a `%system` command.")
+      "User interrupted execution during a `%system` command. : \(process.poll())")
   }
   process.wait()
 }
