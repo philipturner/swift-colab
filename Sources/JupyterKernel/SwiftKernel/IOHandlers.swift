@@ -3,8 +3,6 @@ fileprivate let signal = Python.import("signal")
 fileprivate let threading = Python.import("threading")
 
 internal var globalMessages: [String] = []
-internal var vulnerableProcess: PythonObject = Python.None
-// TODO: change to `KernelContext.interruptedExecution`
 
 internal func updateProgressFile() {
 //   var string = ""
