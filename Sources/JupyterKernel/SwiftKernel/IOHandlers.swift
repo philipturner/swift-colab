@@ -25,8 +25,6 @@ let SIGINTHandler = PythonClass(
   ]
 ).pythonObject
 
-// internal var should_stop: PythonObject = false
-
 let StdoutHandler = PythonClass(
   "StdoutHandler",
   superclasses: [threading.Thread],
@@ -36,14 +34,15 @@ let StdoutHandler = PythonClass(
       `self`.daemon = true
       `self`.stop_event = threading.Event()
       `self`.had_stdout = false
+      `self`.should_stop = false
       return Python.None
     },
     
     "run": PythonInstanceMethod { (`self`: PythonObject) in
       var localHadStdout = false
       while true {
-//         Python.import("time").sleep(0.05)
-        if `self`.stop_event.wait(0.1) != Python.None {
+        Python.import("time").sleep(0.1)
+        if Bool(`self`.should_stop)! {
           break
         }
         getAndSendStdout(hadStdout: &localHadStdout)
