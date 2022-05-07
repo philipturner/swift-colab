@@ -13,6 +13,8 @@ func doExecute(code: String) throws -> PythonObject? {
   }
   KernelContext.interruptStatus = .running
   
+  // TODO: Clean this up, put it in IOHandlers.swift.
+  // Same with `syncQueue`.
   let semaphore = DispatchSemaphore(value: 0)
   
   DispatchQueue.global().async {
@@ -43,27 +45,13 @@ func doExecute(code: String) throws -> PythonObject? {
   var result: ExecutionResult
   do {
     defer {
-      globalMessages.append("hello world 100.3")
-      updateProgressFile()
-      
       syncQueue.sync {
         doExecute_lock = true
       }
-//       stdoutHandler.stop_event.set()
-      globalMessages.append("hello world 100.4")
-      updateProgressFile()
-      
+
       semaphore.wait()
-//       stdoutHandler.join()
-      globalMessages.append("hello world 100.5")
-      updateProgressFile()
     }
-    globalMessages.append("hello world 100.1")
-    updateProgressFile()
-    
     result = try executeCell(code: code)
-    globalMessages.append("hello world 100.2")
-    updateProgressFile()
   } catch _ as InterruptException {
     return nil
   } catch let error as PackageInstallException {
@@ -110,7 +98,6 @@ func doExecute(code: String) throws -> PythonObject? {
       let loop = Python.import("ioloop").IOLoop.current()
       loop.add_timeout(Python.import("time").time() + 0.1, loop.stop)
     } else if syncQueue.sync(execute: { return globalHad_stdout }) {
-//     } else if Bool(stdoutHandler.had_stdout)! {
       // When there is stdout, it is a runtime error. Stdout, which we have
       // already sent to the client, contains the error message (plus some other 
       // ugly traceback that we should eventually figure out how to suppress), 
@@ -189,24 +176,10 @@ fileprivate func sendIOPubErrorMessage(_ message: [String]) {
 }
 
 fileprivate func executeCell(code: String) throws -> ExecutionResult {
-  globalMessages.append("hello world 200.0")
-  updateProgressFile()
-  
   try setParentMessage()
-  globalMessages.append("hello world 200.1")
-  updateProgressFile()
-  
   let result = try preprocessAndExecute(code: code, isCell: true)
-  globalMessages.append("hello world 200.2")
-  updateProgressFile()
-  
   if result is ExecutionResultSuccess {
     try afterSuccessfulExecution()
-    globalMessages.append("hello world 200.3")
-    updateProgressFile()
   }
-  globalMessages.append("hello world 200.4")
-  updateProgressFile()
-  
   return result
 }
