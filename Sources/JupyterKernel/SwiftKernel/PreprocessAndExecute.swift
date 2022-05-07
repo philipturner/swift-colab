@@ -141,7 +141,7 @@ fileprivate func executeSystemCommand(restOfLine: String) throws {
   
   while true {
     var waitTime: Double = 0.05
-    if KernelContext.interruptStatus == .interrupted {
+    if KernelContext.isInterrupted {
       waitTime = 0.2
       process.sendline(Python.chr(3))
       outSize = process.before.count
@@ -159,7 +159,7 @@ fileprivate func executeSystemCommand(restOfLine: String) throws {
     
     flush()
     
-    if KernelContext.interruptStatus == .interrupted {
+    if KernelContext.isInterrupted {
       process.terminate(force: true)
       break
     } else if Int(resIdx)! == 1 {
@@ -169,7 +169,7 @@ fileprivate func executeSystemCommand(restOfLine: String) throws {
     outSize = process.before.count
   }
   
-  if KernelContext.interruptStatus == .interrupted {
+  if KernelContext.isInterrupted {
     throw InterruptException(
       "User interrupted execution during a `%system` command.")
   }
