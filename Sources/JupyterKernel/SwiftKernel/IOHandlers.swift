@@ -48,7 +48,7 @@ let StdoutHandler = PythonClass(
         time.sleep(0.1)
         KernelContext.log("b")
         KernelContext.log("b.2")
-        if !KernelContext.acceptingStdout {
+        if !KernelContext.pollingStdout {
           break
         }
         getAndSendStdout(hadStdout: &localHadStdout)
