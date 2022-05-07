@@ -19,6 +19,8 @@ func preprocessAndExecute(code: String, isCell: Bool = false) throws -> Executio
       finishedExecution = true
     }
     
+    usleep(25_000)
+    
     while !finishedExecution {
       // Using Python's `time` module instead of Foundation.usleep releases the
       // GIL.
