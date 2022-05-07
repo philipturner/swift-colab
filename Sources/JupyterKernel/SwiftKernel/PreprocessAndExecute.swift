@@ -31,7 +31,7 @@ func preprocessAndExecute(code: String, isCell: Bool = false) throws -> Executio
       KernelContext.log("g")
       Thread.sleep(until: deadline)
       KernelContext.log("h")
-      time.sleep(0)
+//       time.sleep(0)
       KernelContext.flushResponses()
       
       deadline = deadline.advanced(by: interval)
