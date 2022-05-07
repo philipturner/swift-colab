@@ -1,7 +1,6 @@
 import Foundation
 fileprivate let pexpect = Python.import("pexpect")
 fileprivate let re = Python.import("re")
-fileprivate let subprocess = Python.import("subprocess")
 
 func preprocessAndExecute(code: String, isCell: Bool = false) throws -> ExecutionResult {
   do {
