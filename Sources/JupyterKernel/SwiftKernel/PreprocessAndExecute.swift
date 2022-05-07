@@ -10,7 +10,6 @@ fileprivate var executeResult: ExecutionResult?
 func preprocessAndExecute(code: String, isCell: Bool = false) throws -> ExecutionResult {
   do {
     let preprocessed = try preprocess(code: code)
-//     return execute(code: preprocessed, lineIndex: isCell ? 0 : nil)
     var finishedExecution = false
     executeQueue.sync { executeResult = nil }
     
@@ -20,25 +19,10 @@ func preprocessAndExecute(code: String, isCell: Bool = false) throws -> Executio
       finishedExecution = true
     }
     
-    // Offset this run loop from the other thread, hopefully almost immediately
-    // after (25% into the period of repetition).
-    // TODO: Auto-adjust the loop timing to make them extremely in-sync.
-    usleep(25_000)
-    
-    let interval: Double = 0.1
-    var deadline = Date().advanced(by: interval)
     while !finishedExecution {
-      KernelContext.log("g")
-//       Thread.sleep(until: deadline)
-      time.sleep(0.1)
-      KernelContext.log("h")
-//       time.sleep(0)
-      KernelContext.flushResponses()
-      
-      deadline = deadline.advanced(by: interval)
-      while deadline < Date() {
-        deadline = deadline.advanced(by: interval)
-      }
+      // Using Python's `time` module instead of Foundation.usleep releases the
+      // GIL.
+      time.sleep(0.05)
     }
     
     return executeQueue.sync { executeResult! }
