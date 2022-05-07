@@ -5,7 +5,6 @@ fileprivate let threading = Python.import("threading")
 internal var globalMessages: [String] = []
 internal var vulnerableProcess: PythonObject = Python.None
 // TODO: change to `KernelContext.interruptedExecution`
-internal var killedVulnerableProcess: Bool = false
 
 internal func updateProgressFile() {
 //   var string = ""
@@ -41,12 +40,8 @@ let SIGINTHandler = PythonClass(
         globalMessages.append("hello world 2.1")
         updateProgressFile()
         
-        if vulnerableProcess != Python.None {
-          killedVulnerableProcess = true
-          globalMessages.append("hello world 2.2")
-        } else {
-          globalMessages.append("hello world 2.3")
-        }
+        KernelContext.interruptedExecution = true
+        globalMessages.append("hello world 2.2")
         updateProgressFile()
       }
       // Do not need to return anything because this is an infinite loop
