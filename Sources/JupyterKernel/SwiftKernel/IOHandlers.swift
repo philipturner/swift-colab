@@ -4,16 +4,17 @@ fileprivate let threading = Python.import("threading")
 
 internal var globalMessages: [String] = []
 internal var vulnerableProcess: PythonObject = Python.None
+// TODO: change to `KernelContext.interruptedExecution`
 internal var killedVulnerableProcess: Bool = false
 
 internal func updateProgressFile() {
-  var string = ""
-  for message in globalMessages {
-    string += message + "\n"
-  }
+//   var string = ""
+//   for message in globalMessages {
+//     string += message + "\n"
+//   }
   
-  let data = string.data(using: .utf8)!
-  precondition(FileManager.default.createFile(atPath: "/content/progress.txt", contents: data))
+//   let data = string.data(using: .utf8)!
+//   precondition(FileManager.default.createFile(atPath: "/content/progress.txt", contents: data))
 }
 
 let SIGINTHandler = PythonClass(
@@ -41,10 +42,6 @@ let SIGINTHandler = PythonClass(
         updateProgressFile()
         
         if vulnerableProcess != Python.None {
-          // This doesn't actually kill the process.
-//           vulnerableProcess.send_signal(signal.SIGINT)
-//           vulnerableProcess.kill(signal.SIGKILL)
-//           vulnerableProcess.terminate(force: true)
           killedVulnerableProcess = true
           globalMessages.append("hello world 2.2")
         } else {
