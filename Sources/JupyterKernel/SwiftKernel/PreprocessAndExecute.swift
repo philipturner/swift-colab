@@ -149,6 +149,8 @@ fileprivate func executeSystemCommand(restOfLine: String) throws {
     let str_pre2 = str_pre.decode("utf8", "replace")
     let str = String(str_pre2)!
     
+    if tryForceKill() { break }
+    
     let kernel = KernelContext.kernel
     kernel.send_response(kernel.iopub_socket, "stream", [
       "name": "stdout",
@@ -156,6 +158,7 @@ fileprivate func executeSystemCommand(restOfLine: String) throws {
     ])
     
     flush()
+    if tryForceKill() { break }
     if Int(resIdx)! == 1 {
       break
     }
@@ -195,6 +198,7 @@ fileprivate func executeSystemCommand(restOfLine: String) throws {
   
   // TODO: is `wait` what's blocking the UI?
 //   process.wait()
+  process.kill()
   vulnerableProcess = Python.None
   
   // TODO: terminate the process here instead of in IOHandlers.swift
