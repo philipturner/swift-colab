@@ -23,6 +23,21 @@ let SIGINTHandler = PythonClass(
   ]
 ).pythonObject
 
+class StdoutHandler {
+  private static var queue = DispatchQueue(
+    label: "com.swift-colab.StdoutHandler")
+  private var semaphore = DispatchSemaphore(value: 0)
+  
+  init() {
+    
+  }
+  
+  // Must be called before deallocating this object.
+  func stop() {
+    semaphore.wait()
+  }
+}
+
 fileprivate var cachedScratchBuffer: UnsafeMutablePointer<CChar>?
 
 fileprivate func getStdout() -> String {
