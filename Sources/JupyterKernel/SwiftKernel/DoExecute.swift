@@ -15,11 +15,8 @@ func doExecute(code: String) throws -> PythonObject? {
   var result: ExecutionResult
   do {
     defer {
-      should_stop = true
-      KernelContext.log("e")
+      handler.stop_event.set()
       handler.join()
-      KernelContext.log("f")
-//       handler.stop()
       KernelContext.flushResponses()
     }
     result = try executeCell(code: code)
