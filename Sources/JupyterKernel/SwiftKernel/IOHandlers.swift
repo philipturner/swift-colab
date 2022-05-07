@@ -39,7 +39,7 @@ let StdoutHandler = PythonClass(
       return Python.None
     },
     
-    "run": PythonInstanceMethod { `self`: PythonObject) in
+    "run": PythonInstanceMethod { (`self`: PythonObject) in
       var hadStdout = false
       while true {
         let stop_event = `self`.stop_event
