@@ -33,14 +33,16 @@ let StdoutHandler = PythonClass(
       threading.Thread.__init__(`self`)
       `self`.daemon = true
       `self`.stop_event = threading.Event()
+      `self`.stop_event.clear()
       `self`.had_stdout = false
       return Python.None
     },
     
     "run": PythonInstanceMethod { `self`: PythonObject) in
-            while true {
-        usleep(200_000)
-        if shouldStop {
+      while true {
+        let stop_event = `self`.stop_event
+        stop_event.wait(timeout: 0.1)
+        if Bool(stop_event.is_set()! == true { 
           break
         }
         getAndSendStdout(hadStdout: &hadStdout)
