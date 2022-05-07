@@ -36,13 +36,8 @@ class StdoutHandler {
   
   init() {
     DispatchQueue.global(qos: .userInteractive).async { [self] in
-      let time = Python.import("time")
       while true {
-//         usleep(100_000)
-        KernelContext.pythonSemaphore.wait()
         usleep(100_000)
-//         time.sleep(0.1)
-        KernelContext.pythonSemaphore.signal()
         if shouldStop {
           break
         }
