@@ -41,7 +41,8 @@ let SIGINTHandler = PythonClass(
         updateProgressFile()
         
         if vulnerableProcess != Python.None {
-          vulnerableProcess.send_signal(signal.SIGSEGV)
+          // This doesn't actually kill the process.
+          vulnerableProcess.kill()
           killedVulnerableProcess = true
           globalMessages.append("hello world 2.2")
         } else {
