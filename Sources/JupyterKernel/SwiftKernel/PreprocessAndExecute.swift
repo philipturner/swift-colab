@@ -4,7 +4,9 @@ fileprivate let re = Python.import("re")
 
 func preprocessAndExecute(code: String, isCell: Bool = false) throws -> ExecutionResult {
   do {
-    let preprocessed = try preprocess(code: code)
+    let preprocessed = try KernelContext.pythonQueue.sync {
+      return try preprocess(code: code)
+    }
     return execute(code: preprocessed, lineIndex: isCell ? 0 : nil)
   } catch let e as PreprocessorException {
     return PreprocessorError(exception: e)
