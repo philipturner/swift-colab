@@ -44,6 +44,10 @@ class StdoutHandler {
       var deadline = Date().advanced(by: interval)
       while true {
         Thread.sleep(until: deadline)
+        KernelContext.sendResponse("stream", [
+      "name": "stdout",
+      "text": ""
+    ])
         if shouldStop {
           break
         }
@@ -96,10 +100,6 @@ fileprivate func sendStdout(_ stdout: String) {
     KernelContext.sendAsyncResponse("stream", [
       "name": "stdout",
       "text": stdout
-    ])
-    KernelContext.sendResponse("stream", [
-      "name": "stdout",
-      "text": ""
     ])
   }
 }
