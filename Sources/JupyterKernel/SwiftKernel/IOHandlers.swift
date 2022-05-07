@@ -2,22 +2,6 @@ import Foundation
 fileprivate let signal = Python.import("signal")
 fileprivate let threading = Python.import("threading")
 
-// keep this as a debugging mechanism for the future, but
-// make it part of KernelContext
-// "KernelContext.log(_:)", which is @deprecated because only
-// for use in debugging
-internal var globalMessages: [String] = []
-
-internal func updateProgressFile() {
-//   var string = ""
-//   for message in globalMessages {
-//     string += message + "\n"
-//   }
-  
-//   let data = string.data(using: .utf8)!
-//   precondition(FileManager.default.createFile(atPath: "/content/progress.txt", contents: data))
-}
-
 let SIGINTHandler = PythonClass(
   "SIGINTHandler",
   superclasses: [threading.Thread],
