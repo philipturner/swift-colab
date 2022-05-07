@@ -2,10 +2,29 @@ import Foundation
 fileprivate let pexpect = Python.import("pexpect")
 fileprivate let re = Python.import("re")
 
+fileprivate let executeQueue = DispatchQueue(
+  label: "com.philipturner.swift-colab.PreprocessAndExecute.executeQueue")
+fileprivate var executeResult: ExecutionResult?
+
 func preprocessAndExecute(code: String, isCell: Bool = false) throws -> ExecutionResult {
   do {
     let preprocessed = try preprocess(code: code)
-    return execute(code: preprocessed, lineIndex: isCell ? 0 : nil)
+    var finishedExecution = false
+    executeQueue.sync { executeResult = nil }
+    
+    DispatchQueue.global(qos: .background).async {
+      result = execute(code: preprocessed, lineIndex: isCell ? 0 : nil)
+      finishedExecution = true
+      executeQueue.sync { executeResult = result }
+    }
+    
+    usleep(25_000)
+    while !finishedExecution {
+      usleep(100_000)
+      KernelContext.
+    }
+    
+    return executeQueue.sync { executeResult! }
   } catch let e as PreprocessorException {
     return PreprocessorError(exception: e)
   }
@@ -22,9 +41,7 @@ func execute(code: String, lineIndex: Int? = nil) -> ExecutionResult {
   }
   let codeWithLocationDirective = locationDirective + "\n" + code
   var descriptionPtr: UnsafeMutablePointer<CChar>?
-  
   let error = KernelContext.execute(codeWithLocationDirective, &descriptionPtr)
-  KernelContext.flushResponses()
   
   var description: String?
   if let descriptionPtr = descriptionPtr {
