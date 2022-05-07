@@ -34,13 +34,36 @@ struct KernelContext {
       }
     }
   }
-////////////////////////////////////////////////////////////////////////////////
+  
   // Allows sending responses from other threads, preventing multithreaded
   // access to Python that violates the GIL and (maybe) makes the UI
   // unresponsive.
+  private static var cachedResponses: [(String, PythonObject)] = []
+  static var responseQueue = DispatchQueue(
+    label: "com.philipturner.swift-colab.KernelContext.responseQueue")
   
-  static func sendResponse(_ header: String, _ response: PythonConvertible) {
-    kernel.send_response(kernel.iopub_socket, header, response)
+  static func sendResponse(_ header: String, _ message: PythonConvertible) {
+    kernel.send_response(kernel.iopub_socket, header, message)
+  }
+  
+  // Must call this on `responseQueue`; `message` must not contain any Python 
+  // objects.
+  static func sendAsyncResponse(
+    _ header: String, _ message: PythonConvertible
+  ) {
+    cachedResponses.append(header, message.pythonObject)
+  }
+  
+  static func flushResponses() {
+    let responses = responseQueue.sync {
+      cachedResponses
+    }
+    
+    let send_response = kernel.send_response
+    let iopub_socket = kernel.iopub_socket
+    for response in responses {
+      send_response(iopub_socket, response.0, response.1.pythonObject)
+    }
   }
   
   // Dynamically loaded LLDB bringing functions
