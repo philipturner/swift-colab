@@ -50,11 +50,14 @@ class StdoutHandler {
           break
         }
         getAndSendStdout(hadStdout: &hadStdout)
+        let previousDeadline = deadline
         
         deadline = deadline.advanced(by: 0.1)
         while deadline < Date() {
           deadline = deadline.advanced(by: 0.1)
         }
+        
+        Kernel.log(deadline.timeIntervalSince(previousDeadline) * 1e6)
       }
       getAndSendStdout(hadStdout: &hadStdout)
       semaphore.signal()
