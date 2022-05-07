@@ -2,9 +2,9 @@ import Foundation
 fileprivate let json = Python.import("json")
 fileprivate let jsonutil = Python.import("jupyter_client").jsonutil
 
-internal var doExecute_lock: Bool = false
-internal var globalHad_stdout: Bool = false
-internal let syncQueue = DispatchQueue(label: "com.swift-colab.syncQueue")
+// internal var doExecute_lock: Bool = false
+// internal var globalHad_stdout: Bool = false
+// internal let syncQueue = DispatchQueue(label: "com.swift-colab.syncQueue")
 
 func doExecute(code: String) throws -> PythonObject? {
   syncQueue.sync {
@@ -13,43 +13,46 @@ func doExecute(code: String) throws -> PythonObject? {
   }
   KernelContext.interruptStatus = .running
   
-  // TODO: Clean this up, put it in IOHandlers.swift.
-  // Same with `syncQueue`.
-  let semaphore = DispatchSemaphore(value: 0)
+  let handler = StdoutHandler()
   
-  DispatchQueue.global().async {
-    var localHad_stdout = false
+//   // TODO: Clean this up, put it in IOHandlers.swift.
+//   // Same with `syncQueue`.
+//   let semaphore = DispatchSemaphore(value: 0)
+  
+//   DispatchQueue.global().async {
+//     var localHad_stdout = false
     
-    while true {
-      usleep(100_000)
-      let doExecute_lock_ret = syncQueue.sync {
-        return doExecute_lock
-      }
-      if doExecute_lock_ret {
-        break
-      }
-      getAndSendStdout(hadStdout: &localHad_stdout)
-    }
+//     while true {
+//       usleep(100_000)
+//       let doExecute_lock_ret = syncQueue.sync {
+//         return doExecute_lock
+//       }
+//       if doExecute_lock_ret {
+//         break
+//       }
+//       getAndSendStdout(hadStdout: &localHad_stdout)
+//     }
     
-    getAndSendStdout(hadStdout: &localHad_stdout)
-    let localHad_stdoutCopy = localHad_stdout
-    syncQueue.sync {
-      globalHad_stdout = localHad_stdoutCopy
-    }
+//     getAndSendStdout(hadStdout: &localHad_stdout)
+//     let localHad_stdoutCopy = localHad_stdout
+//     syncQueue.sync {
+//       globalHad_stdout = localHad_stdoutCopy
+//     }
     
-    semaphore.signal()
-  }
+//     semaphore.signal()
+//   }
   
   // Execute the cell, handle unexpected exceptions, and make sure to always 
   // clean up the stdout handler.
   var result: ExecutionResult
   do {
     defer {
-      syncQueue.sync {
-        doExecute_lock = true
-      }
+      handler.stop()
+//       syncQueue.sync {
+//         doExecute_lock = true
+//       }
 
-      semaphore.wait()
+//       semaphore.wait()
     }
     result = try executeCell(code: code)
   } catch _ as InterruptException {
@@ -97,7 +100,11 @@ func doExecute(code: String) throws -> PythonObject? {
       // that this execute request can cleanly finish before the kernel exits.
       let loop = Python.import("ioloop").IOLoop.current()
       loop.add_timeout(Python.import("time").time() + 0.1, loop.stop)
-    } else if syncQueue.sync(execute: { return globalHad_stdout }) {
+    } else if handler.hadStdout {
+      // The conditional check above could cause a data race, as it may retrieve
+      // `hadStdout` without proper synchronization.
+      
+//     } else if syncQueue.sync(execute: { return globalHad_stdout }) {
       // When there is stdout, it is a runtime error. Stdout, which we have
       // already sent to the client, contains the error message (plus some other 
       // ugly traceback that we should eventually figure out how to suppress), 
