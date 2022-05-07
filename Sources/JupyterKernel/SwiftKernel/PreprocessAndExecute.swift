@@ -58,10 +58,13 @@ func execute(code: String, lineIndex: Int? = nil) -> ExecutionResult {
   KernelContext.log("c")
   let error = KernelContext.execute(codeWithLocationDirective, &descriptionPtr)
   KernelContext.log("d")
+  KernelContext.log("d.2")
   
   var description: String?
   if let descriptionPtr = descriptionPtr {
+    KernelContext.log("d.3")
     description = String(cString: descriptionPtr)
+    KernelContext.log("d.4")
     free(descriptionPtr)
   }
   
