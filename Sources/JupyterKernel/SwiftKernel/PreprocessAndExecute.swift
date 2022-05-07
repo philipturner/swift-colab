@@ -112,7 +112,7 @@ fileprivate func preprocess(line: String, index lineIndex: Int) throws -> String
 }
 
 fileprivate func executeSystemCommand(restOfLine: String) throws {
-  let process = pexpect.spawnb("/bin/sh", args: ["-c", restOfLine])
+  let process = pexpect.spawn("/bin/sh", args: ["-c", restOfLine])
   let flush = Python.import("sys").stdout.flush // TODO: move this import to top
   let patterns = [pexpect.TIMEOUT, pexpect.EOF]
   var outSize: Int = 0
