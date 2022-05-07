@@ -17,8 +17,8 @@ func execute(code: String, lineIndex: Int? = nil) -> ExecutionResult {
     locationDirective = getLocationDirective(lineIndex: lineIndex)
   } else {
     locationDirective = """
-    #sourceLocation(file: "n/a", line: 1)
-    """
+      #sourceLocation(file: "n/a", line: 1)
+      """
   }
   let codeWithLocationDirective = locationDirective + "\n" + code
   var descriptionPtr: UnsafeMutablePointer<CChar>?
@@ -49,8 +49,8 @@ func execute(code: String, lineIndex: Int? = nil) -> ExecutionResult {
 fileprivate func getLocationDirective(lineIndex: Int) -> String {
   let executionCount = Int(KernelContext.kernel.execution_count)!
   return """
-  #sourceLocation(file: "<Cell \(executionCount)>", line: \(lineIndex + 1))
-  """
+    #sourceLocation(file: "<Cell \(executionCount)>", line: \(lineIndex + 1))
+    """
 }
 
 fileprivate func preprocess(code: String) throws -> String {
@@ -68,8 +68,8 @@ fileprivate func preprocess(code: String) throws -> String {
 
 fileprivate func preprocess(line: String, index lineIndex: Int) throws -> String {
   let installRegularExpression = ###"""
-  ^\s*%install
-  """###
+    ^\s*%install
+    """###
   let installMatch = re.match(installRegularExpression, line)
   if installMatch != Python.None {
     var isValidDirective = false
@@ -84,8 +84,8 @@ fileprivate func preprocess(line: String, index lineIndex: Int) throws -> String
   }
   
   let systemRegularExpression = ###"""
-  ^\s*%system (.*)$
-  """###
+    ^\s*%system (.*)$
+    """###
   let systemMatch = re.match(systemRegularExpression, line)
   guard systemMatch == Python.None else {
     let restOfLine = String(systemMatch.group(1))!
@@ -94,8 +94,8 @@ fileprivate func preprocess(line: String, index lineIndex: Int) throws -> String
   }
   
   let includeRegularExpression = ###"""
-  ^\s*%include (.*)$
-  """###
+    ^\s*%include (.*)$
+    """###
   let includeMatch = re.match(includeRegularExpression, line)
   guard includeMatch == Python.None else {
     let restOfLine = String(includeMatch.group(1))!
@@ -129,8 +129,7 @@ fileprivate func executeSystemCommand(restOfLine: String) throws {
     let str = String(process.before[outSize...].decode("utf8", "replace"))!
     
     if str.count > 0 {
-      let kernel = KernelContext.kernel
-      kernel.send_response(kernel.iopub_socket, "stream", [
+      KernelContext.sendResponse("stream", [
         "name": "stdout",
         "text": str
       ])
@@ -158,8 +157,8 @@ fileprivate var previouslyReadPaths: Set<String> = []
 
 fileprivate func readInclude(restOfLine: String, lineIndex: Int) throws -> String {
   let nameRegularExpression = ###"""
-  ^\s*"([^"]+)"\s*$
-  """###
+    ^\s*"([^"]+)"\s*$
+    """###
   let nameMatch = re.match(nameRegularExpression, restOfLine)
   guard nameMatch != Python.None else {
     throw PreprocessorException(
@@ -198,9 +197,9 @@ fileprivate func readInclude(restOfLine: String, lineIndex: Int) throws -> Strin
   }
   previouslyReadPaths.insert(chosenPath)
   return """
-  #sourceLocation(file: "\(chosenPath)", line: 1)
-  \(code)
-  \(getLocationDirective(lineIndex: lineIndex))
-  
-  """
+    #sourceLocation(file: "\(chosenPath)", line: 1)
+    \(code)
+    \(getLocationDirective(lineIndex: lineIndex))
+    
+    """
 }
