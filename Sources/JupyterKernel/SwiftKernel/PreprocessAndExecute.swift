@@ -9,7 +9,6 @@ fileprivate var executeResult: ExecutionResult?
 func preprocessAndExecute(code: String, isCell: Bool = false) throws -> ExecutionResult {
   do {
     let preprocessed = try preprocess(code: code)
-    KernelContext.log("preprocessed: \(code)")
     var finishedExecution = false
     executeQueue.sync { executeResult = nil }
     
@@ -29,7 +28,6 @@ func preprocessAndExecute(code: String, isCell: Bool = false) throws -> Executio
     while !finishedExecution {
       Thread.sleep(until: deadline)
       KernelContext.flushResponses()
-//       KernelContext.log("execute loop")
       
       deadline = deadline.advanced(by: interval)
       while deadline < Date() {
@@ -54,9 +52,7 @@ func execute(code: String, lineIndex: Int? = nil) -> ExecutionResult {
   }
   let codeWithLocationDirective = locationDirective + "\n" + code
   var descriptionPtr: UnsafeMutablePointer<CChar>?
-  KernelContext.log("starting execute")
   let error = KernelContext.execute(codeWithLocationDirective, &descriptionPtr)
-  KernelContext.log("finished execute")
   
   var description: String?
   if let descriptionPtr = descriptionPtr {
