@@ -39,9 +39,9 @@ public func JupyterKernel_constructStdoutHandlerClass(_ classObj: OpaquePointer)
     var hadStdout = false
     while true {
       let stop_event = `self`.stop_event
-      Kernel.log("marker 1")
+      KernelContext.log("marker 1")
       stop_event.wait(timeout: 0.1)
-      Kernel.log("marker 2")
+      KernelContext.log("marker 2")
 //         time.sleep(0.1)
       if Bool(`self`.should_stop)! == true {
 //       if Bool(stop_event.is_set())! == true { 
