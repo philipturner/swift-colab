@@ -43,8 +43,12 @@ class StdoutHandler {
       let interval: Double = 0.1
       var deadline = Date().advanced(by: interval)
       while true {
-        Thread.sleep(until: deadline)
+        KernelContext.sendResponse("stream", [
+          "name": "stdout",
+          "text": ""
+        ])
         
+        Thread.sleep(until: deadline)
         if shouldStop {
           break
         }
@@ -52,15 +56,11 @@ class StdoutHandler {
         
         deadline = deadline.advanced(by: interval)
         while deadline < Date() {
-          deadline = Date().advanced(by: interval)//deadline.advanced(by: interval)
+          deadline = deadline.advanced(by: interval)
         }
       }
-                                                       
-      getAndSendStdout(hadStdout: &hadStdout)
-                                                       KernelContext.sendResponse("stream", [
-      "name": "stdout",
-      "text": ""
-    ])
+      
+      getAndSendStdout(hadStdout: &hadStdout)                             
       semaphore.signal()
     }
   }
@@ -110,8 +110,6 @@ fileprivate func getAndSendStdout(hadStdout: inout Bool) {
   let stdout = getStdout()
   if stdout.count > 0 {
     hadStdout = true
-//     KernelContext.responseQueue.sync {
-      sendStdout(stdout)
-//     }
+    sendStdout(stdout)
   }
 }
