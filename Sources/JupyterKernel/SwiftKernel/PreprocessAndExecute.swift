@@ -198,7 +198,7 @@ fileprivate func executeSystemCommand(restOfLine: String) throws {
   
   // TODO: is `wait` what's blocking the UI?
 //   process.wait()
-  process.kill()
+//   process.kill()
   vulnerableProcess = Python.None
   
   // TODO: terminate the process here instead of in IOHandlers.swift
