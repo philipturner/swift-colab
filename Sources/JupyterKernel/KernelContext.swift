@@ -36,7 +36,7 @@ struct KernelContext {
   }
   
   // For ensuring multithreaded accesses to Python APIs are thread-safe.
-  private static let pythonQueue = DispatchQueue(
+  static let pythonQueue = DispatchQueue(
     label: "com.philipturner.swift-colab.KernelContext.pythonQueue")
 //   static let pythonSemaphore = DispatchSemaphore(value: 1)
 
