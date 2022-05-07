@@ -24,16 +24,19 @@ let SIGINTHandler = PythonClass(
 ).pythonObject
 
 class StdoutHandler {
-  private static var queue = DispatchQueue(
-    label: "com.swift-colab.StdoutHandler")
   private var semaphore = DispatchSemaphore(value: 0)
+  private var shouldStop = false
+  var hadStdout = false
   
   init() {
-    
+    DispatchQueue.global().async {
+      
+    }
   }
   
   // Must be called before deallocating this object.
   func stop() {
+    shouldStop = true
     semaphore.wait()
   }
 }
