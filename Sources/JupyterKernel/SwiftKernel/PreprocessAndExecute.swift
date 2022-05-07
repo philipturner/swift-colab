@@ -1,6 +1,7 @@
 import Foundation
 fileprivate let pexpect = Python.import("pexpect")
 fileprivate let re = Python.import("re")
+fileprivate let time = Python.import("time")
 
 fileprivate let executeQueue = DispatchQueue(
   label: "com.philipturner.swift-colab.PreprocessAndExecute.executeQueue")
@@ -27,6 +28,7 @@ func preprocessAndExecute(code: String, isCell: Bool = false) throws -> Executio
     var deadline = Date().advanced(by: interval)
     while !finishedExecution {
       Thread.sleep(until: deadline)
+      time.sleep(0)
       KernelContext.flushResponses()
       
       deadline = deadline.advanced(by: interval)
