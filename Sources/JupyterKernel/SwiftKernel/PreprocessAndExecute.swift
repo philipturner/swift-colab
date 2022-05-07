@@ -115,14 +115,13 @@ fileprivate func preprocess(line: String, index lineIndex: Int) throws -> String
 // package installation process?
 fileprivate func executeSystemCommand(restOfLine: String) throws {
   let process = pexpect.spawn("/bin/sh", args: ["-c", restOfLine])
-  vulnerableProcess = process
   
   let flush = Python.import("sys").stdout.flush // TODO: move this import to top
   let patterns = [pexpect.TIMEOUT, pexpect.EOF]
   var outSize: Int = 0
   
   func tryForceKill() -> Bool {
-    guard killedVulnerableProcess else {
+    guard KernelContext.interruptedExecution else {
       return false
     }
     
@@ -211,15 +210,14 @@ fileprivate func executeSystemCommand(restOfLine: String) throws {
   
   // TODO: is `wait` what's blocking the UI?
 //   process.wait() // try enabling this
-  vulnerableProcess = Python.None
   
   // TODO: terminate the process here instead of in IOHandlers.swift
   
   globalMessages.append("hello world 400.1")
   updateProgressFile()
   
-  if killedVulnerableProcess {
-    killedVulnerableProcess = false
+  if KernelContext.interruptedExecution {
+    KernelContext.interruptedExecution = false
     // TODO: Stop this error from being put into stdout
     throw InterruptException(
       "User interrupted execution during a `%system` command.")
