@@ -10,10 +10,12 @@ struct KernelContext {
     case interrupted
   }
   
-  @available(swift, deprecated: 0.0.1, message: "Only use for debugging Swift-Colab.")
   static var interruptStatus: InterruptStatus = .running
   
-  
+  @available(swift, deprecated: 0.0.1, message: "Only use for debugging Swift-Colab.")
+  static func log(_ message: String) {
+    
+  }
   
   static let init_repl_process: @convention(c) (
     OpaquePointer, UnsafePointer<CChar>) -> Int32 = 
