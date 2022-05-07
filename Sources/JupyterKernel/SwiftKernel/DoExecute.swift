@@ -145,13 +145,8 @@ fileprivate func sendIOPubErrorMessage(_ message: [String]) {
 fileprivate func executeCell(code: String) throws -> ExecutionResult {
   try setParentMessage()
   let result = try preprocessAndExecute(code: code, isCell: true)
-  KernelContext.log("d.7")
   if result is ExecutionResultSuccess {
-    KernelContext.log("d.8")
     try afterSuccessfulExecution()
-    KernelContext.log("d.9")
-  } else {
-    KernelContext.log("d.10")
   }
   return result
 }
