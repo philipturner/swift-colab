@@ -41,7 +41,9 @@ let StdoutHandler = PythonClass(
     "run": PythonInstanceMethod { (`self`: PythonObject) in
       var localHadStdout = false
       while true {
+        KernelContext.log("a")
         Python.import("time").sleep(0.1)
+        KernelContext.log("b")
         if Bool(`self`.should_stop)! {
           break
         }
