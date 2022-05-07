@@ -47,14 +47,14 @@ class StdoutHandler {
         if shouldStop {
           break
         }
-        getAndSendStdout(hadStdout: &hadStdout)
+//         getAndSendStdout(hadStdout: &hadStdout)
         
         deadline = deadline.advanced(by: interval)
         while deadline < Date() {
           deadline = deadline.advanced(by: interval)
         }
       }
-      getAndSendStdout(hadStdout: &hadStdout)
+//       getAndSendStdout(hadStdout: &hadStdout)
       semaphore.signal()
     }
   }
