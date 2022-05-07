@@ -57,6 +57,7 @@ public func JupyterKernel_constructSwiftKernelClass(_ classObj: OpaquePointer) {
       KernelContext.log("Started Swift kernel")
       try initSwift()
       KernelContext.debuggerInitialized = true
+      KernelContext.log("finished initSwift")
     }
     
     let response = try doExecute(code: String(args[1])!)
