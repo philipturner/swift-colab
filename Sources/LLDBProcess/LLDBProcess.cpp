@@ -24,7 +24,7 @@ int init_repl_process(const char **repl_env,
   if (!debugger.IsValid())
     return 1;
   
-  debugger.SetAsync(false);
+  debugger.SetAsync(true);
   debugger.HandleCommand(
     "settings append target.swift-module-search-paths "
     "/opt/swift/install_location/modules");
