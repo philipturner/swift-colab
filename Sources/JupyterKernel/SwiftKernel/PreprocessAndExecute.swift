@@ -124,7 +124,7 @@ fileprivate func executeSystemCommand(restOfLine: String) throws {
       return false
     }
     
-    process.terminate(force: true)
+//     process.terminate(force: true)
     return true
     
     process.sendline(Python.chr(3))
