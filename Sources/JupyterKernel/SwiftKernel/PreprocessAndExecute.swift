@@ -10,35 +10,35 @@ fileprivate var executeResult: ExecutionResult?
 func preprocessAndExecute(code: String, isCell: Bool = false) throws -> ExecutionResult {
   do {
     let preprocessed = try preprocess(code: code)
-    return execute(code: preprocessed, lineIndex: isCell ? 0 : nil)
-//     var finishedExecution = false
-//     executeQueue.sync { executeResult = nil }
+//     return execute(code: preprocessed, lineIndex: isCell ? 0 : nil)
+    var finishedExecution = false
+    executeQueue.sync { executeResult = nil }
     
-//     DispatchQueue.global(qos: .background).async {
-//       let result = execute(code: preprocessed, lineIndex: isCell ? 0 : nil)
-//       executeQueue.sync { executeResult = result }
-//       finishedExecution = true
-//     }
+    DispatchQueue.global(qos: .background).async {
+      let result = execute(code: preprocessed, lineIndex: isCell ? 0 : nil)
+      executeQueue.sync { executeResult = result }
+      finishedExecution = true
+    }
     
-//     // Offset this run loop from the other thread, hopefully almost immediately
-//     // after (25% into the period of repetition).
-//     // TODO: Auto-adjust the loop timing to make them extremely in-sync.
-//     usleep(25_000)
+    // Offset this run loop from the other thread, hopefully almost immediately
+    // after (25% into the period of repetition).
+    // TODO: Auto-adjust the loop timing to make them extremely in-sync.
+    usleep(25_000)
     
-//     let interval: Double = 0.1
-//     var deadline = Date().advanced(by: interval)
-//     while !finishedExecution {
-//       Thread.sleep(until: deadline)
-//       time.sleep(0)
-//       KernelContext.flushResponses()
+    let interval: Double = 0.1
+    var deadline = Date().advanced(by: interval)
+    while !finishedExecution {
+      Thread.sleep(until: deadline)
+      time.sleep(0)
+      KernelContext.flushResponses()
       
-//       deadline = deadline.advanced(by: interval)
-//       while deadline < Date() {
-//         deadline = deadline.advanced(by: interval)
-//       }
-//     }
+      deadline = deadline.advanced(by: interval)
+      while deadline < Date() {
+        deadline = deadline.advanced(by: interval)
+      }
+    }
     
-//     return executeQueue.sync { executeResult! }
+    return executeQueue.sync { executeResult! }
   } catch let e as PreprocessorException {
     return PreprocessorError(exception: e)
   }
