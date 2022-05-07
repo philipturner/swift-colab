@@ -111,13 +111,36 @@ fileprivate func preprocess(line: String, index lineIndex: Int) throws -> String
   return line
 }
 
+// TODO: Separate this functionality into IOHandlers.swift to share it with
+// package installation process?
 fileprivate func executeSystemCommand(restOfLine: String) throws {
   let process = pexpect.spawn("/bin/sh", args: ["-c", restOfLine])
   let flush = Python.import("sys").stdout.flush // TODO: move this import to top
   let patterns = [pexpect.TIMEOUT, pexpect.EOF]
   var outSize: Int = 0
   
+  func tryForceKill() -> Bool {
+    guard killedVulnerableProcess else {
+      return false
+    }
+    
+    process.sendline(Python.chr(3))
+    outSize = Python.len(process.before)
+    process.expect_list(patterns, 0.2)
+    
+    let str_pre = process.before[outSize...]
+    let str_pre2 = str_pre.decode("utf8", "replace")
+    let str = String(str_pre2)!
+    flush()
+    
+    process.terminate(force: true)
+    return true
+  }
+  
   while true {
+    if tryForceKill() { break } // TODO: should this happen before or after
+//     the other call to `expect_list`?
+    
     let resIdx = process.expect_list(patterns, 0.05)
     let str_pre = process.before[outSize...]
     let str_pre2 = str_pre.decode("utf8", "replace")
@@ -131,8 +154,6 @@ fileprivate func executeSystemCommand(restOfLine: String) throws {
     
     flush()
     if Int(resIdx)! == 1 {
-      break
-    } else if killedVulnerableProcess {
       break
     }
     
@@ -169,7 +190,8 @@ fileprivate func executeSystemCommand(restOfLine: String) throws {
 //     // support sending input?
 //   }
   
-  process.wait()
+  // TODO: is `wait` what's blocking the UI?
+//   process.wait()
   vulnerableProcess = Python.None
   
   // TODO: terminate the process here instead of in IOHandlers.swift
