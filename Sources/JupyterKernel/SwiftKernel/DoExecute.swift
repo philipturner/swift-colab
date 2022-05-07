@@ -13,7 +13,7 @@ func doExecute(code: String) throws -> PythonObject? {
   var result: ExecutionResult
   do {
     defer {
-      KernelContext.log("e")
+      KernelContext.log("q")
       KernelContext.log("e.2")
       should_stop = true
 //       handler.stop()
