@@ -24,10 +24,10 @@ int init_repl_process(const char **repl_env,
   if (!debugger.IsValid())
     return 1;
   
-  debugger.SetAsync(true);
-  debugger.HandleCommand(
-    "settings append target.swift-module-search-paths "
-    "/opt/swift/install_location/modules");
+  debugger.SetAsync(false);
+//   debugger.HandleCommand(
+//     "settings append target.swift-module-search-paths "
+//     "/opt/swift/install_location/modules");
   
   // LLDB will not crash when scripting because this isn't macOS. However,
   // disabling scripting could decrease startup time if the debugger needs to
@@ -35,7 +35,7 @@ int init_repl_process(const char **repl_env,
   debugger.SetScriptLanguage(eScriptLanguageNone);
   
   const char *repl_swift = "/opt/swift/toolchain/usr/bin/repl_swift";
-  target = debugger.CreateTarget(repl_swift);
+  target = debugger.CreateTargetWithFileAndArch(repl_swift, "");
   if (!target.IsValid())
     return 2;
   
@@ -75,8 +75,6 @@ int init_repl_process(const char **repl_env,
 // Caller must deallocate `description`.
 int execute(const char *code, char **description) {
   auto result = target.EvaluateExpression(code, expr_opts);
-  return -1;
-  
   auto error = result.GetError();
   auto errorType = error.GetType();
   
