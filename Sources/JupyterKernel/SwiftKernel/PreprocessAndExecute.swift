@@ -124,6 +124,8 @@ fileprivate func executeSystemCommand(restOfLine: String) throws {
       return false
     }
     
+    globalMessages.append("hello world 400.0")
+    updateProgressFile()
 //     process.terminate(force: true)
     return true
     
@@ -160,6 +162,8 @@ fileprivate func executeSystemCommand(restOfLine: String) throws {
     flush()
     if tryForceKill() { break }
     if Int(resIdx)! == 1 {
+      globalMessages.append("hello world 400.2")
+      updateProgressFile()
       break
     }
     
@@ -202,6 +206,9 @@ fileprivate func executeSystemCommand(restOfLine: String) throws {
   vulnerableProcess = Python.None
   
   // TODO: terminate the process here instead of in IOHandlers.swift
+  
+  globalMessages.append("hello world 400.1")
+  updateProgressFile()
   
   if killedVulnerableProcess {
     killedVulnerableProcess = false
