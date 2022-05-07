@@ -25,56 +25,91 @@ let SIGINTHandler = PythonClass(
   ]
 ).pythonObject
 
-class StdoutHandler {
-  private var semaphore = DispatchSemaphore(value: 0)
-  private var shouldStop = false
-  
-  // This is not thread-safe, but the way other code accesses it should not 
-  // cause any data races. Access should be synchronized via `semaphore`.
-  var hadStdout = false
-  
-  init() {
-    DispatchQueue.global(qos: .userInteractive).async { [self] in
-      // Try to stick to checking at exact 0.1 second intervals. Without this
-      // mechanism, it would slightly creep off by ~0.105 seconds, causing the
-      // output to seem jumpy for any loop synchronized with a multiple of 0.1
-      // second.
-      // TODO: bc it's paired with the flush loop in preprocessAndExecute
-      let interval: Double = 0.1
-      var deadline = Date().advanced(by: interval)
+let StdoutHandler = PythonClass(
+  "StdoutHandler",
+  superclasses: [threading.Thread],
+  members: [
+    "__init__": PythonInstanceMethod { (`self`: PythonObject) in
+      threading.Thread.__init__(`self`)
+      `self`.daemon = true
+      `self`.stop_event = threading.Event()
+      `self`.had_stdout = false
+      return Python.None
+    },
+    
+    "run": PythonInstanceMethod { (`self`: PythonObject) in
+      var localHadStdout = false
       while true {
-        Thread.sleep(until: deadline)
-        
-        // I don't know why, but Colab always crashes or freezes unless I do
-        // this. It would make sense if the reverse were true, because this
-        // violates the Python GIL.
-        KernelContext.sendResponse("stream", [
-          "name": "stdout",
-          "text": ""
-        ])
-        
-        if shouldStop {
+        `self`.stop_event.wait(0.1)
+        if Bool(`self`.should_stop)! {
           break
         }
         getAndSendStdout(hadStdout: &hadStdout)
-        
-        deadline = deadline.advanced(by: interval)
-        while deadline < Date() {
-          deadline = deadline.advanced(by: interval)
-        }
+        `self`.had_stdout = localHadStdout.pythonObject
       }
-      
-      getAndSendStdout(hadStdout: &hadStdout)                             
-      semaphore.signal()
+      getAndSendStdout(hadStdout: &hadStdout)
+      `self`.had_stdout = localHadStdout.pythonObject
+      return Python.None
+    },
+    
+    "stop": PythonInstanceMethod { args in
+      let `self` = args[0]
+      `self`.should_stop = true
+      return Python.None
     }
-  }
+  ]
+).pythonObject
+
+// class StdoutHandler {
+//   private var semaphore = DispatchSemaphore(value: 0)
+//   private var shouldStop = false
   
-  // Must be called before deallocating this object.
-  func stop() {
-    shouldStop = true
-    semaphore.wait()
-  }
-}
+//   // This is not thread-safe, but the way other code accesses it should not 
+//   // cause any data races. Access should be synchronized via `semaphore`.
+//   var hadStdout = false
+  
+//   init() {
+//     DispatchQueue.global(qos: .userInteractive).async { [self] in
+//       // Try to stick to checking at exact 0.1 second intervals. Without this
+//       // mechanism, it would slightly creep off by ~0.105 seconds, causing the
+//       // output to seem jumpy for any loop synchronized with a multiple of 0.1
+//       // second.
+//       // TODO: bc it's paired with the flush loop in preprocessAndExecute
+//       let interval: Double = 0.1
+//       var deadline = Date().advanced(by: interval)
+//       while true {
+//         Thread.sleep(until: deadline)
+        
+//         // I don't know why, but Colab always crashes or freezes unless I do
+//         // this. It would make sense if the reverse were true, because this
+//         // violates the Python GIL.
+//         KernelContext.sendResponse("stream", [
+//           "name": "stdout",
+//           "text": ""
+//         ])
+        
+//         if shouldStop {
+//           break
+//         }
+//         getAndSendStdout(hadStdout: &hadStdout)
+        
+//         deadline = deadline.advanced(by: interval)
+//         while deadline < Date() {
+//           deadline = deadline.advanced(by: interval)
+//         }
+//       }
+      
+//       getAndSendStdout(hadStdout: &hadStdout)                             
+//       semaphore.signal()
+//     }
+//   }
+  
+//   // Must be called before deallocating this object.
+//   func stop() {
+//     shouldStop = true
+//     semaphore.wait()
+//   }
+// }
 
 fileprivate var cachedScratchBuffer: UnsafeMutablePointer<CChar>?
 
