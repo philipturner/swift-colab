@@ -135,6 +135,12 @@ fileprivate func executeSystemCommand(restOfLine: String) throws {
       "text": str
     ])
     
+    if killedVulnerableProcess {
+    guard process.poll() != Python.None else { 
+      throw Exception("mh222 errrohe rhr rhr ") 
+    }
+  }
+    
     // What if the command requires user input? Does a Python notebook's shell
     // support sending input?
   }
