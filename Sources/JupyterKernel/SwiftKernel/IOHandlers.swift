@@ -25,34 +25,42 @@ let SIGINTHandler = PythonClass(
   ]
 ).pythonObject
 
-class StdoutHandler {
-  private var semaphore = DispatchSemaphore(value: 0)
-  private var shouldStop = false
+let StdoutHandler = PythonClass(
+  "StdoutHandler",
+  superclasses: [threading.Thread],
+  members: [
+    
+  ]
+).pythonObject
+
+// class StdoutHandler {
+//   private var semaphore = DispatchSemaphore(value: 0)
+//   private var shouldStop = false
   
-  // This is not thread-safe, but the way other code accesses it should not 
-  // cause any data races. Access should be synchronized via `semaphore`.
-  var hadStdout = false
+//   // This is not thread-safe, but the way other code accesses it should not 
+//   // cause any data races. Access should be synchronized via `semaphore`.
+//   var hadStdout = false
   
-  init() {
-    DispatchQueue.global().async { [self] in
-      while true {
-        usleep(200_000)
-        if shouldStop {
-          break
-        }
-        getAndSendStdout(hadStdout: &hadStdout)
-      }
-      getAndSendStdout(hadStdout: &hadStdout)
-      semaphore.signal()
-    }
-  }
+//   init() {
+//     DispatchQueue.global().async { [self] in
+//       while true {
+//         usleep(200_000)
+//         if shouldStop {
+//           break
+//         }
+//         getAndSendStdout(hadStdout: &hadStdout)
+//       }
+//       getAndSendStdout(hadStdout: &hadStdout)
+//       semaphore.signal()
+//     }
+//   }
   
-  // Must be called before deallocating this object.
-  func stop() {
-    shouldStop = true
-    semaphore.wait()
-  }
-}
+//   // Must be called before deallocating this object.
+//   func stop() {
+//     shouldStop = true
+//     semaphore.wait()
+//   }
+// }
 
 fileprivate var cachedScratchBuffer: UnsafeMutablePointer<CChar>?
 
