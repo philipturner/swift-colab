@@ -112,38 +112,40 @@ fileprivate func preprocess(line: String, index lineIndex: Int) throws -> String
 }
 
 fileprivate func executeSystemCommand(restOfLine: String) throws {
-  let process = subprocess.Popen(
-    restOfLine,
-    stdout: subprocess.PIPE,
-    stderr: subprocess.STDOUT,
-    shell: true,
-    universal_newlines: true)
-  vulnerableProcess = process
+//   let process = subprocess.Popen(
+//     restOfLine,
+//     stdout: subprocess.PIPE,
+//     stderr: subprocess.STDOUT,
+//     shell: true,
+//     universal_newlines: true)
+//   vulnerableProcess = process
   
   // TODO: Instead of replacing the last line in a progress bar with its
   // successor, it just prints all of them. To work around this, try assigning
   // stdout to a file and reading/replacing the entire stdout history. Does
   // Jupyter have a message format suited for replaceable stdout?
   
-  for outputLine in Python.iter(process.stdout.readline, PythonBytes(Data())) {
-    let str = String(outputLine)!
+//   for outputLine in Python.iter(process.stdout.readline, PythonBytes(Data())) {
+//     let str = String(outputLine)!
     
-    let kernel = KernelContext.kernel
-    kernel.send_response(kernel.iopub_socket, "stream", [
-      "name": "stdout",
-      "text": str
-    ])
+//     let kernel = KernelContext.kernel
+//     kernel.send_response(kernel.iopub_socket, "stream", [
+//       "name": "stdout",
+//       "text": str
+//     ])
     
-    if process.poll() != Python.None {
-      break
-    }
+//     if process.poll() != Python.None {
+//       break
+//     }
     
-    // What if the command requires user input? Does a Python notebook's shell
-    // support sending input?
-  }
+//     // What if the command requires user input? Does a Python notebook's shell
+//     // support sending input?
+//   }
   
-  process.wait()
+//   process.wait()
   vulnerableProcess = Python.None
+  
+  // TODO: terminate the process here instead of in IOHandlers.swift
   
   if killedVulnerableProcess {
     killedVulnerableProcess = false
