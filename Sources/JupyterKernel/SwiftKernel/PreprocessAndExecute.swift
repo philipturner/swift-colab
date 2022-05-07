@@ -151,6 +151,7 @@ fileprivate func executeSystemCommand(restOfLine: String) throws {
     throw InterruptException(
       "User interrupted execution during a `%system` command.")
   }
+  process.wait()
 }
 
 fileprivate var previouslyReadPaths: Set<String> = []
