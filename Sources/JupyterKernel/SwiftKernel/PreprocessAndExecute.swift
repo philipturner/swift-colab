@@ -112,6 +112,33 @@ fileprivate func preprocess(line: String, index lineIndex: Int) throws -> String
 }
 
 fileprivate func executeSystemCommand(restOfLine: String) throws {
+  let process = pexpect.spawnb("/bin/sh", args: ["-c", restOfLine])
+  let flush = Python.import("sys").stdout.flush // TODO: move this import to top
+  let patterns = [pexpect.TIMEOUT, pexpect.EOF]
+  var outSize: Int = 0
+  
+  while true {
+    let resIdx = process.expect_list(patterns, 0.05)
+    let str_pre = process.before[outSize...]
+    let str_pre2 = str_pre.decode("utf8", "replace")
+    let str = String(str_pre2)!
+    
+    let kernel = KernelContext.kernel
+    kernel.send_response(kernel.iopub_socket, "stream", [
+      "name": "stdout",
+      "text": str
+    ])
+    
+    flush()
+    if Int(resIdx)! == 1 {
+      break
+    } else if killedVulnerableProcess {
+      break
+    }
+    
+    outSize = Int(Python.len(process.before))!
+  }
+  
 //   let process = subprocess.Popen(
 //     restOfLine,
 //     stdout: subprocess.PIPE,
@@ -142,7 +169,7 @@ fileprivate func executeSystemCommand(restOfLine: String) throws {
 //     // support sending input?
 //   }
   
-//   process.wait()
+  process.wait()
   vulnerableProcess = Python.None
   
   // TODO: terminate the process here instead of in IOHandlers.swift
