@@ -9,8 +9,6 @@ func preprocessAndExecute(code: String, isCell: Bool = false) throws -> Executio
     return execute(code: preprocessed, lineIndex: isCell ? 0 : nil)
   } catch let e as PreprocessorException {
     return PreprocessorError(exception: e)
-  } catch let e as InterruptException {
-    return InterruptError(description: e.localizedDescription)
   }
 }
 
