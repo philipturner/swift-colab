@@ -46,6 +46,7 @@ func doExecute(code: String) throws -> PythonObject? {
   // Execute the cell, handle unexpected exceptions, and make sure to always 
   // clean up the stdout handler.
   var result: ExecutionResult
+  let time = Python.import("time")
   do {
     defer {
       handler.should_stop = true
@@ -58,7 +59,8 @@ func doExecute(code: String) throws -> PythonObject? {
       KernelContext.log("marker 5")
       
       while true {
-        usleep(100_000)
+        time.sleep(0.1)
+//         usleep(100_000)
         if Bool(handler.did_stop)! {
           break
         }
