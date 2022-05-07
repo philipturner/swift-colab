@@ -44,6 +44,10 @@ class StdoutHandler {
       var deadline = Date().advanced(by: interval)
       while true {
         Thread.sleep(until: deadline)
+        
+        // I don't know why, but Colab always crashes or freezes unless I do
+        // this. It would make sense if the reverse were true, because this
+        // violates the Python GIL.
         KernelContext.sendResponse("stream", [
           "name": "stdout",
           "text": ""
