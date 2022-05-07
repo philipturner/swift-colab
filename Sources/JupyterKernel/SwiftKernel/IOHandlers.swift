@@ -2,6 +2,8 @@ import Foundation
 fileprivate let signal = Python.import("signal")
 fileprivate let threading = Python.import("threading")
 
+// SIGINT handling requires a single-threaded context that respects the GIL. 
+// Thus, it uses Python threading instead of Swift GCD.
 let SIGINTHandler = PythonClass(
   "SIGINTHandler",
   superclasses: [threading.Thread],
