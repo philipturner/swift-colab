@@ -4,15 +4,15 @@ fileprivate let jsonutil = Python.import("jupyter_client").jsonutil
 
 func doExecute(code: String) throws -> PythonObject? {
   KernelContext.interruptStatus = .running
-  let handler = StdoutHandler()
+//   let handler = StdoutHandler()
   
   // Execute the cell, handle unexpected exceptions, and make sure to always 
   // clean up the stdout handler.
   var result: ExecutionResult
   do {
     defer {
-      handler.stop()
-      KernelContext.flushResponses()
+//       handler.stop()
+//       KernelContext.flushResponses()
     }
     result = try executeCell(code: code)
   } catch _ as InterruptException {
@@ -59,7 +59,7 @@ func doExecute(code: String) throws -> PythonObject? {
       // that this execute request can cleanly finish before the kernel exits.
       let loop = Python.import("ioloop").IOLoop.current()
       loop.add_timeout(Python.import("time").time() + 0.1, loop.stop)
-    } else if handler.hadStdout {
+    } else if false /* handler.hadStdout */ {
       // The conditional check above could cause a data race, as it may retrieve
       // `hadStdout` without proper synchronization.
       
