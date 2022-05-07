@@ -5,6 +5,8 @@ struct KernelContext {
   
   static var debuggerInitialized = false
   
+  static var interruptedExecution = false
+  
   static let init_repl_process: @convention(c) (
     OpaquePointer, UnsafePointer<CChar>) -> Int32 = 
     LLDBProcessLibrary.loadSymbol(name: "init_repl_process")
