@@ -42,10 +42,6 @@ class StdoutHandler {
       // though.
       let interval: Double = 0.1
       var deadline = Date().advanced(by: interval)
-                                                       KernelContext.sendResponse("stream", [
-      "name": "stdout",
-      "text": ""
-    ])
       while true {
         Thread.sleep(until: deadline)
         
@@ -59,11 +55,12 @@ class StdoutHandler {
           deadline = Date().advanced(by: interval)//deadline.advanced(by: interval)
         }
       }
+                                                       
+      getAndSendStdout(hadStdout: &hadStdout)
                                                        KernelContext.sendResponse("stream", [
       "name": "stdout",
       "text": ""
     ])
-      getAndSendStdout(hadStdout: &hadStdout)
       semaphore.signal()
     }
   }
