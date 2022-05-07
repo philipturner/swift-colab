@@ -220,6 +220,7 @@ fileprivate func executeSystemCommand(restOfLine: String) throws {
   
   if killedVulnerableProcess {
     killedVulnerableProcess = false
+    // TODO: Stop this error from being put into stdout
     throw InterruptException(
       "User interrupted execution during a `%system` command.")
   }
