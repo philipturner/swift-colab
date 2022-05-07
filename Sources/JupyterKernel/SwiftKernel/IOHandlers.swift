@@ -1,6 +1,7 @@
 import Foundation
 fileprivate let signal = Python.import("signal")
 fileprivate let threading = Python.import("threading")
+fileprivate let time = Python.import("time")
 
 // SIGINT handling requires a single-threaded context that respects the GIL. 
 // Thus, it uses Python threading instead of Swift GCD.
@@ -42,8 +43,9 @@ let StdoutHandler = PythonClass(
     "run": PythonInstanceMethod { (`self`: PythonObject) in
       var hadStdout = false
       while true {
-        let stop_event = `self`.stop_event
-        stop_event.wait(timeout: 0.1)
+//         let stop_event = `self`.stop_event
+//         stop_event.wait(timeout: 0.1)
+        time.sleep(0.1)
         if Bool(`self`.should_stop)! == true {
 //         if Bool(stop_event.is_set())! == true { 
           break
@@ -52,6 +54,7 @@ let StdoutHandler = PythonClass(
       }
       getAndSendStdout(hadStdout: &hadStdout)
       `self`.had_stdout = hadStdout.pythonObject
+      `self`.stop_event.set()
       return Python.None
     }
   ]
