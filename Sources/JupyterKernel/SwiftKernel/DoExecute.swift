@@ -12,11 +12,8 @@ func doExecute(code: String) throws -> PythonObject? {
   do {
     defer {
       handler.stop()
-      KernelContext.log("marker 5.v")
     }
-    KernelContext.log("marker 3.v")
     result = try executeCell(code: code)
-    KernelContext.log("marker 4.v")
   } catch _ as InterruptException {
     return nil
   } catch let error as PackageInstallException {
