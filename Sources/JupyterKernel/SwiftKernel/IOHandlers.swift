@@ -30,9 +30,7 @@ let SIGINTHandler = PythonClass(
     
     "run": PythonInstanceMethod { (`self`: PythonObject) in
       while true {
-//         try! signal.sigwait.throwing.dynamicallyCall(withArguments: [signal.SIGINT] as PythonObject)
-        globalMessages.append("hello world 0")
-        updateProgressFile()
+        KernelContext.log("hello world 0")
         
         signal.sigwait([signal.SIGINT])
         globalMessages.append("hello world 1")
