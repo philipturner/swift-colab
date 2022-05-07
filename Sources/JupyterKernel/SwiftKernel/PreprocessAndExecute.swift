@@ -19,7 +19,7 @@ func preprocessAndExecute(code: String, isCell: Bool = false) throws -> Executio
     }
     
     // Offset this run loop from the other thread, hopefully almost immediately
-    // after.
+    // after (25% into the period of repetition).
     // TODO: Auto-adjust the loop timing to make them extremely in-sync.
     usleep(25_000)
     
