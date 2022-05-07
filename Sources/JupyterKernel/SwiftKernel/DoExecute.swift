@@ -33,8 +33,7 @@ func doExecute(code: String) throws -> PythonObject? {
   
   // Send values/errors and status to the client.
   if result is SuccessWithValue {
-    let kernel = KernelContext.kernel
-    kernel.send_response(kernel.iopub_socket, "execute_result", [
+    KernelContext.sendResponse("execute_result", [
       "execution_count": kernel.execution_count,
       "data": [
         "text/plain": result.description.pythonObject
