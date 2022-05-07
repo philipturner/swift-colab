@@ -12,8 +12,6 @@ struct KernelContext {
   
   static var interruptStatus: InterruptStatus = .running
   
-  static var syncingPythonKit = true
-  
   private static var logInitialized = false
   private static let logQueue = DispatchQueue(
     label: "com.philipturner.swift-colab.KernelContext.logQueue")
@@ -37,23 +35,8 @@ struct KernelContext {
     }
   }
   
-  // For ensuring multithreaded accesses to Python APIs are thread-safe.
-  static let pythonQueue = DispatchQueue(
-    label: "com.philipturner.swift-colab.KernelContext.pythonQueue")
-//   static let pythonSemaphore = DispatchSemaphore(value: 1)
-
-  static func sendResponse(
-    _ header: String, 
-    _ response: PythonConvertible, 
-    manuallySynchronize: Bool = false
-  ) {
-    if manuallySynchronize {
-      kernel.send_response(kernel.iopub_socket, header, response)
-    } else {
-      _ = pythonQueue.sync {
-        kernel.send_response(kernel.iopub_socket, header, response)
-      }
-    }
+  static func sendResponse(_ header: String, _ response: PythonConvertible) {
+    kernel.send_response(kernel.iopub_socket, header, response)
   }
   
   // Dynamically loaded LLDB bringing functions
