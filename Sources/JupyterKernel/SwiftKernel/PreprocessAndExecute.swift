@@ -119,6 +119,11 @@ fileprivate func executeSystemCommand(restOfLine: String) throws {
     universal_newlines: true)
   vulnerableProcess = process
   
+  // TODO: Instead of replacing the last line in a progress bar with its
+  // successor, it just prints all of them. To work around this, try assigning
+  // stdout to a file and reading/replacing the entire stdout history. Does
+  // Jupyter have a message format suited for replaceable stdout?
+  
   for outputLine in Python.iter(process.stdout.readline, PythonBytes(Data())) {
     let str = String(outputLine)!
     
