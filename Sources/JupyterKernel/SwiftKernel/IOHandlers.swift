@@ -37,6 +37,7 @@ public func JupyterKernel_constructStdoutHandlerClass(_ classObj: OpaquePointer)
   
   StdoutHandler.run = PythonInstanceMethod { (`self`: PythonObject) in
     var hadStdout = false
+    KernelContext.log("marker 0")
     while true {
       let stop_event = `self`.stop_event
       KernelContext.log("marker 1")
