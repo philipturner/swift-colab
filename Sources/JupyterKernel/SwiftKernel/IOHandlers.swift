@@ -36,18 +36,18 @@ class StdoutHandler {
   
   init() {
     DispatchQueue.global(qos: .userInteractive).async { [self] in
-      var previousDate = Date()
+      KernelContext.pythonSemaphore.wait()
+      let time = Python.import("time")
+      KernelContext.pythonSemaphore.signal()
       while true {
-        usleep(100_000)
+//         usleep(100_000)
+        KernelContext.pythonSemaphore.wait()
+        time.sleep(0.1)
+        KernelContext.pythonSemaphore.signal()
         if shouldStop {
           break
         }
-        // TODO: time how long this operation takes
         getAndSendStdout(hadStdout: &hadStdout)
-        let currentDate = Date()
-        let elapsedTime = currentDate.timeIntervalSince(previousDate) * 1e6
-        KernelContext.log("Stdout retrieval time: \(elapsedTime)")
-        previousDate = currentDate
       }
       getAndSendStdout(hadStdout: &hadStdout)
       semaphore.signal()
@@ -97,13 +97,12 @@ fileprivate func sendStdout(_ stdout: String) {
 }
 
 fileprivate func getAndSendStdout(hadStdout: inout Bool) {
-  // TODO: move the semaphore stuff to after `getStdout`
+  let stdout = getStdout()
   KernelContext.pythonSemaphore.wait()
   defer {
     KernelContext.pythonSemaphore.signal()
   }
   
-  let stdout = getStdout()
   if stdout.count > 0 {
     hadStdout = true
     sendStdout(stdout)
