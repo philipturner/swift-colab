@@ -124,6 +124,9 @@ fileprivate func executeSystemCommand(restOfLine: String) throws {
       return false
     }
     
+    process.terminate(force: true)
+    return true
+    
     process.sendline(Python.chr(3))
     outSize = Int(Python.len(process.before))!
     process.expect_list(patterns, 0.2)
@@ -133,8 +136,8 @@ fileprivate func executeSystemCommand(restOfLine: String) throws {
     let str = String(str_pre2)!
     flush()
     
-    process.terminate(force: true)
-    return true
+//     process.terminate(force: true)
+//     return true
   }
   
   while true {
