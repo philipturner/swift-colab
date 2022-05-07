@@ -90,15 +90,15 @@ fileprivate func sendStdout(_ stdout: String) {
   let kernel = KernelContext.kernel
   if let range = stdout.range(of: "\033[2J") {
     sendStdout(String(stdout[..<range.lowerBound]))
-    kernel.send_response(kernel.iopub_socket, "clear_output", [
+    KernelContext.sendResponse("clear_output", [
       "wait": false
-    ])
+    ], manuallySynchronize: true)
     sendStdout(String(stdout[range.upperBound...]))
   } else {
-    kernel.send_response(kernel.iopub_socket, "stream", [
+    KernelContext.sendResponse("stream", [
       "name": "stdout",
       "text": stdout
-    ])
+    ], manuallySynchronize: true)
   }
 }
 
@@ -111,8 +111,11 @@ fileprivate func getAndSendStdout(hadStdout: inout Bool) {
   
   if stdout.count > 0 {
     hadStdout = true
-    sendStdout(stdout)
+    KernelContext.pythonQueue.sync {
+      sendStdout(stdout)
+    }
   } else {
-    sendStdout(stdout)
+    // Does sending this help?
+//     sendStdout(stdout)
   }
 }
