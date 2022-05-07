@@ -28,6 +28,7 @@ func preprocessAndExecute(code: String, isCell: Bool = false) throws -> Executio
     while !finishedExecution {
       Thread.sleep(until: deadline)
       KernelContext.flushResponses()
+      KernelContext.log("execute loop")
       
       deadline = deadline.advanced(by: interval)
       while deadline < Date() {
