@@ -26,59 +26,59 @@ let SIGINTHandler = PythonClass(
   ]
 ).pythonObject
 
-// A stored reference to the StdoutHandler type object, used as a workaround for 
-// the fact that it must be initialized in Python code.
-fileprivate var preservedStdoutHandlerRef: PythonObject!
+// // A stored reference to the StdoutHandler type object, used as a workaround for 
+// // the fact that it must be initialized in Python code.
+// fileprivate var preservedStdoutHandlerRef: PythonObject!
 
-@_cdecl("JupyterKernel_constructStdoutHandlerClass")
-public func JupyterKernel_constructStdoutHandlerClass(_ classObj: OpaquePointer) {
-  let StdoutHandler = PythonObject(OwnedPyObjectPointer(classObj))
-  preservedStdoutHandlerRef = StdoutHandler
+// @_cdecl("JupyterKernel_constructStdoutHandlerClass")
+// public func JupyterKernel_constructStdoutHandlerClass(_ classObj: OpaquePointer) {
+//   let StdoutHandler = PythonObject(OwnedPyObjectPointer(classObj))
+//   preservedStdoutHandlerRef = StdoutHandler
   
-  StdoutHandler.run = PythonInstanceMethod { (`self`: PythonObject) in
-    var hadStdout = false
-    KernelContext.log("marker 0")
-    while true {
-      let stop_event = `self`.stop_event
-      KernelContext.log("marker 1")
-//       usleep(100_000)
-      time.sleep(0.1)
-//       stop_event.wait(timeout: 0.1)
-      KernelContext.log("marker 2")
-//         time.sleep(0.1)
-      if Bool(`self`.should_stop)! {
-//       if Bool(stop_event.is_set())! == true { 
-        break
-      }
-      getAndSendStdout(hadStdout: &hadStdout)
-    }
-    getAndSendStdout(hadStdout: &hadStdout)
-    `self`.had_stdout = hadStdout.pythonObject
-    `self`.did_stop = true
-//       `self`.stop_event.set()
-    KernelContext.log("marker 7")
-    return Python.None
-  }.pythonObject
-}
+//   StdoutHandler.run = PythonInstanceMethod { (`self`: PythonObject) in
+//     var hadStdout = false
+//     KernelContext.log("marker 0")
+//     while true {
+//       let stop_event = `self`.stop_event
+//       KernelContext.log("marker 1")
+// //       usleep(100_000)
+//       time.sleep(0.1)
+// //       stop_event.wait(timeout: 0.1)
+//       KernelContext.log("marker 2")
+// //         time.sleep(0.1)
+//       if Bool(`self`.should_stop)! {
+// //       if Bool(stop_event.is_set())! == true { 
+//         break
+//       }
+//       getAndSendStdout(hadStdout: &hadStdout)
+//     }
+//     getAndSendStdout(hadStdout: &hadStdout)
+//     `self`.had_stdout = hadStdout.pythonObject
+//     `self`.did_stop = true
+// //       `self`.stop_event.set()
+//     KernelContext.log("marker 7")
+//     return Python.None
+//   }.pythonObject
+// }
 
-let StdoutHandler = { () -> PythonObject in
-  PyRun_SimpleString("""
-  from ctypes import *; import threading;
-  class StdoutHandler(threading.Thread):
-      def __init__(self, **kwargs):
-          super().__init__(**kwargs)
-          self.daemon = True
-          self.stop_event = threading.Event()
-          self.had_stdout = False
-          self.should_stop = False
-          self.did_stop = False
+// let StdoutHandler = { () -> PythonObject in
+//   PyRun_SimpleString("""
+//   from ctypes import *; import threading;
+//   class StdoutHandler(threading.Thread):
+//       def __init__(self, **kwargs):
+//           super().__init__(**kwargs)
+//           self.daemon = True
+//           self.stop_event = threading.Event()
+//           self.had_stdout = False
+//           self.should_stop = False
+//           self.did_stop = False
    
-  func = PyDLL("/opt/swift/lib/libJupyterKernel.so").JupyterKernel_constructStdoutHandlerClass
-  func.argtypes = [c_void_p]; func(c_void_p(id(StdoutHandler)))
-  """)
+//   func = PyDLL("/opt/swift/lib/libJupyterKernel.so").JupyterKernel_constructStdoutHandlerClass
+//   func.argtypes = [c_void_p]; func(c_void_p(id(StdoutHandler)))
+//   """)
   
-  return preservedStdoutHandlerRef
-}()
+//   return preservedStdoutHandlerRef
+// }()
 
 // let StdoutHandler = PythonClass(
 //   "StdoutHandler",
@@ -114,34 +114,34 @@ let StdoutHandler = { () -> PythonObject in
 //   ]
 // ).pythonObject
 
-// class StdoutHandler {
-//   private var semaphore = DispatchSemaphore(value: 0)
-//   private var shouldStop = false
+class StdoutHandler {
+  private var semaphore = DispatchSemaphore(value: 0)
+  private var shouldStop = false
   
-//   // This is not thread-safe, but the way other code accesses it should not 
-//   // cause any data races. Access should be synchronized via `semaphore`.
-//   var hadStdout = false
+  // This is not thread-safe, but the way other code accesses it should not 
+  // cause any data races. Access should be synchronized via `semaphore`.
+  var hadStdout = false
   
-//   init() {
-//     DispatchQueue.global().async { [self] in
-//       while true {
-//         usleep(200_000)
-//         if shouldStop {
-//           break
-//         }
-//         getAndSendStdout(hadStdout: &hadStdout)
-//       }
-//       getAndSendStdout(hadStdout: &hadStdout)
-//       semaphore.signal()
-//     }
-//   }
+  init() {
+    DispatchQueue.global().async { [self] in
+      while true {
+        usleep(200_000)
+        if shouldStop {
+          break
+        }
+        getAndSendStdout(hadStdout: &hadStdout)
+      }
+      getAndSendStdout(hadStdout: &hadStdout)
+      semaphore.signal()
+    }
+  }
   
-//   // Must be called before deallocating this object.
-//   func stop() {
-//     shouldStop = true
-//     semaphore.wait()
-//   }
-// }
+  // Must be called before deallocating this object.
+  func stop() {
+    shouldStop = true
+    semaphore.wait()
+  }
+}
 
 fileprivate var cachedScratchBuffer: UnsafeMutablePointer<CChar>?
 
