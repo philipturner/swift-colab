@@ -11,7 +11,7 @@ struct KernelContext {
     case activated
   }
   
-  static var interruptStatus = .notAccepting
+  static var interruptStatus: InterruptStatus = .notAccepting
   
   static let init_repl_process: @convention(c) (
     OpaquePointer, UnsafePointer<CChar>) -> Int32 = 
