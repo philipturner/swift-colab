@@ -104,10 +104,10 @@ fileprivate func sendStdout(_ stdout: String) {
 
 fileprivate func getAndSendStdout(hadStdout: inout Bool) {
   let stdout = getStdout()
-  KernelContext.pythonSemaphore.wait()
-  defer {
-    KernelContext.pythonSemaphore.signal()
-  }
+//   KernelContext.pythonSemaphore.wait()
+//   defer {
+//     KernelContext.pythonSemaphore.signal()
+//   }
   
   if stdout.count > 0 {
     hadStdout = true
