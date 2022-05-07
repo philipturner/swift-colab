@@ -36,12 +36,25 @@ class StdoutHandler {
   
   init() {
     DispatchQueue.global(qos: .userInteractive).async { [self] in
+////////////////////////////////////////////////////////////////////////////////
+      // Try to stick to checking at exact 0.1 second intervals. Without this
+      // mechanism, it would slightly creep off by ~0.105 seconds, causing the
+      // output to seem jumpy for any loop synchronized with a multiple of 0.1
+      // second. This solution synchronizes the scan loop with 0.1 seconds, but
+      // jumps ahead by something indivisible by 0.1 if the thread misses the
+      // mark???
+      var deadline = Date().advanced(by: 0.1)
       while true {
-        usleep(100_000)
+        Thread.sleep(until: deadline)
         if shouldStop {
           break
         }
         getAndSendStdout(hadStdout: &hadStdout)
+        
+        deadline = deadline.advanced(by: 0.1)
+        while deadline < Date() {
+          deadline = deadline.advanced(by: 0.1)
+        }
       }
       getAndSendStdout(hadStdout: &hadStdout)
       semaphore.signal()
