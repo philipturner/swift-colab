@@ -63,7 +63,6 @@ func doExecute(code: String) throws -> PythonObject? {
       // The conditional check above could cause a data race, as it may retrieve
       // `hadStdout` without proper synchronization.
       
-//     } else if syncQueue.sync(execute: { return globalHad_stdout }) {
       // When there is stdout, it is a runtime error. Stdout, which we have
       // already sent to the client, contains the error message (plus some other 
       // ugly traceback that we should eventually figure out how to suppress), 
