@@ -139,11 +139,6 @@ fileprivate func sendIOPubErrorMessage(_ message: [String]) {
 }
 
 fileprivate func executeCell(code: String) throws -> ExecutionResult {
-//   KernelContext.pythonSemaphore.wait()
-//   defer {
-//     KernelContext.pythonSemaphore.signal()
-//   }
-  
   try setParentMessage()
   let result = try preprocessAndExecute(code: code, isCell: true)
   if result is ExecutionResultSuccess {
