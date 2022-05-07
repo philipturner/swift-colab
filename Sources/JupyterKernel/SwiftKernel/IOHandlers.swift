@@ -97,7 +97,7 @@ fileprivate var cachedScratchBuffer: UnsafeMutablePointer<CChar>?
 
 fileprivate func getStdout() -> String {
   var stdout = Data()
-  let bufferSize = 1000// 1 << 16
+  let bufferSize = 1 << 16
   let scratchBuffer = cachedScratchBuffer ?? .allocate(capacity: bufferSize)
   cachedScratchBuffer = scratchBuffer
   while true {
@@ -107,10 +107,8 @@ fileprivate func getStdout() -> String {
     guard stdoutSize > 0 else {
       break
     }
-//     let stdoutSegment = Data(
-//       bytesNoCopy: scratchBuffer, count: Int(stdoutSize), deallocator: .none)
     let stdoutSegment = Data(
-      bytes: scratchBuffer, count: Int(stdoutSize))
+      bytesNoCopy: scratchBuffer, count: Int(stdoutSize), deallocator: .none)
     stdout += stdoutSegment
   }
   return String(data: stdout, encoding: .utf8)!
