@@ -4,13 +4,8 @@ struct KernelContext {
   static var kernel: PythonObject = Python.None
   
   static var debuggerInitialized = false
-  
-  enum InterruptStatus {
-    case running
-    case interrupted
-  }
-  
-  static var interruptStatus: InterruptStatus = .running
+  static var isInterrupted = false
+  static var pollingStdout = false
   
   private static var logInitialized = false
   private static let logQueue = DispatchQueue(
