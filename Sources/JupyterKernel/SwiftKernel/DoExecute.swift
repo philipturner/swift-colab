@@ -7,6 +7,10 @@ internal var globalHad_stdout: Bool = false
 internal let syncQueue = DispatchQueue(label: "com.swift-colab.syncQueue")
 
 func doExecute(code: String) throws -> PythonObject? {
+  defer {
+    if KernelContext
+  }
+  
   syncQueue.sync {
     doExecute_lock = false
     globalHad_stdout = false
