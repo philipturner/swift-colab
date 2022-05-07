@@ -110,8 +110,9 @@ fileprivate func getAndSendStdout(hadStdout: inout Bool) {
   }
   
   if stdout.count > 0 {
-    KernelContext.log("\(stdout.count)")
     hadStdout = true
+    sendStdout(stdout)
+  } else {
     sendStdout(stdout)
   }
 }
