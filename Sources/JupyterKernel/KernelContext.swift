@@ -12,7 +12,6 @@ struct KernelContext {
   
   static var interruptStatus: InterruptStatus = .running
   
-  @available(swift, deprecated: 0.0.1, message: "Only use for debugging Swift-Colab.")
   static func log(_ message: String) {
     let fm = FileManager.default
     let logData = fm.contents(atPath: "/opt/swift/log") ?? Data()
