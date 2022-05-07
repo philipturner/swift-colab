@@ -22,7 +22,7 @@ func preprocessAndExecute(code: String, isCell: Bool = false) throws -> Executio
     while !finishedExecution {
       // Using Python's `time` module instead of Foundation.usleep releases the
       // GIL.
-      time.sleep(0.05)
+      time.sleep(0.1)
     }
     
     return executeQueue.sync { executeResult! }
