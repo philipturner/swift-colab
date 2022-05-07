@@ -134,7 +134,7 @@ fileprivate func executeSystemCommand(restOfLine: String) throws {
       KernelContext.sendResponse("stream", [
         "name": "stdout",
         "text": str
-      ], manuallySynchronized: true)
+      ], manuallySynchronize: true)
     }
     
     flush()
