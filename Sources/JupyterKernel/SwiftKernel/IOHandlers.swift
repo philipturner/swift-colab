@@ -136,7 +136,7 @@ class StdoutHandler {
       KernelContext.log("marker 2")
       getAndSendStdout(hadStdout: &hadStdout)
       semaphore.signal()
-      KernelContext.log("marker 5")
+      KernelContext.log("marker 7")
     }
   }
   
