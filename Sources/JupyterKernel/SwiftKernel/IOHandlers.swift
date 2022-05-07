@@ -25,6 +25,8 @@ let SIGINTHandler = PythonClass(
   ]
 ).pythonObject
 
+internal var should_stop: PythonObject = false
+
 let StdoutHandler = PythonClass(
   "StdoutHandler",
   superclasses: [threading.Thread],
@@ -33,7 +35,6 @@ let StdoutHandler = PythonClass(
       threading.Thread.__init__(`self`)
       `self`.daemon = true
       `self`.had_stdout = false
-      `self`.should_stop = false
       return Python.None
     },
     
@@ -43,7 +44,7 @@ let StdoutHandler = PythonClass(
         KernelContext.log("a")
         usleep(100_000)
         KernelContext.log("b")
-        if Bool(`self`.should_stop)! {
+        if Bool(should_stop)! {
           break
         }
         getAndSendStdout(hadStdout: &localHadStdout)
@@ -51,12 +52,6 @@ let StdoutHandler = PythonClass(
       }
       getAndSendStdout(hadStdout: &localHadStdout)
       `self`.had_stdout = localHadStdout.pythonObject
-      return Python.None
-    },
-    
-    "stop": PythonInstanceMethod { args in
-      let `self` = args[0]
-      `self`.should_stop = true
       return Python.None
     }
   ]
