@@ -5,7 +5,13 @@ struct KernelContext {
   
   static var debuggerInitialized = false
   
-  static var interruptedExecution = false
+  enum InterruptStatus {
+    case notAccepting
+    case accepting
+    case activated
+  }
+  
+  static var interruptStatus = .notAccepting
   
   static let init_repl_process: @convention(c) (
     OpaquePointer, UnsafePointer<CChar>) -> Int32 = 
