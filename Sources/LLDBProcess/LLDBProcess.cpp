@@ -75,6 +75,8 @@ int init_repl_process(const char **repl_env,
 // Caller must deallocate `description`.
 int execute(const char *code, char **description) {
   auto result = target.EvaluateExpression(code, expr_opts);
+  return -1;
+  
   auto error = result.GetError();
   auto errorType = error.GetType();
   
