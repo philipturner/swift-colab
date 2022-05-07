@@ -116,11 +116,11 @@ fileprivate func executeSystemCommand(restOfLine: String) throws {
     stdout: subprocess.PIPE,
     stderr: subprocess.STDOUT,
     shell: true,
-    bufsize: 1)
+    universal_newlines: true)
   vulnerableProcess = process
   
   for outputLine in Python.iter(process.stdout.readline, PythonBytes(Data())) {
-    let str = String(outputLine.decode("utf8"))!
+    let str = String(outputLine)!
     
     let kernel = KernelContext.kernel
     kernel.send_response(kernel.iopub_socket, "stream", [
