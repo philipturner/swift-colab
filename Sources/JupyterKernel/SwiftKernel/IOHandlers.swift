@@ -60,7 +60,7 @@ let StdoutHandler = { () -> PythonObject in
   class StdoutHandler(threading.Thread):
       def __init__(self, **kwargs):
           super().__init__(**kwargs)
-          self.daemon = true
+          self.daemon = True
           self.stop_event = threading.Event()
           self.had_stdout = False
    
