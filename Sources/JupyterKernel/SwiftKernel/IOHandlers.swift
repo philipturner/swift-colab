@@ -46,7 +46,7 @@ public func JupyterKernel_constructStdoutHandlerClass(_ classObj: OpaquePointer)
 //       stop_event.wait(timeout: 0.1)
       KernelContext.log("marker 2")
 //         time.sleep(0.1)
-      if Bool(`self`.should_stop)! == true {
+      if Bool(`self`.should_stop)! {
 //       if Bool(stop_event.is_set())! == true { 
         break
       }
@@ -54,6 +54,7 @@ public func JupyterKernel_constructStdoutHandlerClass(_ classObj: OpaquePointer)
     }
     getAndSendStdout(hadStdout: &hadStdout)
     `self`.had_stdout = hadStdout.pythonObject
+    `self`.did_stop = true
 //       `self`.stop_event.set()
     return Python.None
   }.pythonObject
@@ -69,6 +70,7 @@ let StdoutHandler = { () -> PythonObject in
           self.stop_event = threading.Event()
           self.had_stdout = False
           self.should_stop = False
+          self.did_stop = False
    
   func = PyDLL("/opt/swift/lib/libJupyterKernel.so").JupyterKernel_constructStdoutHandlerClass
   func.argtypes = [c_void_p]; func(c_void_p(id(StdoutHandler)))
