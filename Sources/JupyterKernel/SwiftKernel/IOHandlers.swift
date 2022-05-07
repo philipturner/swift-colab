@@ -32,52 +32,78 @@ fileprivate var preservedStdoutHandlerRef: PythonObject!
 
 @_cdecl("JupyterKernel_constructStdoutHandlerClass")
 public func JupyterKernel_constructSwiftKernelClass(_ classObj: OpaquePointer) {
+  let StdoutHandler = PythonObject(OwnedPyObjectPointer(classObj))
+  preservedStdoutHandlerRef = StdoutHandler
+  
+  StdoutHandler.run = PythonInstanceMethod { (`self`: PythonObject) in
+    var hadStdout = false
+    while true {
+      let stop_event = `self`.stop_event
+      stop_event.wait(timeout: 0.1)
+//         time.sleep(0.1)
+//         if Bool(`self`.should_stop)! == true {
+      if Bool(stop_event.is_set())! == true { 
+        break
+      }
+      getAndSendStdout(hadStdout: &hadStdout)
+    }
+    getAndSendStdout(hadStdout: &hadStdout)
+    `self`.had_stdout = hadStdout.pythonObject
+//       `self`.stop_event.set()
+    return Python.None
+  }
+}
 
 let StdoutHandler = {
   PyRun_SimpleString("""
-  from ctypes import *; from ipykernel.kernelbase import Kernel
+  from ctypes import *; import threading; from ipykernel.kernelbase import Kernel
   class StdoutHandler(threading.Thread):
       def __init__(self, **kwargs):
           super().__init__(**kwargs)
+          self.daemon = true
+          self.stop_event = threading.Event()
+          self.had_stdout = False
    
   func = PyDLL("/opt/swift/lib/libJupyterKernel.so").JupyterKernel_constructStdoutHandlerClass
   func.argtypes = [c_void_p]; func(c_void_p(id(StdoutHandler)))
   """)
+  
+  return preservedStdoutHandlerRef
 }()
 
-let StdoutHandler = PythonClass(
-  "StdoutHandler",
-  superclasses: [threading.Thread],
-  members: [
-    "__init__": PythonInstanceMethod { (`self`: PythonObject) in
-      threading.Thread.__init__(`self`)
-      `self`.daemon = true
-      `self`.stop_event = threading.Event()
-      `self`.stop_event.clear()
-      `self`.had_stdout = false
-      `self`.should_stop = false
-      return Python.None
-    },
+// let StdoutHandler = PythonClass(
+//   "StdoutHandler",
+//   superclasses: [threading.Thread],
+//   members: [
+//     "__init__": PythonInstanceMethod { (`self`: PythonObject) in
+//       threading.Thread.__init__(`self`)
+//       `self`.daemon = true
+//       `self`.stop_event = threading.Event()
+//       `self`.stop_event.clear()
+//       `self`.had_stdout = false
+//       `self`.should_stop = false
+//       return Python.None
+//     },
     
-    "run": PythonInstanceMethod { (`self`: PythonObject) in
-      var hadStdout = false
-      while true {
-//         let stop_event = `self`.stop_event
-//         stop_event.wait(timeout: 0.1)
-        time.sleep(0.1)
-        if Bool(`self`.should_stop)! == true {
-//         if Bool(stop_event.is_set())! == true { 
-          break
-        }
-        getAndSendStdout(hadStdout: &hadStdout)
-      }
-      getAndSendStdout(hadStdout: &hadStdout)
-      `self`.had_stdout = hadStdout.pythonObject
-      `self`.stop_event.set()
-      return Python.None
-    }
-  ]
-).pythonObject
+//     "run": PythonInstanceMethod { (`self`: PythonObject) in
+//       var hadStdout = false
+//       while true {
+// //         let stop_event = `self`.stop_event
+// //         stop_event.wait(timeout: 0.1)
+//         time.sleep(0.1)
+//         if Bool(`self`.should_stop)! == true {
+// //         if Bool(stop_event.is_set())! == true { 
+//           break
+//         }
+//         getAndSendStdout(hadStdout: &hadStdout)
+//       }
+//       getAndSendStdout(hadStdout: &hadStdout)
+//       `self`.had_stdout = hadStdout.pythonObject
+//       `self`.stop_event.set()
+//       return Python.None
+//     }
+//   ]
+// ).pythonObject
 
 // class StdoutHandler {
 //   private var semaphore = DispatchSemaphore(value: 0)
