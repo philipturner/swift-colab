@@ -57,9 +57,9 @@ func doExecute(code: String) throws -> PythonObject? {
 
 //       semaphore.wait()
     }
-    Kernel.log("marker 3")
+    KernelContext.log("marker 3")
     result = try executeCell(code: code)
-    Kernel.log("marker 4")
+    KernelContext.log("marker 4")
   } catch _ as InterruptException {
     return nil
   } catch let error as PackageInstallException {
