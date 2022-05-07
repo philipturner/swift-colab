@@ -108,45 +108,49 @@ fileprivate func preprocess(line: String, index lineIndex: Int) throws -> String
 // package installation process?
 // TODO: Is it possible to make this accept stdin?
 // TODO: Can I make the code transferred into IOHandlers have a return code?
+
+// From https://github.com/ipython/ipython/blob/master/IPython/utils/_process_posix.py,
+//   def system(self, cmd):
 fileprivate func executeSystemCommand(restOfLine: String) throws {
   let process = pexpect.spawn("/bin/sh", args: ["-c", restOfLine])
   let flush = Python.import("sys").stdout.flush // TODO: move this import to top
   let patterns = [pexpect.TIMEOUT, pexpect.EOF]
   var outSize: Int = 0
   
-  func tryForceKill() -> Bool {
-    guard KernelContext.interruptStatus == .interrupted else {
-      return false
+//   func tryForceKill() -> Bool {
+//     guard KernelContext.interruptStatus == .interrupted else {
+//       return false
+//     }
+    
+//     process.sendline(Python.chr(3))
+//     outSize = Int(Python.len(process.before))!
+//     process.expect_list(patterns, 0.2)
+    
+//     // fuse this code with the similar code below it, but ensuring
+//     // the `interruptStatus` check happens before reading anything
+//     let str = String(process.before[outSize...].decode("utf8", "replace"))!
+    
+//     let kernel = KernelContext.kernel
+//     kernel.send_response(kernel.iopub_socket, "stream", [
+//       "name": "stdout",
+//       "text": str
+//     ])
+    
+//     flush()
+    
+//     process.terminate(force: true)
+//     return true
+//   }
+  
+  while true {
+    var waitTime: Double = 0.05
+    if KernelContext.interruptStatus == .interrupted {
+      waitTime = 0.2
+      process.sendline(Python.chr(3))
+      outSize = process.before.count
     }
     
-    process.sendline(Python.chr(3))
-    outSize = Int(Python.len(process.before))!
-    process.expect_list(patterns, 0.2)
-    
-    // fuse this code with the similar code below it, but ensuring
-    // the `interruptStatus` check happens before reading anything
-    let str = String(process.before[outSize...].decode("utf8", "replace"))!
-    
-    let kernel = KernelContext.kernel
-    kernel.send_response(kernel.iopub_socket, "stream", [
-      "name": "stdout",
-      "text": str
-    ])
-    
-    flush()
-    
-    process.terminate(force: true)
-    return true
-  }
-  
-  while true {
-    
-  }
-  
-  while true {
-    if tryForceKill() { break }
-    
-    let resIdx = process.expect_list(patterns, 0.05)
+    let resIdx = process.expect_list(patterns, waitTime)
     let str = String(process.before[outSize...].decode("utf8", "replace"))!
     
     if str.count > 0 {
@@ -155,15 +159,18 @@ fileprivate func executeSystemCommand(restOfLine: String) throws {
         "name": "stdout",
         "text": str
       ])
-
-      flush()
     }
     
-    if Int(resIdx)! == 1 {
+    flush()
+    
+    if KernelContext.interruptStatus == .interrupted {
+      process.terminate(force: true)
+      break
+    } else if Int(resIdx)! == 1 {
       break
     }
     
-    outSize = Int(Python.len(process.before))!
+    outSize = process.before.count
   }
   
   if KernelContext.interruptStatus == .interrupted {
