@@ -55,12 +55,16 @@ func doExecute(code: String) throws -> PythonObject? {
 //         doExecute_lock = true
 //       }
       
+      KernelContext.log("marker 5")
+      
       while true {
         usleep(100_000)
         if Bool(handler.did_stop)! {
           break
         }
       }
+      
+      KernelContext.log("marker 6")
 
 //       semaphore.wait()
     }
