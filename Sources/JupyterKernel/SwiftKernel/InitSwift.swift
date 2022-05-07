@@ -28,8 +28,11 @@ fileprivate var sigintHandler: PythonObject!
 
 func initSwift() throws {
   try initReplProcess()
+  KernelContext.log("finished initReplProcess")
   try initKernelCommunicator()
+  KernelContext.log("finished initKernelCommunicator")
   try initBitWidth()
+  KernelContext.log("finished initBitWidth")
   
   sigintHandler = SIGINTHandler()
   sigintHandler.start()
