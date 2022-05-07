@@ -141,7 +141,7 @@ fileprivate func executeSystemCommand(restOfLine: String) throws {
   while true {
     if tryForceKill() { break }
     
-    let resIdx = process.expect_list(patterns, 0.05)
+    let resIdx = process.expect_list(patterns, 0.2)
     let str_pre = process.before[outSize...]
     let str_pre2 = str_pre.decode("utf8", "replace")
     let str = String(str_pre2)!
