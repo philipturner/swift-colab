@@ -10,9 +10,7 @@ fileprivate var executeResult: ExecutionResult?
 func preprocessAndExecute(code: String, isCell: Bool = false) throws -> ExecutionResult {
   do {
     let preprocessed = try preprocess(code: code)
-    let returnval = execute(code: preprocessed, lineIndex: isCell ? 0 : nil)
-    KernelContext.log("d.6")
-    return returnval
+    return execute(code: preprocessed, lineIndex: isCell ? 0 : nil)
 //     var finishedExecution = false
 //     executeQueue.sync { executeResult = nil }
     
@@ -60,17 +58,12 @@ func execute(code: String, lineIndex: Int? = nil) -> ExecutionResult {
   KernelContext.log("c")
   let error = KernelContext.execute(codeWithLocationDirective, &descriptionPtr)
   KernelContext.log("d")
-  KernelContext.log("d.2")
   
   var description: String?
   if let descriptionPtr = descriptionPtr {
-    KernelContext.log("d.3")
     description = String(cString: descriptionPtr)
-    KernelContext.log("d.4")
     free(descriptionPtr)
   }
-  
-  KernelContext.log("d.5")
   
   if error == 0 {
     return SuccessWithValue(description: description!)
