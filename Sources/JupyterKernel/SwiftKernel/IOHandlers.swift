@@ -46,7 +46,7 @@ class StdoutHandler {
         getAndSendStdout(hadStdout: &hadStdout)
         let currentDate = Date()
         let elapsedTime = currentDate.timeIntervalSince(previousDate) * 1e6
-        KernelContext.log("Stdout retrieval time: \(previousDate)")
+        KernelContext.log("Stdout retrieval time: \(elapsedTime)")
         previousDate = currentDate
       }
       getAndSendStdout(hadStdout: &hadStdout)
