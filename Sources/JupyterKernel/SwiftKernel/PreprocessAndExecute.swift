@@ -133,7 +133,8 @@ fileprivate func executeSystemCommand(restOfLine: String) throws {
       "text": str
     ])
     
-    if killedVulnerableProcess {
+    if process.poll() != Python.None {
+//     if killedVulnerableProcess {
       break
     }
     
