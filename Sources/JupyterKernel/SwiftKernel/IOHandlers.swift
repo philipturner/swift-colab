@@ -115,5 +115,6 @@ fileprivate func getAndSendStdout(hadStdout: inout Bool) {
   if stdout.count > 0 {
     hadStdout = true
     sendStdout(stdout)
+    KernelContext.log("a sent response")
   }
 }
