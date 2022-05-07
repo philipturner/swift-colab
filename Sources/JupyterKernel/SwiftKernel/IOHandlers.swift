@@ -39,16 +39,17 @@ let StdoutHandler = PythonClass(
     },
     
     "run": PythonInstanceMethod { `self`: PythonObject) in
+      var hadStdout = false
       while true {
         let stop_event = `self`.stop_event
         stop_event.wait(timeout: 0.1)
-        if Bool(stop_event.is_set()! == true { 
+        if Bool(stop_event.is_set())! { 
           break
         }
         getAndSendStdout(hadStdout: &hadStdout)
       }
       getAndSendStdout(hadStdout: &hadStdout)
-      semaphore.signal()
+      `self`.had_stdout = hadStdout.pythonObject
     }
   ]
 ).pythonObject
