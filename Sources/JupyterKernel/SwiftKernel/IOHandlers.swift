@@ -14,12 +14,7 @@ let SIGINTHandler = PythonClass(
     
     "run": PythonInstanceMethod { (`self`: PythonObject) in
       while true {
-        KernelContext.log("hello world 0")
-        
         signal.sigwait([signal.SIGINT])
-        globalMessages.append("hello world 1")
-        updateProgressFile()
-        
         _ = KernelContext.async_interrupt_process()
         globalMessages.append("hello world 2.1")
         updateProgressFile()
