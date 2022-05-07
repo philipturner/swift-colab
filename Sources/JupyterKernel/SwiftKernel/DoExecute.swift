@@ -69,12 +69,12 @@ func doExecute(code: String) throws -> PythonObject? {
     result = try executeCell(code: code)
     globalMessages.append("hello world 100.2")
     updateProgressFile()
+  } catch let error as InterruptException {
+    return nil
   } catch let error as PackageInstallException {
     let traceback = [error.localizedDescription]
     sendIOPubErrorMessage(traceback)
     return makeExecuteReplyErrorMessage(traceback)
-  } catch let error as InterruptError {
-    return nil
   } catch {
     let kernel = KernelContext.kernel
     sendIOPubErrorMessage([
