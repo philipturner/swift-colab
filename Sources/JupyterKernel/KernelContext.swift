@@ -13,11 +13,11 @@ struct KernelContext {
   static var interruptStatus: InterruptStatus = .running
   
   private static var logInitialized = false
-  private static let loggingQueue = DispatchQueue(
-    label: "com.philipturner.swift-colab.KernelContext.loggingQueue")
+  private static let logQueue = DispatchQueue(
+    label: "com.philipturner.swift-colab.KernelContext.logQueue")
   
   static func log(_ message: String) {
-    loggingQueue.sync {
+    logQueue.sync {
       let fm = FileManager.default
       var logData: Data!
       if logInitialized {
