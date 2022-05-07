@@ -31,8 +31,8 @@ public func JupyterKernel_createSwiftKernel() {
   }
 }
 
-// A stored reference to the SwiftKernel type object, used as a workaround
-// for the fact that it must be initialized in Python code.
+// A stored reference to the SwiftKernel type object, used as a workaround for 
+// the fact that it must be initialized in Python code.
 fileprivate var preservedSwiftKernelRef: PythonObject!
 
 @_cdecl("JupyterKernel_constructSwiftKernelClass")
