@@ -32,7 +32,7 @@ class StdoutHandler {
   var hadStdout = false
   
   init() {
-    DispatchQueue.global().async {
+    DispatchQueue.global().async { [self] in
       while true {
         usleep(100_000)
         if shouldStop {
