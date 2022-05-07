@@ -36,16 +36,18 @@ class StdoutHandler {
   
   init() {
     DispatchQueue.global().async { [self] in
+      var previousDate = Date() // change queue QoS
       while true {
         usleep(100_000)
         if shouldStop {
           break
         }
         // TODO: time how long this operation takes
-        let start = Date()
         getAndSendStdout(hadStdout: &hadStdout)
-        let elapsedTime = Date().timeIntervalSince(start) * 1e6
-        KernelContext.log("Stdout retrieval time: \(elapsedTime)")
+        let currentDate = Date()
+        let elapsedTime = currentData.timeIntervalSince(previousDate) * 1e6
+        KernelContext.log("Stdout retrieval time: \(previousDate)")
+        previousDate = currentDate
       }
       getAndSendStdout(hadStdout: &hadStdout)
       semaphore.signal()
