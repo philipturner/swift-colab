@@ -10,7 +10,7 @@ struct KernelContext {
     case interrupted
   }
   
-  @available(swift, deprecated: 0.01, message: "Only use for debugging Swift-Colab.")
+  @available(swift, deprecated: 0.0.1, message: "Only use for debugging Swift-Colab.")
   static var interruptStatus: InterruptStatus = .running
   
   
