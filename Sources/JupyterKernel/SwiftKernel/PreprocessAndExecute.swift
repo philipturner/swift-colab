@@ -113,6 +113,7 @@ fileprivate func preprocess(line: String, index lineIndex: Int) throws -> String
 
 // TODO: Separate this functionality into IOHandlers.swift to share it with
 // package installation process?
+// TODO: Is it possible to make this accept stdin?
 fileprivate func executeSystemCommand(restOfLine: String) throws {
   KernelContext.interruptStatus = .accepting
   defer { KernelContext.interruptStatus = .notAccepting }
