@@ -7,20 +7,11 @@ internal var globalHad_stdout: Bool = false
 internal let syncQueue = DispatchQueue(label: "com.swift-colab.syncQueue")
 
 func doExecute(code: String) throws -> PythonObject? {
-  defer {
-    if KernelContext
-  }
-  
   syncQueue.sync {
     doExecute_lock = false
     globalHad_stdout = false
   }
-  
-  // Start up a new thread to collect stdout.
-//   let stdoutHandler = StdoutHandler()
-//   stdoutHandler.start()
-//   stdoutHandler.stop_event.clear()
-//   stdoutHandler.stop_event.wait(timeout: 0.1)
+  KernelContext.interruptStatus = .running
   
   let semaphore = DispatchSemaphore(value: 0)
   
