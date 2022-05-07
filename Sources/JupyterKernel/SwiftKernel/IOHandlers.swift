@@ -54,7 +54,7 @@ public func JupyterKernel_constructSwiftKernelClass(_ classObj: OpaquePointer) {
   }
 }
 
-let StdoutHandler = {
+let StdoutHandler = { () -> PythonObject in
   PyRun_SimpleString("""
   from ctypes import *; import threading;
   class StdoutHandler(threading.Thread):
