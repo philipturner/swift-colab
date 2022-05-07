@@ -126,10 +126,10 @@ fileprivate func executeSystemCommand(restOfLine: String) throws {
       return false
     }
     
-    globalMessages.append("hello world 400.0")
-    updateProgressFile()
-//     process.terminate(force: true)
-    return true
+//     globalMessages.append("hello world 400.0")
+//     updateProgressFile()
+// //     process.terminate(force: true)
+// //     return true
     
     process.sendline(Python.chr(3))
     outSize = Int(Python.len(process.before))!
@@ -138,10 +138,17 @@ fileprivate func executeSystemCommand(restOfLine: String) throws {
     let str_pre = process.before[outSize...]
     let str_pre2 = str_pre.decode("utf8", "replace")
     let str = String(str_pre2)!
+    
+    let kernel = KernelContext.kernel
+    kernel.send_response(kernel.iopub_socket, "stream", [
+      "name": "stdout",
+      "text": str
+    ])
+    
     flush()
     
-//     process.terminate(force: true)
-//     return true
+    process.terminate(force: true)
+    return true
   }
   
   while true {
@@ -153,7 +160,7 @@ fileprivate func executeSystemCommand(restOfLine: String) throws {
     let str_pre2 = str_pre.decode("utf8", "replace")
     let str = String(str_pre2)!
     
-    if tryForceKill() { break }
+//     if tryForceKill() { break }
     
     let kernel = KernelContext.kernel
     kernel.send_response(kernel.iopub_socket, "stream", [
@@ -162,10 +169,10 @@ fileprivate func executeSystemCommand(restOfLine: String) throws {
     ])
     
     flush()
-    if tryForceKill() { break }
+//     if tryForceKill() { break }
     if Int(resIdx)! == 1 {
-      globalMessages.append("hello world 400.2")
-      updateProgressFile()
+//       globalMessages.append("hello world 400.2")
+//       updateProgressFile()
       break
     }
     
@@ -203,8 +210,7 @@ fileprivate func executeSystemCommand(restOfLine: String) throws {
 //   }
   
   // TODO: is `wait` what's blocking the UI?
-//   process.wait()
-//   process.kill()
+//   process.wait() // try enabling this
   vulnerableProcess = Python.None
   
   // TODO: terminate the process here instead of in IOHandlers.swift
