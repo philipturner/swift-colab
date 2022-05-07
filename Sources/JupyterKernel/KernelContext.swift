@@ -14,7 +14,14 @@ struct KernelContext {
   
   @available(swift, deprecated: 0.0.1, message: "Only use for debugging Swift-Colab.")
   static func log(_ message: String) {
+    let fm = FileManager.default
+    let logData = fm.contents(atPath: "/opt/swift/log") ?? Data()
+    let messageData = message.data(using: .utf8)!
     
+    guard fm.createFile(
+          atPath: "/opt/swift/log", contents: logData + messageData) else {
+      fatalError("Could not write to Swift-Colab log file.")
+    }
   }
   
   static let init_repl_process: @convention(c) (
