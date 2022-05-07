@@ -8,12 +8,17 @@ func doExecute(code: String) throws -> PythonObject? {
   let handler = StdoutHandler()
   handler.start()
   
+  KernelContext.log(" ")
+  
   // Execute the cell, handle unexpected exceptions, and make sure to always 
   // clean up the stdout handler.
   var result: ExecutionResult
   do {
     defer {
       should_stop = true
+      KernelContext.log("e")
+      handler.join()
+      KernelContext.log("f")
 //       handler.stop()
       KernelContext.flushResponses()
     }
