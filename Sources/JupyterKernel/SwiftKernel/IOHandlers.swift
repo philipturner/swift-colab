@@ -26,8 +26,6 @@ let SIGINTHandler = PythonClass(
   ]
 ).pythonObject
 
-var global_should_stop = false
-
 let StdoutHandler = PythonClass(
   "StdoutHandler",
   superclasses: [threading.Thread],
