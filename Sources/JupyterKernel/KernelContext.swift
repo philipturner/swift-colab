@@ -12,6 +12,8 @@ struct KernelContext {
   
   static var interruptStatus: InterruptStatus = .running
   
+  static var syncingPythonKit = true
+  
   private static var logInitialized = false
   private static let logQueue = DispatchQueue(
     label: "com.philipturner.swift-colab.KernelContext.logQueue")
