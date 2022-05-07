@@ -3,8 +3,8 @@ fileprivate let json = Python.import("json")
 fileprivate let jsonutil = Python.import("jupyter_client").jsonutil
 
 func doExecute(code: String) throws -> PythonObject? {
-  KernelContext.interruptStatus = .running
-  global_should_stop = false
+  KernelContext.isInterrupted = false
+  KernelContext.acceptingStdout = true
   let handler = StdoutHandler()
   handler.start()
   
@@ -14,7 +14,7 @@ func doExecute(code: String) throws -> PythonObject? {
   do {
     defer {
       KernelContext.log("e")
-      global_should_stop = true
+      KernelContext.acceptingStdout = false
       KernelContext.log("f")
       handler.join()
       KernelContext.log("g")
