@@ -22,7 +22,10 @@ func execute(code: String, lineIndex: Int? = nil) -> ExecutionResult {
   }
   let codeWithLocationDirective = locationDirective + "\n" + code
   var descriptionPtr: UnsafeMutablePointer<CChar>?
+  
+  KernelContext.pythonSemaphore.signal()
   let error = KernelContext.execute(codeWithLocationDirective, &descriptionPtr)
+  KernelContext.pythonSemaphore.wait()
   
   var description: String?
   if let descriptionPtr = descriptionPtr {
