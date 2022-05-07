@@ -154,7 +154,7 @@ fileprivate func sendStdout(_ message: String, insertNewLine: Bool = true) {
   KernelContext.sendResponse("stream", [
     "name": "stdout",
     "text": "\(message)\(insertNewLine ? "\n" : "")"
-  ])
+  ], manuallySynchronize: true)
 }
 
 fileprivate var installedPackages: [String]! = nil
