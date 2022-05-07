@@ -64,7 +64,7 @@ func doExecute(code: String) throws -> PythonObject? {
     result = try executeCell(code: code)
     globalMessages.append("hello world 100.2")
     updateProgressFile()
-  } catch let error as InterruptException {
+  } catch _ as InterruptException {
     return nil
   } catch let error as PackageInstallException {
     let traceback = [error.localizedDescription]
