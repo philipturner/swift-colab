@@ -110,11 +110,12 @@ fileprivate func getAndSendStdout(hadStdout: inout Bool) {
   
   if stdout.count > 0 {
     hadStdout = true
+  }
     KernelContext.pythonQueue.sync {
       sendStdout(stdout)
     }
-  } else {
-    // Does sending this help?
-//     sendStdout(stdout)
-  }
+//   } else {
+//     // Does sending this help?
+// //     sendStdout(stdout)
+//   }
 }
