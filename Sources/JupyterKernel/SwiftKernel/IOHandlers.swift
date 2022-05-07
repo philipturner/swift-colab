@@ -28,6 +28,22 @@ let SIGINTHandler = PythonClass(
 
 // A stored reference to the StdoutHandler type object, used as a workaround for 
 // the fact that it must be initialized in Python code.
+fileprivate var preservedStdoutHandlerRef: PythonObject!
+
+@_cdecl("JupyterKernel_constructStdoutHandlerClass")
+public func JupyterKernel_constructSwiftKernelClass(_ classObj: OpaquePointer) {
+
+let StdoutHandler = {
+  PyRun_SimpleString("""
+  from ctypes import *; from ipykernel.kernelbase import Kernel
+  class StdoutHandler(threading.Thread):
+      def __init__(self, **kwargs):
+          super().__init__(**kwargs)
+   
+  func = PyDLL("/opt/swift/lib/libJupyterKernel.so").JupyterKernel_constructStdoutHandlerClass
+  func.argtypes = [c_void_p]; func(c_void_p(id(StdoutHandler)))
+  """)
+}()
 
 let StdoutHandler = PythonClass(
   "StdoutHandler",
