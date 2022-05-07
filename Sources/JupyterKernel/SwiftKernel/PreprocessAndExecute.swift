@@ -25,9 +25,8 @@ func execute(code: String, lineIndex: Int? = nil) -> ExecutionResult {
   let codeWithLocationDirective = locationDirective + "\n" + code
   var descriptionPtr: UnsafeMutablePointer<CChar>?
   
-//   KernelContext.pythonSemaphore.signal()
   let error = KernelContext.execute(codeWithLocationDirective, &descriptionPtr)
-//   KernelContext.pythonSemaphore.wait()
+  KernelContext.flushResponses()
   
   var description: String?
   if let descriptionPtr = descriptionPtr {
@@ -80,8 +79,8 @@ fileprivate func preprocess(line: String, index lineIndex: Int) throws -> String
     if isValidDirective {
       return ""
     } else {
-      // This was not a valid %install-XXX command. Continue through
-      // regular processing and let the Swift parser throw an error.
+      // This was not a valid %install-XXX command. Continue through regular 
+      // processing and let the Swift parser throw an error.
     }
   }
   
@@ -134,7 +133,7 @@ fileprivate func executeSystemCommand(restOfLine: String) throws {
       KernelContext.sendResponse("stream", [
         "name": "stdout",
         "text": str
-      ], manuallySynchronize: true)
+      ])
     }
     
     flush()
