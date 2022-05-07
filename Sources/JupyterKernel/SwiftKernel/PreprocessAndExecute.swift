@@ -113,16 +113,13 @@ fileprivate func preprocess(line: String, index lineIndex: Int) throws -> String
 // package installation process?
 // TODO: Is it possible to make this accept stdin?
 fileprivate func executeSystemCommand(restOfLine: String) throws {
-  KernelContext.interruptStatus = .accepting
-  defer { KernelContext.interruptStatus = .notAccepting }
-  
   let process = pexpect.spawn("/bin/sh", args: ["-c", restOfLine])
   let flush = Python.import("sys").stdout.flush // TODO: move this import to top
   let patterns = [pexpect.TIMEOUT, pexpect.EOF]
   var outSize: Int = 0
   
   func tryForceKill() -> Bool {
-    guard KernelContext.interruptStatus == .activated else {
+    guard KernelContext.interruptStatus == .interrupted else {
       return false
     }
     
@@ -181,46 +178,10 @@ fileprivate func executeSystemCommand(restOfLine: String) throws {
     outSize = Int(Python.len(process.before))!
   }
   
-//   let process = subprocess.Popen(
-//     restOfLine,
-//     stdout: subprocess.PIPE,
-//     stderr: subprocess.STDOUT,
-//     shell: true,
-//     universal_newlines: true)
-//   vulnerableProcess = process
-  
-  // TODO: Instead of replacing the last line in a progress bar with its
-  // successor, it just prints all of them. To work around this, try assigning
-  // stdout to a file and reading/replacing the entire stdout history. Does
-  // Jupyter have a message format suited for replaceable stdout?
-  
-//   for outputLine in Python.iter(process.stdout.readline, PythonBytes(Data())) {
-//     let str = String(outputLine)!
-    
-//     let kernel = KernelContext.kernel
-//     kernel.send_response(kernel.iopub_socket, "stream", [
-//       "name": "stdout",
-//       "text": str
-//     ])
-    
-//     if process.poll() != Python.None {
-//       break
-//     }
-    
-//     // What if the command requires user input? Does a Python notebook's shell
-//     // support sending input?
-//   }
-  
-  // TODO: is `wait` what's blocking the UI?
-//   process.wait() // try enabling this
-  
-  // TODO: terminate the process here instead of in IOHandlers.swift
-  
   globalMessages.append("hello world 400.1")
   updateProgressFile()
   
-  if KernelContext.interruptStatus == .activated {
-    // TODO: Stop this error from being put into stdout
+  if KernelContext.interruptStatus == .interrupted {
     throw InterruptException(
       "User interrupted execution during a `%system` command.")
   }
