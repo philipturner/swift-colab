@@ -40,6 +40,12 @@ struct KernelContext {
     label: "com.philipturner.swift-colab.KernelContext.pythonQueue")
   static let pythonSemaphore = DispatchSemaphore(value: 1)
   
+  static func sendResponse(type: String, _ response: PythonConvertible) {
+    pythonQueue.sync {
+      kernel.send_response(kernel.iopub_socket, type, response)
+    }
+  }
+  
   static let init_repl_process: @convention(c) (
     OpaquePointer, UnsafePointer<CChar>) -> Int32 = 
     LLDBProcessLibrary.loadSymbol(name: "init_repl_process")
