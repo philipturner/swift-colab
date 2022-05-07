@@ -35,6 +35,11 @@ struct KernelContext {
     }
   }
   
+  // For ensuring accesses to Python APIs are thread-safe.
+  static var pythonQueue = DispatchQueue(
+    label: "com.philipturner.swift-colab.KernelContext.pythonQueue")
+  static var pythonSemaphore = DispatchSemaphore(value: 1)
+  
   static let init_repl_process: @convention(c) (
     OpaquePointer, UnsafePointer<CChar>) -> Int32 = 
     LLDBProcessLibrary.loadSymbol(name: "init_repl_process")
