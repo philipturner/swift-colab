@@ -48,9 +48,9 @@ func doExecute(code: String) throws -> PythonObject? {
   var result: ExecutionResult
   do {
     defer {
-//       handler.should_stop = true
-      handler.stop_event.set()
-      handler.join()
+      handler.should_stop = true
+      handler.stop_event.wait()
+//       handler.join()
 //       syncQueue.sync {
 //         doExecute_lock = true
 //       }
