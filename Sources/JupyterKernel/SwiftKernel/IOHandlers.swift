@@ -57,7 +57,7 @@ class StdoutHandler {
           deadline = deadline.advanced(by: 0.1)
         }
         
-        KernelContext.log(deadline.timeIntervalSince(previousDeadline) * 1e6)
+        KernelContext.log("\(deadline.timeIntervalSince(previousDeadline) * 1e6)")
       }
       getAndSendStdout(hadStdout: &hadStdout)
       semaphore.signal()
