@@ -40,12 +40,8 @@ let SIGINTHandler = PythonClass(
         globalMessages.append("hello world 2.1")
         updateProgressFile()
         
-        if KernelContext.interruptStatus == .accepting {
-          KernelContext.interruptStatus = .activated
-          globalMessages.append("hello world 2.2")
-        } else {
-          globalMessages.append("hello world 2.3")
-        }
+        KernelContext.interruptStatus = .interrupted
+        globalMessages.append("hello world 2.2")
         updateProgressFile()
       }
       // Do not need to return anything because this is an infinite loop
