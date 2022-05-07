@@ -29,7 +29,25 @@ let StdoutHandler = PythonClass(
   "StdoutHandler",
   superclasses: [threading.Thread],
   members: [
+    "__init__": PythonInstanceMethod { (`self`: PythonObject) in
+      threading.Thread.__init__(`self`)
+      `self`.daemon = true
+      `self`.stop_event = threading.Event()
+      `self`.had_stdout = false
+      return Python.None
+    },
     
+    "run": PythonInstanceMethod { `self`: PythonObject) in
+            while true {
+        usleep(200_000)
+        if shouldStop {
+          break
+        }
+        getAndSendStdout(hadStdout: &hadStdout)
+      }
+      getAndSendStdout(hadStdout: &hadStdout)
+      semaphore.signal()
+    }
   ]
 ).pythonObject
 
