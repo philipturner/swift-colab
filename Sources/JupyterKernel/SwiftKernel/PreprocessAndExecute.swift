@@ -21,15 +21,8 @@ func execute(code: String, lineIndex: Int? = nil) -> ExecutionResult {
     """
   }
   let codeWithLocationDirective = locationDirective + "\n" + code
-  
-  globalMessages.append("hello world 300.0")
-  updateProgressFile()
-  
   var descriptionPtr: UnsafeMutablePointer<CChar>?
   let error = KernelContext.execute(codeWithLocationDirective, &descriptionPtr)
-  
-  globalMessages.append("hello world 300.1")
-  updateProgressFile()
   
   var description: String?
   if let descriptionPtr = descriptionPtr {
@@ -111,6 +104,7 @@ fileprivate func preprocess(line: String, index lineIndex: Int) throws -> String
 // TODO: Separate this functionality into IOHandlers.swift to share it with
 // package installation process?
 // TODO: Is it possible to make this accept stdin?
+// TODO: Can I make the code transferred into IOHandlers have a return code?
 fileprivate func executeSystemCommand(restOfLine: String) throws {
   let process = pexpect.spawn("/bin/sh", args: ["-c", restOfLine])
   let flush = Python.import("sys").stdout.flush // TODO: move this import to top
@@ -121,11 +115,6 @@ fileprivate func executeSystemCommand(restOfLine: String) throws {
     guard KernelContext.interruptStatus == .interrupted else {
       return false
     }
-    
-//     globalMessages.append("hello world 400.0")
-//     updateProgressFile()
-// //     process.terminate(force: true)
-// //     return true
     
     process.sendline(Python.chr(3))
     outSize = Int(Python.len(process.before))!
@@ -150,15 +139,12 @@ fileprivate func executeSystemCommand(restOfLine: String) throws {
   }
   
   while true {
-    if tryForceKill() { break } // TODO: should this happen before or after
-//     the other call to `expect_list`?
+    if tryForceKill() { break }
     
     let resIdx = process.expect_list(patterns, 0.05)
     let str_pre = process.before[outSize...]
     let str_pre2 = str_pre.decode("utf8", "replace")
     let str = String(str_pre2)!
-    
-//     if tryForceKill() { break }
     
     let kernel = KernelContext.kernel
     kernel.send_response(kernel.iopub_socket, "stream", [
@@ -167,10 +153,7 @@ fileprivate func executeSystemCommand(restOfLine: String) throws {
     ])
     
     flush()
-//     if tryForceKill() { break }
     if Int(resIdx)! == 1 {
-//       globalMessages.append("hello world 400.2")
-//       updateProgressFile()
       break
     }
     
