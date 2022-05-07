@@ -65,6 +65,8 @@ func execute(code: String, lineIndex: Int? = nil) -> ExecutionResult {
     free(descriptionPtr)
   }
   
+  KernelContext.log("e")
+  
   if error == 0 {
     return SuccessWithValue(description: description!)
   } else if error == 1 {
