@@ -18,7 +18,7 @@ let SIGINTHandler = PythonClass(
     "run": PythonInstanceMethod { (`self`: PythonObject) in
       while true {
         signal.sigwait([signal.SIGINT])
-        KernelContext.interruptStatus = .interrupted
+        KernelContext.isInterrupted = true
         _ = KernelContext.async_interrupt_process()
       }
       // Do not need to return anything because this is an infinite loop
@@ -48,7 +48,7 @@ let StdoutHandler = PythonClass(
         time.sleep(0.1)
         KernelContext.log("b")
         KernelContext.log("b.2")
-        if global_should_stop {
+        if !KernelContext.acceptingStdout {
           break
         }
         getAndSendStdout(hadStdout: &localHadStdout)
