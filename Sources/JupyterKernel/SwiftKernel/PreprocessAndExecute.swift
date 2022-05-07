@@ -139,7 +139,9 @@ fileprivate func executeSystemCommand(restOfLine: String) throws {
     // support sending input?
   }
   
-  process.wait()
+  if process.poll() == Python.None {
+    process.wait()
+  }
   
   vulnerableProcess = Python.None
   if killedVulnerableProcess {
