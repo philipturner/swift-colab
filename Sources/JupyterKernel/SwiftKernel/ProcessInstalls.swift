@@ -151,8 +151,7 @@ fileprivate func substituteCwd(
 // %install
 
 fileprivate func sendStdout(_ message: String, insertNewLine: Bool = true) {
-  let kernel = KernelContext.kernel
-  kernel.send_response(kernel.iopub_socket, "stream", [
+  KernelContext.sendResponse("stream", [
     "name": "stdout",
     "text": "\(message)\(insertNewLine ? "\n" : "")"
   ])
