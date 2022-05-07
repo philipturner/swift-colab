@@ -32,7 +32,6 @@ let StdoutHandler = PythonClass(
     "__init__": PythonInstanceMethod { (`self`: PythonObject) in
       threading.Thread.__init__(`self`)
       `self`.daemon = true
-      `self`.stop_event = threading.Event()
       `self`.had_stdout = false
       return Python.None
     },
@@ -40,7 +39,7 @@ let StdoutHandler = PythonClass(
     "run": PythonInstanceMethod { (`self`: PythonObject) in
       var localHadStdout = false
       while true {
-        `self`.stop_event.wait(0.1)
+        usleep(100_000)
         if Bool(`self`.should_stop)! {
           break
         }
