@@ -116,8 +116,7 @@ fileprivate func executeSystemCommand(restOfLine: String) throws {
     stdout: subprocess.PIPE,
     stderr: subprocess.STDOUT,
     shell: true,
-    bufsize: 1,
-    universal_newlines: true)
+    bufsize: 1)
   vulnerableProcess = process
   
   for outputLine in Python.iter(process.stdout.readline, PythonBytes(Data())) {
