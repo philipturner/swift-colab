@@ -43,7 +43,7 @@ let StdoutHandler = PythonClass(
       var localHadStdout = false
       while true {
 //         Python.import("time").sleep(0.05)
-        if Bool(`self`.stop_event.wait(0.1))! {
+        if Bool(`self`.stop_event.wait(0.1)) != Python.None {
           break
         }
         getAndSendStdout(hadStdout: &localHadStdout)
