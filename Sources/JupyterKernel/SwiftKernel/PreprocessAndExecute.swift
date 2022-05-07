@@ -14,14 +14,25 @@ func preprocessAndExecute(code: String, isCell: Bool = false) throws -> Executio
     
     DispatchQueue.global(qos: .background).async {
       result = execute(code: preprocessed, lineIndex: isCell ? 0 : nil)
-      finishedExecution = true
       executeQueue.sync { executeResult = result }
+      finishedExecution = true
     }
     
+    // Offset this run loop from the other thread, hopefully almost immediately
+    // after.
+    // TODO: Auto-adjust the loop timing to make them extremely in-sync.
     usleep(25_000)
+    
+    let interval: Double = 0.1
+    var deadline = Date().advanced(by: interval)
     while !finishedExecution {
-      usleep(100_000)
-      KernelContext.
+      Thread.sleep(until: deadline)
+      KernelContext.flushResponses()
+      
+      deadline = deadline.advanced(by: interval)
+      while deadline < Date() {
+        deadline = deadline.advanced(by: interval)
+      }
     }
     
     return executeQueue.sync { executeResult! }
