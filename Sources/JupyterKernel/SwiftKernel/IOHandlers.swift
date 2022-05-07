@@ -45,7 +45,7 @@ class StdoutHandler {
         // TODO: time how long this operation takes
         getAndSendStdout(hadStdout: &hadStdout)
         let currentDate = Date()
-        let elapsedTime = currentData.timeIntervalSince(previousDate) * 1e6
+        let elapsedTime = currentDate.timeIntervalSince(previousDate) * 1e6
         KernelContext.log("Stdout retrieval time: \(previousDate)")
         previousDate = currentDate
       }
