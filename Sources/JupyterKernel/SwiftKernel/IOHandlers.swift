@@ -33,6 +33,7 @@ let StdoutHandler = PythonClass(
       threading.Thread.__init__(`self`)
       `self`.daemon = true
       `self`.had_stdout = false
+      `self`.should_stop = false
       return Python.None
     },
     
