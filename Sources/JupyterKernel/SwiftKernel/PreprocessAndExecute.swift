@@ -125,9 +125,7 @@ fileprivate func executeSystemCommand(restOfLine: String) throws {
     
     // fuse this code with the similar code below it, but ensuring
     // the `interruptStatus` check happens before reading anything
-    let str_pre = process.before[outSize...]
-    let str_pre2 = str_pre.decode("utf8", "replace")
-    let str = String(str_pre2)!
+    let str = String(process.before[outSize...].decode("utf8", "replace"))!
     
     let kernel = KernelContext.kernel
     kernel.send_response(kernel.iopub_socket, "stream", [
@@ -145,9 +143,7 @@ fileprivate func executeSystemCommand(restOfLine: String) throws {
     if tryForceKill() { break }
     
     let resIdx = process.expect_list(patterns, 0.2)
-    let str_pre = process.before[outSize...]
-    let str_pre2 = str_pre.decode("utf8", "replace")
-    let str = String(str_pre2)!
+    let str = String(process.before[outSize...].decode("utf8", "replace"))!
     
     if str.count > 0 {
       let kernel = KernelContext.kernel
