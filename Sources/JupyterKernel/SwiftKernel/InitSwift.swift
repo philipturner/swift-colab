@@ -53,7 +53,6 @@ fileprivate func initKernelCommunicator() throws {
   var result = try preprocessAndExecute(code: """
   %include "KernelCommunicator.swift"
   """)
-  KernelContext.log("checkpoint 1 of initKernelCommunicator")
   if result is ExecutionResultError {
     throw Exception("Error initializing KernelCommunicator: \(result)")
   }
