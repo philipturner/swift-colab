@@ -57,7 +57,7 @@ func doExecute(code: String) throws -> PythonObject? {
       
       while true {
         usleep(100_000)
-        if handler.did_stop = true {
+        if Bool(handler.did_stop)! {
           break
         }
       }
