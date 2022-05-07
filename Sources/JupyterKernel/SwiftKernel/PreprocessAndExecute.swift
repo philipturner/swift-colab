@@ -13,7 +13,7 @@ func preprocessAndExecute(code: String, isCell: Bool = false) throws -> Executio
     executeQueue.sync { executeResult = nil }
     
     DispatchQueue.global(qos: .background).async {
-      result = execute(code: preprocessed, lineIndex: isCell ? 0 : nil)
+      let result = execute(code: preprocessed, lineIndex: isCell ? 0 : nil)
       executeQueue.sync { executeResult = result }
       finishedExecution = true
     }
