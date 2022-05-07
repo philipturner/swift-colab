@@ -34,6 +34,10 @@ struct KernelContext {
       }
     }
   }
+////////////////////////////////////////////////////////////////////////////////
+  // Allows sending responses from other threads, preventing multithreaded
+  // access to Python that violates the GIL and (maybe) makes the UI
+  // unresponsive.
   
   static func sendResponse(_ header: String, _ response: PythonConvertible) {
     kernel.send_response(kernel.iopub_socket, header, response)
