@@ -14,6 +14,7 @@ func doExecute(code: String) throws -> PythonObject? {
   KernelContext.interruptStatus = .running
   
   let handler = StdoutHandler()
+  handler.start()
   
 //   // TODO: Clean this up, put it in IOHandlers.swift.
 //   // Same with `syncQueue`.
@@ -47,7 +48,9 @@ func doExecute(code: String) throws -> PythonObject? {
   var result: ExecutionResult
   do {
     defer {
-      handler.stop()
+      handler.should_stop = true
+      handler.stop_event.set()
+      handler.join()
 //       syncQueue.sync {
 //         doExecute_lock = true
 //       }
