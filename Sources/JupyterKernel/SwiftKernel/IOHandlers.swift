@@ -31,7 +31,7 @@ let SIGINTHandler = PythonClass(
 fileprivate var preservedStdoutHandlerRef: PythonObject!
 
 @_cdecl("JupyterKernel_constructStdoutHandlerClass")
-public func JupyterKernel_constructSwiftKernelClass(_ classObj: OpaquePointer) {
+public func JupyterKernel_constructStdoutHandlerClass(_ classObj: OpaquePointer) {
   let StdoutHandler = PythonObject(OwnedPyObjectPointer(classObj))
   preservedStdoutHandlerRef = StdoutHandler
   
