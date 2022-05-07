@@ -14,7 +14,7 @@ func doExecute(code: String) throws -> PythonObject? {
   KernelContext.interruptStatus = .running
   
   let handler = StdoutHandler()
-  handler.start()
+//   handler.start()
   
 //   // TODO: Clean this up, put it in IOHandlers.swift.
 //   // Same with `syncQueue`.
@@ -49,24 +49,26 @@ func doExecute(code: String) throws -> PythonObject? {
   let time = Python.import("time")
   do {
     defer {
-      handler.should_stop = true
-//       handler.stop_event.set()
-//       handler.join()
-//       syncQueue.sync {
-//         doExecute_lock = true
+      handler.stop()
+      KernelContext.log("marker 5")
+//       handler.should_stop = true
+// //       handler.stop_event.set()
+// //       handler.join()
+// //       syncQueue.sync {
+// //         doExecute_lock = true
+// //       }
+      
+//       KernelContext.log("marker 5")
+      
+//       while true {
+//         time.sleep(0.1)
+// //         usleep(100_000)
+//         if Bool(handler.did_stop)! {
+//           break
+//         }
 //       }
       
-      KernelContext.log("marker 5")
-      
-      while true {
-        time.sleep(0.1)
-//         usleep(100_000)
-        if Bool(handler.did_stop)! {
-          break
-        }
-      }
-      
-      KernelContext.log("marker 6")
+//       KernelContext.log("marker 6")
 
 //       semaphore.wait()
     }
