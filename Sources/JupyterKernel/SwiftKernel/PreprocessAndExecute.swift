@@ -115,6 +115,8 @@ fileprivate func preprocess(line: String, index lineIndex: Int) throws -> String
 // package installation process?
 fileprivate func executeSystemCommand(restOfLine: String) throws {
   let process = pexpect.spawn("/bin/sh", args: ["-c", restOfLine])
+  vulnerableProcess = process
+  
   let flush = Python.import("sys").stdout.flush // TODO: move this import to top
   let patterns = [pexpect.TIMEOUT, pexpect.EOF]
   var outSize: Int = 0
