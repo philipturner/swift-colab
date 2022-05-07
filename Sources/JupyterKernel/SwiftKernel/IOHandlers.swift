@@ -36,9 +36,7 @@ class StdoutHandler {
   
   init() {
     DispatchQueue.global(qos: .userInteractive).async { [self] in
-      KernelContext.pythonSemaphore.wait()
       let time = Python.import("time")
-      KernelContext.pythonSemaphore.signal()
       while true {
 //         usleep(100_000)
         KernelContext.pythonSemaphore.wait()
