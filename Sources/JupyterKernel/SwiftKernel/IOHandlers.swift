@@ -26,10 +26,21 @@ let SIGINTHandler = PythonClass(
 class StdoutHandler {
   private var semaphore = DispatchSemaphore(value: 0)
   private var shouldStop = false
+  
+  // This is not thread-safe, but the way other code accesses it should not 
+  // cause any data races.
   var hadStdout = false
   
   init() {
     DispatchQueue.global().async {
+      while true {
+        usleep(100_000)
+        if shouldStop {
+          break
+        }
+        getAnd
+      }
+      
       
     }
   }
