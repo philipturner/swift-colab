@@ -131,8 +131,7 @@ fileprivate func makeExecuteReplyErrorMessage(_ message: [String]) -> PythonObje
 }
 
 fileprivate func sendIOPubErrorMessage(_ message: [String]) {
-  let kernel = KernelContext.kernel
-  kernel.send_response(kernel.iopub_socket, "error", [
+  KernelContext.sendResponse("error", [
     "ename": "",
     "evalue": "",
     "traceback": message.pythonObject
