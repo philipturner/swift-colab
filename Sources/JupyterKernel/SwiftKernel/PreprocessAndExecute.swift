@@ -160,9 +160,6 @@ fileprivate func executeSystemCommand(restOfLine: String) throws {
     outSize = Int(Python.len(process.before))!
   }
   
-  globalMessages.append("hello world 400.1")
-  updateProgressFile()
-  
   if KernelContext.interruptStatus == .interrupted {
     throw InterruptException(
       "User interrupted execution during a `%system` command.")
