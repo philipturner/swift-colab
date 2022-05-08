@@ -47,7 +47,7 @@ let StdoutHandler = PythonClass(
       "name": "stdout",
       "text": ""
     ])
-//         KernelContext.log("a")
+        KernelContext.log("a")
 //         KernelContext.log("a.2")
 //         time.sleep(0.1)
 //         KernelContext.log("b")
@@ -58,6 +58,7 @@ let StdoutHandler = PythonClass(
         if stop_event.wait(0.1) != Python.None {
           break
         }
+        KernelContext.log("b")
         getAndSendStdout(hadStdout: &localHadStdout)
         `self`.had_stdout = localHadStdout.pythonObject
       }
