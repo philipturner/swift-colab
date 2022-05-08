@@ -47,16 +47,20 @@ func doExecute(code: String) throws -> PythonObject? {
   } else if result is SuccessWithoutValue {
     return nil
   } else if result is ExecutionResultError {
+    var traceback: [String] = []
     var isAlive: Int32 = 0
     _ = KernelContext.process_is_alive(&isAlive)
     
     if isAlive == 0 {
-      sendIOPubErrorMessage(["Process killed"])
+      traceback = ["Process killed"]
+      sendIOPubErrorMessage(traceback)
       
       // Exit the kernel because there is no way to recover from a killed 
       // process. The UI will tell the user that the kernel has died and the UI 
       // will automatically restart the kernel. We do the exit in a callback so 
       // that this execute request can cleanly finish before the kernel exits.
+      
+      // Does this actually do anything?
       let loop = Python.import("ioloop").IOLoop.current()
       loop.add_timeout(Python.import("time").time() + 0.1, loop.stop)
     } else if result is SwiftError {
@@ -64,11 +68,13 @@ func doExecute(code: String) throws -> PythonObject? {
       // already sent to the client, contains the error message (plus some other 
       // ugly traceback that we should eventually figure out how to suppress), 
       // so this block of code only needs to add a traceback.
-      sendIOPubErrorMessage(try prettyPrintStackTrace())      
+      traceback = try prettyPrintStackTrace()
+      sendIOPubErrorMessage(traceback)      
     } else if result is PreprocessorError {
       // There is no stdout, so it must be a compile error. Simply return the 
       // error without trying to get a stack trace.
-      sendIOPubErrorMessage([result.description])
+      traceback = [result.description]
+      sendIOPubErrorMessage(traceback)
     } else {
       fatalError("This should never happen.")
     }
