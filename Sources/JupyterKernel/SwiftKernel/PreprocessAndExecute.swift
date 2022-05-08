@@ -16,9 +16,12 @@ func preprocessAndExecute(code: String, isCell: Bool = false) throws -> Executio
     
 //     KernelContext.log("e.-5")
     
-    DispatchQueue.global(qos: .background).sync {
-      let result = execute(code: preprocessed, lineIndex: isCell ? 0 : nil)
-      executeQueue.sync { executeResult = result }
+    DispatchQueue.global(qos: .background).async {
+      KernelContext.lldbQueue.sync {
+        let result = execute(code: preprocessed, lineIndex: isCell ? 0 : nil)
+        // TODO: use the lldbQueue instead of executeQueue and erase executeQueue
+        executeQueue.sync { executeResult = result }
+      }
 //       KernelContext.log("e.-4")
 //       semaphore.signal()
 //       KernelContext.log("e.-3")
