@@ -65,8 +65,10 @@ let StdoutHandler = PythonClass(
         getAndSendStdout(hadStdout: &localHadStdout)
         `self`.had_stdout = localHadStdout.pythonObject
       }
+      KernelContext.log("b.3")
       getAndSendStdout(hadStdout: &localHadStdout)
       `self`.had_stdout = localHadStdout.pythonObject
+      KernelContext.log("b.4")
       return Python.None
     }
   ]
