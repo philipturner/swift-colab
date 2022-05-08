@@ -110,14 +110,8 @@ int execute(const char *code, char **description) {
     return 0;
   } else if (errorType == eErrorTypeGeneric) {
     return 1;
-  } else if (errorType == eErrorTypeExpression) {
-    if (result.IsValid()) {
-      return 3;
-    } else {
-      return 2;
-    }
   } else {
-    return 3;
+    return 2;
   }
 }
 
