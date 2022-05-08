@@ -93,7 +93,7 @@ func execute(
 // This does not include the newline that should come after the directive.
 fileprivate func getLocationDirective(
   lineIndex: Int, 
-  executionCount: Int = = Int(KernelContext.kernel.execution_count)!
+  executionCount: Int = Int(KernelContext.kernel.execution_count)!
 ) -> String {
   return """
     #sourceLocation(file: "<Cell \(executionCount)>", line: \(lineIndex + 1))
