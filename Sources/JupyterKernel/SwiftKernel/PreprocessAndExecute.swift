@@ -27,7 +27,7 @@ func preprocessAndExecute(
       // GIL.
       time.sleep(0.05)
     }
-    return executionResult!//KernelContext.lldbQueue.sync { executeResult! }
+    return executionResult!
   } catch let e as PreprocessorException {
     return PreprocessorError(exception: e)
   }
