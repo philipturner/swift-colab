@@ -18,7 +18,7 @@ func preprocessAndExecute(
     
     DispatchQueue.global().async {
       executionResult = execute(
-        code: preprocessed, lineIndex: isCell ? 0 : nil, 
+        code: preprocessed, lineIndex: isCell ? 0 : nil, isCell: isCell,
         executionCount: executionCount)
     }
     
@@ -33,8 +33,8 @@ func preprocessAndExecute(
   }
 }
 
-fileprivate func execute(
-  code: String, lineIndex: Int? = nil, 
+func execute(
+  code: String, lineIndex: Int? = nil, isCell: Bool = false
   executionCount: Int = Int(KernelContext.kernel.execution_count)!
 ) -> ExecutionResult {
   var locationDirective: String
