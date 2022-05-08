@@ -49,9 +49,7 @@ func doExecute(code: String) throws -> PythonObject? {
   } else if result is ExecutionResultError {
     var traceback: [String]
     var isAlive: Int32 = 0
-    KernelContext.lldbQueue.sync {
-      _ = KernelContext.process_is_alive(&isAlive)
-    }
+    _ = KernelContext.process_is_alive(&isAlive)
     
     if isAlive == 0 {
       traceback = ["Process killed"]
