@@ -110,8 +110,10 @@ int execute(const char *code, char **description) {
     return 0;
   } else if (errorType == eErrorTypeGeneric) {
     return 1;
-  } else {
+  } else if (errorType == eErrorTypeExpression) {
     return 2;
+  } else {
+    return 3:
   }
 }
 
