@@ -28,8 +28,9 @@ fileprivate var sigintHandler: PythonObject!
 
 func initSwift() throws {
   try initReplProcess()
+  KernelContext.log("finished initReplProcess")
   try initKernelCommunicator()
-  try initBitWidth()
+  KernelContext.log("finished initKernelCommunicator")
   
   sigintHandler = SIGINTHandler()
   sigintHandler.start()
@@ -40,7 +41,7 @@ fileprivate func initReplProcess() throws {
     let environment = ProcessInfo.processInfo.environment
     let cEnvironment = CEnvironment(environment: environment)
     
-    let error = KernelContext._1_init_repl_process(
+    let error = KernelContext.init_repl_process(
       cEnvironment.envp, FileManager.default.currentDirectoryPath)
     if error != 0 {
       throw Exception("Got error code \(error) from 'init_repl_process'")
