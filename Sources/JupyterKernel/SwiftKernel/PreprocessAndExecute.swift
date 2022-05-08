@@ -14,6 +14,8 @@ func preprocessAndExecute(code: String, isCell: Bool = false) throws -> Executio
 //     var finishedExecution = false
     executeQueue.sync { executeResult = nil }
     
+    usleep(200_000)
+    
     DispatchQueue.global(qos: .background).async {
       let result = execute(code: preprocessed, lineIndex: isCell ? 0 : nil)
       executeQueue.sync { executeResult = result }
@@ -26,7 +28,7 @@ func preprocessAndExecute(code: String, isCell: Bool = false) throws -> Executio
 //     KernelContext.log("e.-2")
     
     // Not pausing the thread beforehand causes Swift-Colab to crash on startup.
-    time.sleep(0.25)
+    time.sleep(0.05)
 //     KernelContext.log("e.-1")
     semaphore.wait()
 //     KernelContext.log("e.-0")
