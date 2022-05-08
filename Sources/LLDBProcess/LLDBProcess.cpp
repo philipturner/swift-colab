@@ -113,7 +113,7 @@ int execute(const char *code, char **description) {
   } else if (errorType == eErrorTypeExpression) {
     return 2;
   } else {
-    return 3:
+    return 3;
   }
 }
 
