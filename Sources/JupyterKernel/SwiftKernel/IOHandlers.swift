@@ -26,6 +26,8 @@ let SIGINTHandler = PythonClass(
   ]
 ).pythonObject
 
+var stop_event: PythonObject = Python.None
+
 let StdoutHandler = PythonClass(
   "StdoutHandler",
   superclasses: [threading.Thread],
@@ -47,10 +49,13 @@ let StdoutHandler = PythonClass(
 //     ])
 //         KernelContext.log("a")
 //         KernelContext.log("a.2")
-        time.sleep(0.1)
+//         time.sleep(0.1)
 //         KernelContext.log("b")
 //         KernelContext.log("b.2")
-        if !KernelContext.pollingStdout {
+//         if !KernelContext.pollingStdout {
+//           break
+//         }
+        if stop_event.wait(0.1) != Python.None {
           break
         }
         getAndSendStdout(hadStdout: &localHadStdout)
