@@ -45,11 +45,11 @@ let StdoutHandler = PythonClass(
       "name": "stdout",
       "text": ""
     ])
-        KernelContext.log("a")
-        KernelContext.log("a.2")
+//         KernelContext.log("a")
+//         KernelContext.log("a.2")
         time.sleep(0.1)
-        KernelContext.log("b")
-        KernelContext.log("b.2")
+//         KernelContext.log("b")
+//         KernelContext.log("b.2")
         if !KernelContext.pollingStdout {
           break
         }
