@@ -22,7 +22,7 @@ let SIGINTHandler = PythonClass(
         KernelContext.isInterrupted = true
         
       }
-      // Do not need to return anything because this is an infinite loop
+      // Do not need to return anything because this is an infinite loop.
     }
   ]
 ).pythonObject
