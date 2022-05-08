@@ -56,7 +56,7 @@ func execute(code: String, lineIndex: Int? = nil) -> ExecutionResult {
   }
 //   KernelContext.log("c.6 \(iteration)")
   let codeWithLocationDirective = locationDirective + "\n" + code
-//   KernelContext.log("c.7 \(iteration)")
+  KernelContext.log("c.7 \(iteration)")
   var descriptionPtr: UnsafeMutablePointer<CChar>?
   KernelContext.log("c \(iteration)")
   let error = KernelContext.execute(codeWithLocationDirective, &descriptionPtr)
