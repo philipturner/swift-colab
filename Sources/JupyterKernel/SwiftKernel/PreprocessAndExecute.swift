@@ -33,7 +33,7 @@ func preprocessAndExecute(
   }
 }
 
-func execute(
+fileprivate func execute(
   code: String, lineIndex: Int? = nil, 
   executionCount: Int = Int(KernelContext.kernel.execution_count)!
 ) -> ExecutionResult {
