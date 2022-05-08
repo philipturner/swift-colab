@@ -87,10 +87,9 @@ fileprivate func sendStdout(_ stdout: String) {
   }
 }
 
-fileprivate func getAndSendStdout(hadStdout: inout Bool) {
+fileprivate func getAndSendStdout() {
   let stdout = getStdout()
   if stdout.count > 0 {
-    hadStdout = true
     sendStdout(stdout)
   }
 }
