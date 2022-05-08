@@ -41,22 +41,22 @@ func preprocessAndExecute(code: String, isCell: Bool = false) throws -> Executio
 }
 
 func execute(code: String, lineIndex: Int? = nil) -> ExecutionResult {
-  KernelContext.log("c.1 \(iteration)")
+//   KernelContext.log("c.1 \(iteration)")
   var locationDirective: String
   if let lineIndex = lineIndex {
-    KernelContext.log("c.2 \(iteration)")
+//     KernelContext.log("c.2 \(iteration)")
     locationDirective = getLocationDirective(lineIndex: lineIndex)
-    KernelContext.log("c.3 \(iteration)")
+//     KernelContext.log("c.3 \(iteration)")
   } else {
-    KernelContext.log("c.4 \(iteration)")
+//     KernelContext.log("c.4 \(iteration)")
     locationDirective = """
       #sourceLocation(file: "n/a", line: 1)
       """
-    KernelContext.log("c.5 \(iteration)")
+//     KernelContext.log("c.5 \(iteration)")
   }
-  KernelContext.log("c.6 \(iteration)")
+//   KernelContext.log("c.6 \(iteration)")
   let codeWithLocationDirective = locationDirective + "\n" + code
-  KernelContext.log("c.7 \(iteration)")
+//   KernelContext.log("c.7 \(iteration)")
   var descriptionPtr: UnsafeMutablePointer<CChar>?
   KernelContext.log("c \(iteration)")
   let error = KernelContext.execute(codeWithLocationDirective, &descriptionPtr)
