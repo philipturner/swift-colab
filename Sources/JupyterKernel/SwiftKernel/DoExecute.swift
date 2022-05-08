@@ -64,22 +64,24 @@ func doExecute(code: String) throws -> PythonObject? {
       // that this execute request can cleanly finish before the kernel exits.
       let loop = Python.import("ioloop").IOLoop.current()
       loop.add_timeout(Python.import("time").time() + 0.1, loop.stop)
-    } else if Bool(handler.had_stdout)! {
+    } else if result is SwiftError {
       // When there is stdout, it is a runtime error. Stdout, which we have
       // already sent to the client, contains the error message (plus some other 
       // ugly traceback that we should eventually figure out how to suppress), 
       // so this block of code only needs to add a traceback.
-      traceback = ["Current stack trace:"]
+      traceback = [result.description, "Current stack trace:"]
       traceback += try KernelContext.lldbQueue.sync {
         // This synchronization may be unnecessary.
         try prettyPrintStackTrace 
       }
       sendIOPubErrorMessage(traceback)      
-    } else {
+    } else if result is PreprocessorError {
       // There is no stdout, so it must be a compile error. Simply return the 
       // error without trying to get a stack trace.
       traceback = [result.description]
       sendIOPubErrorMessage(traceback)
+    } else {
+      fatalError("This should never happen.")
     }
     
     return makeExecuteReplyErrorMessage(traceback)
