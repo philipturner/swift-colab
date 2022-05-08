@@ -50,7 +50,6 @@ func doExecute(code: String) throws -> PythonObject? {
     var traceback: [String]
     var isAlive: Int32 = 0
     KernelContext.lldbQueue.sync {
-      // This synchronization may be unnecessary.
       _ = KernelContext.process_is_alive(&isAlive)
     }
     
@@ -71,8 +70,7 @@ func doExecute(code: String) throws -> PythonObject? {
       // so this block of code only needs to add a traceback.
       traceback = [result.description, "Current stack trace:"]
       traceback += try KernelContext.lldbQueue.sync {
-        // This synchronization may be unnecessary.
-        try prettyPrintStackTrace 
+        try prettyPrintStackTrace()
       }
       sendIOPubErrorMessage(traceback)      
     } else if result is PreprocessorError {
