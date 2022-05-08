@@ -47,7 +47,8 @@ func preprocessAndExecute(
 }
 
 func execute(
-  code: String, lineIndex: Int? = nil, executionCount: Int = 0
+  code: String, lineIndex: Int? = nil, 
+  executionCount: Int = Int(KernelContext.kernel.execution_count)!
 ) -> ExecutionResult {
 //   KernelContext.log("c.1 \(iteration)")
   var locationDirective: String
@@ -93,7 +94,6 @@ func execute(
 fileprivate func getLocationDirective(
   lineIndex: Int, executionCount: Int
 ) -> String {
-  l
   return """
     #sourceLocation(file: "<Cell \(executionCount)>", line: \(lineIndex + 1))
     """
