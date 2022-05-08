@@ -12,27 +12,28 @@ func preprocessAndExecute(
   iteration += 1
   do {
     let preprocessed = try preprocess(code: code)
-    var finishedExecution = false
-    var executeResult: ExecutionResult?
+//     var finishedExecution = false
+    var executionResult: ExecutionResult?
+    // Need to avoid accessing Python from the background thread.
     let executionCount = Int(KernelContext.kernel.execution_count)!
     
     DispatchQueue.global().async {
-      KernelContext.lldbQueue.sync {
-        executeResult = execute(
+//       KernelContext.lldbQueue.sync {
+        executionResult = execute(
           code: preprocessed, lineIndex: isCell ? 0 : nil, 
           executionCount: executionCount)
-        finishedExecution = true
-      }
+//         finishedExecution = true
+//       }
     }
     
 //     // Release the GIL
 //     time.sleep(0.05) // TODO: enable this if you ever see a crash
-    while !finishedExecution {
+    while executionResult == nil {
       // Using Python's `time` module instead of Foundation.usleep releases the
       // GIL.
       time.sleep(0.05)
     }
-    return KernelContext.lldbQueue.sync { executeResult! }
+    return executionResult//KernelContext.lldbQueue.sync { executeResult! }
   } catch let e as PreprocessorException {
     return PreprocessorError(exception: e)
   }
