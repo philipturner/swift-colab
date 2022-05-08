@@ -2,14 +2,8 @@ import Foundation
 fileprivate let json = Python.import("json")
 fileprivate let jsonutil = Python.import("jupyter_client").jsonutil
 
-
-
-
-fileprivate let threading = Python.import("threading")
-
 func doExecute(code: String) throws -> PythonObject? {
   KernelContext.isInterrupted = false
-//   stop_event = threading.Event() // put this back into how it was in swift-jupyter after debugging
   KernelContext.pollingStdout = true
   let handler = StdoutHandler()
   handler.start()
