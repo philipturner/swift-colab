@@ -26,7 +26,7 @@ let SIGINTHandler = PythonClass(
   ]
 ).pythonObject
 
-var stop_event: PythonObject = Python.None
+// var stop_event: PythonObject = Python.None
 
 let StdoutHandler = PythonClass(
   "StdoutHandler",
