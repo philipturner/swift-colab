@@ -10,22 +10,25 @@ fileprivate var executeResult: ExecutionResult?
 func preprocessAndExecute(code: String, isCell: Bool = false) throws -> ExecutionResult {
   do {
     let preprocessed = try preprocess(code: code)
-    var finishedExecution = false
+    let semaphore = DispatchSemaphore(value: 0)
+//     var finishedExecution = false
     executeQueue.sync { executeResult = nil }
     
     DispatchQueue.global(qos: .background).async {
       let result = execute(code: preprocessed, lineIndex: isCell ? 0 : nil)
       executeQueue.sync { executeResult = result }
-      finishedExecution = true
+      semaphore.signal()
+//       finishedExecution = true
     }
     
     // Not pausing the thread beforehand causes Swift-Colab to crash on startup.
     time.sleep(0.05)
-    while !finishedExecution {
+    semaphore.wait()
+//     while !finishedExecution {
       // Using Python's `time` module instead of Foundation.usleep releases the
       // GIL.
-      time.sleep(0.1)
-    }
+//       time.sleep(0.1)
+//     }
     
     return executeQueue.sync { executeResult! }
   } catch let e as PreprocessorException {
