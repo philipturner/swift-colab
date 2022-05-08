@@ -16,11 +16,11 @@ func preprocessAndExecute(code: String, isCell: Bool = false) throws -> Executio
     
 //     KernelContext.log("e.-5")
     
-    DispatchQueue.global(qos: .background).async {
+    DispatchQueue.global(qos: .background).sync {
       let result = execute(code: preprocessed, lineIndex: isCell ? 0 : nil)
       executeQueue.sync { executeResult = result }
 //       KernelContext.log("e.-4")
-      semaphore.signal()
+//       semaphore.signal()
 //       KernelContext.log("e.-3")
 //       finishedExecution = true
     }
@@ -30,7 +30,7 @@ func preprocessAndExecute(code: String, isCell: Bool = false) throws -> Executio
     // Not pausing the thread beforehand causes Swift-Colab to crash on startup.
     time.sleep(0.05)
 //     KernelContext.log("e.-1")
-    semaphore.wait()
+//     semaphore.wait()
 //     KernelContext.log("e.-0")
 //     while !finishedExecution {
       // Using Python's `time` module instead of Foundation.usleep releases the
