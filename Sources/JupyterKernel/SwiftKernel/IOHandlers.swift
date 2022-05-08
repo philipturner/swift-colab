@@ -20,7 +20,7 @@ let SIGINTHandler = PythonClass(
         signal.sigwait([signal.SIGINT])
         KernelContext.isInterrupted = true
         KernelContext.lldbQueue.sync {
-          _ = KernelContext.async_interrupt_process()
+          _ = KernelContext._1_async_interrupt_process()
         }
       }
       // Do not need to return anything because this is an infinite loop
