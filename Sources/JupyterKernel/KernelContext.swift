@@ -35,8 +35,8 @@ struct KernelContext {
   }
   
 //   // Prevents data races when accessing LLDB, which caused crashes previously.
-//   static let lldbQueue = DispatchQueue(
-//     label: "com.philipturner.swift-colab.KernelContext.lldbQueue")
+  static let lldbQueue = DispatchQueue(
+    label: "com.philipturner.swift-colab.KernelContext.lldbQueue")
   
   // Dynamically loaded LLDB bringing functions
   
