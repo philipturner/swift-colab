@@ -162,10 +162,14 @@ fileprivate func sendStdout(_ stdout: String) {
 fileprivate func getAndSendStdout(hadStdout: inout Bool) {
   var stdout: String!
   KernelContext.lldbQueue.sync {
+    KernelContext.log("b.3.1")
     stdout = getStdout()
+    KernelContext.log("b.3.2")
   }
   if stdout.count > 0 {
     hadStdout = true
+    KernelContext.log("b.3.3")
     sendStdout(stdout)
+    KernelContext.log("b.3.4")
   }
 }
