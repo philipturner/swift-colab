@@ -40,7 +40,9 @@ func execute(code: String, lineIndex: Int? = nil) -> ExecutionResult {
   }
   let codeWithLocationDirective = locationDirective + "\n" + code
   var descriptionPtr: UnsafeMutablePointer<CChar>?
+  KernelContext.log("c")
   let error = KernelContext.execute(codeWithLocationDirective, &descriptionPtr)
+  KernelContext.log("d")
   
   var description: String?
   if let descriptionPtr = descriptionPtr {
