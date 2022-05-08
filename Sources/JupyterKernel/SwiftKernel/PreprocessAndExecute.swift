@@ -34,7 +34,7 @@ func preprocessAndExecute(
 }
 
 func execute(
-  code: String, lineIndex: Int? = nil, isCell: Bool = false,
+  code: String, lineIndex: Int? = nil,
   executionCount: Int = Int(KernelContext.kernel.execution_count)!
 ) -> ExecutionResult {
   var locationDirective: String
