@@ -34,7 +34,7 @@ func preprocessAndExecute(
 }
 
 func execute(
-  code: String, lineIndex: Int? = nil,
+  code: String, lineIndex: Int? = nil, isCell: Bool = false
   executionCount: Int = Int(KernelContext.kernel.execution_count)!
 ) -> ExecutionResult {
   var locationDirective: String
@@ -47,9 +47,13 @@ func execute(
       """
   }
   
-  let codeWithLocationDirective = locationDirective + "\n" + code
+  // Send a header to stdout, letting the StdoutHandler know that it compiled 
+  // without errors and executed in LLDB.
+  let prefixCode = isCell ? ###"print("HEADER")\n"### : ""
+  
+  let codeWithPrefix = locationDirective + "\n" + code
   var descriptionPtr: UnsafeMutablePointer<CChar>?
-  let error = KernelContext.execute(codeWithLocationDirective, &descriptionPtr)
+  let error = KernelContext.execute(codeWithPrefix, &descriptionPtr)
   
   var description: String?
   if let descriptionPtr = descriptionPtr {
