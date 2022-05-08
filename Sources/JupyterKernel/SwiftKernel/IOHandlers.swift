@@ -58,6 +58,7 @@ let StdoutHandler = PythonClass(
 //           break
 //         }
         if stop_event.wait(0.1) != Python.None {
+          KernelContext.log("b.2")
           break
         }
         KernelContext.log("b")
