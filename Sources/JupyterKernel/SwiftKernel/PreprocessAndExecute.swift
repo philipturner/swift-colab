@@ -3,14 +3,10 @@ fileprivate let pexpect = Python.import("pexpect")
 fileprivate let re = Python.import("re")
 fileprivate let time = Python.import("time")
 
-fileprivate let executeQueue = DispatchQueue(
-  label: "com.philipturner.swift-colab.PreprocessAndExecute.executeQueue")
-fileprivate var executeResult: ExecutionResult?
-
 func preprocessAndExecute(code: String, isCell: Bool = false) throws -> ExecutionResult {
   do {
     let preprocessed = try preprocess(code: code)
-//     let semaphore = DispatchSemaphore(value: 0)
+    var executeResult: ExecutionResult?
     var finishedExecution = false
     executeQueue.sync { executeResult = nil }
     
@@ -19,8 +15,7 @@ func preprocessAndExecute(code: String, isCell: Bool = false) throws -> Executio
     DispatchQueue.global(qos: .background).async {
       KernelContext.lldbQueue.sync {
         let result = execute(code: preprocessed, lineIndex: isCell ? 0 : nil)
-        // TODO: use the lldbQueue instead of executeQueue and erase executeQueue
-        executeQueue.sync { executeResult = result }
+        executeResult = result
       }
       KernelContext.log("e.-4")
 //       semaphore.signal()
@@ -40,7 +35,10 @@ func preprocessAndExecute(code: String, isCell: Bool = false) throws -> Executio
     }
     KernelContext.log("e.-0")
     
-    return executeQueue.sync { executeResult! }
+    return KernelContext.lldbQueue.sync { 
+      // This synchronization may be unnecessary.
+      executeResult!
+    }
   } catch let e as PreprocessorException {
     return PreprocessorError(exception: e)
   }
