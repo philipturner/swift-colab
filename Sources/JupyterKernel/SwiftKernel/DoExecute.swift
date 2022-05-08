@@ -67,9 +67,7 @@ func doExecute(code: String) throws -> PythonObject? {
       // ugly traceback that we should eventually figure out how to suppress), 
       // so this block of code only needs to add a traceback.
       traceback = [result.description, "Current stack trace:"]
-      traceback += try KernelContext.lldbQueue.sync {
-        try prettyPrintStackTrace()
-      }
+      traceback += try prettyPrintStackTrace()
       sendIOPubErrorMessage(traceback)      
     } else if result is PreprocessorError {
       // There is no stdout, so it must be a compile error. Simply return the 
@@ -146,9 +144,7 @@ fileprivate func executeCell(code: String) throws -> ExecutionResult {
   try setParentMessage()
   let result = try preprocessAndExecute(code: code, isCell: true)
   if result is ExecutionResultSuccess {
-    try KernelContext.lldbQueue.sync {
-      try afterSuccessfulExecution()
-    }
+    try afterSuccessfulExecution()
   }
   return result
 }
