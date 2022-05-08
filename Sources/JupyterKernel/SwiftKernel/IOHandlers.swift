@@ -43,15 +43,20 @@ let StdoutHandler = PythonClass(
     "run": PythonInstanceMethod { (`self`: PythonObject) in
       var localHadStdout = false
       while true {
+        KernelContext.log("a")
         time.sleep(0.05)
+        KernelContext.log("b")
         if !KernelContext.pollingStdout {
           break
         }
         getAndSendStdout(hadStdout: &localHadStdout)
         `self`.had_stdout = localHadStdout.pythonObject
+        KernelContext.log("b.1")
       }
+      KernelContext.log("b.2")
       getAndSendStdout(hadStdout: &localHadStdout)
       `self`.had_stdout = localHadStdout.pythonObject
+      KernelContext.log("b.3")
       return Python.None
     }
   ]
