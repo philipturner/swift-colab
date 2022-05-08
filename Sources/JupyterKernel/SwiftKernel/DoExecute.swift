@@ -9,8 +9,8 @@ fileprivate let threading = Python.import("threading")
 
 func doExecute(code: String) throws -> PythonObject? {
   KernelContext.isInterrupted = false
-  stop_event = threading.Event() // put this back into how it was in swift-jupyter after debugging
-//   KernelContext.pollingStdout = true
+//   stop_event = threading.Event() // put this back into how it was in swift-jupyter after debugging
+  KernelContext.pollingStdout = true
   let handler = StdoutHandler()
   handler.start()
   
@@ -20,8 +20,8 @@ func doExecute(code: String) throws -> PythonObject? {
   do {
     defer {
       KernelContext.log("e")
-      stop_event.set()
-//       KernelContext.pollingStdout = false
+//       stop_event.set()
+      KernelContext.pollingStdout = false
       KernelContext.log("f")
       handler.join()
       KernelContext.log("g")
