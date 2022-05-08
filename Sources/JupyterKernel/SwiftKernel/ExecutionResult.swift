@@ -25,7 +25,7 @@ struct SuccessWithValue: ExecutionResultSuccess {
 struct PreprocessorError: ExecutionResultError {
   var description: String
   
-  init(description: String) { errorDescription = description }
+  init(description: String) { self.description = description }
   
   init(exception: PreprocessorException) {
     description = String(describing: exception)
