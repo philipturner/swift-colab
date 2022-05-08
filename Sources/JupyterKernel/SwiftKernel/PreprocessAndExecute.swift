@@ -63,7 +63,7 @@ func execute(
     return SuccessWithoutValue()
   } else if error == 2 {
     let exception = PreprocessorException(description!)
-    return ProprocessorError(exception: exception)
+    return PreprocessorError(exception: exception)
   } else {
     return SwiftError(description: description!)
   }
