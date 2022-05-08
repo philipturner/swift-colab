@@ -31,7 +31,7 @@ func preprocessAndExecute(code: String, isCell: Bool = false) throws -> Executio
     KernelContext.log("e.-2")
     
     // Release the GIL
-    time.sleep(0)
+//     time.sleep(0) // TODO: enable this if you ever see a crash
     
     while !finishedExecution {
       // Using Python's `time` module instead of Foundation.usleep releases the
