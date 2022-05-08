@@ -97,7 +97,9 @@ fileprivate func sendStdout(_ stdout: String) {
 }
 
 fileprivate func getAndSendStdout(hadStdout: inout Bool) {
-  let stdout = getStdout()
+  KernelContext.lldbQueue.sync {
+    let stdout = getStdout()
+  }
   if stdout.count > 0 {
     hadStdout = true
     sendStdout(stdout)
