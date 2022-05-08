@@ -8,7 +8,7 @@ fileprivate let PyBUF_READ: Int32 = 0x100
 
 func afterSuccessfulExecution() throws {
   var serializedOutput: UnsafeMutablePointer<UInt64>?
-  let error = KernelContext._1_after_successful_execution(&serializedOutput)
+  let error = KernelContext.after_successful_execution(&serializedOutput)
   guard let serializedOutput = serializedOutput else {
     throw Exception(
       "C++ part of `afterSuccessfulExecution` failed with error code \(error).")
@@ -18,9 +18,9 @@ func afterSuccessfulExecution() throws {
   let output = try deserialize(executionOutput: serializedOutput)
   
   let kernel = KernelContext.kernel
-  let send_multipart = kernel.iopub_socket.send_multipart.throwing
+  let send_multipart = kernel.iopub_socket.send_multipart
   for message in output {
-    try send_multipart.dynamicallyCall(withArguments: message.pythonObject)
+    send_multipart(message)
   }
 }
 
