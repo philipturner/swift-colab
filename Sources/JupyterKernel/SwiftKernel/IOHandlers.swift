@@ -41,6 +41,10 @@ let StdoutHandler = PythonClass(
     "run": PythonInstanceMethod { (`self`: PythonObject) in
       var localHadStdout = false
       while true {
+        KernelContext.sendResponse("stream", [
+      "name": "stdout",
+      "text": ""
+    ])
         KernelContext.log("a")
         KernelContext.log("a.2")
         time.sleep(0.1)
