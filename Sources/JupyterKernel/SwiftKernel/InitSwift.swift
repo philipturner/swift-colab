@@ -28,11 +28,8 @@ fileprivate var sigintHandler: PythonObject!
 
 func initSwift() throws {
   try initReplProcess()
-  KernelContext.log("finished initReplProcess")
   try initKernelCommunicator()
-  KernelContext.log("finished initKernelCommunicator")
   try initBitWidth()
-  KernelContext.log("finished initBitWidth")
   
   sigintHandler = SIGINTHandler()
   sigintHandler.start()
@@ -74,19 +71,4 @@ fileprivate func initKernelCommunicator() throws {
   if result is ExecutionResultError {
     throw Exception("Error declaring JupyterKernel: \(result)")
   }
-}
-
-// This is no longer needed for any functional purpose, but it serves
-// as a quick validation test that Swift-Colab actually works.
-fileprivate func initBitWidth() throws {
-  let result = execute(code: "Int.bitWidth")
-  guard let result = result as? SuccessWithValue else {
-    if result is SuccessWithoutValue {
-      throw Exception("Got SuccessWithoutValue from Int.bitWidth")
-    } else {
-      throw Exception("Expected value from Int.bitWidth, but got: \(String(reflecting: result))")
-    }
-  }
-  precondition(result.description.contains("64"), 
-    "Int.bitWidth returned \(result.description) when '64' was expected.")
 }
