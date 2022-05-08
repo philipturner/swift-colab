@@ -8,7 +8,7 @@ fileprivate let PyBUF_READ: Int32 = 0x100
 
 func afterSuccessfulExecution() throws {
   var serializedOutput: UnsafeMutablePointer<UInt64>?
-  let error = KernelContext.after_successful_execution(&serializedOutput)
+  let error = KernelContext._1_after_successful_execution(&serializedOutput)
   guard let serializedOutput = serializedOutput else {
     throw Exception(
       "C++ part of `afterSuccessfulExecution` failed with error code \(error).")
