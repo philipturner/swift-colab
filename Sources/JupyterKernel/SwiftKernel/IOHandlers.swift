@@ -9,18 +9,18 @@ let SIGINTHandler = PythonClass(
   "SIGINTHandler",
   superclasses: [threading.Thread],
   members: [
-    "__init__": PythonInstanceMethod { (`self`: PythonObject) in
+    "__init__": PythonInstanceMethod { args in
+      let `self` = args[0]
       threading.Thread.__init__(`self`)
       `self`.daemon = true
       return Python.None
     },
     
-    "run": PythonInstanceMethod { (`self`: PythonObject) in
+    "run": PythonInstanceMethod { _ in
       while true {
         signal.sigwait([signal.SIGINT])
         _ = KernelContext.async_interrupt_process()
         KernelContext.isInterrupted = true
-        
       }
       // Do not need to return anything because this is an infinite loop.
     }
@@ -43,15 +43,7 @@ let StdoutHandler = PythonClass(
     "run": PythonInstanceMethod { (`self`: PythonObject) in
       var localHadStdout = false
       while true {
-        KernelContext.sendResponse("stream", [
-          "name": "stdout",
-          "text": ""
-        ])
-        KernelContext.log("a")
-//         KernelContext.log("a.2")
         time.sleep(0.05)
-//         KernelContext.log("b")
-//         KernelContext.log("b.2")
         if !KernelContext.pollingStdout {
           break
         }
