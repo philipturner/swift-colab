@@ -27,9 +27,7 @@ fileprivate struct CEnvironment {
 fileprivate var sigintHandler: PythonObject!
 
 func initSwift() throws {
-//   try KernelContext.lldbQueue.sync {
-    try initReplProcess()
-//   }
+  try initReplProcess()
   KernelContext.log("finished initReplProcess")
   try initKernelCommunicator()
   KernelContext.log("finished initKernelCommunicator")
