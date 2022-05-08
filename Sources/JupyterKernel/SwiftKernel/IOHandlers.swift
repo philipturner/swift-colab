@@ -3,6 +3,8 @@ fileprivate let signal = Python.import("signal")
 fileprivate let threading = Python.import("threading")
 fileprivate let time = Python.import("time")
 
+// Not possible to use Swift GCD in place of Python single-threaded threading 
+// here.
 let SIGINTHandler = PythonClass(
   "SIGINTHandler",
   superclasses: [threading.Thread],
@@ -27,8 +29,8 @@ let SIGINTHandler = PythonClass(
   ]
 ).pythonObject
 
-// var stop_event: PythonObject = Python.None
-
+// Not possible to use Swift GCD in place of Python single-threaded threading 
+// here.
 let StdoutHandler = PythonClass(
   "StdoutHandler",
   superclasses: [threading.Thread],
