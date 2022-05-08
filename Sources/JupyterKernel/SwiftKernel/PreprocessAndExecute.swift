@@ -1,44 +1,27 @@
 import Foundation
 fileprivate let pexpect = Python.import("pexpect")
 fileprivate let re = Python.import("re")
+fileprivate let sys = Python.import("sys")
 fileprivate let time = Python.import("time")
 
 func preprocessAndExecute(code: String, isCell: Bool = false) throws -> ExecutionResult {
   do {
     let preprocessed = try preprocess(code: code)
     var executeResult: ExecutionResult?
-    var finishedExecution = false
-    executeQueue.sync { executeResult = nil }
-    
-    KernelContext.log("e.-5")
-    
-    DispatchQueue.global(qos: .background).async {
-      KernelContext.lldbQueue.sync {
-        let result = execute(code: preprocessed, lineIndex: isCell ? 0 : nil)
-        executeResult = result
-      }
-      KernelContext.log("e.-4")
-//       semaphore.signal()
-      finishedExecution = true
-      KernelContext.log("e.-3")
+    KernelContext.lldbQueue.async {
+      executeResult = execute(code: preprocessed, lineIndex: isCell ? 0 : nil)
     }
     
-    KernelContext.log("e.-2")
-    
-    // Release the GIL
+//     // Release the GIL
 //     time.sleep(0) // TODO: enable this if you ever see a crash
     
-    while !finishedExecution {
+    while executeResult == nil {
       // Using Python's `time` module instead of Foundation.usleep releases the
       // GIL.
       time.sleep(0.05)
     }
-    KernelContext.log("e.-0")
     
-    return KernelContext.lldbQueue.sync { 
-      // This synchronization may be unnecessary.
-      executeResult!
-    }
+    return executeResult!
   } catch let e as PreprocessorException {
     return PreprocessorError(exception: e)
   }
@@ -55,9 +38,7 @@ func execute(code: String, lineIndex: Int? = nil) -> ExecutionResult {
   }
   let codeWithLocationDirective = locationDirective + "\n" + code
   var descriptionPtr: UnsafeMutablePointer<CChar>?
-  KernelContext.log("c")
-  let error = KernelContext._1_execute(codeWithLocationDirective, &descriptionPtr)
-  KernelContext.log("d")
+  let error = KernelContext.execute(codeWithLocationDirective, &descriptionPtr)
   
   var description: String?
   if let descriptionPtr = descriptionPtr {
@@ -138,14 +119,14 @@ fileprivate func preprocess(line: String, index lineIndex: Int) throws -> String
 
 // TODO: Separate this functionality into IOHandlers.swift to share it with
 // package installation process?
-// TODO: Is it possible to make this accept stdin?
+// TODO: Is it possible to make this accept stdin? Can I make IPython have stdin?
 // TODO: Can I make the code transferred into IOHandlers have a return code?
 
 // From https://github.com/ipython/ipython/blob/master/IPython/utils/_process_posix.py,
 //   def system(self, cmd):
 fileprivate func executeSystemCommand(restOfLine: String) throws {
   let process = pexpect.spawn("/bin/sh", args: ["-c", restOfLine])
-  let flush = Python.import("sys").stdout.flush // TODO: move this import to top
+  let flush = sys.stdout.flush
   let patterns = [pexpect.TIMEOUT, pexpect.EOF]
   var outSize: Int = 0
   
@@ -159,15 +140,14 @@ fileprivate func executeSystemCommand(restOfLine: String) throws {
     
     let resIdx = process.expect_list(patterns, waitTime)
     let str = String(process.before[outSize...].decode("utf8", "replace"))!
-    
     if str.count > 0 {
       KernelContext.sendResponse("stream", [
         "name": "stdout",
         "text": str
       ])
     }
-    
     flush()
+    outSize = process.before.count
     
     if KernelContext.isInterrupted {
       process.terminate(force: true)
@@ -175,8 +155,6 @@ fileprivate func executeSystemCommand(restOfLine: String) throws {
     } else if Int(resIdx)! == 1 {
       break
     }
-    
-    outSize = process.before.count
   }
   
   if KernelContext.isInterrupted {
