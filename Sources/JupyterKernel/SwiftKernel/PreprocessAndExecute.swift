@@ -17,11 +17,11 @@ func preprocessAndExecute(
     let executionCount = Int(KernelContext.kernel.execution_count)!
     
     DispatchQueue.global().async {
-      KernelContext.lldbQueue.sync {
+//       KernelContext.lldbQueue.sync {
         executionResult = execute(
           code: preprocessed, lineIndex: isCell ? 0 : nil, 
           executionCount: executionCount)
-      }
+//       }
     }
     
     while executionResult == nil {
