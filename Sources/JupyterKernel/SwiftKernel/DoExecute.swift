@@ -66,8 +66,7 @@ func doExecute(code: String) throws -> PythonObject? {
       // already sent to the client, contains the error message (plus some other 
       // ugly traceback that we should eventually figure out how to suppress), 
       // so this block of code only needs to add a traceback.
-      traceback = [result.description, "Current stack trace:"]
-      traceback += try prettyPrintStackTrace()
+      traceback = ["Current stack trace:"] + try prettyPrintStackTrace()
       sendIOPubErrorMessage(traceback)      
     } else if result is PreprocessorError {
       // There is no stdout, so it must be a compile error. Simply return the 
