@@ -18,7 +18,7 @@ func preprocessAndExecute(code: String, isCell: Bool = false) throws -> Executio
       executeQueue.sync { executeResult = result }
       finishedExecution = true
     }
-////////////////////////////////////////////////////////////////////////////////
+    
     // Not pausing the thread beforehand causes Swift-Colab to crash on startup.
     time.sleep(0.05)
     while !finishedExecution {
