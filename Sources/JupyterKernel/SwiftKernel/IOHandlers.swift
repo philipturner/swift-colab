@@ -49,6 +49,7 @@ let StdoutHandler = PythonClass(
         getAndSendStdout()
       }
       getAndSendStdout()
+      KernelContext.log("ended stdout handler")
       return Python.None
     }
   ]
