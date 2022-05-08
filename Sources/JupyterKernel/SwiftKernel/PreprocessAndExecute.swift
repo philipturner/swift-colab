@@ -4,33 +4,36 @@ fileprivate let re = Python.import("re")
 fileprivate let sys = Python.import("sys")
 fileprivate let time = Python.import("time")
 
+var iteration = 0
+
 func preprocessAndExecute(code: String, isCell: Bool = false) throws -> ExecutionResult {
+  iteration += 1
   do {
     let preprocessed = try preprocess(code: code)
     var finishedExecution = false
     var executeResult: ExecutionResult?
-    KernelContext.log("j.1")
+    KernelContext.log("j.1 \(iteration)")
     DispatchQueue.global().async {
-      KernelContext.log("j.2")
+      KernelContext.log("j.2 \(iteration)")
       KernelContext.lldbQueue.sync {
-        KernelContext.log("j.3")
+        KernelContext.log("j.3 \(iteration)")
         executeResult = execute(code: preprocessed, lineIndex: isCell ? 0 : nil)
-        KernelContext.log("j.4")
+        KernelContext.log("j.4 \(iteration)")
         finishedExecution = true
       }
     }
     
-    KernelContext.log("j.5")
+    KernelContext.log("j.5 \(iteration)")
 //     // Release the GIL
     time.sleep(0.05) // TODO: enable this if you ever see a crash
-    KernelContext.log("j.6")
+    KernelContext.log("j.6 \(iteration)")
     while !finishedExecution {
       // Using Python's `time` module instead of Foundation.usleep releases the
       // GIL.
-      KernelContext.log("j.7")
+      KernelContext.log("j.7 \(iteration)")
       time.sleep(0.05)
     }
-    KernelContext.log("j.8")
+    KernelContext.log("j.8 \(iteration)")
     return KernelContext.lldbQueue.sync { executeResult! }
   } catch let e as PreprocessorException {
     return PreprocessorError(exception: e)
@@ -48,9 +51,9 @@ func execute(code: String, lineIndex: Int? = nil) -> ExecutionResult {
   }
   let codeWithLocationDirective = locationDirective + "\n" + code
   var descriptionPtr: UnsafeMutablePointer<CChar>?
-  KernelContext.log("c")
+  KernelContext.log("c \(iteration)")
   let error = KernelContext.execute(codeWithLocationDirective, &descriptionPtr)
-  KernelContext.log("d")
+  KernelContext.log("d \(iteration)")
   
   var description: String?
   if let descriptionPtr = descriptionPtr {
