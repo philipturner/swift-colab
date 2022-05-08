@@ -7,21 +7,23 @@ fileprivate let time = Python.import("time")
 func preprocessAndExecute(code: String, isCell: Bool = false) throws -> ExecutionResult {
   do {
     let preprocessed = try preprocess(code: code)
+    var finishedExecution = false
     var executeResult: ExecutionResult?
     KernelContext.lldbQueue.async {
       executeResult = execute(code: preprocessed, lineIndex: isCell ? 0 : nil)
+      finishedExecution = true
     }
     
 //     // Release the GIL
-//     time.sleep(0) // TODO: enable this if you ever see a crash
+    time.sleep(0.05) // TODO: enable this if you ever see a crash
     
-    while executeResult == nil {
+    while !finishedExecution {
       // Using Python's `time` module instead of Foundation.usleep releases the
       // GIL.
       time.sleep(0.05)
     }
     
-    return executeResult!
+    return KernelContext.lldbQueue.sync { executeResult! }
   } catch let e as PreprocessorException {
     return PreprocessorError(exception: e)
   }
