@@ -19,12 +19,12 @@ func doExecute(code: String) throws -> PythonObject? {
   var result: ExecutionResult
   do {
     defer {
-//       KernelContext.log("e")
+      KernelContext.log("e")
       stop_event.set()
 //       KernelContext.pollingStdout = false
-//       KernelContext.log("f")
+      KernelContext.log("f")
       handler.join()
-//       KernelContext.log("g")
+      KernelContext.log("g")
       KernelContext.flushResponses()
     }
     result = try executeCell(code: code)
@@ -158,9 +158,9 @@ fileprivate func sendIOPubErrorMessage(_ message: [String]) {
 fileprivate func executeCell(code: String) throws -> ExecutionResult {
   try setParentMessage()
   let result = try preprocessAndExecute(code: code, isCell: true)
-//   KernelContext.log("e.2")
+  KernelContext.log("e.2")
   if result is ExecutionResultSuccess {
-//     KernelContext.log("e.3")
+    KernelContext.log("e.3")
     try KernelContext.lldbQueue.sync {
       try afterSuccessfulExecution()
     }
