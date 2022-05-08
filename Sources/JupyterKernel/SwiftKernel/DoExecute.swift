@@ -117,7 +117,7 @@ fileprivate func prettyPrintStackTrace() throws -> [String] {
   
   var frames: UnsafeMutablePointer<UnsafeMutablePointer<CChar>>?
   var size: Int32 = 0
-  let error = KernelContext.get_pretty_stack_trace(&frames, &size);
+  let error = KernelContext._1_get_pretty_stack_trace(&frames, &size);
   guard let frames = frames else {
     throw Exception(
       "`get_pretty_stack_trace` failed with error code \(error).")
