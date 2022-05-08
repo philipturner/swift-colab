@@ -61,7 +61,7 @@ func doExecute(code: String) throws -> PythonObject? {
     var traceback: [String]
     var isAlive: Int32 = 0
     KernelContext.lldbQueue.sync {
-      _ = KernelContext.process_is_alive(&isAlive)
+      _ = KernelContext._1_process_is_alive(&isAlive)
     }
     
     if isAlive == 0 {
