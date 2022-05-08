@@ -18,7 +18,7 @@ func preprocessAndExecute(
     
     DispatchQueue.global().async {
       executionResult = execute(
-        code: preprocessed, lineIndex: isCell ? 0 : nil,
+        code: preprocessed, lineIndex: isCell ? 0 : nil, isCell: isCell,
         executionCount: executionCount)
     }
     
@@ -61,8 +61,6 @@ func execute(
     return SuccessWithValue(description: description!)
   } else if error == 1 {
     return SuccessWithoutValue()
-  } else if error == 2 {
-    return PreprocessorError(description: description!)
   } else {
     return SwiftError(description: description!)
   }
