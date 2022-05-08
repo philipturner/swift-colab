@@ -37,21 +37,20 @@ func execute(
   code: String, lineIndex: Int? = nil, isCell: Bool = false
   executionCount: Int = Int(KernelContext.kernel.execution_count)!
 ) -> ExecutionResult {
-  var locationDirective: String
+  // Send a header to stdout, letting the StdoutHandler know that it compiled 
+  // without errors and executed in LLDB.
+  var prefixCode = isCell ? "print(\"HEADER\")\n" : ""
+  
   if let lineIndex = lineIndex {
-    locationDirective = getLocationDirective(
+    prefixCode += getLocationDirective(
       lineIndex: lineIndex, executionCount: executionCount)
   } else {
-    locationDirective = """
+    prefixCode += """
       #sourceLocation(file: "n/a", line: 1)
       """
   }
   
-  // Send a header to stdout, letting the StdoutHandler know that it compiled 
-  // without errors and executed in LLDB.
-  let prefixCode = isCell ? ###"print("HEADER")\n"### : ""
-  
-  let codeWithPrefix = locationDirective + "\n" + code
+  let codeWithPrefix = prefixCode + "\n" + code
   var descriptionPtr: UnsafeMutablePointer<CChar>?
   let error = KernelContext.execute(codeWithPrefix, &descriptionPtr)
   
