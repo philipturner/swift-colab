@@ -41,7 +41,7 @@ func preprocessAndExecute(code: String, isCell: Bool = false) throws -> Executio
 }
 
 func execute(code: String, lineIndex: Int? = nil) -> ExecutionResult {
-//   KernelContext.log("c.1 \(iteration)")
+  KernelContext.log("c.1 \(iteration)")
   var locationDirective: String
   if let lineIndex = lineIndex {
 //     KernelContext.log("c.2 \(iteration)")
