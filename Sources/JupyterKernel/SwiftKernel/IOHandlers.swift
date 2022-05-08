@@ -36,22 +36,18 @@ let StdoutHandler = PythonClass(
     "__init__": PythonInstanceMethod { (`self`: PythonObject) in
       threading.Thread.__init__(`self`)
       `self`.daemon = true
-      `self`.had_stdout = false // TODO: remove this property if not necessary
       return Python.None
     },
     
     "run": PythonInstanceMethod { (`self`: PythonObject) in
-      var localHadStdout = false
       while true {
         time.sleep(0.05)
         if !KernelContext.pollingStdout {
           break
         }
-        getAndSendStdout(hadStdout: &localHadStdout)
-        `self`.had_stdout = localHadStdout.pythonObject
+        getAndSendStdout()
       }
-      getAndSendStdout(hadStdout: &localHadStdout)
-      `self`.had_stdout = localHadStdout.pythonObject
+      getAndSendStdout()
       return Python.None
     }
   ]
