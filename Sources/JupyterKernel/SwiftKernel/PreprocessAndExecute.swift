@@ -16,30 +16,22 @@ func preprocessAndExecute(
     var executeResult: ExecutionResult?
     let executionCount = Int(KernelContext.kernel.execution_count)!
     
-    KernelContext.log("j.1 \(iteration)")
     DispatchQueue.global().async {
-      KernelContext.log("j.2 \(iteration)")
       KernelContext.lldbQueue.sync {
-        KernelContext.log("j.3 \(iteration)")
         executeResult = execute(
           code: preprocessed, lineIndex: isCell ? 0 : nil, 
           executionCount: executionCount)
-        KernelContext.log("j.4 \(iteration)")
         finishedExecution = true
       }
     }
     
-    KernelContext.log("j.5 \(iteration)")
 //     // Release the GIL
-    time.sleep(0.05) // TODO: enable this if you ever see a crash
-    KernelContext.log("j.6 \(iteration)")
+//     time.sleep(0.05) // TODO: enable this if you ever see a crash
     while !finishedExecution {
       // Using Python's `time` module instead of Foundation.usleep releases the
       // GIL.
-      KernelContext.log("j.7 \(iteration)")
       time.sleep(0.05)
     }
-    KernelContext.log("j.8 \(iteration)")
     return KernelContext.lldbQueue.sync { executeResult! }
   } catch let e as PreprocessorException {
     return PreprocessorError(exception: e)
@@ -64,7 +56,6 @@ func execute(
       """
 //     KernelContext.log("c.5 \(iteration)")
   }
-//   KernelContext.log("c.6 \(iteration)")
   let codeWithLocationDirective = locationDirective + "\n" + code
   KernelContext.log("c.7 \(iteration)")
   var descriptionPtr: UnsafeMutablePointer<CChar>?
