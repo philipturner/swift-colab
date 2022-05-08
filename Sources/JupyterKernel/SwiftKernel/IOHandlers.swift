@@ -18,9 +18,7 @@ let SIGINTHandler = PythonClass(
     "run": PythonInstanceMethod { (`self`: PythonObject) in
       while true {
         signal.sigwait([signal.SIGINT])
-//         KernelContext.lldbQueue.sync {
-          _ = KernelContext._1_async_interrupt_process()
-//         }
+        _ = KernelContext.async_interrupt_process()
         KernelContext.isInterrupted = true
         
       }
@@ -51,7 +49,7 @@ let StdoutHandler = PythonClass(
     ])
         KernelContext.log("a")
 //         KernelContext.log("a.2")
-        time.sleep(0.1)
+        time.sleep(0.05)
 //         KernelContext.log("b")
 //         KernelContext.log("b.2")
         if !KernelContext.pollingStdout {
