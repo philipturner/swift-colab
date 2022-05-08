@@ -164,6 +164,8 @@ fileprivate func executeCell(code: String) throws -> ExecutionResult {
     try KernelContext.lldbQueue.sync {
       try afterSuccessfulExecution()
     }
+    KernelContext.log("e.4")
   }
+  KernelContext.log("e.5")
   return result
 }
