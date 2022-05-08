@@ -30,15 +30,13 @@ func preprocessAndExecute(code: String, isCell: Bool = false) throws -> Executio
     
     KernelContext.log("e.-2")
     
-    // Not pausing the thread beforehand causes Swift-Colab to crash on startup.
-    time.sleep(0.05)
-    KernelContext.log("e.-1")
-//     semaphore.wait()
+    // Release the GIL
+    time.sleep(0)
     
     while !finishedExecution {
-//       Using Python's `time` module instead of Foundation.usleep releases the
-//       GIL.
-      time.sleep(0.1)
+      // Using Python's `time` module instead of Foundation.usleep releases the
+      // GIL.
+      time.sleep(0.05)
     }
     KernelContext.log("e.-0")
     
