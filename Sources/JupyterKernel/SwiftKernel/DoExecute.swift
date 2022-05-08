@@ -13,13 +13,8 @@ func doExecute(code: String) throws -> PythonObject? {
   var result: ExecutionResult
   do {
     defer {
-      KernelContext.log("e")
-//       stop_event.set()
       KernelContext.pollingStdout = false
-      KernelContext.log("f")
       handler.join()
-      KernelContext.log("g")
-      KernelContext.flushResponses()
     }
     result = try executeCell(code: code)
   } catch _ as InterruptException {
@@ -55,7 +50,8 @@ func doExecute(code: String) throws -> PythonObject? {
     var traceback: [String]
     var isAlive: Int32 = 0
     KernelContext.lldbQueue.sync {
-      _ = KernelContext._1_process_is_alive(&isAlive)
+      // This synchronization may be unnecessary.
+      _ = KernelContext.process_is_alive(&isAlive)
     }
     
     if isAlive == 0 {
@@ -69,16 +65,15 @@ func doExecute(code: String) throws -> PythonObject? {
       let loop = Python.import("ioloop").IOLoop.current()
       loop.add_timeout(Python.import("time").time() + 0.1, loop.stop)
     } else if Bool(handler.had_stdout)! {
-      // The conditional check above could cause a data race, as it may retrieve
-      // `hadStdout` without proper synchronization.
-      
       // When there is stdout, it is a runtime error. Stdout, which we have
       // already sent to the client, contains the error message (plus some other 
       // ugly traceback that we should eventually figure out how to suppress), 
       // so this block of code only needs to add a traceback.
       traceback = ["Current stack trace:"]
-      traceback += try KernelContext.lldbQueue.sync(
-        execute: prettyPrintStackTrace)
+      traceback += try KernelContext.lldbQueue.sync {
+        // This synchronization may be unnecessary.
+        try prettyPrintStackTrace 
+      }
       sendIOPubErrorMessage(traceback)      
     } else {
       // There is no stdout, so it must be a compile error. Simply return the 
@@ -98,9 +93,9 @@ fileprivate func setParentMessage() throws {
   let jsonObj = json.dumps(json.dumps(jsonutil.squash_dates(parentHeader)))
   
   let result = execute(code: """
-  JupyterKernel.communicator.updateParentMessage(
-    to: KernelCommunicator.ParentMessage(json: \(String(jsonObj)!)))
-  """)
+    JupyterKernel.communicator.updateParentMessage(
+      to: KernelCommunicator.ParentMessage(json: \(String(jsonObj)!)))
+    """)
   if result is ExecutionResultError {
     throw Exception("Error setting parent message: \(result)")
   }
@@ -111,7 +106,7 @@ fileprivate func prettyPrintStackTrace() throws -> [String] {
   
   var frames: UnsafeMutablePointer<UnsafeMutablePointer<CChar>>?
   var size: Int32 = 0
-  let error = KernelContext._1_get_pretty_stack_trace(&frames, &size);
+  let error = KernelContext.get_pretty_stack_trace(&frames, &size);
   guard let frames = frames else {
     throw Exception(
       "`get_pretty_stack_trace` failed with error code \(error).")
@@ -152,14 +147,10 @@ fileprivate func sendIOPubErrorMessage(_ message: [String]) {
 fileprivate func executeCell(code: String) throws -> ExecutionResult {
   try setParentMessage()
   let result = try preprocessAndExecute(code: code, isCell: true)
-  KernelContext.log("e.2")
   if result is ExecutionResultSuccess {
-    KernelContext.log("e.3")
     try KernelContext.lldbQueue.sync {
       try afterSuccessfulExecution()
     }
-    KernelContext.log("e.4")
   }
-  KernelContext.log("e.5")
   return result
 }
