@@ -6,18 +6,24 @@ fileprivate let time = Python.import("time")
 
 var iteration = 0
 
-func preprocessAndExecute(code: String, isCell: Bool = false) throws -> ExecutionResult {
+func preprocessAndExecute(
+  code: String, isCell: Bool = false
+) throws -> ExecutionResult {
   iteration += 1
   do {
     let preprocessed = try preprocess(code: code)
     var finishedExecution = false
     var executeResult: ExecutionResult?
+    let executionCount = Int(KernelContext.kernel.execution_count)!
+    
     KernelContext.log("j.1 \(iteration)")
     DispatchQueue.global().async {
       KernelContext.log("j.2 \(iteration)")
       KernelContext.lldbQueue.sync {
         KernelContext.log("j.3 \(iteration)")
-        executeResult = execute(code: preprocessed, lineIndex: isCell ? 0 : nil)
+        executeResult = execute(
+          code: preprocessed, lineIndex: isCell ? 0 : nil, 
+          executionCount: executionCount)
         KernelContext.log("j.4 \(iteration)")
         finishedExecution = true
       }
@@ -40,12 +46,15 @@ func preprocessAndExecute(code: String, isCell: Bool = false) throws -> Executio
   }
 }
 
-func execute(code: String, lineIndex: Int? = nil) -> ExecutionResult {
+func execute(
+  code: String, lineIndex: Int? = nil, executionCount: Int = 0
+) -> ExecutionResult {
 //   KernelContext.log("c.1 \(iteration)")
   var locationDirective: String
   if let lineIndex = lineIndex {
 //     KernelContext.log("c.2 \(iteration)")
-    locationDirective = getLocationDirective(lineIndex: lineIndex)
+    locationDirective = getLocationDirective(
+      lineIndex: lineIndex, executionCount: executionCount)
 //     KernelContext.log("c.3 \(iteration)")
   } else {
 //     KernelContext.log("c.4 \(iteration)")
@@ -54,7 +63,7 @@ func execute(code: String, lineIndex: Int? = nil) -> ExecutionResult {
       """
 //     KernelContext.log("c.5 \(iteration)")
   }
-  KernelContext.log("c.6 \(iteration)")
+//   KernelContext.log("c.6 \(iteration)")
   let codeWithLocationDirective = locationDirective + "\n" + code
   KernelContext.log("c.7 \(iteration)")
   var descriptionPtr: UnsafeMutablePointer<CChar>?
@@ -81,8 +90,10 @@ func execute(code: String, lineIndex: Int? = nil) -> ExecutionResult {
 //
 // This adds one to `lineIndex` before creating the string.
 // This does not include the newline that should come after the directive.
-fileprivate func getLocationDirective(lineIndex: Int) -> String {
-  let executionCount = Int(KernelContext.kernel.execution_count)!
+fileprivate func getLocationDirective(
+  lineIndex: Int, executionCount: Int
+) -> String {
+  l
   return """
     #sourceLocation(file: "<Cell \(executionCount)>", line: \(lineIndex + 1))
     """
