@@ -36,7 +36,7 @@ let StdoutHandler = PythonClass(
     "__init__": PythonInstanceMethod { (`self`: PythonObject) in
       threading.Thread.__init__(`self`)
       `self`.daemon = true
-      `self`.had_stdout = false
+      `self`.had_stdout = false // TODO: remove this property if not necessary
       return Python.None
     },
     
@@ -47,14 +47,11 @@ let StdoutHandler = PythonClass(
         if !KernelContext.pollingStdout {
           break
         }
-        KernelContext.log("b")
         getAndSendStdout(hadStdout: &localHadStdout)
         `self`.had_stdout = localHadStdout.pythonObject
       }
-      KernelContext.log("b.3")
       getAndSendStdout(hadStdout: &localHadStdout)
       `self`.had_stdout = localHadStdout.pythonObject
-      KernelContext.log("b.4")
       return Python.None
     }
   ]
@@ -64,7 +61,7 @@ fileprivate var cachedScratchBuffer: UnsafeMutablePointer<CChar>?
 
 fileprivate func getStdout() -> String {
   var stdout = Data()
-  let bufferSize = 1024//1 << 16
+  let bufferSize = 1 << 16
   let scratchBuffer = cachedScratchBuffer ?? .allocate(capacity: bufferSize)
   cachedScratchBuffer = scratchBuffer
   while true {
