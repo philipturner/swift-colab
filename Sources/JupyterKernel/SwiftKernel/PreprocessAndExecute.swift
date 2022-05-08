@@ -18,7 +18,7 @@ func preprocessAndExecute(
     
     DispatchQueue.global().async {
       executionResult = execute(
-        code: preprocessed, lineIndex: isCell ? 0 : nil, isCell: isCell,
+        code: preprocessed, lineIndex: isCell ? 0 : nil,
         executionCount: executionCount)
     }
     
