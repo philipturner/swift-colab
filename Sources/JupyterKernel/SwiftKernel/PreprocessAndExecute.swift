@@ -26,7 +26,7 @@ func preprocessAndExecute(code: String, isCell: Bool = false) throws -> Executio
 //     KernelContext.log("e.-2")
     
     // Not pausing the thread beforehand causes Swift-Colab to crash on startup.
-    time.sleep(0.05)
+    time.sleep(0.25)
 //     KernelContext.log("e.-1")
     semaphore.wait()
 //     KernelContext.log("e.-0")
