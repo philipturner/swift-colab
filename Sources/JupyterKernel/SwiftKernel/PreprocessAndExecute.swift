@@ -12,22 +12,16 @@ func preprocessAndExecute(
   iteration += 1
   do {
     let preprocessed = try preprocess(code: code)
-//     var finishedExecution = false
     var executionResult: ExecutionResult?
     // Need to avoid accessing Python from the background thread.
     let executionCount = Int(KernelContext.kernel.execution_count)!
     
     DispatchQueue.global().async {
-//       KernelContext.lldbQueue.sync {
-        executionResult = execute(
-          code: preprocessed, lineIndex: isCell ? 0 : nil, 
-          executionCount: executionCount)
-//         finishedExecution = true
-//       }
+      executionResult = execute(
+        code: preprocessed, lineIndex: isCell ? 0 : nil, 
+        executionCount: executionCount)
     }
     
-//     // Release the GIL
-//     time.sleep(0.05) // TODO: enable this if you ever see a crash
     while executionResult == nil {
       // Using Python's `time` module instead of Foundation.usleep releases the
       // GIL.
@@ -43,26 +37,19 @@ func execute(
   code: String, lineIndex: Int? = nil, 
   executionCount: Int = Int(KernelContext.kernel.execution_count)!
 ) -> ExecutionResult {
-//   KernelContext.log("c.1 \(iteration)")
   var locationDirective: String
   if let lineIndex = lineIndex {
-//     KernelContext.log("c.2 \(iteration)")
     locationDirective = getLocationDirective(
       lineIndex: lineIndex, executionCount: executionCount)
-//     KernelContext.log("c.3 \(iteration)")
   } else {
-//     KernelContext.log("c.4 \(iteration)")
     locationDirective = """
       #sourceLocation(file: "n/a", line: 1)
       """
-//     KernelContext.log("c.5 \(iteration)")
   }
+  
   let codeWithLocationDirective = locationDirective + "\n" + code
-  KernelContext.log("c.7 \(iteration)")
   var descriptionPtr: UnsafeMutablePointer<CChar>?
-  KernelContext.log("c \(iteration)")
   let error = KernelContext.execute(codeWithLocationDirective, &descriptionPtr)
-  KernelContext.log("d \(iteration)")
   
   var description: String?
   if let descriptionPtr = descriptionPtr {
