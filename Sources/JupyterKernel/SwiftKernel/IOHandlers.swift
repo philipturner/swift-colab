@@ -49,16 +49,16 @@ let StdoutHandler = PythonClass(
     ])
         KernelContext.log("a")
 //         KernelContext.log("a.2")
-//         time.sleep(0.1)
+        time.sleep(0.1)
 //         KernelContext.log("b")
 //         KernelContext.log("b.2")
-//         if !KernelContext.pollingStdout {
-//           break
-//         }
-        if stop_event.wait(0.1) != Python.None {
-          KernelContext.log("b.2")
+        if !KernelContext.pollingStdout {
           break
         }
+//         if stop_event.wait(0.1) != Python.None {
+//           KernelContext.log("b.2")
+//           break
+//         }
         KernelContext.log("b")
         getAndSendStdout(hadStdout: &localHadStdout)
         `self`.had_stdout = localHadStdout.pythonObject
