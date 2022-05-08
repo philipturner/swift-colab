@@ -23,12 +23,10 @@ struct SuccessWithValue: ExecutionResultSuccess {
 
 /// There was an error preprocessing the code.
 struct PreprocessorError: ExecutionResultError {
-  var description: String
+  var exception: PreprocessorException
   
-  init(description: String) { self.description = description }
-  
-  init(exception: PreprocessorException) {
-    description = String(describing: exception)
+  var description: String {
+    String(describing: exception)
   }
 }
 
