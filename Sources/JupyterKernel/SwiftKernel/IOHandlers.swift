@@ -3,8 +3,6 @@ fileprivate let signal = Python.import("signal")
 fileprivate let threading = Python.import("threading")
 fileprivate let time = Python.import("time")
 
-// SIGINT handling requires a single-threaded context that respects the GIL. 
-// Thus, it uses Python threading instead of Swift GCD.
 let SIGINTHandler = PythonClass(
   "SIGINTHandler",
   superclasses: [threading.Thread],
@@ -74,57 +72,6 @@ let StdoutHandler = PythonClass(
   ]
 ).pythonObject
 
-// class StdoutHandler {
-//   private var semaphore = DispatchSemaphore(value: 0)
-//   private var shouldStop = false
-  
-//   // This is not thread-safe, but the way other code accesses it should not 
-//   // cause any data races. Access should be synchronized via `semaphore`.
-//   var hadStdout = false
-  
-//   init() {
-//     DispatchQueue.global(qos: .userInteractive).async { [self] in
-//       // Try to stick to checking at exact 0.1 second intervals. Without this
-//       // mechanism, it would slightly creep off by ~0.105 seconds, causing the
-//       // output to seem jumpy for any loop synchronized with a multiple of 0.1
-//       // second.
-//       // TODO: bc it's paired with the flush loop in preprocessAndExecute
-//       let interval: Double = 0.1
-//       var deadline = Date().advanced(by: interval)
-//       while true {
-//         Thread.sleep(until: deadline)
-        
-//         // I don't know why, but Colab always crashes or freezes unless I do
-//         // this. It would make sense if the reverse were true, because this
-//         // violates the Python GIL.
-//         KernelContext.sendResponse("stream", [
-//           "name": "stdout",
-//           "text": ""
-//         ])
-        
-//         if shouldStop {
-//           break
-//         }
-//         getAndSendStdout(hadStdout: &hadStdout)
-        
-//         deadline = deadline.advanced(by: interval)
-//         while deadline < Date() {
-//           deadline = deadline.advanced(by: interval)
-//         }
-//       }
-      
-//       getAndSendStdout(hadStdout: &hadStdout)                             
-//       semaphore.signal()
-//     }
-//   }
-  
-//   // Must be called before deallocating this object.
-//   func stop() {
-//     shouldStop = true
-//     semaphore.wait()
-//   }
-// }
-
 fileprivate var cachedScratchBuffer: UnsafeMutablePointer<CChar>?
 
 fileprivate func getStdout() -> String {
@@ -160,16 +107,9 @@ fileprivate func sendStdout(_ stdout: String) {
 }
 
 fileprivate func getAndSendStdout(hadStdout: inout Bool) {
-  var stdout: String!
-//   KernelContext.lldbQueue.sync {
-    KernelContext.log("b.3.1")
-    stdout = getStdout()
-    KernelContext.log("b.3.2")
-//   }
+  let stdout = getStdout()
   if stdout.count > 0 {
     hadStdout = true
-    KernelContext.log("b.3.3")
     sendStdout(stdout)
-    KernelContext.log("b.3.4")
   }
 }
