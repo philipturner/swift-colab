@@ -34,10 +34,6 @@ struct KernelContext {
     kernel.send_response(kernel.iopub_socket, header, message)
   }
   
-//   // Prevents data races when accessing LLDB, which caused crashes previously.
-  static let lldbQueue = DispatchQueue(
-    label: "com.philipturner.swift-colab.KernelContext.lldbQueue")
-  
   // Dynamically loaded LLDB bringing functions
   
   static let init_repl_process: @convention(c) (
