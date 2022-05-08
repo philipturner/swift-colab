@@ -47,13 +47,11 @@ func doExecute(code: String) throws -> PythonObject? {
   } else if result is SuccessWithoutValue {
     return nil
   } else if result is ExecutionResultError {
-    var traceback: [String]
     var isAlive: Int32 = 0
     _ = KernelContext.process_is_alive(&isAlive)
     
     if isAlive == 0 {
-      traceback = ["Process killed"]
-      sendIOPubErrorMessage(traceback)
+      sendIOPubErrorMessage(["Process killed"])
       
       // Exit the kernel because there is no way to recover from a killed 
       // process. The UI will tell the user that the kernel has died and the UI 
@@ -66,13 +64,11 @@ func doExecute(code: String) throws -> PythonObject? {
       // already sent to the client, contains the error message (plus some other 
       // ugly traceback that we should eventually figure out how to suppress), 
       // so this block of code only needs to add a traceback.
-      traceback = ["Current stack trace:"] + try prettyPrintStackTrace()
-      sendIOPubErrorMessage(traceback)      
+      sendIOPubErrorMessage(try prettyPrintStackTrace())      
     } else if result is PreprocessorError {
       // There is no stdout, so it must be a compile error. Simply return the 
       // error without trying to get a stack trace.
-      traceback = [result.description]
-      sendIOPubErrorMessage(traceback)
+      sendIOPubErrorMessage([result.description])
     } else {
       fatalError("This should never happen.")
     }
@@ -97,7 +93,7 @@ fileprivate func setParentMessage() throws {
 }
 
 fileprivate func prettyPrintStackTrace() throws -> [String] {
-  var output: [String] = []
+  var output: [String] = ["Current stack trace:"]
   
   var frames: UnsafeMutablePointer<UnsafeMutablePointer<CChar>>?
   var size: Int32 = 0
