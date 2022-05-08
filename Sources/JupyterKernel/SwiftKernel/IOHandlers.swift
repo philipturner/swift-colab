@@ -40,6 +40,7 @@ let StdoutHandler = PythonClass(
     },
     
     "run": PythonInstanceMethod { (`self`: PythonObject) in
+      KernelContext.log("began stdout handler")
       while true {
         time.sleep(0.05)
         if !KernelContext.pollingStdout {
@@ -90,6 +91,7 @@ fileprivate func sendStdout(_ stdout: String) {
 fileprivate func getAndSendStdout() {
   let stdout = getStdout()
   if stdout.count > 0 {
+    KernelContext.log("received stdout")
     sendStdout(stdout)
   }
 }
