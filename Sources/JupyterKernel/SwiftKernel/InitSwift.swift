@@ -39,20 +39,22 @@ func initSwift() throws {
 }
 
 fileprivate func initReplProcess() throws {
-  let environment = ProcessInfo.processInfo.environment
-  let cEnvironment = CEnvironment(environment: environment)
-  
-  let error = KernelContext.init_repl_process(
-    cEnvironment.envp, FileManager.default.currentDirectoryPath)
-  if error != 0 {
-    throw Exception("Got error code \(error) from 'init_repl_process'")
+  try KernelContext.lldbQueue.sync {
+    let environment = ProcessInfo.processInfo.environment
+    let cEnvironment = CEnvironment(environment: environment)
+    
+    let error = KernelContext.init_repl_process(
+      cEnvironment.envp, FileManager.default.currentDirectoryPath)
+    if error != 0 {
+      throw Exception("Got error code \(error) from 'init_repl_process'")
+    }
   }
 }
 
 fileprivate func initKernelCommunicator() throws {
   var result = try preprocessAndExecute(code: """
-  %include "KernelCommunicator.swift"
-  """)
+    %include "KernelCommunicator.swift"
+    """)
   if result is ExecutionResultError {
     throw Exception("Error initializing KernelCommunicator: \(result)")
   }
@@ -63,12 +65,12 @@ fileprivate func initKernelCommunicator() throws {
   let username = String(session.username)!
   
   result = try preprocessAndExecute(code: """
-  enum JupyterKernel {
-    static var communicator = KernelCommunicator(
-      jupyterSession: KernelCommunicator.JupyterSession(
-        id: "\(id)", key: "\(key)", username: "\(username)"))
-  }
-  """)
+    enum JupyterKernel {
+      static var communicator = KernelCommunicator(
+        jupyterSession: KernelCommunicator.JupyterSession(
+          id: "\(id)", key: "\(key)", username: "\(username)"))
+    }
+    """)
   if result is ExecutionResultError {
     throw Exception("Error declaring JupyterKernel: \(result)")
   }
