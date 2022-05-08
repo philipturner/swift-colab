@@ -9,20 +9,28 @@ func preprocessAndExecute(code: String, isCell: Bool = false) throws -> Executio
     let preprocessed = try preprocess(code: code)
     var finishedExecution = false
     var executeResult: ExecutionResult?
-    KernelContext.lldbQueue.async {
-      executeResult = execute(code: preprocessed, lineIndex: isCell ? 0 : nil)
-      finishedExecution = true
+    KernelContext.log("j.1")
+    DispatchQueue.global().async {
+      KernelContext.log("j.2")
+      KernelContext.lldbQueue.sync {
+        KernelContext.log("j.3")
+        executeResult = execute(code: preprocessed, lineIndex: isCell ? 0 : nil)
+        KernelContext.log("j.4")
+        finishedExecution = true
+      }
     }
     
+    KernelContext.log("j.5")
 //     // Release the GIL
     time.sleep(0.05) // TODO: enable this if you ever see a crash
-    
+    KernelContext.log("j.6")
     while !finishedExecution {
       // Using Python's `time` module instead of Foundation.usleep releases the
       // GIL.
+      KernelContext.log("j.7")
       time.sleep(0.05)
     }
-    
+    KernelContext.log("j.8")
     return KernelContext.lldbQueue.sync { executeResult! }
   } catch let e as PreprocessorException {
     return PreprocessorError(exception: e)
