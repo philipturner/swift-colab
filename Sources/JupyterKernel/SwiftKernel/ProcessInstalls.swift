@@ -49,6 +49,7 @@ fileprivate var swiftPMFlags: [String] = []
 fileprivate func processSwiftPMFlags(
   restOfLine: String, lineIndex: Int
 ) throws {
+  // Nobody is going to type this literal into their Colab notebook.
   let id = "$SWIFT_COLAB_sHcpmxAcqC7eHlgD"
   var processedLine: String
   do {
