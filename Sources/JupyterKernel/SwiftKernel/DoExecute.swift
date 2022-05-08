@@ -65,20 +65,18 @@ func doExecute(code: String) throws -> PythonObject? {
       // Does this actually do anything?
       let loop = Python.import("ioloop").IOLoop.current()
       loop.add_timeout(Python.import("time").time() + 0.1, loop.stop)
-    } else if result is SwiftError {
+    } else if Bool(handler.had_stdout)! {
       // When there is stdout, it is a runtime error. Stdout, which we have
       // already sent to the client, contains the error message (plus some other 
       // ugly traceback that we should eventually figure out how to suppress), 
       // so this block of code only needs to add a traceback.
       traceback = try prettyPrintStackTrace()
       sendIOPubErrorMessage(traceback)      
-    } else if result is PreprocessorError {
+    } else {
       // There is no stdout, so it must be a compile error. Simply return the 
       // error without trying to get a stack trace.
       traceback = [result.description]
       sendIOPubErrorMessage(traceback)
-    } else {
-      fatalError("This should never happen.")
     }
     
     return makeExecuteReplyErrorMessage(traceback)
