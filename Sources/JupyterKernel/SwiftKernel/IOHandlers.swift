@@ -36,7 +36,6 @@ let StdoutHandler = PythonClass(
     "__init__": PythonInstanceMethod { (`self`: PythonObject) in
       threading.Thread.__init__(`self`)
       `self`.daemon = true
-      `self`.stop_event = threading.Event()
       `self`.had_stdout = false
       return Python.None
     },
@@ -56,10 +55,6 @@ let StdoutHandler = PythonClass(
         if !KernelContext.pollingStdout {
           break
         }
-//         if stop_event.wait(0.1) != Python.None {
-//           KernelContext.log("b.2")
-//           break
-//         }
         KernelContext.log("b")
         getAndSendStdout(hadStdout: &localHadStdout)
         `self`.had_stdout = localHadStdout.pythonObject
