@@ -41,7 +41,7 @@ func preprocessAndExecute(code: String, isCell: Bool = false) throws -> Executio
 }
 
 func execute(code: String, lineIndex: Int? = nil) -> ExecutionResult {
-  KernelContext.log("c.1 \(iteration)")
+//   KernelContext.log("c.1 \(iteration)")
   var locationDirective: String
   if let lineIndex = lineIndex {
 //     KernelContext.log("c.2 \(iteration)")
@@ -54,7 +54,7 @@ func execute(code: String, lineIndex: Int? = nil) -> ExecutionResult {
       """
 //     KernelContext.log("c.5 \(iteration)")
   }
-//   KernelContext.log("c.6 \(iteration)")
+  KernelContext.log("c.6 \(iteration)")
   let codeWithLocationDirective = locationDirective + "\n" + code
   KernelContext.log("c.7 \(iteration)")
   var descriptionPtr: UnsafeMutablePointer<CChar>?
