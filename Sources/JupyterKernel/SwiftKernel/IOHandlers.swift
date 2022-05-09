@@ -91,11 +91,12 @@ fileprivate func sendStdout(_ stdout: String) {
 }
 
 fileprivate func getAndSendStdout(handler: PythonObject) {
-  let stdout = getStdout()
+  var stdout = getStdout()
   if stdout.count > 0 {
     if Bool(handler.had_stdout)! == false {
       // Remove header that signalled that the code successfully compiled.
-      // TODO
+      let removedStdout = stdout.removeFirst()
+      precondition(removedStdout == "HEADER\n"
       handler.had_stdout = true
     }
     KernelContext.log("received stdout")
