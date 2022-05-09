@@ -72,7 +72,7 @@ func doExecute(code: String) throws -> PythonObject? {
       // this problem, extract where it crashed from the error message. If no
       // stack frames are generated, synthesize at least one using this source
       // location.
-      var errorSourceLocation: String?
+      var errorSource: String?
       
       // Stderr contains the error message, so this block of code needs to add a 
       // stack trace.
@@ -114,7 +114,7 @@ fileprivate func setParentMessage() throws {
   }
 }
 
-fileprivate func fetchStderr(errorSourceLocation: inout String?) -> [String] {
+fileprivate func fetchStderr(errorSource: inout String?) -> [String] {
   guard let stderr = getStderr(readData: true) else {
     return ["Current stack trace:"]
   }
@@ -152,7 +152,7 @@ fileprivate func fetchStderr(errorSourceLocation: inout String?) -> [String] {
   // The substring ends at the character right before the second colon. This
   // means the source location does not include a column.
   let angleBracketIndex = firstLine.index(after: slashIndex) // index of "<"
-  errorSourceLocation = String(firstLine[angleBracketIndex..<secondColonIndex])
+  errorSource = String(firstLine[angleBracketIndex..<secondColonIndex])
   
   // The line could theoretically end right after the second colon.
   let messageStartIndex = firstLine.index(secondColonIndex, offsetBy: 2)
@@ -164,7 +164,7 @@ fileprivate func fetchStderr(errorSourceLocation: inout String?) -> [String] {
   return lines
 }
 
-fileprivate func prettyPrintStackTrace() throws -> [String] {
+fileprivate func prettyPrintStackTrace(errorSource: String?) throws -> [String] {
   var output: [String] = []
   var frames: UnsafeMutablePointer<UnsafeMutablePointer<CChar>>?
   var size: Int32 = 0
@@ -173,18 +173,30 @@ fileprivate func prettyPrintStackTrace() throws -> [String] {
     throw Exception(
       "`get_pretty_stack_trace` failed with error code \(error).")
   }
+  defer { free(frames) }
+////////////////////////////////////////////////////////////////////////////////
+  // Number of characters, including digits and spaces, before the function 
+  // name.
+  let padding = 5
+  
+  // If there are no frames, synthesize one if possible.
+  if size == 0, let errorSource = errorSource {
+    // 1 digit + 4 spaces = 5 padding characters
+    return ["1    main - \(errorSource)"]
+  }
   
   for i in 0..<Int(size) {
     let frame = frames[i]
+    defer { free(frame) }
+    
     let description = String(cString: UnsafePointer(frame))
     var frameID = String(i + 1) + " "
-    if frameID.count < 5 {
-      frameID += String(repeating: " " as Character, count: 5 - frameID.count)
+    if frameID.count < padding {
+      frameID += String(
+        repeating: " " as Character, count: padding - frameID.count)
     }
     output.append(frameID + description)
-    free(frame)
   }
-  free(frames)
   return output
 }
 
