@@ -28,7 +28,7 @@ int init_repl_process(const char **repl_env,
   debugger.HandleCommand(
     "settings append target.swift-module-search-paths "
     "/opt/swift/install_location/modules");
-  debugger.HandleCommand("settings set target.output-path /tmp/out.txt")
+  debugger.HandleCommand("settings set target.output-path /opt/swift/err");
   
   // LLDB will not crash when scripting because this isn't macOS. However,
   // disabling scripting could decrease startup time if the debugger needs to
