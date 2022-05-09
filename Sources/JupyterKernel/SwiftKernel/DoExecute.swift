@@ -129,18 +129,22 @@ fileprivate func fetchStderr() -> [String] {
   let firstLine = lines[0]
   guard firstLine.hasPrefix("__lldb_expr_") else { return lines }
   guard let slashIndex = firstLine.firstIndex(of: "/") else { return lines }
+////////////////////////////////////////////////////////////////////////////////
+  // The line could theoretically end here, so don't set `headerStartIndex` to 
+  // the index after `slashIndex` just yet.
   var numColons = 0
-  var messageStartIndex: String.Index?
+  var headerEndIndex: String.Index?
   for index in firstLine[slashIndex...].indices {
     if firstLine[index] == ":" {
       numColons += 1
     }
     if numColons == 2 {
-      messageStartIndex = firstLine.index(index, offsetBy: 2)
+      headerEndIndex = index
       break
     }
   }
-  guard let messageStartIndex = messageStartIndex else { return lines }
+  guard let headerEndIndex = headerEndIndex else { return lines }
+  let messageStartIndex = firstLine.index(headerEndIndex, offsetBy: 2)
   
   // Todo: preserve slashIndex..<(messageStartIndex - 1). If they
   // unwrap an optional, there is no stack trace. The header would at least
