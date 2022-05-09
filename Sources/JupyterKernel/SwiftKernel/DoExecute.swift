@@ -7,6 +7,13 @@ func doExecute(code: String) throws -> PythonObject? {
   KernelContext.pollingStdout = true
   KernelContext.log("")
   KernelContext.log("code: \(code)")
+  
+  // Flush stderr
+  let errorFilePath = "/opt/swift/err"
+  precondition(
+    FileManager.default.createFile(atPath: errorFilePath, data: Data()),
+    "Could not flush stderr file.")
+  
   let handler = StdoutHandler()
   handler.start()
   
