@@ -47,7 +47,7 @@ int init_repl_process(const char **repl_env,
   // Redirect stderr to something that Swift-Colab can manually process. This
   // suppresses the ugly backtraces that appear in stdout.
   const char *errorFilePath = "/opt/swift/err";
-  FILE *errorFilePointer = fopen(errorFilePath, "w");
+  FILE *errorFilePointer = fopen(errorFilePath, "w+");
   fclose(errorFilePointer);
   
   SBListener listener;
@@ -186,6 +186,12 @@ int after_successful_execution(uint64_t **serialized_output) {
 }
 
 int get_stdout(char *dst, int *buffer_size) {
+  return int(process.GetSTDOUT(dst, size_t(buffer_size)));
+}
+
+int get_stderr(char *dst, int *buffer_size) {
+  FILE *errorFilePointer = fopen("/opt/swift/err", "r+");
+  fclose(errorFilePointer);
   return int(process.GetSTDOUT(dst, size_t(buffer_size)));
 }
 
