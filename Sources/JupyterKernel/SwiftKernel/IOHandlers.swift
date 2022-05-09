@@ -115,5 +115,9 @@ func getStderr() -> String {
   let stderr = String(data: stderrData, encoding: .utf8)!
   // TODO: find a way to flush the file without LLDB's appending
   // mechanism messing up
+  precondition(
+    fm.createFile(atPath: "/opt/swift/err", contents: Data()),
+    "Could not write to stderr file for the Swift interpreter")
+  
   return stderr
 }
