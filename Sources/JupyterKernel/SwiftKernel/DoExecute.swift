@@ -130,7 +130,7 @@ fileprivate func fetchStderr() -> [String] {
   guard let slashIndex = firstLine.firstIndex(of: "/") else { return lines }
   var numColons = 0
   var messageStartIndex: String.Index?
-  for index in slashIndex... {
+  for index in firstLine[slashIndex...].indices {
     if firstLine[index] == ":" {
       numColons += 1
     }
