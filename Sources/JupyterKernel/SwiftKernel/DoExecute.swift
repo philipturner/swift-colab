@@ -167,8 +167,14 @@ fileprivate func prettyPrintStackTrace() throws -> [String] {
   return output
 }
 
-fileprivate func parseStderr(rawStderr: [String]) -> [String]? {
-  // There might be multiple lines of error message. Remove the restriction that it has to be right before stack trace.
+fileprivate func fetchStderr() -> [String] {
+  // There might be multiple lines of error message. Remove the restriction that 
+  // it has to be right before stack trace.
+  let rawStderr = getStderr(readData: true)
+  var stderr = rawStderr.split(separator: "\n", omittingEmptySubsequences: false)
+  guard let stackTraceIndex = stderr.lastIndex(of: "Current stack trace:") {
+    
+  }
 }
 
 fileprivate func makeExecuteReplyErrorMessage(_ message: [String]) -> PythonObject {
