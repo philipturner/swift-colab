@@ -108,25 +108,32 @@ fileprivate func getAndSendStdout(handler: PythonObject) {
   }
 }
 
+fileprivate var errorStreamEnd: Int = 0
+
 func getStderr() -> String {
-  let fm = FileManager.default
-  // TODO: open with with w+ in debugger, the go back to DoExecute and ensure you only read once.
-  let stderrData = fm.contents(atPath: "/opt/swift/err") ?? Data()
-  let stderr = String(data: stderrData, encoding: .utf8)!
-  // TODO: find a way to flush the file without LLDB's appending
-  // mechanism messing up
+//   let fm = FileManager.default
+//   // TODO: open with with w+ in debugger, the go back to DoExecute and ensure you only read once.
+//   let stderrData = fm.contents(atPath: "/opt/swift/err") ?? Data()
+//   let stderr = String(data: stderrData, encoding: .utf8)!
+//   // TODO: find a way to flush the file without LLDB's appending
+//   // mechanism messing up
 
   
  
   
-    precondition(
-    fm.createFile(atPath: "/opt/swift/err", contents: Data()),
-    "Could not write to stderr file for the Swift interpreter")
+//     precondition(
+//     fm.createFile(atPath: "/opt/swift/err", contents: Data()),
+//     "Could not write to stderr file for the Swift interpreter")
   
-  let errorFilePointer = fopen("/opt/swift/err", "r+")!
-  rewind(errorFilePointer)
-  fclose(errorFilePointer)
-
+//   let errorFilePointer = fopen("/opt/swift/err", "r+")!
+//   rewind(errorFilePointer)
+//   fclose(errorFilePointer)
+  
+  let errorFilePointer = fopen("/opt/swift/err", "r")!
+  let previousCursor = ftell(errorFilePointer)
+  fseek(errorFilePointer, 0, SEEK_END)
+  let newErrorStreamEnd = ftell(errorFilePointer)
+  fseek(errorFilePointer, previousCursor, SEEK_SET)
   
   return stderr
 }
