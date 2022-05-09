@@ -123,6 +123,7 @@ fileprivate func fetchStderr() -> [String] {
     return lines
   }
   lines.removeLast(lines.count - stackTraceIndex)
+  lines.append("Current stack trace:")
   
   // Remove the "__lldb_expr_NUM/<Cell NUM>:NUM: " prefix to the error message.
   let firstLine = lines[0]
@@ -135,7 +136,7 @@ fileprivate func fetchStderr() -> [String] {
       numColons += 1
     }
     if numColons == 2 {
-      messageStartIndex = index
+      messageStartIndex = firstLine.index(index, offsetBy: 2)
       break
     }
   }
