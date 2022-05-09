@@ -113,10 +113,11 @@ fileprivate func fetchStderr() -> [String] {
     return ["Current stack trace:"]
   }
   var lines = stderr.split(separator: "\n", omittingEmptySubsequences: false)
+    .map(String.init)
   guard let stackTraceIndex = lines.lastIndex(of: "Current stack trace:") else {
     return lines + ["Current stack trace:"]
   }
-  
+////////////////////////////////////////////////////////////////////////////////
   // Return early if there is no error message.
   guard stackTraceIndex > 0 else {
     return lines
