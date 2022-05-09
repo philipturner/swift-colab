@@ -180,8 +180,7 @@ fileprivate func fetchStderr() -> [String] {
         stackTraceIndex > 0 else {
     return lines
   }
-  
-  
+  lines.removeLast(lines.count - stackTraceIndex)
   
   
 ////////////////////////////////////////////////////////////////////////////////
