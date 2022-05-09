@@ -75,8 +75,7 @@ func doExecute(code: String) throws -> PythonObject? {
       traceback = try prettyPrintStackTrace()
       
       // Suppress ugly traceback.
-      let stderr = getStderr(readData: true)
-      if stderr.count > 0 {
+      if let stderr = getStderr(readData: true) {
         traceback += ["", "Received error message:", stderr]
       }
       sendIOPubErrorMessage(traceback)      
