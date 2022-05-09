@@ -70,8 +70,7 @@ func doExecute(code: String) throws -> PythonObject? {
     } else if Bool(handler.had_stdout)! {
       // If it crashed while unwrapping `nil`, there is no stack trace. To solve
       // this problem, extract where it crashed from the error message. If no
-      // stack frames are generated, synthesize at least one using this source
-      // location.
+      // stack frames are generated, at least show where the error originated.
       var errorSource: String?
       
       // Stderr contains the error message, so this block of code needs to add a 
@@ -116,12 +115,12 @@ fileprivate func setParentMessage() throws {
 
 fileprivate func fetchStderr(errorSource: inout String?) -> [String] {
   guard let stderr = getStderr(readData: true) else {
-    return ["Current stack trace:"]
+    return []
   }
   var lines = stderr.split(separator: "\n", omittingEmptySubsequences: false)
     .map(String.init)
   guard let stackTraceIndex = lines.lastIndex(of: "Current stack trace:") else {
-    return lines + ["Current stack trace:"]
+    return lines
   }
   
   // Return early if there is no error message.
@@ -129,7 +128,6 @@ fileprivate func fetchStderr(errorSource: inout String?) -> [String] {
     return lines
   }
   lines.removeLast(lines.count - stackTraceIndex)
-  lines.append("Current stack trace:")
   
   // Remove the "__lldb_expr_NUM/<Cell NUM>:NUM: " prefix to the error message.
   let firstLine = lines[0]
@@ -165,7 +163,6 @@ fileprivate func fetchStderr(errorSource: inout String?) -> [String] {
 }
 
 fileprivate func prettyPrintStackTrace(errorSource: String?) throws -> [String] {
-  var output: [String] = []
   var frames: UnsafeMutablePointer<UnsafeMutablePointer<CChar>>?
   var size: Int32 = 0
   let error = KernelContext.get_pretty_stack_trace(&frames, &size);
@@ -174,17 +171,18 @@ fileprivate func prettyPrintStackTrace(errorSource: String?) throws -> [String] 
       "`get_pretty_stack_trace` failed with error code \(error).")
   }
   defer { free(frames) }
+  
+  // If there are no frames, try to show where the error originated.
+  if size == 0, let errorSource = errorSource {
+    return ["Location: \(errorSource)"]
+  } else {
+    return ["Stack trace not available"]
+  }
 ////////////////////////////////////////////////////////////////////////////////
-  // Number of characters, including digits and spaces, before the function 
-  // name.
+  // Number of characters, including digits and spaces, before a function name.
   let padding = 5
   
-  // If there are no frames, synthesize one if possible.
-  if size == 0, let errorSource = errorSource {
-    // 1 digit + 4 spaces = 5 padding characters
-    return ["1    main - \(errorSource)"]
-  }
-  
+  var output: [String] = ["Current stack trace:"]
   for i in 0..<Int(size) {
     let frame = frames[i]
     defer { free(frame) }
