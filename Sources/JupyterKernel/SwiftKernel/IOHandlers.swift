@@ -60,7 +60,7 @@ fileprivate var cachedStdoutBuffer: UnsafeMutablePointer<CChar>?
 fileprivate var cachedStderrBuffer: UnsafeMutablePointer<CChar>?
 
 fileprivate func getStdio(
-  _ get_stdio: @convention(c) (UnsafeMutablePointer<CChar>?, Int32) -> Int32,
+  _ get_stdio: @convention(c) (UnsafeMutablePointer<CChar>, Int32) -> Int32,
   cachedBuffer: inout UnsafeMutablePointer<CChar>?
 ) -> String {
   var stdio = Data()
