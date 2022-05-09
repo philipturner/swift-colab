@@ -83,8 +83,14 @@ func doExecute(code: String) throws -> PythonObject? {
         if let stackTraceIndex = lines.lastIndex(where: {
           $0.hasPrefix("Current stack trace:")
         }), stackTraceIndex == 1 {
-          addedErrorMessage = true
-          traceback += ["", "Received error message:", "some fatal error"]
+          let firstLine = lines[0]
+          if firstLine.hasPrefix("__lldb_expr"),
+             let slashIndex = firstLine.firstIndex(of: "/") {
+            
+            let message = String(firstLine[slashIndex...])
+            addedErrorMessage = true
+            traceback += ["", "222Received error message:", message]
+          }
         }
         if !addedErrorMessage {
           traceback += ["", "Received error message:", stderr]
