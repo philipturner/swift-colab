@@ -29,8 +29,8 @@ int init_repl_process(const char **repl_env,
     "settings append target.swift-module-search-paths "
     "/opt/swift/install_location/modules");
   
-  FILE *errFilePointer = fopen("/opt/swift/err", "w");
-  debugger.SetErrorFileHandle(errFilePointer, true);
+//   FILE *errFilePointer = fopen("/opt/swift/err", "w");
+//   debugger.SetErrorFileHandle(errFilePointer, true);
   debugger.HandleCommand("settings set target.output-path /opt/swift/err");
   
   // LLDB will not crash when scripting because this isn't macOS. However,
