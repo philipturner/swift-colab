@@ -153,5 +153,5 @@ func getStderr() -> String {
   
   return String(
     bytesNoCopy: errorDataPointer, length: messageSize, encoding: .utf8, 
-    freeWhenDone: true)
+    freeWhenDone: true)!
 }
