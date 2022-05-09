@@ -8,21 +8,12 @@ func doExecute(code: String) throws -> PythonObject? {
   KernelContext.log("")
   KernelContext.log("code: \(code)")
   
-//   // Flush stderr.
-//   let fm = FileManager.default
-//   let stderrPath = "/opt/swift/err"
-//   do {
-//     // File should have been created in the LLDB C++ bindings during when
-//     // initializing the debugger.
-//     let stderrData = fm.contents(atPath: stderrPath)!
-//     if stderrData.count > 0 {
-//       // Instead of this, need to property call `GetSTDERR` in LLDB C++
-//       // code and flush the file.
-//       KernelContext.log("Flushed stderr file")
-//       precondition(fm.createFile(atPath: stderrPath, contents: Data()),
-//       "Could not flush stderr file.")
-//     }
-//   }
+  var flushedStderr = false
+  defer {
+    if !flushedStderr {
+      _ = getStderr()
+    }
+  }
   
   let handler = StdoutHandler()
   handler.start()
@@ -87,12 +78,13 @@ func doExecute(code: String) throws -> PythonObject? {
       // so this block of code only needs to add a traceback.
       traceback = try prettyPrintStackTrace()
       
+      let stderr = getStderr()
+      flushedStderr = true
+      
       // Suppress ugly traceback.
-//       let stderrData = fm.contents(atPath: stderrPath)!
-//       let stderr = getStderr()//String(data: stderrData, encoding: .utf8)!
-//       if stderr.count > 0 {
-//         traceback += ["", "Received error message:", stderr]
-//       }
+      if stderr.count > 0 {
+        traceback += ["", "Received error message:", stderr]
+      }
       sendIOPubErrorMessage(traceback)      
     } else {
       // There is no stdout, so it must be a compile error. Simply return the 
