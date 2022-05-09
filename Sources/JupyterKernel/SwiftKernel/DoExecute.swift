@@ -8,7 +8,6 @@ func doExecute(code: String) throws -> PythonObject? {
   KernelContext.log("")
   KernelContext.log("code: \(code)")
   
-  _ = getStderr()
 //   // Flush stderr.
 //   let fm = FileManager.default
 //   let stderrPath = "/opt/swift/err"
@@ -90,10 +89,10 @@ func doExecute(code: String) throws -> PythonObject? {
       
       // Suppress ugly traceback.
 //       let stderrData = fm.contents(atPath: stderrPath)!
-      let stderr = getStderr()//String(data: stderrData, encoding: .utf8)!
-      if stderr.count > 0 {
-        traceback += ["", "Received error message:", stderr]
-      }
+//       let stderr = getStderr()//String(data: stderrData, encoding: .utf8)!
+//       if stderr.count > 0 {
+//         traceback += ["", "Received error message:", stderr]
+//       }
       sendIOPubErrorMessage(traceback)      
     } else {
       // There is no stdout, so it must be a compile error. Simply return the 
