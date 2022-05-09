@@ -56,13 +56,51 @@ let StdoutHandler = PythonClass(
   ]
 ).pythonObject
 
-fileprivate var cachedScratchBuffer: UnsafeMutablePointer<CChar>?
+fileprivate var cachedStdoutBuffer: UnsafeMutablePointer<CChar>?
+fileprivate var cachedStderrBuffer: UnsafeMutablePointer<CChar>?
+
+fileprivate func getStdio(
+  _ get_stdio: @convention(c) (UnsafeMutablePointer<CChar>?, Int32) -> Int32,
+  cachedBuffer: inout UnsafeMutablePointer<CChar>?
+) -> String {
+  var stdio = Data()
+  let bufferSize = 1 << 16
+  let scratchBuffer = cachedBuffer ?? .allocate(capacity: bufferSize)
+  cachedBuffer = scratchBuffer
+  while true {
+    let stdioSize = get_stdio(scratchBuffer, Int32(bufferSize))
+    guard stdioSize > 0 else {
+      break
+    }
+    let stdioSegment = Data(
+      bytesNoCopy: scratchBuffer, count: Int(stdioSize), deallocator: .none)
+    stdio += stdioSegment
+  }
+  return String(data: stdio, encoding: .utf8)!
+}
+
+func getStderr() -> String {
+  var stderr = Data()
+  let bufferSize = 1 << 16
+  let scratchBuffer = cachedStderrBuffer ?? .allocate(capacity: bufferSize)
+  cachedStderrBuffer = scratchBuffer
+  while true {
+    let stderrSize = KernelContext.get_stderr(scratchBuffer, Int32(bufferSize))
+    guard stderrSize > 0 else {
+      break
+    }
+    let stderrSegment = Data(
+      bytesNoCopy: scratchBuffer, count: Int(stderrSize), deallocator: .none)
+    stderr += stderrSegment
+  }
+  return String(data: stderr, encoding: .utf8)!
+}
 
 fileprivate func getStdout() -> String {
   var stdout = Data()
   let bufferSize = 1 << 16
-  let scratchBuffer = cachedScratchBuffer ?? .allocate(capacity: bufferSize)
-  cachedScratchBuffer = scratchBuffer
+  let scratchBuffer = cachedStdoutBuffer ?? .allocate(capacity: bufferSize)
+  cachedStdoutBuffer = scratchBuffer
   while true {
     let stdoutSize = KernelContext.get_stdout(scratchBuffer, Int32(bufferSize))
     guard stdoutSize > 0 else {
