@@ -148,8 +148,11 @@ fileprivate func fetchStderr(errorSourceLocation: inout String?) -> [String] {
   }
   guard let secondColonIndex = secondColonIndex else { return lines }
   
-  // The substring ends at the character right before the second colon.
-  // Todo: preserve slashIndex...(messageStartIndex - 1). 
+  // The substring ends at the character right before the second colon. This
+  // means the source location does not include a column.
+  let cellStartIndex = firstLine.index(after: slashIndex) // index of "<"
+  
+  
 ////////////////////////////////////////////////////////////////////////////////
   let messageStartIndex = firstLine.index(secondColonIndex, offsetBy: 2)
   guard firstLine.indices.contains(messageStartIndex) else { return lines }
