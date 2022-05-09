@@ -124,7 +124,7 @@ func getStderr() -> String {
     "Could not write to stderr file for the Swift interpreter")
   
   let errorFilePointer = fopen("/opt/swift/err", "w+")!
-  fseek(errorFilePointer, 0, SEEK_SET)
+  rewind(errorFilePointer)
   fclose(errorFilePointer)
   
   return stderr
