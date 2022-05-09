@@ -68,6 +68,8 @@ func doExecute(code: String) throws -> PythonObject? {
       let loop = Python.import("tornado").ioloop.IOLoop.current()
       loop.add_timeout(Python.import("time").time() + 0.1, loop.stop)
     } else if Bool(handler.had_stdout)! {
+      // fetch stderr before fetching stack trace
+      
       // When there is stdout, it is a runtime error. Stdout, which we have
       // already sent to the client, contains the error message (plus some other 
       // ugly traceback that we should eventually figure out how to suppress), 
@@ -170,14 +172,16 @@ fileprivate func prettyPrintStackTrace() throws -> [String] {
 fileprivate func fetchStderr() -> [String] {
   // There might be multiple lines of error message. Remove the restriction that 
   // it has to be right before stack trace.
-  let rawStderr = getStderr(readData: true)
-  var stderr = rawStderr.split(
-    separator: "\n", omittingEmptySubsequences: false)
-  guard let stackTraceIndex = stderr.lastIndex(
-          of: "Current stack trace:"),
-        stackTraceIndex > 0 else {
-    return stderr
+  guard let stderr = getStderr(readData: true) else {
+    return []
   }
+  var lines = rawStderr.split(separator: "\n", omittingEmptySubsequences: false)
+  guard let stackTraceIndex = lines.lastIndex(of: "Current stack trace:"), 
+        stackTraceIndex > 0 else {
+    return lines
+  }
+  
+  
   
   
 ////////////////////////////////////////////////////////////////////////////////
