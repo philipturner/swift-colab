@@ -68,11 +68,11 @@ func doExecute(code: String) throws -> PythonObject? {
       let loop = Python.import("tornado").ioloop.IOLoop.current()
       loop.add_timeout(Python.import("time").time() + 0.1, loop.stop)
     } else if Bool(handler.had_stdout)! {
-      //    If they
-      // unwrap an optional, there is no stack trace. The header would at least
-      // allow synthesizing one frame.
+      // If it crashed while unwrapping `nil`, there is no stack trace. Extract 
+      // where it crashed from the error message. If no stack frames are
+      // generated, synthesize at least one using this source location.
       var errorSourceLocation: String?
-      
+////////////////////////////////////////////////////////////////////////////////
       // Stderr contains the error message, so this block of code needs to add a 
       // stack trace.
       traceback = fetchStderr()
