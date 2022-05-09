@@ -32,7 +32,12 @@ struct KernelContext {
         mode = "a"
       } else {
         mode = "w"
+        logInitialized = true
       }
+      
+      let filePointer = fopen("/opt/swift/log", mode)!
+      fwrite(message, 1, message.count, filePointer)
+      fclose(filePointer)
     }
   }
   
