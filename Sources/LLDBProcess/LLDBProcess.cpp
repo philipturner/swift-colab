@@ -25,10 +25,6 @@ int init_repl_process(const char **repl_env,
     return 1;
   
   debugger.SetAsync(false);
-  // Redirect stderr to something that Swift-Colab can manually process. This
-  // suppresses the ugly backtraces that appear in stdout.
-  FILE *errFilePointer = fopen("/opt/swift/err", "w");
-  debugger.SetOutputFileHandle(errFilePointer, true);
   debugger.HandleCommand(
     "settings append target.swift-module-search-paths "
     "/opt/swift/install_location/modules");
@@ -56,6 +52,9 @@ int init_repl_process(const char **repl_env,
   auto launch_flags = launch_info.GetLaunchFlags();
   launch_info.SetLaunchFlags(launch_flags & ~eLaunchFlagDisableASLR);
   target.SetLaunchInfo(launch_info);
+  
+  // Redirect stderr to something that Swift-Colab can manually process. This
+  // suppresses the ugly backtraces that appear in stdout.
   
   process = target.LaunchSimple(NULL, repl_env, cwd);
   if (!process.IsValid())
