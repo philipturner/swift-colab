@@ -68,6 +68,11 @@ func doExecute(code: String) throws -> PythonObject? {
       let loop = Python.import("tornado").ioloop.IOLoop.current()
       loop.add_timeout(Python.import("time").time() + 0.1, loop.stop)
     } else if Bool(handler.had_stdout)! {
+      //    If they
+      // unwrap an optional, there is no stack trace. The header would at least
+      // allow synthesizing one frame.
+      var errorSourceLocation: String?
+      
       // Stderr contains the error message, so this block of code needs to add a 
       // stack trace.
       traceback = fetchStderr()
@@ -108,7 +113,7 @@ fileprivate func setParentMessage() throws {
   }
 }
 
-fileprivate func fetchStderr() -> [String] {
+fileprivate func fetchStderr(errorSourceLocation: inout String?) -> [String] {
   guard let stderr = getStderr(readData: true) else {
     return ["Current stack trace:"]
   }
@@ -117,7 +122,7 @@ fileprivate func fetchStderr() -> [String] {
   guard let stackTraceIndex = lines.lastIndex(of: "Current stack trace:") else {
     return lines + ["Current stack trace:"]
   }
-////////////////////////////////////////////////////////////////////////////////
+  
   // Return early if there is no error message.
   guard stackTraceIndex > 0 else {
     return lines
@@ -129,7 +134,7 @@ fileprivate func fetchStderr() -> [String] {
   let firstLine = lines[0]
   guard firstLine.hasPrefix("__lldb_expr_") else { return lines }
   guard let slashIndex = firstLine.firstIndex(of: "/") else { return lines }
-////////////////////////////////////////////////////////////////////////////////
+  
   var numColons = 0
   var secondColonIndex: String.Index?
   for index in firstLine[slashIndex...].indices {
@@ -142,47 +147,17 @@ fileprivate func fetchStderr() -> [String] {
     }
   }
   guard let secondColonIndex = secondColonIndex else { return lines }
+  
+  // The substring ends at the character right before the second colon.
+  // Todo: preserve slashIndex...(messageStartIndex - 1). 
+////////////////////////////////////////////////////////////////////////////////
   let messageStartIndex = firstLine.index(secondColonIndex, offsetBy: 2)
   guard firstLine.indices.contains(messageStartIndex) else { return lines }
-  
-  // Todo: preserve slashIndex..<(messageStartIndex - 1). If they
-  // unwrap an optional, there is no stack trace. The header would at least
-  // allow synthesizing one frame.
   
   // The error message may span multiple lines, so just modify the first line
   // in-place and return the array.
   lines[0] = String(firstLine[messageStartIndex...])
   return lines
-//   if let stderr = getStderr(readData: true) {
-//         let lines = stderr.split(
-//           separator: "\n", omittingEmptySubsequences: true)
-//         var addedErrorMessage = false
-        
-//         if let stackTraceIndex = lines.lastIndex(where: {
-//           $0.hasPrefix("Current stack trace:")
-//         }), stackTraceIndex == 1 {
-//           let firstLine = lines[0]
-//           if firstLine.hasPrefix("__lldb_expr"), 
-//              let slashIndex = firstLine.firstIndex(of: "/") {
-//             var numColons = 0
-//             for index in firstLine[slashIndex...].indices {
-//               if firstLine[index] == ":" {
-//                 numColons += 1
-//               }
-//               if numColons == 2 {
-//                 let messageIndex = firstLine.index(index, offsetBy: 2)
-//                 let message = String(firstLine[messageIndex...])
-//                 traceback = [message] + traceback
-//                 addedErrorMessage = true
-//                 break
-//               }
-//             }
-//           }
-//         }
-//         if !addedErrorMessage {
-//           traceback += ["", "Received error message:", stderr]
-//         }
-//       }
 }
 
 fileprivate func prettyPrintStackTrace() throws -> [String] {
