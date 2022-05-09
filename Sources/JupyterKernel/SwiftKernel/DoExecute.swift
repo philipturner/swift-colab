@@ -75,6 +75,7 @@ func doExecute(code: String) throws -> PythonObject? {
       traceback = try prettyPrintStackTrace()
       
       // Suppress ugly traceback.
+      // - separate this into a parsing function.
       if let stderr = getStderr(readData: true) {
         let lines = stderr.split(
           separator: "\n", omittingEmptySubsequences: true)
