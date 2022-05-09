@@ -42,7 +42,7 @@ int init_repl_process(const char **repl_env,
   // Turn off "disable ASLR". This feature prevents the Swift Standard Library
   // from loading.
   auto launch_flags = target.GetLaunchInfo().GetLaunchFlags();
-  launch_flags &= ~eLaunchFlagDisableASLR);
+  launch_flags &= ~eLaunchFlagDisableASLR;
   
   // Redirect stderr to something that Swift-Colab can manually process. This
   // suppresses the ugly backtraces that appear in stdout.
