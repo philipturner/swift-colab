@@ -29,11 +29,6 @@ int init_repl_process(const char **repl_env,
     "settings append target.swift-module-search-paths "
     "/opt/swift/install_location/modules");
   
-  // Redirect stderr to something that Swift-Colab can manually process. This
-  // suppresses the ugly backtraces that appear in stdout.
-  FILE *errFilePointer = fopen("/opt/swift/err", "w");
-  debugger.SetErrorFileHandle(errFilePointer, true);
-  
   // LLDB will not crash when scripting because this isn't macOS. However,
   // disabling scripting could decrease startup time if the debugger needs to
   // "load the Python scripting stuff".
@@ -189,6 +184,10 @@ int after_successful_execution(uint64_t **serialized_output) {
 }
 
 int get_stdout(char *dst, int *buffer_size) {
+  // Redirect stderr to something that Swift-Colab can manually process. This
+  // suppresses the ugly backtraces that appear in stdout.
+  FILE *errFilePointer = fopen("/opt/swift/err", "w");
+  debugger.SetErrorFileHandle(errFilePointer, true);
   return int(process.GetSTDOUT(dst, size_t(buffer_size)));
 }
   
