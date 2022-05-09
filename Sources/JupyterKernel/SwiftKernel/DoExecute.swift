@@ -81,9 +81,9 @@ func doExecute(code: String) throws -> PythonObject? {
       let stderrData = FileManager.default.contents(atPath: stderrPath)!
       let stderr = String(data: stderrData, encoding: .utf8)!
       if stderr.count > 0 {
-        traceback += ["", "Received error message:"]
-        traceback += stderr.split(
-          separator: "\n", omittingEmptySubsequences: false).map(String.init)
+        traceback += ["", "Received error message:", stderr]
+//         traceback += stderr.split(
+//           separator: "\n", omittingEmptySubsequences: false).map(String.init)
       }
       sendIOPubErrorMessage(traceback)      
     } else {
