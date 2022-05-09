@@ -171,11 +171,16 @@ fileprivate func fetchStderr() -> [String] {
   // There might be multiple lines of error message. Remove the restriction that 
   // it has to be right before stack trace.
   let rawStderr = getStderr(readData: true)
-  var stderr = rawStderr.split(separator: "\n", omittingEmptySubsequences: false)
-  guard let stackTraceIndex = stderr.lastIndex(of: "Current stack trace:") {
-    
+  var stderr = rawStderr.split(
+    separator: "\n", omittingEmptySubsequences: false)
+  guard let stackTraceIndex = stderr.lastIndex(
+          of: "Current stack trace:"),
+        stackTraceIndex > 0 else {
+    return stderr
   }
   
+  
+////////////////////////////////////////////////////////////////////////////////
   
   if let stderr = getStderr(readData: true) {
         let lines = stderr.split(
