@@ -10,6 +10,7 @@ SBProcess process;
 SBExpressionOptions expr_opts;
 SBThread main_thread;
 
+
 int read_byte_array(SBValue sbvalue, 
                     uint64_t *output_size, 
                     uint64_t *output_capacity, 
@@ -186,12 +187,6 @@ int after_successful_execution(uint64_t **serialized_output) {
 }
 
 int get_stdout(char *dst, int *buffer_size) {
-  return int(process.GetSTDOUT(dst, size_t(buffer_size)));
-}
-
-int get_stderr(char *dst, int *buffer_size) {
-  FILE *errorFilePointer = fopen("/opt/swift/err", "r+");
-  fclose(errorFilePointer);
   return int(process.GetSTDOUT(dst, size_t(buffer_size)));
 }
 
