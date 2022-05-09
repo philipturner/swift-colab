@@ -135,7 +135,7 @@ func getStderr() -> String {
   let previousCursor = ftell(errorFilePointer)
   fseek(errorFilePointer, 0, SEEK_END)
   let newErrorStreamEnd = ftell(errorFilePointer)
-  fseek(errorFilePointer, previousCursor, SEEK_SET)
+//   fseek(errorFilePointer, previousCursor, SEEK_SET)
   
   let messageSize = newErrorStreamEnd - errorStreamEnd
   defer { errorStreamEnd = newErrorStreamEnd }
