@@ -93,9 +93,9 @@ func doExecute(code: String) throws -> PythonObject? {
                 numColons += 1
               }
               if numColons == 2 {
-                let messageIndex = firstLine.index(after: index)
+                let messageIndex = firstLine.index(index, offsetBy: 2)
                 let message = String(firstLine[messageIndex...])
-                traceback += ["", "222Received error message:", message]
+                traceback = [message] + traceback
                 addedErrorMessage = true
                 break
               }
