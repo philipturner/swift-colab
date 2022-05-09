@@ -8,10 +8,10 @@ func doExecute(code: String) throws -> PythonObject? {
   KernelContext.log("")
   KernelContext.log("code: \(code)")
   
-  // Flush stderr
-  let errorFilePath = "/opt/swift/err"
+  // Flush stderr.
+  let stderrPath = "/opt/swift/err"
   precondition(
-    FileManager.default.createFile(atPath: errorFilePath, data: Data()),
+    FileManager.default.createFile(atPath: stderrPath, data: Data()),
     "Could not flush stderr file.")
   
   let handler = StdoutHandler()
@@ -76,6 +76,15 @@ func doExecute(code: String) throws -> PythonObject? {
       // ugly traceback that we should eventually figure out how to suppress), 
       // so this block of code only needs to add a traceback.
       traceback = try prettyPrintStackTrace()
+      
+      // Suppress ugly traceback.
+      let stderrData = FileManager.default.contents(atPath: stderrPath)!
+      let stderr = String(data: stderrData, encoding: .utf8)!
+      if stderr.count > 0 {
+        traceback += ["", "Received error message:"]
+        traceback += stderr.split(
+          separator: "\n", omittingEmptySubsequences: false)
+      }
       sendIOPubErrorMessage(traceback)      
     } else {
       // There is no stdout, so it must be a compile error. Simply return the 
@@ -88,6 +97,15 @@ func doExecute(code: String) throws -> PythonObject? {
   } else {
     fatalError("This should never happen.")
   }
+}
+
+fileprivate func executeCell(code: String) throws -> ExecutionResult {
+  try setParentMessage()
+  let result = try preprocessAndExecute(code: code, isCell: true)
+  if result is ExecutionResultSuccess {
+    try afterSuccessfulExecution()
+  }
+  return result
 }
 
 fileprivate func setParentMessage() throws {
@@ -146,11 +164,3 @@ fileprivate func sendIOPubErrorMessage(_ message: [String]) {
   ])
 }
 
-fileprivate func executeCell(code: String) throws -> ExecutionResult {
-  try setParentMessage()
-  let result = try preprocessAndExecute(code: code, isCell: true)
-  if result is ExecutionResultSuccess {
-    try afterSuccessfulExecution()
-  }
-  return result
-}
