@@ -172,12 +172,15 @@ fileprivate func prettyPrintStackTrace(errorSource: String?) throws -> [String] 
   }
   defer { free(frames) }
   
-  // If there are no frames, try to show where the error originated.
-  if size == 0, let errorSource = errorSource {
-    return ["Location: \(errorSource)"]
-  } else {
-    return ["Stack trace not available"]
+  if size == 0 {
+    // If there are no frames, try to show where the error originated.
+    if let errorSource = errorSource {
+      return ["Location: \(errorSource)"]
+    } else {
+      return ["Stack trace not available"]
+    }
   }
+  
 ////////////////////////////////////////////////////////////////////////////////
   // Number of characters, including digits and spaces, before a function name.
   let padding = 5
