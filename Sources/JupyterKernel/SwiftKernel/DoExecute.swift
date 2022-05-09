@@ -86,7 +86,7 @@ func doExecute(code: String) throws -> PythonObject? {
       traceback = try prettyPrintStackTrace()
       
       // Suppress ugly traceback.
-      let stderrData = fm.default.contents(atPath: stderrPath)!
+      let stderrData = fm.contents(atPath: stderrPath)!
       let stderr = String(data: stderrData, encoding: .utf8)!
       if stderr.count > 0 {
         traceback += ["", "Received error message:", stderr]
