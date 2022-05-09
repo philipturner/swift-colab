@@ -132,10 +132,8 @@ func getStderr() -> String {
   let errorFilePointer = fopen("/opt/swift/err", "r")!
   defer { fclose(errorFilePointer) }
   
-  let previousCursor = ftell(errorFilePointer)
   fseek(errorFilePointer, 0, SEEK_END)
   let newErrorStreamEnd = ftell(errorFilePointer)
-//   fseek(errorFilePointer, previousCursor, SEEK_SET)
   
   let messageSize = newErrorStreamEnd - errorStreamEnd
   defer { errorStreamEnd = newErrorStreamEnd }
@@ -145,9 +143,13 @@ func getStderr() -> String {
   KernelContext.log("newErrorStreamEnd: \(newErrorStreamEnd)")
   if messageSize == 0 {
     return ""
-  } else {
-    return "Some Stderr\n"
   }
   
+  fseek(errorFilePointer, errorStreamEnd, SEEK_SET)
+  let errorDataPointer = malloc(messageSize)!
+  
+  
+  
 //   return stderr
+  return "Some Stderr\n"
 }
