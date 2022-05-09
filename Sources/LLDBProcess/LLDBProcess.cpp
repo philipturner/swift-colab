@@ -46,9 +46,9 @@ int init_repl_process(const char **repl_env,
   
   // Redirect stderr to something that Swift-Colab can manually process. This
   // suppresses the ugly backtraces that appear in stdout.
-  const char *errorFilePath = NULL;//"/opt/swift/err";
-//   FILE *errorFilePointer = fopen(errorFilePath, "w");
-//   fclose(errorFilePointer);
+  const char *errorFilePath = "/opt/swift/err";
+  FILE *errorFilePointer = fopen(errorFilePath, "a");
+  fclose(errorFilePointer);
   
   SBListener listener;
   SBError error;
@@ -188,11 +188,7 @@ int after_successful_execution(uint64_t **serialized_output) {
 int get_stdout(char *dst, int *buffer_size) {
   return int(process.GetSTDOUT(dst, size_t(buffer_size)));
 }
-  
-int get_stderr(char *dst, int *buffer_size) {
-  return int(process.GetSTDERR(dst, size_t(buffer_size)));
-}
-  
+
 // Caller must deallocate `frames` and every string within `frames`.
 int get_pretty_stack_trace(char ***frames, int *size) {
   uint32_t allocated_size = main_thread.GetNumFrames();
