@@ -10,9 +10,9 @@ func doExecute(code: String) throws -> PythonObject? {
   
   // Flush stderr.
   let stderrPath = "/opt/swift/err"
-//   precondition(
-//     FileManager.default.createFile(atPath: stderrPath, contents: Data()),
-//     "Could not flush stderr file.")
+  precondition(
+    FileManager.default.createFile(atPath: stderrPath, contents: Data()),
+    "Could not flush stderr file.")
   
   let handler = StdoutHandler()
   handler.start()
