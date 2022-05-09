@@ -80,37 +80,11 @@ fileprivate func getStdio(
 }
 
 func getStderr() -> String {
-  var stderr = Data()
-  let bufferSize = 1 << 16
-  let scratchBuffer = cachedStderrBuffer ?? .allocate(capacity: bufferSize)
-  cachedStderrBuffer = scratchBuffer
-  while true {
-    let stderrSize = KernelContext.get_stderr(scratchBuffer, Int32(bufferSize))
-    guard stderrSize > 0 else {
-      break
-    }
-    let stderrSegment = Data(
-      bytesNoCopy: scratchBuffer, count: Int(stderrSize), deallocator: .none)
-    stderr += stderrSegment
-  }
-  return String(data: stderr, encoding: .utf8)!
+  return getStdio(KernelContext.get_stderr, &cachedStderrBuffer)
 }
 
 fileprivate func getStdout() -> String {
-  var stdout = Data()
-  let bufferSize = 1 << 16
-  let scratchBuffer = cachedStdoutBuffer ?? .allocate(capacity: bufferSize)
-  cachedStdoutBuffer = scratchBuffer
-  while true {
-    let stdoutSize = KernelContext.get_stdout(scratchBuffer, Int32(bufferSize))
-    guard stdoutSize > 0 else {
-      break
-    }
-    let stdoutSegment = Data(
-      bytesNoCopy: scratchBuffer, count: Int(stdoutSize), deallocator: .none)
-    stdout += stdoutSegment
-  }
-  return String(data: stdout, encoding: .utf8)!
+  return getStdio(KernelContext.std_stdout, &cachedStdoutBuffer)
 }
 
 fileprivate func sendStdout(_ stdout: String) {
