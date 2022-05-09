@@ -80,11 +80,11 @@ fileprivate func getStdio(
 }
 
 func getStderr() -> String {
-  return getStdio(KernelContext.get_stderr, &cachedStderrBuffer)
+  return getStdio(KernelContext.get_stderr, cachedBuffer: &cachedStderrBuffer)
 }
 
 fileprivate func getStdout() -> String {
-  return getStdio(KernelContext.get_stdout, &cachedStdoutBuffer)
+  return getStdio(KernelContext.get_stdout, cachedBuffer: &cachedStdoutBuffer)
 }
 
 fileprivate func sendStdout(_ stdout: String) {
