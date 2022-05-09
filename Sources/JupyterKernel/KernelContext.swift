@@ -36,7 +36,7 @@ struct KernelContext {
       }
       
       let filePointer = fopen("/opt/swift/log", mode)!
-      fwrite(message, 1, message.count, filePointer)
+      fwrite(message + "\n", 1, message.count, filePointer)
       fclose(filePointer)
     }
   }
