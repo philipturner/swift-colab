@@ -119,9 +119,9 @@ func getStderr() -> String {
     fm.createFile(atPath: "/opt/swift/err", contents: Data()),
     "Could not write to stderr file for the Swift interpreter")
   
-  let filePointer = fopen("/opt/swift/err", "w+")!
-  fflush(filePointer)
-  fclose(filePointer)
+  let errorFilePointer = fopen("/opt/swift/err", "w+")!
+  fflush(errorFilePointer)
+  fclose(errorFilePointer)
   
   return stderr
 }
