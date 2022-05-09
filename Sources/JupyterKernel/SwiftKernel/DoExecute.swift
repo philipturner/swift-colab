@@ -122,11 +122,31 @@ fileprivate func fetchStderr() -> [String] {
   }
   lines.removeLast(lines.count - stackTraceIndex)
   
-  // Remove the "__lldb_expr_NUM/<Cell NUM>:NUM: " header to the error message.
-  guard lines[0].hasPrefix("__lldb_expr_")
+  // Remove the "__lldb_expr_NUM/<Cell NUM>:NUM: " prefix to the error message.
+  let firstLine = lines[0]
+  guard lines[0].hasPrefix("__lldb_expr_") else { return lines }
+  guard let slashIndex = lines[0].firstIndex(of: "/") else { return lines }
+  var numColons = 0
+  var messageStartIndex: String.Index?
+  for index in firstLine[slashIndex...] {
+    if firstLine[index] == ":" {
+      numColons += 1
+    }
+    if numColons == 2 {
+      messageStartIndex = index
+      break
+    }
+  }
+  guard let messageStartIndex = messageStartIndex else { return lines }
   
-////////////////////////////////////////////////////////////////////////////////
+  // Todo: preserve slashIndex..<(messageStartIndex - 1). If they
+  // unwrap an optional, there is no stack trace. The header would at least
+  // allow synthesizing one frame.
   
+  // The error message may span multiple lines, so just modify the first line
+  // in-place and return the array.
+  lines[0] = String(firstLine[messageStartIndex...])
+  return lines
 //   if let stderr = getStderr(readData: true) {
 //         let lines = stderr.split(
 //           separator: "\n", omittingEmptySubsequences: true)
