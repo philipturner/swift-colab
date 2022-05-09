@@ -48,7 +48,7 @@ int init_repl_process(const char **repl_env,
   // in a way that is forbidden by the default Docker security policy.
   // Although Colab is not Docker, ASLR still prevents the Swift stdlib
   // from loading.
-//   auto launch_info = target.GetLaunchInfo();
+  auto launch_info = target.GetLaunchInfo();
   auto launch_flags = launch_info.GetLaunchFlags();
   launch_flags &= ~eLaunchFlagDisableASLR; // Can't I just do `|= (no ~)disableASLR`?
 //   launch_info.SetLaunchFlags(launch_flags & ~eLaunchFlagDisableASLR);
@@ -60,10 +60,12 @@ int init_repl_process(const char **repl_env,
 //   process = target.LaunchSimple(NULL, repl_env, cwd);
 
   SBListener listener;
+  SBError error;
   process = target.Launch(
 ////////////////////////////////////////////////////////////////////////////////
     listener, /*argv=*/NULL, repl_env, /*stdin_path=*/NULL, 
-    /*stdout_path=*/NULL, /*stderr_path=*/NULL, cwd, 
+    /*stdout_path=*/NULL, /*stderr_path=*/NULL, cwd, launch_flags, 
+    /*stop_at_entry=*/false, error);
   
   if (!process.IsValid())
     return 4;
