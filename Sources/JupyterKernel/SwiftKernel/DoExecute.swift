@@ -78,7 +78,7 @@ func doExecute(code: String) throws -> PythonObject? {
       if let stderr = getStderr(readData: true) {
         let lines = stderr.split(
           separator: "\n", omittingEmptySubsequences: true)
-        
+        if let stackTraceIndex = lines.lastIndex(where: 
         traceback += ["", "Received error message:", stderr]
       }
       sendIOPubErrorMessage(traceback)      
