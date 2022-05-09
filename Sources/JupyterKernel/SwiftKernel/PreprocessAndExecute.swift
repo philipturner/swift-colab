@@ -34,7 +34,7 @@ func preprocessAndExecute(
 }
 
 func execute(
-  code: String, lineIndex: Int? = nil, isCell: Bool = false
+  code: String, lineIndex: Int? = nil, isCell: Bool = false,
   executionCount: Int = Int(KernelContext.kernel.execution_count)!
 ) -> ExecutionResult {
   // Send a header to stdout, letting the StdoutHandler know that it compiled 
