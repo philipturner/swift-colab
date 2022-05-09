@@ -29,11 +29,6 @@ int init_repl_process(const char **repl_env,
     "settings append target.swift-module-search-paths "
     "/opt/swift/install_location/modules");
   
-  // LLDB will not crash when scripting because this isn't macOS. However,
-  // disabling scripting could decrease startup time if the debugger needs to
-  // "load the Python scripting stuff".
-  debugger.SetScriptLanguage(eScriptLanguageNone);
-  
   const char *repl_swift = "/opt/swift/toolchain/usr/bin/repl_swift";
   target = debugger.CreateTargetWithFileAndArch(repl_swift, "");
   if (!target.IsValid())
@@ -44,29 +39,22 @@ int init_repl_process(const char **repl_env,
   if (!main_bp.IsValid())
     return 3;
   
-  // Turn off "disable ASLR". This feature uses the "personality" syscall
-  // in a way that is forbidden by the default Docker security policy.
-  // Although Colab is not Docker, ASLR still prevents the Swift stdlib
+  // Turn off "disable ASLR". This feature prevents the Swift Standard Library
   // from loading.
-//   auto launch_info = target.GetLaunchInfo();
   auto launch_flags = target.GetLaunchInfo().GetLaunchFlags();
-  launch_flags |= eLaunchFlagDisableASLR; // Can't I just do `|= (no ~)disableASLR`?
-//   launch_info.SetLaunchFlags(launch_flags & ~eLaunchFlagDisableASLR);
-//   target.SetLaunchInfo(launch_info);
+  launch_flags &= ~eLaunchFlagDisableASLR);
   
   // Redirect stderr to something that Swift-Colab can manually process. This
   // suppresses the ugly backtraces that appear in stdout.
+  const char *errorFile = NULL;
   
-//   process = target.LaunchSimple(NULL, repl_env, cwd);
-
   SBListener listener;
   SBError error;
   process = target.Launch(
-////////////////////////////////////////////////////////////////////////////////
     listener, /*argv=*/NULL, repl_env, /*stdin_path=*/NULL, 
-    /*stdout_path=*/NULL, /*stderr_path=*/NULL, cwd, launch_flags, 
-    /*stop_at_entry=*/false, error);
-  
+    /*stdout_path=*/NULL, errorFile, cwd, launch_flags, /*stop_at_entry=*/false,
+    error);
+////////////////////////////////////////////////////////////////////////////////
   if (!process.IsValid())
     return 4;
   
