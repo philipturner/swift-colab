@@ -68,9 +68,10 @@ func doExecute(code: String) throws -> PythonObject? {
       let loop = Python.import("tornado").ioloop.IOLoop.current()
       loop.add_timeout(Python.import("time").time() + 0.1, loop.stop)
     } else if Bool(handler.had_stdout)! {
-      // When there is stdout, it is a runtime error. Stderr contains the error 
-      // message, so this block of code only needs to add a traceback.
-      traceback = fetchStderr() + try prettyPrintStackTrace()
+      // Stderr contains the error message, so this block of code needs to add a 
+      // stack trace.
+      traceback = fetchStderr()
+      traceback += try prettyPrintStackTrace()
       sendIOPubErrorMessage(traceback)      
     } else {
       // There is no stdout, so it must be a compile error. Simply return the 
