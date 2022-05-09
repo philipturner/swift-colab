@@ -36,6 +36,7 @@ let StdoutHandler = PythonClass(
     "__init__": PythonInstanceMethod { (`self`: PythonObject) in
       threading.Thread.__init__(`self`)
       `self`.daemon = true
+      `self`.had_stdout = false
       return Python.None
     },
     
@@ -46,9 +47,9 @@ let StdoutHandler = PythonClass(
         if !KernelContext.pollingStdout {
           break
         }
-        getAndSendStdout()
+        getAndSendStdout(handler: `self`)
       }
-      getAndSendStdout()
+      getAndSendStdout(handler: `self`)
       KernelContext.log("ended stdout handler")
       return Python.None
     }
@@ -89,9 +90,14 @@ fileprivate func sendStdout(_ stdout: String) {
   }
 }
 
-fileprivate func getAndSendStdout() {
+fileprivate func getAndSendStdout(handler: PythonObject) {
   let stdout = getStdout()
   if stdout.count > 0 {
+    if Bool(handler.had_stdout)! == false {
+      // Remove header that signalled that the code successfully compiled.
+      // TODO
+      handler.had_stdout = true
+    }
     KernelContext.log("received stdout")
     sendStdout(stdout)
   }
