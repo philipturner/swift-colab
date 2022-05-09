@@ -151,10 +151,7 @@ func getStderr() -> String {
   precondition(readBytes == messageSize,
     "Did not read the expected number of bytes from stderr")
   
-  let errorData = Data(
-    bytesNoCopy: errorDataPointer, count: messageSize, deallocator: .free)
-  
-  
-//   return stderr
-  return "Some Stderr\n"
+  return String(
+    bytesNoCopy: errorDataPointer, length: messageSize, encoding: .utf8, 
+    freeWhenDone: true)
 }
