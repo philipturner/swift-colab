@@ -49,7 +49,7 @@ int init_repl_process(const char **repl_env,
   // Although Colab is not Docker, ASLR still prevents the Swift stdlib
   // from loading.
 //   auto launch_info = target.GetLaunchInfo();
-  auto launch_flags = target.GetLaunchInfo();.GetLaunchFlags();
+  auto launch_flags = target.GetLaunchInfo().GetLaunchFlags();
   launch_flags |= eLaunchFlagDisableASLR; // Can't I just do `|= (no ~)disableASLR`?
 //   launch_info.SetLaunchFlags(launch_flags & ~eLaunchFlagDisableASLR);
 //   target.SetLaunchInfo(launch_info);
