@@ -138,7 +138,6 @@ func getStderr() -> String {
   let messageSize = newErrorStreamEnd - errorStreamEnd
   defer { errorStreamEnd = newErrorStreamEnd }
   KernelContext.log("accessing file")
-  KernelContext.log("previous cursor: \(previousCursor)")
   KernelContext.log("errorStreamEnd: \(errorStreamEnd)")
   KernelContext.log("newErrorStreamEnd: \(newErrorStreamEnd)")
   if messageSize == 0 {
@@ -147,7 +146,7 @@ func getStderr() -> String {
   
   let errorDataPointer = malloc(messageSize)!
   fseek(errorFilePointer, errorStreamEnd, SEEK_SET)
-  let readBytes = fread(errorDataPointer, 1, message, errorFilePointer)
+  let readBytes = fread(errorDataPointer, 1, messageSize, errorFilePointer)
   precondition(readBytes == messageSize,
     "Did not read the expected number of bytes from stderr")
   
