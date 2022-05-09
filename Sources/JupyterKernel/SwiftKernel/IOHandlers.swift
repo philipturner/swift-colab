@@ -107,3 +107,9 @@ fileprivate func getAndSendStdout(handler: PythonObject) {
     sendStdout(stdout)
   }
 }
+
+func getStderr() -> String {
+  let fm = FileManager.default
+  let stderrData = fm.contents(atPath: "opt/swift/err")!
+  let stderr = String(data: stderrData, encoding: .utf8)!
+}
