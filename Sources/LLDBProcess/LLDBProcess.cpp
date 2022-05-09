@@ -46,14 +46,16 @@ int init_repl_process(const char **repl_env,
   
   // Redirect stderr to something that Swift-Colab can manually process. This
   // suppresses the ugly backtraces that appear in stdout.
-  const char *errorFile = "/opt/swift/err";
+  const char *errorFilePath = "/opt/swift/err";
+  FILE *errorFilePointer = fopen(errorFilePath, "w");
+  fclose(errorFilePointer);
   
   SBListener listener;
   SBError error;
   process = target.Launch(
     listener, /*argv=*/NULL, repl_env, /*stdin_path=*/NULL, 
-    /*stdout_path=*/NULL, errorFile, cwd, launch_flags, /*stop_at_entry=*/false,
-    error);
+    /*stdout_path=*/NULL, errorFilePath, cwd, launch_flags, 
+    /*stop_at_entry=*/false, error);
   if (!process.IsValid())
     return 4;
   
