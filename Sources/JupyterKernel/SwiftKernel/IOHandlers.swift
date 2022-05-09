@@ -109,6 +109,10 @@ fileprivate func getAndSendStdout(handler: PythonObject) {
 }
 
 func getStderr() -> String {
+   let errorFilePointer = fopen("/opt/swift/err", "w+")!
+  fflush(errorFilePointer)
+  fclose(errorFilePointer)
+  
   let fm = FileManager.default
   // TODO: open with with w+ in debugger, the go back to DoExecute and ensure you only read once.
   let stderrData = fm.contents(atPath: "/opt/swift/err") ?? Data()
@@ -117,9 +121,7 @@ func getStderr() -> String {
   // mechanism messing up
 
   
-  let errorFilePointer = fopen("/opt/swift/err", "w+")!
-  fflush(errorFilePointer)
-  fclose(errorFilePointer)
+ 
   
     precondition(
     fm.createFile(atPath: "/opt/swift/err", contents: Data()),
