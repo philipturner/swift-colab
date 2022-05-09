@@ -16,6 +16,7 @@ func doExecute(code: String) throws -> PythonObject? {
     // initializing the debugger.
     let stderrData = fm.default.contents(atPath: stderrPath)!
     if stderrData.count > 0 {
+      KernelContext.log("Flushed stderr file")
       precondition(fm.createFile(atPath: stderrPath, contents: Data()),
       "Could not flush stderr file.")
     }
