@@ -110,7 +110,8 @@ fileprivate func getAndSendStdout(handler: PythonObject) {
 
 func getStderr() -> String {
   let fm = FileManager.default
-  let stderrData = fm.contents(atPath: "opt/swift/err") ?? Data()
+  // TODO: open with with w+ in debugger, the go back to DoExecute and ensure you only read once.
+  let stderrData = fm.contents(atPath: "/opt/swift/err") ?? Data()
   let stderr = String(data: stderrData, encoding: .utf8)!
   // TODO: find a way to flush the file without LLDB's appending
   // mechanism messing up
