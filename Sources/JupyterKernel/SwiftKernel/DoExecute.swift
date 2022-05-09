@@ -14,7 +14,7 @@ func doExecute(code: String) throws -> PythonObject? {
   do {
     // File should have been created in the LLDB C++ bindings during when
     // initializing the debugger.
-    let stderrData = fm.default.contents(atPath: stderrPath)!
+    let stderrData = fm.contents(atPath: stderrPath)!
     if stderrData.count > 0 {
       KernelContext.log("Flushed stderr file")
       precondition(fm.createFile(atPath: stderrPath, contents: Data()),
