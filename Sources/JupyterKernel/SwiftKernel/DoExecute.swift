@@ -126,11 +126,11 @@ fileprivate func fetchStderr() -> [String] {
   
   // Remove the "__lldb_expr_NUM/<Cell NUM>:NUM: " prefix to the error message.
   let firstLine = lines[0]
-  guard lines[0].hasPrefix("__lldb_expr_") else { return lines }
-  guard let slashIndex = lines[0].firstIndex(of: "/") else { return lines }
+  guard firstLine.hasPrefix("__lldb_expr_") else { return lines }
+  guard let slashIndex = firstLine.firstIndex(of: "/") else { return lines }
   var numColons = 0
   var messageStartIndex: String.Index?
-  for index in firstLine[slashIndex...] {
+  for index in slashIndex... {
     if firstLine[index] == ":" {
       numColons += 1
     }
