@@ -68,7 +68,7 @@ func doExecute(code: String) throws -> PythonObject? {
       let loop = Python.import("tornado").ioloop.IOLoop.current()
       loop.add_timeout(Python.import("time").time() + 0.1, loop.stop)
     } else if Bool(handler.had_stdout)! {
-      // When there is stdout, it is a runtime error. Stderr, contains the error 
+      // When there is stdout, it is a runtime error. Stderr contains the error 
       // message, so this block of code only needs to add a traceback.
       traceback = fetchStderr() + try prettyPrintStackTrace()
       sendIOPubErrorMessage(traceback)      
@@ -108,8 +108,6 @@ fileprivate func setParentMessage() throws {
 }
 
 fileprivate func fetchStderr() -> [String] {
-  // There might be multiple lines of error message. Remove the restriction that 
-  // it has to be right before stack trace.
   guard let stderr = getStderr(readData: true) else {
     return ["Current stack trace:"]
   }
@@ -117,11 +115,15 @@ fileprivate func fetchStderr() -> [String] {
   guard let stackTraceIndex = lines.lastIndex(of: "Current stack trace:") else {
     return lines + ["Current stack trace:"]
   }
+  
+  // Return early if there is no error message.
   guard stackTraceIndex > 0 else {
     return lines
   }
   lines.removeLast(lines.count - stackTraceIndex)
   
+  // Remove the "__lldb_expr_NUM/<Cell NUM>:NUM: " header to the error message.
+  guard lines[0].hasPrefix("__lldb_expr_")
   
 ////////////////////////////////////////////////////////////////////////////////
   
