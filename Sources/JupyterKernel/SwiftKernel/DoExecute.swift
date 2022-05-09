@@ -84,12 +84,20 @@ func doExecute(code: String) throws -> PythonObject? {
           $0.hasPrefix("Current stack trace:")
         }), stackTraceIndex == 1 {
           let firstLine = lines[0]
-          if firstLine.hasPrefix("__lldb_expr"),
+          if firstLine.hasPrefix("__lldb_expr"), 
              let slashIndex = firstLine.firstIndex(of: "/") {
-            
-            let message = String(firstLine[slashIndex...])
-            addedErrorMessage = true
-            traceback += ["", "222Received error message:", message]
+            var numColons = 0
+            for index in firstLine[slashIndex...].indices {
+              if firstLine[index] == ":" {
+                numColons += 1
+              }
+              if numColons == 2 {
+                let message = String(firstLine[index.advanced(by: 1)...])
+                traceback += ["", "222Received error message:", message]
+                addedErrorMessage = true
+                break
+              }
+            }
           }
         }
         if !addedErrorMessage {
