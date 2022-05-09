@@ -9,7 +9,7 @@ func doExecute(code: String) throws -> PythonObject? {
   KernelContext.log("code: \(code)")
   
   // Flush stderr
-  _ = getStderr()
+  _ = getStderr(readData: false)
   
   let handler = StdoutHandler()
   handler.start()
@@ -75,7 +75,7 @@ func doExecute(code: String) throws -> PythonObject? {
       traceback = try prettyPrintStackTrace()
       
       // Suppress ugly traceback.
-      let stderr = getStderr()
+      let stderr = getStderr(readData: true)
       if stderr.count > 0 {
         traceback += ["", "Received error message:", stderr]
       }
