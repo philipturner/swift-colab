@@ -96,7 +96,7 @@ fileprivate func getAndSendStdout(handler: PythonObject) {
     if Bool(handler.had_stdout)! == false {
       // Remove header that signalled that the code successfully compiled.
       let header = "HEADER\n"
-      precondition(stdout.hasPrefix(header))
+      precondition(stdout.hasPrefix(header), stdout)
       stdout.removeFirst(header.count)
       handler.had_stdout = true
     }
