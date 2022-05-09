@@ -8,12 +8,8 @@ func doExecute(code: String) throws -> PythonObject? {
   KernelContext.log("")
   KernelContext.log("code: \(code)")
   
-  var flushedStderr = false
-  defer {
-    if !flushedStderr {
-      _ = getStderr()
-    }
-  }
+  // Flush stderr
+  _ = getStderr()
   
   let handler = StdoutHandler()
   handler.start()
@@ -78,10 +74,8 @@ func doExecute(code: String) throws -> PythonObject? {
       // so this block of code only needs to add a traceback.
       traceback = try prettyPrintStackTrace()
       
-      let stderr = getStderr()
-      flushedStderr = true
-      
       // Suppress ugly traceback.
+      let stderr = getStderr()
       if stderr.count > 0 {
         traceback += ["", "Received error message:", stderr]
       }
