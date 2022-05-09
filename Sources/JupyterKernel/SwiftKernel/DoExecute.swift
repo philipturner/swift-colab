@@ -150,10 +150,10 @@ fileprivate func fetchStderr(errorSourceLocation: inout String?) -> [String] {
   
   // The substring ends at the character right before the second colon. This
   // means the source location does not include a column.
-  let cellStartIndex = firstLine.index(after: slashIndex) // index of "<"
+  let angleBracketIndex = firstLine.index(after: slashIndex) // index of "<"
+  errorSourceLocation = String(firstLine[angleBracketIndex..<secondColonIndex])
   
-  
-////////////////////////////////////////////////////////////////////////////////
+  // The line could theoretically end right after the second colon.
   let messageStartIndex = firstLine.index(secondColonIndex, offsetBy: 2)
   guard firstLine.indices.contains(messageStartIndex) else { return lines }
   
