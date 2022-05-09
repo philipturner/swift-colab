@@ -76,6 +76,9 @@ func doExecute(code: String) throws -> PythonObject? {
       
       // Suppress ugly traceback.
       if let stderr = getStderr(readData: true) {
+        let lines = stderr.split(
+          separator: "\n", omittingEmptySubsequences: true)
+        
         traceback += ["", "Received error message:", stderr]
       }
       sendIOPubErrorMessage(traceback)      
