@@ -110,7 +110,7 @@ fileprivate func getAndSendStdout(handler: PythonObject) {
 
 fileprivate var errorStreamEnd: Int = 0
 
-func getStderr(readData: Bool) -> String {
+func getStderr(readData: Bool) -> String? {
 //   let fm = FileManager.default
 //   // TODO: open with with w+ in debugger, the go back to DoExecute and ensure you only read once.
 //   let stderrData = fm.contents(atPath: "/opt/swift/err") ?? Data()
@@ -141,7 +141,7 @@ func getStderr(readData: Bool) -> String {
   KernelContext.log("errorStreamEnd: \(errorStreamEnd)")
   KernelContext.log("newErrorStreamEnd: \(newErrorStreamEnd)")
   if messageSize == 0 || !readData {
-    return ""
+    return nil
   }
   
   let errorDataPointer = malloc(messageSize)!
