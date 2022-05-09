@@ -55,6 +55,7 @@ public func JupyterKernel_constructSwiftKernelClass(_ classObj: OpaquePointer) {
     if !KernelContext.debuggerInitialized {
       KernelContext.kernel = args[0]
       try initSwift()
+      KernelContext.log("finished initSwift")
       KernelContext.debuggerInitialized = true
     }
     
