@@ -83,7 +83,7 @@ func doExecute(code: String) throws -> PythonObject? {
       if stderr.count > 0 {
         traceback += ["", "Received error message:"]
         traceback += stderr.split(
-          separator: "\n", omittingEmptySubsequences: false)
+          separator: "\n", omittingEmptySubsequences: false).map(String.init)
       }
       sendIOPubErrorMessage(traceback)      
     } else {
