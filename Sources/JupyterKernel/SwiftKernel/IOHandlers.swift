@@ -112,4 +112,7 @@ func getStderr() -> String {
   let fm = FileManager.default
   let stderrData = fm.contents(atPath: "opt/swift/err")!
   let stderr = String(data: stderrData, encoding: .utf8)!
+  // TODO: find a way to flush the file without LLDB's appending
+  // mechanism messing up
+  return stderr
 }
