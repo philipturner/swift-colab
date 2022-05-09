@@ -79,34 +79,6 @@ func doExecute(code: String) throws -> PythonObject? {
       // Suppress ugly traceback.
       // - separate this into a parsing function.
       if let stderr = getStderr(readData: true) {
-        let lines = stderr.split(
-          separator: "\n", omittingEmptySubsequences: true)
-        var addedErrorMessage = false
-        
-        if let stackTraceIndex = lines.lastIndex(where: {
-          $0.hasPrefix("Current stack trace:")
-        }), stackTraceIndex == 1 {
-          let firstLine = lines[0]
-          if firstLine.hasPrefix("__lldb_expr"), 
-             let slashIndex = firstLine.firstIndex(of: "/") {
-            var numColons = 0
-            for index in firstLine[slashIndex...].indices {
-              if firstLine[index] == ":" {
-                numColons += 1
-              }
-              if numColons == 2 {
-                let messageIndex = firstLine.index(index, offsetBy: 2)
-                let message = String(firstLine[messageIndex...])
-                traceback = [message] + traceback
-                addedErrorMessage = true
-                break
-              }
-            }
-          }
-        }
-        if !addedErrorMessage {
-          traceback += ["", "Received error message:", stderr]
-        }
       }
       sendIOPubErrorMessage(traceback)      
     } else {
@@ -144,40 +116,17 @@ fileprivate func setParentMessage() throws {
   }
 }
 
-fileprivate func prettyPrintStackTrace() throws -> [String] {
-  var output: [String] = ["Current stack trace:"]
-  
-  var frames: UnsafeMutablePointer<UnsafeMutablePointer<CChar>>?
-  var size: Int32 = 0
-  let error = KernelContext.get_pretty_stack_trace(&frames, &size);
-  guard let frames = frames else {
-    throw Exception(
-      "`get_pretty_stack_trace` failed with error code \(error).")
-  }
-  
-  for i in 0..<Int(size) {
-    let frame = frames[i]
-    let description = String(cString: UnsafePointer(frame))
-    var frameID = String(i + 1) + " "
-    if frameID.count < 5 {
-      frameID += String(repeating: " " as Character, count: 5 - frameID.count)
-    }
-    output.append(frameID + description)
-    free(frame)
-  }
-  free(frames)
-  return output
-}
-
 fileprivate func fetchStderr() -> [String] {
   // There might be multiple lines of error message. Remove the restriction that 
   // it has to be right before stack trace.
   guard let stderr = getStderr(readData: true) else {
-    return []
+    return ["Current stack trace:"]
   }
   var lines = rawStderr.split(separator: "\n", omittingEmptySubsequences: false)
-  guard let stackTraceIndex = lines.lastIndex(of: "Current stack trace:"), 
-        stackTraceIndex > 0 else {
+  guard let stackTraceIndex = lines.lastIndex(of: "Current stack trace:") else {
+    return lines + ["Current stack trace:"]
+  }
+  guard stackTraceIndex > 0 else {
     return lines
   }
   lines.removeLast(lines.count - stackTraceIndex)
@@ -215,6 +164,30 @@ fileprivate func fetchStderr() -> [String] {
 //           traceback += ["", "Received error message:", stderr]
 //         }
 //       }
+}
+
+fileprivate func prettyPrintStackTrace() throws -> [String] {
+  var output: [String] = []
+  var frames: UnsafeMutablePointer<UnsafeMutablePointer<CChar>>?
+  var size: Int32 = 0
+  let error = KernelContext.get_pretty_stack_trace(&frames, &size);
+  guard let frames = frames else {
+    throw Exception(
+      "`get_pretty_stack_trace` failed with error code \(error).")
+  }
+  
+  for i in 0..<Int(size) {
+    let frame = frames[i]
+    let description = String(cString: UnsafePointer(frame))
+    var frameID = String(i + 1) + " "
+    if frameID.count < 5 {
+      frameID += String(repeating: " " as Character, count: 5 - frameID.count)
+    }
+    output.append(frameID + description)
+    free(frame)
+  }
+  free(frames)
+  return output
 }
 
 fileprivate func makeExecuteReplyErrorMessage(_ message: [String]) -> PythonObject {
