@@ -185,36 +185,36 @@ fileprivate func fetchStderr() -> [String] {
   
 ////////////////////////////////////////////////////////////////////////////////
   
-  if let stderr = getStderr(readData: true) {
-        let lines = stderr.split(
-          separator: "\n", omittingEmptySubsequences: true)
-        var addedErrorMessage = false
+//   if let stderr = getStderr(readData: true) {
+//         let lines = stderr.split(
+//           separator: "\n", omittingEmptySubsequences: true)
+//         var addedErrorMessage = false
         
-        if let stackTraceIndex = lines.lastIndex(where: {
-          $0.hasPrefix("Current stack trace:")
-        }), stackTraceIndex == 1 {
-          let firstLine = lines[0]
-          if firstLine.hasPrefix("__lldb_expr"), 
-             let slashIndex = firstLine.firstIndex(of: "/") {
-            var numColons = 0
-            for index in firstLine[slashIndex...].indices {
-              if firstLine[index] == ":" {
-                numColons += 1
-              }
-              if numColons == 2 {
-                let messageIndex = firstLine.index(index, offsetBy: 2)
-                let message = String(firstLine[messageIndex...])
-                traceback = [message] + traceback
-                addedErrorMessage = true
-                break
-              }
-            }
-          }
-        }
-        if !addedErrorMessage {
-          traceback += ["", "Received error message:", stderr]
-        }
-      }
+//         if let stackTraceIndex = lines.lastIndex(where: {
+//           $0.hasPrefix("Current stack trace:")
+//         }), stackTraceIndex == 1 {
+//           let firstLine = lines[0]
+//           if firstLine.hasPrefix("__lldb_expr"), 
+//              let slashIndex = firstLine.firstIndex(of: "/") {
+//             var numColons = 0
+//             for index in firstLine[slashIndex...].indices {
+//               if firstLine[index] == ":" {
+//                 numColons += 1
+//               }
+//               if numColons == 2 {
+//                 let messageIndex = firstLine.index(index, offsetBy: 2)
+//                 let message = String(firstLine[messageIndex...])
+//                 traceback = [message] + traceback
+//                 addedErrorMessage = true
+//                 break
+//               }
+//             }
+//           }
+//         }
+//         if !addedErrorMessage {
+//           traceback += ["", "Received error message:", stderr]
+//         }
+//       }
 }
 
 fileprivate func makeExecuteReplyErrorMessage(_ message: [String]) -> PythonObject {
