@@ -123,7 +123,7 @@ func getStderr() -> String {
     fm.createFile(atPath: "/opt/swift/err", contents: Data()),
     "Could not write to stderr file for the Swift interpreter")
   
-  let errorFilePointer = fopen("/opt/swift/err", "w")!
+  let errorFilePointer = fopen("/opt/swift/err", "r+")!
   rewind(errorFilePointer)
   fclose(errorFilePointer)
 
