@@ -84,7 +84,7 @@ func getStderr() -> String {
 }
 
 fileprivate func getStdout() -> String {
-  return getStdio(KernelContext.std_stdout, &cachedStdoutBuffer)
+  return getStdio(KernelContext.get_stdout, &cachedStdoutBuffer)
 }
 
 fileprivate func sendStdout(_ stdout: String) {
