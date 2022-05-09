@@ -76,8 +76,8 @@ func doExecute(code: String) throws -> PythonObject? {
       
       // Stderr contains the error message, so this block of code needs to add a 
       // stack trace.
-      traceback = fetchStderr(errorSourceLocation: &errorSourceLocation)
-      traceback += try prettyPrintStackTrace()
+      traceback = fetchStderr(errorSource: &errorSource)
+      traceback += try prettyPrintStackTrace(errorSource: errorSource)
       sendIOPubErrorMessage(traceback)      
     } else {
       // There is no stdout, so it must be a compile error. Simply return the 
@@ -217,4 +217,3 @@ fileprivate func sendIOPubErrorMessage(_ message: [String]) {
     "traceback": message.pythonObject
   ])
 }
-
