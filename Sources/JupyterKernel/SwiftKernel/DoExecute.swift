@@ -68,9 +68,9 @@ func doExecute(code: String) throws -> PythonObject? {
       
       // Stderr contains the error message, so this block of code needs to add a 
       // stack trace.
-      traceback = fetchStderr(errorSource: &errorSource)
+      var traceback = fetchStderr(errorSource: &errorSource)
       traceback += try prettyPrintStackTrace(errorSource: errorSource)
-      sendIOPubErrorMessage(Array(traceback.)      
+      sendIOPubErrorMessage(Array(traceback.joined(separator: "\n"))      
     } else {
       // There is no stdout, so it must be a compile error. Simply return the 
       // error without trying to get a stack trace.
@@ -251,6 +251,7 @@ fileprivate func makeExecuteReplyErrorMessage() -> PythonObject {
 fileprivate func sendIOPubErrorMessage(_ message: String) {
   KernelContext.sendResponse("stream", [
     "name": "stdout",
+    // TODO: remove newline
     "text": (message + "\n").pythonObject
   ])
 }
