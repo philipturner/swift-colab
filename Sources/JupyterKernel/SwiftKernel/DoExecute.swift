@@ -163,7 +163,7 @@ fileprivate func fetchStderr(errorSource: inout String?) -> [String] {
   // If there are multiple lines, also colorize them. TODO: test this in action.
   if stackTraceIndex > 1 {
     for i in 1..<stackTraceIndex {
-      lines[i] = colorizeErrorMessage(lines[i], detectColor: false)
+      lines[i] = colorizeErrorMessage(lines[i], detectColon: false)
     }
   }
   return lines
@@ -190,7 +190,7 @@ fileprivate func colorizeErrorMessage(
   var output = boldWhiteSequence + String(message[messageStartIndex...])
   if let colonIndex = colonIndex {
     let boldRedSequence = "[0m[0;1;31m"
-    let labelPortion = String(message[...colonIndex])
+    let labelPortion = boldRedSequence + String(message[...colonIndex])
     output = labelPortion + output
   }
   return output
