@@ -10,7 +10,6 @@ func doExecute(code: String) throws -> PythonObject? {
   KernelContext.pollingStdout = true
   KernelContext.log("")
   KernelContext.log("code: \(code)")
-//   KernelContext.log(String(reflecting: Python.import("sys")._getframe().f_back))
   debugger.set_trace(Python.import("sys")._getframe().f_back)
   KernelContext.log("qqq")
   
