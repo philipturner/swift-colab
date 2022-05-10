@@ -25,9 +25,8 @@ func doExecute(code: String) throws -> PythonObject? {
   } catch _ as InterruptException {
     return nil
   } catch let error as PackageInstallException {
-    let traceback = [error.localizedDescription]
-    sendIOPubErrorMessage(traceback)
-    return makeExecuteReplyErrorMessage(traceback)
+    sendIOPubErrorMessage(error.localizedDescription)
+    return makeExecuteReplyErrorMessage()
   } catch {
     let kernel = KernelContext.kernel
     sendIOPubErrorMessage([
@@ -57,8 +56,7 @@ func doExecute(code: String) throws -> PythonObject? {
     _ = KernelContext.process_is_alive(&isAlive)
     
     if isAlive == 0 {
-      traceback = ["Process killed"]
-      sendIOPubErrorMessage(traceback)
+      sendIOPubErrorMessage("Process killed")
       
       // Exit the kernel because there is no way to recover from a killed 
       // process. The UI will tell the user that the kernel has died and the UI 
@@ -80,8 +78,7 @@ func doExecute(code: String) throws -> PythonObject? {
     } else {
       // There is no stdout, so it must be a compile error. Simply return the 
       // error without trying to get a stack trace.
-      traceback = [result.description]
-      sendIOPubErrorMessage(traceback)
+      sendIOPubErrorMessage(result.description)
     }
     
     return makeExecuteReplyErrorMessage(traceback)
@@ -247,27 +244,19 @@ fileprivate func prettyPrintStackTrace(errorSource: String?) throws -> [String] 
   return output
 }
 
-fileprivate func makeExecuteReplyErrorMessage(_ message: [String]) -> PythonObject {
+fileprivate func makeExecuteReplyErrorMessage() -> PythonObject {
   return [
     "status": "error",
     "execution_count": KernelContext.kernel.execution_count,
     "ename": "",
     "evalue": "",
-    "traceback": PythonObject([])//message.pythonObject
+    "traceback": PythonObject([])
   ]
 }
 
-fileprivate func sendIOPubErrorMessage(_ message: [String]) {
-  KernelContext.sendResponse("stream"/*error*/, [
-//     "ename": "",
-//     "evalue": "",
-//     "traceback": message.pythonObject
+fileprivate func sendIOPubErrorMessage(_ message: String) {
+  KernelContext.sendResponse("stream", [
     "name": "stdout",
     "text": message.pythonObject
   ])
-//   KernelContext.sendResponse("error", [
-//     "ename": "",
-//     "evalue": "",
-//     "traceback": PythonObject([])
-//   ])
 }
