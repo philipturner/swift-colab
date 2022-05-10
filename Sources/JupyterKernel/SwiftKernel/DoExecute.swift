@@ -208,7 +208,8 @@ fileprivate func prettyPrintStackTrace(errorSource: String?) throws -> [String] 
     defer { free(frame) }
     
     let header = frame.assumingMemoryBound(to: UInt32.self)
-    var description = String(cString: UnsafePointer(frame.advanced(by: 8)))
+    let data = frame.advanced(by: 8).assumingMemoryBound(to: CChar.self)
+    var description = String(cString: UnsafePointer(data))
     description = formatString(description, ansiOptions: [36])
     description += ", Line \(header[0]), Column \(header[1])"
     
