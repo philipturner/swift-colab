@@ -3,7 +3,7 @@ fileprivate let json = Python.import("json")
 fileprivate let jsonutil = Python.import("jupyter_client").jsonutil
 
 // TODO: Clean up code style of this statement
-fileprivate let debugger = Python.import("pdb")
+fileprivate let debugger = Python.import("ipdb")
 
 func doExecute(code: String) throws -> PythonObject? {
   KernelContext.isInterrupted = false
@@ -11,7 +11,7 @@ func doExecute(code: String) throws -> PythonObject? {
   KernelContext.log("")
   KernelContext.log("code: \(code)")
 //   KernelContext.log(String(reflecting: Python.import("sys")._getframe().f_back))
-  debugger.set_trace()
+  debugger.set_trace(Python.import("sys")._getframe().f_back))
   KernelContext.log("qqq")
   
   // Flush stderr
