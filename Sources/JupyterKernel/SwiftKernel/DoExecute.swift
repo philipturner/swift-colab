@@ -124,7 +124,7 @@ fileprivate func fetchStderr(errorSource: inout String?) -> [String] {
     return lines 
   }
   var moduleName: String?
-  if !firstLine.hasPrefix("__lldb_expr_") else { 
+  if !firstLine.hasPrefix("__lldb_expr_") { 
     moduleName = String(firstLine[..<slashIndex])
   }
   
