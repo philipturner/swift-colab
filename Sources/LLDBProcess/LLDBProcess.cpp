@@ -32,7 +32,7 @@ int init_repl_process(const char **repl_env,
     "/opt/swift/install_location/modules");
   
   const char *repl_swift = "/opt/swift/toolchain/usr/bin/repl_swift";
-  target = debugger.CreateTargetWithFileAndArch(repl_swift, "");
+  target = debugger.CreateTarget(repl_swift);
   if (!target.IsValid())
     return 2;
   
