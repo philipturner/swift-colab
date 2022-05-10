@@ -67,7 +67,7 @@ int init_repl_process(const char **repl_env,
   expr_opts = SBExpressionOptions();
   auto swift_language = SBLanguageRuntime::GetLanguageTypeFromString("swift");
   expr_opts.SetLanguage(swift_language);
-//   expr_opts.SetREPLMode(false);
+  expr_opts.SetREPLMode(true);
   expr_opts.SetUnwindOnError(false);
   expr_opts.SetGenerateDebugInfo(true);
   
