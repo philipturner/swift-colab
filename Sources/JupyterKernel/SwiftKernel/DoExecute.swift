@@ -253,16 +253,21 @@ fileprivate func makeExecuteReplyErrorMessage(_ message: [String]) -> PythonObje
     "execution_count": KernelContext.kernel.execution_count,
     "ename": "",
     "evalue": "",
-    "traceback": message.pythonObject
+    "traceback": PythonObject([])//message.pythonObject
   ]
 }
 
 fileprivate func sendIOPubErrorMessage(_ message: [String]) {
-  KernelContext.sendResponse("stdout"/*error*/, [
+  KernelContext.sendResponse("stream"/*error*/, [
 //     "ename": "",
 //     "evalue": "",
 //     "traceback": message.pythonObject
     "name": "stdout",
     "text": message.pythonObject
+  ])
+  KernelContext.sendResponse("error", [
+    "ename": "",
+    "evalue": "",
+    "traceback": PythonObject([])
   ])
 }
