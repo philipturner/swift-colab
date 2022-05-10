@@ -70,7 +70,7 @@ func doExecute(code: String) throws -> PythonObject? {
       // stack trace.
       var traceback = fetchStderr(errorSource: &errorSource)
       traceback += try prettyPrintStackTrace(errorSource: errorSource)
-      sendIOPubErrorMessage(Array(traceback.joined(separator: "\n"))      
+      sendIOPubErrorMessage(Array(traceback.joined(separator: "\n")))
     } else {
       // There is no stdout, so it must be a compile error. Simply return the 
       // error without trying to get a stack trace.
