@@ -3,7 +3,7 @@ fileprivate let json = Python.import("json")
 fileprivate let jsonutil = Python.import("jupyter_client").jsonutil
 
 // TODO: Clean up code style of this statement
-fileprivate let debugger = Python.import("IPython.core.debugger")
+fileprivate let debugger = Python.import("IPython.terminal.debugger")
 
 func doExecute(code: String) throws -> PythonObject? {
   KernelContext.isInterrupted = false
