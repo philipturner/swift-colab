@@ -26,9 +26,10 @@ int init_repl_process(const char **repl_env,
     return 1;
   
   debugger.SetAsync(false);
-//   debugger.SetUseColor(true);
-//   debugger.HandleCommand("settings set use-color true");
+  debugger.SetUseColor(true);
+  debugger.HandleCommand("settings set use-color true");
   debugger.HandleCommand("settings set target.run-args -color-diagnostics");
+  debugger.HandleCommand("settings set frame-format \"frame #${frame.index}: ${frame.pc}{ \x1b\x5b36m${module.file.basename}\x1b\x5b39m{` \x1b\x5b33m${function.name-with-args} \x1b\x5b39m${function.pc-offset}}}{ at ${line.file.basename}:${line.number}}\n\"");
   debugger.HandleCommand(
     "settings append target.swift-module-search-paths "
     "/opt/swift/install_location/modules");
