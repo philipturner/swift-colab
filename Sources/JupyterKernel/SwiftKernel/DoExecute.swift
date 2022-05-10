@@ -213,7 +213,7 @@ fileprivate func prettyPrintStackTrace(errorSource: String?) throws -> [String] 
       frameID += String(
         repeating: " " as Character, count: padding - frameID.count)
     }
-    output.append(frameID + description)
+    output.append(frameID + formatString(description, ansiOptions: [36]))
   }
   return output
 }
