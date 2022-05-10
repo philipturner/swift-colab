@@ -38,7 +38,7 @@ func initSwift() throws {
 
 fileprivate func initReplProcess() throws {
   var environment = ProcessInfo.processInfo.environment
-  environment["TERM"] = "ansi"
+  environment["TERM"] = "xterm"
   let cEnvironment = CEnvironment(environment: environment)
 
   let error = KernelContext.init_repl_process(
