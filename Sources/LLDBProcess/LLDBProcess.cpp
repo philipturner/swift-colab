@@ -209,43 +209,43 @@ int get_pretty_stack_trace(char ***frames, int *size) {
     // Do not include frames without source location information. These
     // are frames in libraries and frames that belong to the LLDB
     // expression execution implementation.
-    auto line_entry = frame.GetLineEntry();
-    auto file_spec = line_entry.GetFileSpec();
-    if (!file_spec.IsValid()) {
-      continue;
-    }
+//     auto line_entry = frame.GetLineEntry();
+//     auto file_spec = line_entry.GetFileSpec();
+//     if (!file_spec.IsValid()) {
+//       continue;
+//     }
     
     // Do not include <compiler-generated> frames. These are
     // specializations of library functions.
-    if (strcmp(file_spec.GetFilename(), "<compiler-generated>") == 0) {
-      continue;
-    }
+//     if (strcmp(file_spec.GetFilename(), "<compiler-generated>") == 0) {
+//       continue;
+//     }
     
-    auto function_name = frame.GetDisplayFunctionName();
-    auto function_name_len = strlen(function_name);
+//     auto function_name = frame.GetDisplayFunctionName();
+//     auto function_name_len = strlen(function_name);
     
-    SBStream stream;
-    line_entry.GetDescription(stream);
-    auto source_loc = stream.GetData();
-    auto source_loc_len = strlen(source_loc);
+//     SBStream stream;
+//     line_entry.GetDescription(stream);
+//     auto source_loc = stream.GetData();
+//     auto source_loc_len = strlen(source_loc);
     
-    char *desc = (char*)malloc(
-      function_name_len + separator_len + source_loc_len + 1);
+//     char *desc = (char*)malloc(
+//       function_name_len + separator_len + source_loc_len + 1);
     
-    // Write function name
-    memcpy(desc, function_name, function_name_len);
+//     // Write function name
+//     memcpy(desc, function_name, function_name_len);
     
-    // Write separator
-    int str_ptr = function_name_len;
-    memcpy(desc + str_ptr, separator, separator_len);
+//     // Write separator
+//     int str_ptr = function_name_len;
+//     memcpy(desc + str_ptr, separator, separator_len);
     
-    // Write source location
-    str_ptr += separator_len;
-    memcpy(desc + str_ptr, source_loc, source_loc_len);
+//     // Write source location
+//     str_ptr += separator_len;
+//     memcpy(desc + str_ptr, source_loc, source_loc_len);
     
-    // Write null terminator
-    str_ptr += source_loc_len;
-    desc[str_ptr] = 0;
+//     // Write null terminator
+//     str_ptr += source_loc_len;
+//     desc[str_ptr] = 0;
     
     out[filled_size] = desc;
     filled_size += 1;
