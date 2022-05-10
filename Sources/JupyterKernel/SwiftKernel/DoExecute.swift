@@ -114,15 +114,18 @@ fileprivate func fetchStderr(errorSource: inout String?) -> [String] {
   }
   
   // Return early if there is no error message.
-  guard stackTraceIndex > 0 else {
-    return lines
-  }
+  guard stackTraceIndex > 0 else { return lines }
   lines.removeLast(lines.count - stackTraceIndex)
   
   // Remove the "__lldb_expr_NUM/<Cell NUM>:NUM: " prefix to the error message.
   let firstLine = lines[0]
-  guard firstLine.hasPrefix("__lldb_expr_") else { return lines }
-  guard let slashIndex = firstLine.firstIndex(of: "/") else { return lines }
+  guard let slashIndex = firstLine.firstIndex(of: "/"), slashIndex > 0 else { 
+    return lines 
+  }
+  var moduleName: String?
+  if !firstLine.hasPrefix("__lldb_expr_") else { 
+    moduleName = String(firstLine[..<slashIndex])
+  }
   
   var numColons = 0
   var secondColonIndex: String.Index?
