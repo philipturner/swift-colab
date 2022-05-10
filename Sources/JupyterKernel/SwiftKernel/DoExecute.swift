@@ -25,11 +25,11 @@ func doExecute(code: String) throws -> PythonObject? {
   } catch _ as InterruptException {
     return nil
   } catch let error as PackageInstallException {
-    sendIOPubErrorMessage([error.localizedDescription])
+    sendIOPubErrorMessage(error.localizedDescription)
     return makeExecuteReplyErrorMessage()
   } catch {
     let kernel = KernelContext.kernel
-    sendStreamMessage("""
+    sendIOPubErrorMessage("""
       Kernel is in a bad state. Try restarting the kernel.
       
       Exception in cell \(kernel.execution_count):
@@ -52,7 +52,7 @@ func doExecute(code: String) throws -> PythonObject? {
     return nil
   } else if result is ExecutionResultError {
     if KernelContext.process_is_alive() == 0 {
-      sendStreamMessage("Process killed")
+      sendIOPubErrorMessage("Process killed")
       
       // Exit the kernel because there is no way to recover from a killed 
       // process. The UI will tell the user that the kernel has died and the UI 
@@ -69,7 +69,7 @@ func doExecute(code: String) throws -> PythonObject? {
       let errorMessage = fetchStderr(errorSource: &errorSource)
       let traceback = try prettyPrintStackTrace(errorSource: errorSource)
       sendIOPubErrorMessage(errorMessage)
-      sendStreamMessage(String(traceback.joined(separator: "\n")))
+      sendIOPubErrorMessage(String(traceback.joined(separator: "\n")))
     } else {
       // There is no stdout, so it must be a compile error. Simply return the 
       // error without trying to get a stack trace.
@@ -200,7 +200,6 @@ fileprivate func prettyPrintStackTrace(errorSource: String?) throws -> [String] 
     }
   }
   
-////////////////////////////////////////////////////////////////////////////////
   // Number of characters, including digits and spaces, before a function name.
   let padding = 5
   
@@ -220,6 +219,22 @@ fileprivate func prettyPrintStackTrace(errorSource: String?) throws -> [String] 
   return output
 }
 
+fileprivate func sendIOPubErrorMessage(_ message: String) {
+  // Preserves all formatting and does not wrap lines.
+  KernelContext.sendResponse("stream", [
+    "name": "stdout",
+    "text": (message + "\n").pythonObject
+  ])
+  
+  // Erases bold/light formatting and forces lines to wrap in notebook, but also
+  // adds a button to search Stack Overflow.
+  KernelContext.sendResponse("error", [
+    "ename": "",
+    "evalue": "",
+    "traceback": PythonObject([])
+  ])
+}
+
 fileprivate func makeExecuteReplyErrorMessage() -> PythonObject {
   return [
     "status": "error",
@@ -228,21 +243,4 @@ fileprivate func makeExecuteReplyErrorMessage() -> PythonObject {
     "evalue": "",
     "traceback": PythonObject([])
   ]
-}
-
-// Erases bold/light formatting and forces lines to wrap in notebook.
-fileprivate func sendIOPubErrorMessage(_ message: [String]) {
-  KernelContext.sendResponse("error", [
-    "ename": "",
-    "evalue": "",
-    "traceback": message.pythonObject
-  ])
-}
-
-// Preserves all formatting and does not wrap lines.
-fileprivate func sendStreamMessage(_ message: String) {
-  KernelContext.sendResponse("stream", [
-    "name": "stdout",
-    "text": (message + "\n").pythonObject
-  ])
 }
