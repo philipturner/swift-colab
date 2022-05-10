@@ -119,7 +119,8 @@ fileprivate func fetchStderr(errorSource: inout String?) -> [String] {
   
   // Remove the "__lldb_expr_NUM/<Cell NUM>:NUM: " prefix to the error message.
   let firstLine = lines[0]
-  guard let slashIndex = firstLine.firstIndex(of: "/"), slashIndex > 0 else { 
+  guard let slashIndex = firstLine.firstIndex(of: "/"), 
+        slashIndex > firstLine.startIndex else { 
     return lines 
   }
   var moduleName: String?
