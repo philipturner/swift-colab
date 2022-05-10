@@ -265,9 +265,9 @@ fileprivate func sendIOPubErrorMessage(_ message: [String]) {
     "name": "stdout",
     "text": message.pythonObject
   ])
-  KernelContext.sendResponse("error", [
-    "ename": "",
-    "evalue": "",
-    "traceback": PythonObject([])
-  ])
+//   KernelContext.sendResponse("error", [
+//     "ename": "",
+//     "evalue": "",
+//     "traceback": PythonObject([])
+//   ])
 }
