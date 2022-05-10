@@ -29,7 +29,7 @@ func doExecute(code: String) throws -> PythonObject? {
     return makeExecuteReplyErrorMessage()
   } catch {
     let kernel = KernelContext.kernel
-    sendIOPubErrorMessage("""
+    sendStreamMessage("""
       Kernel is in a bad state. Try restarting the kernel.
       
       Exception in cell \(kernel.execution_count):
@@ -52,7 +52,7 @@ func doExecute(code: String) throws -> PythonObject? {
     return nil
   } else if result is ExecutionResultError {
     if KernelContext.process_is_alive() == 0 {
-      sendIOPubErrorMessage("Process killed")
+      sendStreamMessage("Process killed")
       
       // Exit the kernel because there is no way to recover from a killed 
       // process. The UI will tell the user that the kernel has died and the UI 
@@ -66,15 +66,14 @@ func doExecute(code: String) throws -> PythonObject? {
       // stack frames are generated, at least show where the error originated.
       var errorSource: String?
       
-      // Stderr contains the error message, so this block of code needs to add a 
-      // stack trace.
-      var traceback = fetchStderr(errorSource: &errorSource)
-      traceback += try prettyPrintStackTrace(errorSource: errorSource)
-      sendIOPubErrorMessage(String(traceback.joined(separator: "\n")))
+      let errorMessage: [String] = fetchStderr(errorSource: &errorSource)
+      let traceback: String = try prettyPrintStackTrace(errorSource: errorSource)
+      sendIOPubErrorMessage(errorMessage)
+      sendStreamMessage(String(traceback.joined(separator: "\n")))
     } else {
       // There is no stdout, so it must be a compile error. Simply return the 
       // error without trying to get a stack trace.
-      sendIOPubErrorMessage(result.description)
+      sendIOPubErrorMessage([result.description])
     }
     
     return makeExecuteReplyErrorMessage()
@@ -150,43 +149,26 @@ fileprivate func fetchStderr(errorSource: inout String?) -> [String] {
   
   // The error message may span multiple lines, so just modify the first line
   // in-place and return the array.
-  lines[0] = String(firstLine[messageStartIndex...])
-  lines[0] = colorizeErrorMessage(lines[0], detectColon: true)
-  
-  // If there are multiple lines, also colorize them. TODO: test this in action.
-  if stackTraceIndex > 1 {
-    for i in 1..<stackTraceIndex {
-      lines[i] = colorizeErrorMessage(lines[i], detectColon: false)
-    }
-  }
+  lines[0] = colorizeErrorMessage(String(firstLine[messageStartIndex...]))
   return lines
 }
 
-fileprivate func colorizeErrorMessage(
-  _ message: String, detectColon: Bool
-) -> String {
+fileprivate func colorizeErrorMessage(_ message: String) -> String {
   var colonIndex: String.Index?
-  var messageStartIndex = message.startIndex
-  if detectColon {
-    for index in message.indices {
-      if message[index] == ":" {
-        colonIndex = index
-        break
-      }
+  for index in message.indices {
+    if message[index] == ":" {
+      colonIndex = index
+      break
     }
-    if let colonIndex = colonIndex {
-      messageStartIndex = message.index(after: colonIndex)
-    }
+  }
+  guard let colonIndex = colonIndex else {
+    return message
   }
   
-  var output = formatString(
-    String(message[messageStartIndex...]), ansiOptions: [1])
-  if let colonIndex = colonIndex {
-    let labelPortion = formatString(
-      String(message[...colonIndex]), ansiOptions: [1, 31])
-    output = labelPortion + output
-  }
-  return output
+  let labelPortion = formatString(
+    String(message[...colonIndex]), ansiOptions: [31])
+  let messageStartIndex = message.index(after: colonIndex)
+  return labelPortion + String(message[messageStartIndex...])
 }
 
 fileprivate func formatString(_ input: String, ansiOptions: [Int]) -> String {
