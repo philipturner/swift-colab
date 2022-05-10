@@ -66,14 +66,13 @@ func doExecute(code: String) throws -> PythonObject? {
       // stack frames are generated, at least show where the error originated.
       var errorSource: String?
       
-      let errorMessage = fetchStderr(errorSource: &errorSource)
+      let message = fetchStderr(errorSource: &errorSource)
       let traceback = try prettyPrintStackTrace(errorSource: errorSource)
-      sendIOPubErrorMessage(errorMessage)
-      sendIOPubErrorMessage(String(traceback.joined(separator: "\n")))
+      sendIOPubErrorMessage(message + String(traceback.joined(separator: "\n")))
     } else {
       // There is no stdout, so it must be a compile error. Simply return the 
       // error without trying to get a stack trace.
-      sendIOPubErrorMessage([result.description])
+      sendIOPubErrorMessage(result.description)
     }
     
     return makeExecuteReplyErrorMessage()
