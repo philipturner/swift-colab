@@ -234,8 +234,8 @@ int get_pretty_stack_trace(char ***frames, int *size) {
     // Let the Swift code format line and column. Right now, just serialize them
     // in an 8-byte header.
     char *desc = (char*)malloc(
-      /*line*/4 + /*column*/4 + file_name_len + separator_len + source_loc_len +
-      /*null terminator*/1);
+      /*line*/4 + /*column*/4 + function_name_len + separator_len + 
+      file_name_len + /*null terminator*/1);
     
     // Write line and column
     uint32_t *header = (uint32_t*)desc;
