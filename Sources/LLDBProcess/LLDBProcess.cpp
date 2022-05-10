@@ -26,7 +26,7 @@ int init_repl_process(const char **repl_env,
     return 1;
   
   debugger.SetAsync(false);
-  debugger.SetUseColor(false);
+  debugger.HandleCommand("settings set use-color true");
   debugger.HandleCommand(
     "settings append target.swift-module-search-paths "
     "/opt/swift/install_location/modules");
