@@ -247,6 +247,20 @@ int get_pretty_stack_trace(char ***frames, int *size) {
 //     str_ptr += source_loc_len;
 //     desc[str_ptr] = 0;
     
+    SBStream stream;
+    frame.GetDescription(stream);
+    auto frame_data = stream.GetData();
+    auto frame_data_len = strlen(frame_data);
+    
+    char *desc = (char*)malloc(
+      frame_data_len + 1);
+    
+    // Write frame
+    memcpy(desc, frame_data, frame_data_len);
+    
+    // Write null terminator
+    desc[frame_data_len] = 0;
+    
     out[filled_size] = desc;
     filled_size += 1;
   }
