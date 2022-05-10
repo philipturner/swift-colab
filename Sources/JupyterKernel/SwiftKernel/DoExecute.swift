@@ -180,9 +180,11 @@ fileprivate func colorizeErrorMessage(
     }
   }
   
+  let boldRedSequence = "[0m[0;1;31m"
+  let boldWhiteSequence = "[0m[1me"
   
-  
-  
+  var labelPortion: String?
+  if let colonIndex = colonIndex
 }
 
 fileprivate func prettyPrintStackTrace(errorSource: String?) throws -> [String] {
