@@ -167,8 +167,8 @@ fileprivate func colorizeErrorMessage(_ message: String) -> String {
   
   let labelPortion = formatString(
     String(message[...colonIndex]), ansiOptions: [31])
-  let messageStartIndex = message.index(after: colonIndex)
-  return labelPortion + String(message[messageStartIndex...])
+  let contentsStartIndex = message.index(after: colonIndex)
+  return labelPortion + String(message[contentsStartIndex...])
 }
 
 fileprivate func formatString(_ input: String, ansiOptions: [Int]) -> String {
