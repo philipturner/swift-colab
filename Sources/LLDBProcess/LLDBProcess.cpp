@@ -244,15 +244,15 @@ int get_pretty_stack_trace(void ***frames, int *size) {
     
     // Write function name
     int str_ptr = 8;
-    memcpy(desc + str_ptr, function_name, function_name_len);
+    memcpy((char*)desc + str_ptr, function_name, function_name_len);
     
     // Write separator
     str_ptr += function_name_len;
-    memcpy(desc + str_ptr, separator, separator_len);
+    memcpy((char*)desc + str_ptr, separator, separator_len);
     
     // Write source location
     str_ptr += separator_len;
-    memcpy(desc + str_ptr, file_name, file_name_len);
+    memcpy((char*)desc + str_ptr, file_name, file_name_len);
     
     // Write null terminator
     str_ptr += file_name_len;
