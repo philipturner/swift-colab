@@ -55,7 +55,7 @@ struct KernelContext {
     LLDBProcessLibrary.loadSymbol(name: "get_stdout")
   
   static let get_pretty_stack_trace: @convention(c) (
-    UnsafeMutablePointer<UnsafeMutablePointer<UnsafeMutablePointer<CChar>>?>,
+    UnsafeMutablePointer<UnsafeMutablePointer<UnsafeMutableRawPointer>?>,
     UnsafeMutablePointer<Int32>) -> Int32 =
     LLDBProcessLibrary.loadSymbol(name: "get_pretty_stack_trace")
   
