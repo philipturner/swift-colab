@@ -208,6 +208,9 @@ fileprivate func prettyPrintStackTrace(errorSource: String?) throws -> [String] 
     defer { free(frame) }
     
     let description = String(cString: UnsafePointer(frame))
+    
+    // TODO: Parse description to say <Cell 1>, Line 1, Column 1
+    
     var frameID = String(i + 1) + " "
     if frameID.count < padding {
       frameID += String(
