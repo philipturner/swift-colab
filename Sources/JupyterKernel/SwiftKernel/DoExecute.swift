@@ -66,8 +66,8 @@ func doExecute(code: String) throws -> PythonObject? {
       // stack frames are generated, at least show where the error originated.
       var errorSource: String?
       
-      let errorMessage: [String] = fetchStderr(errorSource: &errorSource)
-      let traceback: String = try prettyPrintStackTrace(errorSource: errorSource)
+      let errorMessage = fetchStderr(errorSource: &errorSource)
+      let traceback = try prettyPrintStackTrace(errorSource: errorSource)
       sendIOPubErrorMessage(errorMessage)
       sendStreamMessage(String(traceback.joined(separator: "\n")))
     } else {
