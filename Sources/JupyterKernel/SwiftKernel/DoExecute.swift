@@ -51,11 +51,7 @@ func doExecute(code: String) throws -> PythonObject? {
   } else if result is SuccessWithoutValue {
     return nil
   } else if result is ExecutionResultError {
-    var traceback: [String] = []
-    var isAlive: Int32 = 0
-    _ = KernelContext.process_is_alive(&isAlive)
-    
-    if isAlive == 0 {
+    if KernelContext.process_is_alive() == 0 {
       sendIOPubErrorMessage("Process killed")
       
       // Exit the kernel because there is no way to recover from a killed 
@@ -74,14 +70,14 @@ func doExecute(code: String) throws -> PythonObject? {
       // stack trace.
       traceback = fetchStderr(errorSource: &errorSource)
       traceback += try prettyPrintStackTrace(errorSource: errorSource)
-      sendIOPubErrorMessage(traceback)      
+      sendIOPubErrorMessage(Array(traceback.)      
     } else {
       // There is no stdout, so it must be a compile error. Simply return the 
       // error without trying to get a stack trace.
       sendIOPubErrorMessage(result.description)
     }
     
-    return makeExecuteReplyErrorMessage(traceback)
+    return makeExecuteReplyErrorMessage()
   } else {
     fatalError("This should never happen.")
   }
@@ -183,8 +179,6 @@ fileprivate func colorizeErrorMessage(
     }
   }
   
-  // For some reason, Colab is erasing the bold sequence here - ???
-  // Try sending it as normal data, with a blank error message.
   var output = formatString(
     String(message[messageStartIndex...]), ansiOptions: [1])
   if let colonIndex = colonIndex {
