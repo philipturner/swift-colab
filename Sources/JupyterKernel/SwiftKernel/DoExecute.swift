@@ -258,9 +258,11 @@ fileprivate func makeExecuteReplyErrorMessage(_ message: [String]) -> PythonObje
 }
 
 fileprivate func sendIOPubErrorMessage(_ message: [String]) {
-  KernelContext.sendResponse("error", [
-    "ename": "",
-    "evalue": "",
-    "traceback": message.pythonObject
+  KernelContext.sendResponse("stdout"/*error*/, [
+//     "ename": "",
+//     "evalue": "",
+//     "traceback": message.pythonObject
+    "name": "stdout",
+    "text": message.pythonObject
   ])
 }
