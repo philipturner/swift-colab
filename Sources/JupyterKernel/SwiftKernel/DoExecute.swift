@@ -198,7 +198,7 @@ fileprivate func colorizeErrorMessage(
   return output
 }
 
-fileprivate func formatString(_ input: String, ansiOption: [Int]) -> String {
+fileprivate func formatString(_ input: String, ansiOptions: [Int]) -> String {
   var formatSequence = "\u{1b}[0"
   for option in ansiOptions {
     formatSequence += ";\(option)"
