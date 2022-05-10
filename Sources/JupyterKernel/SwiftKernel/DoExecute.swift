@@ -181,7 +181,7 @@ fileprivate func formatString(_ input: String, ansiOptions: [Int]) -> String {
 }
 
 fileprivate func prettyPrintStackTrace(errorSource: String?) throws -> [String] {
-  var frames: UnsafeMutablePointer<UnsafeMutablePointer<CChar>>?
+  var frames: UnsafeMutablePointer<UnsafeMutableRawPointer>?
   var size: Int32 = 0
   let error = KernelContext.get_pretty_stack_trace(&frames, &size);
   guard let frames = frames else {
