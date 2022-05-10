@@ -199,7 +199,7 @@ int get_pretty_stack_trace(void ***frames, int *size) {
   // Separates function name from source location in descriptions, clearing any 
   // previous ANSI escape sequences. It also sets up ???yellow??? formatting for the
   // file name.
-  const char *separator = "\x1b[0m - \x1b[0;39m";
+  const char *separator = "\x1b[0m - \x1b[0;38;5;4m";
   int separator_len = strlen(separator);
   
   for (uint32_t i = 0; i < allocated_size; ++i) {
@@ -223,14 +223,10 @@ int get_pretty_stack_trace(void ***frames, int *size) {
     auto function_name = frame.GetDisplayFunctionName();
     auto function_name_len = strlen(function_name);
     
-//     SBStream stream;
-//     file_spec.GetDescription(stream);
-//     auto file_name = stream.GetData();
-    // TODO: find a way to incorporate the directory name, if it exists.
+    // TODO: Find a way to incorporate the directory name, if it exists.
     auto file_name = file_spec.GetFilename();
     auto file_name_len = strlen(file_name);
     
-////////////////////////////////////////////////////////////////////////////////
     // Let the Swift code format line and column. Right now, just serialize them
     // in an 8-byte header.
     void *desc = malloc(
