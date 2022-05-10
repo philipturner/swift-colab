@@ -29,12 +29,12 @@ func doExecute(code: String) throws -> PythonObject? {
     return makeExecuteReplyErrorMessage()
   } catch {
     let kernel = KernelContext.kernel
-    sendIOPubErrorMessage([
-      "Kernel is in a bad state. Try restarting the kernel.",
-      "",
-      "Exception in cell \(kernel.execution_count):",
-      error.localizedDescription
-    ])
+    sendIOPubErrorMessage("""
+      Kernel is in a bad state. Try restarting the kernel.
+      
+      Exception in cell \(kernel.execution_count):
+      \(error.localizedDescription)
+      """)
     throw error
   }
   
@@ -70,7 +70,7 @@ func doExecute(code: String) throws -> PythonObject? {
       // stack trace.
       var traceback = fetchStderr(errorSource: &errorSource)
       traceback += try prettyPrintStackTrace(errorSource: errorSource)
-      sendIOPubErrorMessage(Array(traceback.joined(separator: "\n")))
+      sendIOPubErrorMessage(String(traceback.joined(separator: "\n")))
     } else {
       // There is no stdout, so it must be a compile error. Simply return the 
       // error without trying to get a stack trace.
