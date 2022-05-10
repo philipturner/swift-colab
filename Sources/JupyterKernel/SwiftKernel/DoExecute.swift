@@ -167,7 +167,7 @@ fileprivate func colorizeErrorMessage(
   _ message: String, detectColon: Bool
 ) -> String {
   var colonIndex: String.Index?
-  var messageStartIndex: String.Index?
+  var messageStartIndex = message.startIndex
   if detectColon {
     for index in message.indices {
       if message[index] == ":" {
@@ -179,9 +179,10 @@ fileprivate func colorizeErrorMessage(
       messageStartIndex = message.index(after: colonIndex)
     }
   }
-  if messageStartIndex == nil {
-    messageStartIndex = message.startIndex
-  }
+  
+  
+  
+  
 }
 
 fileprivate func prettyPrintStackTrace(errorSource: String?) throws -> [String] {
