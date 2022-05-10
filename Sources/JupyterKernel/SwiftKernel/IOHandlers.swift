@@ -100,6 +100,8 @@ fileprivate func getAndSendStdout(handler: PythonObject) {
         stdout did not start with the expected header "\(header)". stdout was:
         \(stdout)
         """)
+      // I don't know why, but the character immediately following "HEADER" is 
+      // not a newline.
       stdout.removeFirst(header.count + 1)
       handler.had_stdout = true
     }
