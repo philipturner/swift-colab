@@ -248,10 +248,19 @@ fileprivate func makeExecuteReplyErrorMessage() -> PythonObject {
   ]
 }
 
-fileprivate func sendIOPubErrorMessage(_ message: String) {
+// Erases bold/light formatting and forces lines to wrap in notebook.
+fileprivate func sendIOPubErrorMessage(_ message: [String]) {
+  KernelContext.sendResponse("stream", [
+    "ename": "",
+    "evalue": "",
+    "traceback": (message + "\n").pythonObject
+  ])
+}
+
+// Preserves all formatting and does not wrap lines.
+fileprivate func sendStreamMessage(_ message: String) {
   KernelContext.sendResponse("stream", [
     "name": "stdout",
-    // TODO: remove newline
     "text": (message + "\n").pythonObject
   ])
 }
