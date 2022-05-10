@@ -186,10 +186,10 @@ fileprivate func colorizeErrorMessage(
     }
   }
   
-  let boldWhiteSequence = "[0m[1me"
+  let boldWhiteSequence = "\u{1b}[0m[1me"
   var output = boldWhiteSequence + String(message[messageStartIndex...])
   if let colonIndex = colonIndex {
-    let boldRedSequence = "[0m[0;1;31m"
+    let boldRedSequence = "\u{1b}[0m[0;1;31m"
     let labelPortion = boldRedSequence + String(message[...colonIndex])
     output = labelPortion + output
   }
