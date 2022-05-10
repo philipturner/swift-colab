@@ -197,9 +197,9 @@ int get_pretty_stack_trace(void ***frames, int *size) {
   
 ////////////////////////////////////////////////////////////////////////////////
   // Separates function name from source location in descriptions, clearing any 
-  // previous ANSI escape sequences. It also sets up yellow formatting for the
+  // previous ANSI escape sequences. It also sets up ???yellow??? formatting for the
   // file name.
-  const char *separator = "\x1b[0m - \x1b[0;33m";
+  const char *separator = "\x1b[0m - \x1b[0;39m";
   int separator_len = strlen(separator);
   
   for (uint32_t i = 0; i < allocated_size; ++i) {
