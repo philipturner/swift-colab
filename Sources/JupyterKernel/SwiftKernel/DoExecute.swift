@@ -253,7 +253,7 @@ fileprivate func sendIOPubErrorMessage(_ message: [String]) {
   KernelContext.sendResponse("stream", [
     "ename": "",
     "evalue": "",
-    "traceback": (message + "\n").pythonObject
+    "traceback": message.pythonObject
   ])
 }
 
