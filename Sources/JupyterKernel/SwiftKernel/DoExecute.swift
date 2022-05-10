@@ -5,8 +5,7 @@ fileprivate let jsonutil = Python.import("jupyter_client").jsonutil
 func doExecute(code: String) throws -> PythonObject? {
   KernelContext.isInterrupted = false
   KernelContext.pollingStdout = true
-  KernelContext.log("")
-  KernelContext.log("code: \(code)")
+  KernelContext.log("\n" + "code: \(code)")
   
   // Flush stderr
   _ = getStderr(readData: false)
