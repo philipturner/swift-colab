@@ -257,6 +257,6 @@ fileprivate func makeExecuteReplyErrorMessage() -> PythonObject {
 fileprivate func sendIOPubErrorMessage(_ message: String) {
   KernelContext.sendResponse("stream", [
     "name": "stdout",
-    "text": message.pythonObject
+    "text": (message + "\n").pythonObject
   ])
 }
