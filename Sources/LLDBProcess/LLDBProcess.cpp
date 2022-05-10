@@ -228,19 +228,20 @@ int get_pretty_stack_trace(char ***frames, int *size) {
 //     auto file_name = stream.GetData();
     auto file_name = file_spec.GetFilename();
     auto file_name_len = strlen(source_loc);
+    
 ////////////////////////////////////////////////////////////////////////////////
     // Let the Swift code format line and column. Right now, just serialize them
     // in an 8-byte header.
-
     char *desc = (char*)malloc(
       /*line*/4 + /*column*/4 + file_name_len + separator_len + source_loc_len +
       /*null terminator*/1);
     
     // Write function name
-    memcpy(desc, function_name, function_name_len);
+    int str_ptr = 8;
+    memcpy(desc + str_ptr, function_name, function_name_len);
     
     // Write separator
-    int str_ptr = function_name_len;
+    str_ptr += function_name_len;
     memcpy(desc + str_ptr, separator, separator_len);
     
     // Write source location
