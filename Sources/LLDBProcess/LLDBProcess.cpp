@@ -190,9 +190,9 @@ int get_stdout(char *dst, int *buffer_size) {
 }
 
 // Caller must deallocate `frames` and every string within `frames`.
-int get_pretty_stack_trace(char ***frames, int *size) {
+int get_pretty_stack_trace(void ***frames, int *size) {
   uint32_t allocated_size = main_thread.GetNumFrames();
-  char **out = (char**)malloc(allocated_size * sizeof(char*));
+  void **out = (void**)malloc(allocated_size * sizeof(char*));
   int filled_size = 0;
   
 ////////////////////////////////////////////////////////////////////////////////
@@ -233,7 +233,7 @@ int get_pretty_stack_trace(char ***frames, int *size) {
 ////////////////////////////////////////////////////////////////////////////////
     // Let the Swift code format line and column. Right now, just serialize them
     // in an 8-byte header.
-    char *desc = (char*)malloc(
+    void *desc = malloc(
       /*line*/4 + /*column*/4 + function_name_len + separator_len + 
       file_name_len + /*null terminator*/1);
     
@@ -256,7 +256,7 @@ int get_pretty_stack_trace(char ***frames, int *size) {
     
     // Write null terminator
     str_ptr += file_name_len;
-    desc[str_ptr] = 0;
+    ((char*)desc)[str_ptr] = 0;
     
     out[filled_size] = desc;
     filled_size += 1;
