@@ -199,6 +199,16 @@ fileprivate func colorizeErrorMessage(
   return output
 }
 
+fileprivate func formatString(_ input: String, ansiOption: [Int]) -> String {
+  var formatSequence = "\u{1b}[0"
+  for option in ansiOptions {
+    formatSequence += ";\(option)"
+  }
+  formatSequence += "m"
+  let clearSequence = "\u{1b}[0m"
+  return formatSequence + input + clearSequence
+}
+
 fileprivate func prettyPrintStackTrace(errorSource: String?) throws -> [String] {
   var frames: UnsafeMutablePointer<UnsafeMutablePointer<CChar>>?
   var size: Int32 = 0
