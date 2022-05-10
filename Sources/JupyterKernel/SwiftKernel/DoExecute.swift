@@ -158,7 +158,30 @@ fileprivate func fetchStderr(errorSource: inout String?) -> [String] {
   // The error message may span multiple lines, so just modify the first line
   // in-place and return the array.
   lines[0] = String(firstLine[messageStartIndex...])
+  
+  // If there are multiple lines, also colorize them.
   return lines
+}
+
+fileprivate func colorizeErrorMessage(
+  _ message: String, detectColon: Bool
+) -> String {
+  var colonIndex: String.Index?
+  var messageStartIndex: String.Index?
+  if detectColon {
+    for index in message.indices {
+      if message[index] == ":" {
+        colonIndex = index
+        break
+      }
+    }
+    if let colonIndex = colonIndex {
+      messageStartIndex = message.index(after: colonIndex)
+    }
+  }
+  if messageStartIndex == nil {
+    messageStartIndex = message.startIndex
+  }
 }
 
 fileprivate func prettyPrintStackTrace(errorSource: String?) throws -> [String] {
