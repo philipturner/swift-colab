@@ -231,8 +231,8 @@ int get_pretty_stack_trace(char ***frames, int *size) {
     // in an 8-byte header.
 
     char *desc = (char*)malloc(
-      /*line*/4 + /*column*/4 + function_name_len + separator_len + 
-      source_loc_len + 1);
+      /*line*/4 + /*column*/4 + file_name_len + separator_len + source_loc_len +
+      /*null terminator*/1);
     
     // Write function name
     memcpy(desc, function_name, function_name_len);
