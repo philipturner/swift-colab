@@ -26,7 +26,7 @@ int init_repl_process(const char **repl_env,
     return 1;
   
   debugger.SetAsync(false);
-  if (debugger.GetUseColor() == true) {
+  if (debugger.GetUseColor() == false) {
     const char *fail = NULL;
     char doesntExist = fail[0];
   }
