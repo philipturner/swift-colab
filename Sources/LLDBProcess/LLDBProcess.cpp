@@ -195,9 +195,11 @@ int get_pretty_stack_trace(char ***frames, int *size) {
   char **out = (char**)malloc(allocated_size * sizeof(char*));
   int filled_size = 0;
   
+////////////////////////////////////////////////////////////////////////////////
   // Separates function name from source location in descriptions, clearing any 
-  // previous ANSI escape sequences.
-  const char *separator = "\x1b[0m - ";
+  // previous ANSI escape sequences. It also sets up yellow formatting for the
+  // file name.
+  const char *separator = "\x1b[0m - \x1b[0;33m";
   int separator_len = strlen(separator);
   
   for (uint32_t i = 0; i < allocated_size; ++i) {
