@@ -228,7 +228,7 @@ int get_pretty_stack_trace(char ***frames, int *size) {
 //     auto file_name = stream.GetData();
     // TODO: find a way to incorporate the directory name, if it exists.
     auto file_name = file_spec.GetFilename();
-    auto file_name_len = strlen(source_loc);
+    auto file_name_len = strlen(file_name);
     
 ////////////////////////////////////////////////////////////////////////////////
     // Let the Swift code format line and column. Right now, just serialize them
@@ -252,10 +252,10 @@ int get_pretty_stack_trace(char ***frames, int *size) {
     
     // Write source location
     str_ptr += separator_len;
-    memcpy(desc + str_ptr, source_loc, source_loc_len);
+    memcpy(desc + str_ptr, file_name, file_name_len);
     
     // Write null terminator
-    str_ptr += source_loc_len;
+    str_ptr += file_name_len;
     desc[str_ptr] = 0;
     
     out[filled_size] = desc;
