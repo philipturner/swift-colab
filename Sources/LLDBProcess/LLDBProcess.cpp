@@ -226,6 +226,7 @@ int get_pretty_stack_trace(char ***frames, int *size) {
 //     SBStream stream;
 //     file_spec.GetDescription(stream);
 //     auto file_name = stream.GetData();
+    // TODO: find a way to incorporate the directory name, if it exists.
     auto file_name = file_spec.GetFilename();
     auto file_name_len = strlen(source_loc);
     
@@ -235,6 +236,11 @@ int get_pretty_stack_trace(char ***frames, int *size) {
     char *desc = (char*)malloc(
       /*line*/4 + /*column*/4 + file_name_len + separator_len + source_loc_len +
       /*null terminator*/1);
+    
+    // Write line and column
+    uint32_t *header = (uint32_t*)desc;
+    header[0] = line_entry.GetLine();
+    header[1] = line_entry.GetColumn();
     
     // Write function name
     int str_ptr = 8;
