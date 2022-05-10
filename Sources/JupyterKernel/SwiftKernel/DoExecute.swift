@@ -188,10 +188,10 @@ fileprivate func colorizeErrorMessage(
   
   // For some reason, Colab is erasing the bold sequence here - ???
   // Try sending it as normal data, with a blank error message.
-  let boldWhiteSequence = "\u{1b}[0m\u{1b}[2;3;4;42m"
+  let boldWhiteSequence = "\u{1b}[0m\u{1b}[2;3;4m"
   var output = boldWhiteSequence + String(message[messageStartIndex...])
   if let colonIndex = colonIndex {
-    let boldRedSequence = "\u{1b}[0m\u{1b}[0;2;3;4;31;42m"
+    let boldRedSequence = "\u{1b}[0m\u{1b}[0;2;3;4;31m"
     let labelPortion = boldRedSequence + String(message[...colonIndex])
     output = labelPortion + output
   }
