@@ -64,15 +64,22 @@ func doExecute(code: String) throws -> PythonObject? {
       // If it crashed while unwrapping `nil`, there is no stack trace. To solve
       // this problem, extract where it crashed from the error message. If no
       // stack frames are generated, at least show where the error originated.
+      // TODO: parse the error source from (file:line) to (file, Line line)
       var errorSource: String?
       
       var message = fetchStderr(errorSource: &errorSource)
       message += try prettyPrintStackTrace(errorSource: errorSource)
       sendIOPubErrorMessage(message)
-    } else {
+    } else if result is SwiftError {
       // There is no stdout, so it must be a compile error. Simply return the 
       // error without trying to get a stack trace.
-      sendIOPubErrorMessage([result.description])
+      let message = result.description.split( /* call formatting function */
+        separator: "\n", omittingEmptySubsequences: false)
+      sendIOPubErrorMessage(message)
+    } else /* PreprocessorError or other */ {
+      // This is a custom error, so any styling should have been applied before 
+      // it was thrown.
+    sendIOPubErrorMessage([result.description])
     }
     
     return makeExecuteReplyErrorMessage()
