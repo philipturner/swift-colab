@@ -123,7 +123,9 @@ func prettyPrintStackTrace(errorSource: String?) throws -> [String] {
     data = data.advanced(by: fileName.count + 1)
     let directory = String(cString: UnsafePointer(data))
     if directory.count > 0 {
-      // I'm torn on whether to say "Directory" or "Path" here.
+      // I'm torn on whether to say "Directory" or "Path" here. Path isn't
+      // entirely accurate, because its last component (the file name) is left
+      // out for brevity.
       frame += ", Path: \(formatString(directory, ansiOptions: [32]))"
     }
     
