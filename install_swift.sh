@@ -50,7 +50,7 @@ if [[ ! -d /opt/swift ]]; then
   mkdir /opt/swift/build
   mkdir /opt/swift/include
   mkdir /opt/swift/lib
-  mkdir /opt/swift/builtin-modules
+  mkdir /opt/swift/internal-modules
   mkdir /opt/swift/progress
   echo "swift" > /opt/swift/runtime
 fi
@@ -176,7 +176,7 @@ if [[ $mode == "dev" || ! -e "progress/jupyterkernel-compiler-version" ||
 then
   echo "Compiling JupyterKernel"
   
-  jupyterkernel_path="build-modules/JupyterKernel"
+  jupyterkernel_path="internal-modules/JupyterKernel"
   if [[ -d $jupyterkernel_path ]]; then
     echo "\
 Previously compiled with a different Swift version. \
