@@ -109,7 +109,7 @@ fileprivate func preprocess(line: String, index lineIndex: Int) throws -> String
   let systemMatch = re.match(systemRegularExpression, line)
   guard systemMatch == Python.None else {
     let restOfLine = String(systemMatch.group(1))!
-    try runTerminalProcess(args: [restOfLine])
+    _ = try runTerminalProcess(args: [restOfLine])
     return ""
   }
   
