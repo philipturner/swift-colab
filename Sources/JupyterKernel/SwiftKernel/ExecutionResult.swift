@@ -21,15 +21,6 @@ struct SuccessWithValue: ExecutionResultSuccess {
   var description: String
 }
 
-/// There was an error preprocessing the code.
-struct PreprocessorError: ExecutionResultError {
-  var exception: PreprocessorException
-  
-  var description: String {
-    String(describing: exception)
-  }
-}
-
 /// There was a compile or runtime error.
 struct SwiftError: ExecutionResultError {
   var description: String
