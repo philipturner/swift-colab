@@ -61,7 +61,7 @@ func fetchStderr(errorSource: inout (String, Int)?) -> [String] {
   // The substring ends at the character right before the second colon. This
   // means the source location does not include a column.
   let errorLineStartIndex = firstLine.index(after: firstColonIndex)
-  var errorLineStr = String(firstLine[errorLineStartIndex..<secondColonIndex])
+  let errorLineStr = String(firstLine[errorLineStartIndex..<secondColonIndex])
   guard let errorLine = Int(errorLineStr) else { return lines }
   errorSource = (errorFile, errorLine)
   
@@ -93,7 +93,9 @@ fileprivate func colorizeErrorMessage(_ message: String) -> String {
   return labelPortion + String(message[contentsStartIndex...])
 }
 
-func prettyPrintStackTrace(errorSource: (String, Int)?) throws -> [String] {
+func prettyPrintStackTrace(
+  errorSource: (file: String, line: Int)?
+) throws -> [String] {
   var frames: UnsafeMutablePointer<UnsafeMutableRawPointer>?
   var size: Int32 = 0
   let error = KernelContext.get_pretty_stack_trace(&frames, &size);
@@ -107,7 +109,8 @@ func prettyPrintStackTrace(errorSource: (String, Int)?) throws -> [String] {
   // frames.
   var output: [String] = []
   if let errorSource = errorSource {
-    output.append(getLocationLine(file: errorSource.0, line: errorSource.1))
+    output.append(
+      getLocationLine(file: errorSource.file, line: errorSource.line))
   }
   if size == 0 {
     output.append("Stack trace not available")
