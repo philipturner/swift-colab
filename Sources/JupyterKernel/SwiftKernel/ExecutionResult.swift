@@ -8,7 +8,7 @@ protocol ExecutionResult: CustomStringConvertible {
 /// Protocol for an error from preprocessing code.
 protocol PreprocessorError: LocalizedError {
   static var label: String { get }
-  var lineIndex: Int
+  var lineIndex: Int { get }
 }
 
 /// Protocol for the result of successfully executing code.
