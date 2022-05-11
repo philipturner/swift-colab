@@ -233,7 +233,7 @@ fileprivate func processInstall(
   restOfLine: String, lineIndex: Int
 ) throws {
   KernelContext.log("checkpoint 0")
-  let parsed = try shlexSplit(lineIndex: lineIndex, line: restOfLine))
+  let parsed = try shlexSplit(lineIndex: lineIndex, line: restOfLine)
   if parsed.count < 2 {
     throw PreprocessorException(lineIndex: lineIndex, message:
       "%install usage: SPEC PRODUCT [PRODUCT ...]")
