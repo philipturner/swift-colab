@@ -195,13 +195,6 @@ int get_pretty_stack_trace(void ***frames, int *size) {
   void **out = (void**)malloc(allocated_size * sizeof(char*));
   int filled_size = 0;
   
-  // Separates function name from source location in descriptions, clearing any 
-  // previous ANSI escape sequences. It also sets up blue formatting for the
-  // file name.
-//   const char *separator = "\x1b[0m - \x1b[0;38;5;2m";
-  const char *separator = " - ";
-  int separator_len = strlen(separator);
-  
   for (uint32_t i = 0; i < allocated_size; ++i) {
     auto frame = main_thread.GetFrameAtIndex(i);
     
@@ -237,7 +230,8 @@ int get_pretty_stack_trace(void ***frames, int *size) {
     // Let the Swift code format the line and column. Right now, just serialize 
     // them into an 8-byte header.
     void *desc = malloc(
-      /*line*/4 + /*column*/4 + function_name_len + separator_len + 
+      /*line*/4 + /*column*/4 + 
+      function_name_len + /*null terminator*/1 + 
       file_name_len + /*null terminator*/1 + 
       directory_name_len + /*null terminator*/1);
     
@@ -250,17 +244,13 @@ int get_pretty_stack_trace(void ***frames, int *size) {
     // Write function name
     memcpy((char*)desc + str_ptr, function_name, function_name_len);
     str_ptr += function_name_len;
-    
-    // Write separator
-    memcpy((char*)desc + str_ptr, separator, separator_len);
-    str_ptr += separator_len;
+    ((char*)desc)[str_ptr] = 0; // Write null terminator
+    str_ptr += 1;
     
     // Write file name
     memcpy((char*)desc + str_ptr, file_name, file_name_len);
     str_ptr += file_name_len;
-    
-    // Write null terminator
-    ((char*)desc)[str_ptr] = 0;
+    ((char*)desc)[str_ptr] = 0; // Write null terminator
     str_ptr += 1;
     
     // Write directory name
@@ -268,11 +258,10 @@ int get_pretty_stack_trace(void ***frames, int *size) {
       memcpy((char*)desc + str_ptr, directory_name, directory_name_len);
       str_ptr += directory_name_len;
     }
-    
-    // Write null terminator
-    ((char*)desc)[str_ptr] = 0;
+    ((char*)desc)[str_ptr] = 0; // Write null terminator
     str_ptr += 1;
     
+    // Store description pointer
     out[filled_size] = desc;
     filled_size += 1;
   }
