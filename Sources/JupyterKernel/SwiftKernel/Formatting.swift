@@ -17,18 +17,18 @@ func fetchStderr(errorSource: inout String?) -> [String] {
   var lines = stderr.split(separator: "\n", omittingEmptySubsequences: false)
     .map(String.init)
   guard let stackTraceIndex = lines.lastIndex(of: "Current stack trace:") else {
-    return lines
+    KernelContext.log("failure 1"); return lines
   }
   
   // Return early if there is no error message.
-  guard stackTraceIndex > 0 else { return lines }
+  guard stackTraceIndex > 0 else { KernelContext.log("failure 2"); return lines }
   lines.removeLast(lines.count - stackTraceIndex)
   
   // Remove the "__lldb_expr_NUM/<Cell NUM>:NUM: " prefix to the error message.
   let firstLine = lines[0]
   guard let slashIndex = firstLine.firstIndex(of: "/"), 
         slashIndex > firstLine.startIndex else { 
-    return lines 
+    KernelContext.log("failure 3"); return lines 
   }
   var moduleName: String?
   if !firstLine.hasPrefix("__lldb_expr_") { 
@@ -42,7 +42,7 @@ func fetchStderr(errorSource: inout String?) -> [String] {
     if firstLine[index] == ":" {
       numColons += 1
     }
-    if numColons == 1 {
+    if numColons == 1 && firstColonIndex == nil {
       firstColonIndex = index
     } else if numColons == 2 {
       secondColonIndex = index
@@ -50,7 +50,7 @@ func fetchStderr(errorSource: inout String?) -> [String] {
     }
   }
   guard let firstColonIndex = firstColonIndex, 
-        let secondColonIndex = secondColonIndex else { return lines }
+        let secondColonIndex = secondColonIndex else { KernelContext.log("failure 4"); return lines }
   
   let fileNameStartIndex = firstLine.index(after: slashIndex)
   var errorFile = String(firstLine[fileNameStartIndex..<firstColonIndex])
@@ -63,13 +63,13 @@ func fetchStderr(errorSource: inout String?) -> [String] {
   // means the source location does not include a column.
   let errorLineStartIndex = firstLine.index(after: firstColonIndex)
   var errorLine = String(firstLine[errorLineStartIndex..<secondColonIndex])
-  guard Int(errorLine) != nil else { return lines }
+  guard Int(errorLine) != nil else { KernelContext.log("failure 5"); return lines }
   errorLine = formatString(errorLine, ansiOptions: [32])
   errorSource = "\(errorFile), Line \(errorLine)"
   
   // The line could theoretically end right after the second colon.
   let messageStartIndex = firstLine.index(secondColonIndex, offsetBy: 2)
-  guard firstLine.indices.contains(messageStartIndex) else { return lines }
+  guard firstLine.indices.contains(messageStartIndex) else { KernelContext.log("failure 6"); return lines }
   
   // The error message may span multiple lines, so just modify the first line
   // in-place and return the array.
