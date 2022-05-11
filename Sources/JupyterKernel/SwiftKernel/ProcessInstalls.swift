@@ -340,44 +340,45 @@ fileprivate func processInstall(
   // == Ask SwiftPM to build the package ==
   
   let swiftBuildPath = "/opt/swift/toolchain/usr/bin/swift-build"
-  let buildProcess = subprocess.Popen(
-    [swiftBuildPath] + swiftPMFlags,
-    stdout: subprocess.PIPE,
-    stderr: subprocess.STDOUT,
-    cwd: packagePath)
-  var currentlyInsideBrackets = false
+  let buildReturnCode = executeSystemCommand(restOfLine: 
+//   let buildProcess = subprocess.Popen(
+//     [swiftBuildPath] + swiftPMFlags,
+//     stdout: subprocess.PIPE,
+//     stderr: subprocess.STDOUT,
+//     cwd: packagePath)
+//   var currentlyInsideBrackets = false
   
-  for buildOutputLine in Python.iter(
-      buildProcess.stdout.readline, PythonBytes(Data())) {
-    var str = String(buildOutputLine.decode("utf8"))!
-    guard str.hasSuffix("\n") else {
-      throw PackageInstallException(lineIndex: lineIndex, message: """
-        A build output line from SwiftPM did not end with "\\n":
-        \(str)
-        """)
-    }
-    str.removeLast(1)
+//   for buildOutputLine in Python.iter(
+//       buildProcess.stdout.readline, PythonBytes(Data())) {
+//     var str = String(buildOutputLine.decode("utf8"))!
+//     guard str.hasSuffix("\n") else {
+//       throw PackageInstallException(lineIndex: lineIndex, message: """
+//         A build output line from SwiftPM did not end with "\\n":
+//         \(str)
+//         """)
+//     }
+//     str.removeLast(1)
     
-    // Whenever the Swift package has been built at least one time before, it
-    // outputs a massive, ugly JSON blob that cannot be suppressed. This
-    // workaround filters that out.
-    if Int(str) != nil {
-      continue 
-    }
-    if str.hasPrefix("{") {
-      currentlyInsideBrackets = true
-      continue
-    }
-    if str.hasPrefix("}") {
-      currentlyInsideBrackets = false
-      continue
-    }
-    if !currentlyInsideBrackets {
-      sendStdout(str)
-    }
-  }
+//     // Whenever the Swift package has been built at least one time before, it
+//     // outputs a massive, ugly JSON blob that cannot be suppressed. This
+//     // workaround filters that out.
+//     if Int(str) != nil {
+//       continue 
+//     }
+//     if str.hasPrefix("{") {
+//       currentlyInsideBrackets = true
+//       continue
+//     }
+//     if str.hasPrefix("}") {
+//       currentlyInsideBrackets = false
+//       continue
+//     }
+//     if !currentlyInsideBrackets {
+//       sendStdout(str)
+//     }
+//   }
   
-  let buildReturnCode = buildProcess.wait()
+//   let buildReturnCode = buildProcess.wait()
   if buildReturnCode != 0 {
     throw PackageInstallException(lineIndex: lineIndex, message: """
       Install Error: swift-build returned nonzero exit code \
