@@ -211,11 +211,14 @@ fileprivate func prettyPrintStackTrace(errorSource: String?) throws -> [String] 
     let frame = frames[i]
     defer { free(frame) }
     
-    let header = frame.assumingMemoryBound(to: UInt32.self)
     let data = frame.advanced(by: 8).assumingMemoryBound(to: CChar.self)
     var description = String(cString: UnsafePointer(data))
     description = formatString(description, ansiOptions: [33])
-    description += ", Line \(header[0]), Column \(header[1]), Directory: "
+    
+    let header = frame.assumingMemoryBound(to: UInt32.self)
+    let line = formatString("\(header[0])", ansiOptions: [34])
+    let column = formatString("\(header[1])", ansiOptions: [34])
+    description += ", Line \(line), Column \(columns), <green>Directory: </green>"
     
     var frameID = String(i + 1) + " "
     if frameID.count < padding {
