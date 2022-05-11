@@ -4,33 +4,26 @@ fileprivate let re = Python.import("re")
 fileprivate let sys = Python.import("sys")
 fileprivate let time = Python.import("time")
 
-var iteration = 0
-
 func preprocessAndExecute(
   code: String, isCell: Bool = false
 ) throws -> ExecutionResult {
-  iteration += 1
-  do {
-    let preprocessed = try preprocess(code: code)
-    var executionResult: ExecutionResult?
-    // Need to avoid accessing Python from the background thread.
-    let executionCount = Int(KernelContext.kernel.execution_count)!
-    
-    DispatchQueue.global().async {
-      executionResult = execute(
-        code: preprocessed, lineIndex: isCell ? 0 : nil, isCell: isCell,
-        executionCount: executionCount)
-    }
-    
-    while executionResult == nil {
-      // Using Python's `time` module instead of Foundation.usleep releases the
-      // GIL.
-      time.sleep(0.05)
-    }
-    return executionResult!
-  } catch let e as PreprocessorException {
-    return PreprocessorError(exception: e)
+  let preprocessed = try preprocess(code: code)
+  var executionResult: ExecutionResult?
+  // Need to avoid accessing Python from the background thread.
+  let executionCount = Int(KernelContext.kernel.execution_count)!
+
+  DispatchQueue.global().async {
+    executionResult = execute(
+      code: preprocessed, lineIndex: isCell ? 0 : nil, isCell: isCell,
+      executionCount: executionCount)
   }
+
+  while executionResult == nil {
+    // Using Python's `time` module instead of Foundation.usleep releases the
+    // GIL.
+    time.sleep(0.05)
+  }
+  return executionResult!
 }
 
 func execute(
