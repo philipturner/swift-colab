@@ -25,7 +25,7 @@ func doExecute(code: String) throws -> PythonObject? {
   } catch _ as InterruptException {
     return nil
   } catch let error as PackageInstallException {
-    sendIOPubErrorMessage(error.localizedDescription)
+    sendIOPubErrorMessage([error.localizedDescription])
     return makeExecuteReplyErrorMessage()
   } catch {
     let kernel = KernelContext.kernel
