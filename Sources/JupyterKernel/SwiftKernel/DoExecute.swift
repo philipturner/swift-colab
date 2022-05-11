@@ -75,7 +75,7 @@ func doExecute(code: String) throws -> PythonObject? {
       // There is no stdout, so it must be a compile error. Simply return the 
       // error without trying to get a stack trace.
       let message = result.description.split( /* call formatting function */
-        separator: "\n", omittingEmptySubsequences: false)
+        separator: "\n", omittingEmptySubsequences: false).map(String.init)
       sendIOPubErrorMessage(message)
     } else /* PreprocessorError or other */ {
       // This is a custom error, so any styling should have been applied before 
