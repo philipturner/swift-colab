@@ -134,7 +134,7 @@ func prettyPrintStackTrace(errorSource: (String, Int)?) throws -> [String] {
       return output
     }
     
-    let function = formatString(extractComponent(), ansiOptions: [34])
+    let function = extractComponent()
     let file = extractComponent()
     let directory = extractComponent()
     var path: String
@@ -157,7 +157,7 @@ func prettyPrintStackTrace(errorSource: (String, Int)?) throws -> [String] {
         repeating: " " as Character, count: padding - frameID.count)
     }
     output.append(
-      "\(frameID)\(function) - \(path), Line \(line), Column \(column)")
+      "\(frameID)\(function) - \(path), line \(line), column \(column)")
   }
   return output
 }
