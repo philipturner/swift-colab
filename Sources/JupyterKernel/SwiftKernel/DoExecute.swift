@@ -52,7 +52,7 @@ func doExecute(code: String) throws -> PythonObject? {
     return nil
   } else if result is ExecutionResultError {
     if KernelContext.process_is_alive() == 0 {
-      sendIOPubErrorMessage(["Process killed"])
+      sendIOPubErrorMessage([formatString("Process killed", ansiOptions: [33])])
       
       // Exit the kernel because there is no way to recover from a killed 
       // process. The UI will tell the user that the kernel has died and the UI 
@@ -64,8 +64,6 @@ func doExecute(code: String) throws -> PythonObject? {
       // If it crashed while unwrapping `nil`, there is no stack trace. To solve
       // this problem, extract where it crashed from the error message. If no
       // stack frames are generated, at least show where the error originated.
-      // TODO: Parse the error source from (module/file:line) to (module/file, 
-      // Line line) with style in `fetchStderr`.
       var errorSource: String?
       
       var message = fetchStderr(errorSource: &errorSource)
