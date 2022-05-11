@@ -139,6 +139,17 @@ func prettyPrintStackTrace(errorSource: String?) throws -> [String] {
       // File is a notebook cell
       path = file
     }
+    path = formatString(path, ansiOptions: [32])
+    
+    var frameID = String(i + 1) + " "
+    if frameID.count < padding {
+      frameID += String(
+        repeating: " " as Character, count: padding - frameID.count)
+    }
+    
+    output.append(
+      "\(frameID)\(function) - \(path), Line \(line), Column \(column)")
+    
     
     var function = String(cString: UnsafePointer(data))
     function = formatString(function, ansiOptions: [34])
@@ -157,11 +168,7 @@ func prettyPrintStackTrace(errorSource: String?) throws -> [String] {
       frame += ", Path: \(formatString(directory, ansiOptions: [32]))"
     }
     
-    var frameID = String(i + 1) + " "
-    if frameID.count < padding {
-      frameID += String(
-        repeating: " " as Character, count: padding - frameID.count)
-    }
+    
     output.append(frameID + frame)
   }
   return output
