@@ -62,7 +62,7 @@ func fetchStderr(errorSource: inout (String, Int)?) -> [String] {
   // means the source location does not include a column.
   let errorLineStartIndex = firstLine.index(after: firstColonIndex)
   var errorLineStr = String(firstLine[errorLineStartIndex..<secondColonIndex])
-  guard errorLine = Int(errorLineStr) else { return lines }
+  guard let errorLine = Int(errorLineStr) else { return lines }
   errorSource = (errorFile, errorLine)
   
   // The line could theoretically end right after the second colon.
