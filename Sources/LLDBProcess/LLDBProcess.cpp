@@ -229,7 +229,7 @@ int get_pretty_stack_trace(void ***frames, int *size) {
     size_t directory_name_len = 0;
     
     if (file_spec.Exists()) {
-      auto directory_name = file_spec.GetDirectory();
+      directory_name = file_spec.GetDirectory();
       directory_name_len = strlen(directory_name);
     }
     
