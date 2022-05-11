@@ -15,7 +15,7 @@ fileprivate func shlexSplit(
     let output = try split.dynamicallyCall(withArguments: line)
     return [String](output)!
   } catch {
-    throw PreprocessorError(lineIndex: lineIndex, message: """
+    throw PreprocessorException(lineIndex: lineIndex, message: """
       Could not parse shell arguments: \(line)
       Error message: \(error.localizedDescription)
       """)
@@ -234,7 +234,7 @@ fileprivate func processInstall(
 ) throws {
   KernelContext.log("checkpoint 0")
   let parsed = try shlexSplit(lineIndex: lineIndex, line: restOfLine))
-  if parsed.count < 2 {
+  if parsed.count < 2 
     throw PreprocessorException(lineIndex: lineIndex, message:
       "%install usage: SPEC PRODUCT [PRODUCT ...]")
   }
