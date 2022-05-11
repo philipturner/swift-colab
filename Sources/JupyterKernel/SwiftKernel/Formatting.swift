@@ -136,7 +136,7 @@ func prettyPrintStackTrace(
       return output
     }
     
-    let function = formatString(extractComponent(), ansiOptions: [33])
+    let function = extractComponent()
     let file = extractComponent()
     let directory = extractComponent()
     var path: String
