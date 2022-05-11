@@ -180,7 +180,7 @@ fileprivate func readInclude(restOfLine: String, lineIndex: Int) throws -> Strin
     """###
   let nameMatch = re.match(nameRegularExpression, restOfLine)
   guard nameMatch != Python.None else {
-    throw ParseException(lineIndex: lineIndex, message:
+    throw PreprocessorException(lineIndex: lineIndex, message:
       "%include must be followed by a name in quotes")
   }
   
@@ -211,7 +211,7 @@ fileprivate func readInclude(restOfLine: String, lineIndex: Int) throws -> Strin
     }
     
     // Reversing `includePaths` to show the highest-priority one first.
-    throw ParseException(lineIndex: lineIndex, message:
+    throw PreprocessorException(lineIndex: lineIndex, message:
       "Could not find \"\(name)\". Searched \(includePaths.reversed()).")
   }
   previouslyReadPaths.insert(chosenPath)
