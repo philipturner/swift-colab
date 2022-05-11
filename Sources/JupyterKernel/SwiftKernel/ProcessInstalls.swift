@@ -126,7 +126,7 @@ fileprivate func processExtraIncludeCommand(
 
 // %install-location
 
-fileprivate var installLocation = "/opt/swift/build"
+fileprivate var installLocation = "/opt/swift/packages"
 
 fileprivate func processInstallLocation(
   restOfLine: String, lineIndex: Int
@@ -305,7 +305,7 @@ fileprivate func processInstall(
     Working in: \(installLocation)
     """)
   
-  let packagePath = "\(installLocation)/package\(packageID + 1)"
+  let packagePath = "\(installLocation)/\(packageID + 1)"
   try? fm.createDirectory(
     atPath: packagePath, withIntermediateDirectories: false)
   
