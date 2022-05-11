@@ -42,8 +42,8 @@ struct InterruptException: LocalizedError {
   init(_ message: String) { errorDescription = message }
 }
 
-struct ParseException: PreprocessorError {
-  static let label = "Parse error"
+struct PreprocessorException: PreprocessorError {
+  static let label = "Preprocessor error"
   var lineIndex: Int
   var errorDescription: String?
   init(line: Int, message: String) { 
