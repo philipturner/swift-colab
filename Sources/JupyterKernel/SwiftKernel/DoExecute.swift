@@ -226,8 +226,7 @@ fileprivate func prettyPrintStackTrace(errorSource: String?) throws -> [String] 
     data = data.advanced(by: fileName.count + 1)
     let directory = String(cString: UnsafePointer(data))
     if directory.count > 0 {
-      let dummyDirectory = formatString("/Dummy/Directory", ansiOptions: [32])
-      frame += ", Directory: \(dummyDirectory)"
+      frame += ", Directory: \(formatString(directory, ansiOptions: [32]))"
     }
     
     var frameID = String(i + 1) + " "
