@@ -145,6 +145,9 @@ fileprivate func fetchStderr(errorSource: inout String?) -> [String] {
   // means the source location does not include a column.
   let angleBracketIndex = firstLine.index(after: slashIndex) // index of "<"
   errorSource = String(firstLine[angleBracketIndex..<secondColonIndex])
+  if let moduleName = moduleName {
+    errorSource = "\(moduleName)/\(errorSource)"
+  }
   
   // The line could theoretically end right after the second colon.
   let messageStartIndex = firstLine.index(secondColonIndex, offsetBy: 2)
