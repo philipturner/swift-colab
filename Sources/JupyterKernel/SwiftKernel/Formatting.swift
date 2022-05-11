@@ -10,7 +10,7 @@ func formatString(_ input: String, ansiOptions: [Int]) -> String {
   return formatSequence + input + clearSequence
 }
 
-func fetchStderr(errorSource: inout String?) -> [String] {
+func fetchStderr(errorSource: inout (String, Int)?) -> [String] {
   guard let stderr = getStderr(readData: true) else {
     return []
   }
@@ -57,15 +57,13 @@ func fetchStderr(errorSource: inout String?) -> [String] {
   if let moduleName = moduleName {
     errorFile = "\(moduleName)/\(errorFile)"
   }
-  errorFile = formatString(errorFile, ansiOptions: [32])
   
   // The substring ends at the character right before the second colon. This
   // means the source location does not include a column.
   let errorLineStartIndex = firstLine.index(after: firstColonIndex)
   var errorLine = String(firstLine[errorLineStartIndex..<secondColonIndex])
   guard Int(errorLine) != nil else { return lines }
-  errorLine = formatString(errorLine, ansiOptions: [32])
-  errorSource = "\(errorFile), Line \(errorLine)"
+  errorSource = (errorFile, errorLine)
   
   // The line could theoretically end right after the second colon.
   let messageStartIndex = firstLine.index(secondColonIndex, offsetBy: 2)
@@ -95,7 +93,7 @@ fileprivate func colorizeErrorMessage(_ message: String) -> String {
   return labelPortion + String(message[contentsStartIndex...])
 }
 
-func prettyPrintStackTrace(errorSource: String?) throws -> [String] {
+func prettyPrintStackTrace(errorSource: (String, Int)?) throws -> [String] {
   var frames: UnsafeMutablePointer<UnsafeMutableRawPointer>?
   var size: Int32 = 0
   let error = KernelContext.get_pretty_stack_trace(&frames, &size);
