@@ -114,13 +114,17 @@ func prettyPrintStackTrace(errorSource: String?) throws -> [String] {
     let frameBytes = frames[i]
     defer { free(frameBytes) }
     
-    var data = frameBytes.advanced(by: 8).assumingMemoryBound(to: CChar.self)
-    let fileName = String(cString: UnsafePointer(data))
-    var frame = formatString(fileName, ansiOptions: [34])
-    
     let header = frameBytes.assumingMemoryBound(to: UInt32.self)
     let line = formatString("\(header[0])", ansiOptions: [32])
     let column = formatString("\(header[1])", ansiOptions: [32])
+    
+    var data = frameBytes.advanced(by: 8).assumingMemoryBound(to: CChar.self)
+    var function = String(cString: UnsafePointer(data))
+    function = formatString(function, ansiOptions: [34])
+    
+    var frame = formatString(fileName, ansiOptions: [34])
+    
+    
     frame += ", Line \(line), Column \(column)"
     
     data = data.advanced(by: fileName.count + 1)
