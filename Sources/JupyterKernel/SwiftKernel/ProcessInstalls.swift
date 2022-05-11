@@ -217,11 +217,13 @@ fileprivate func readClangModules() {
 fileprivate func processInstall(
   restOfLine: String, lineIndex: Int
 ) throws {
+  KernelContext.log("checkpoint 0")
   let parsed = [String](shlex[dynamicMember: "split"](restOfLine))!
   if parsed.count < 2 {
     throw PackageInstallException(
       "Line \(lineIndex + 1): %install usage: SPEC PRODUCT [PRODUCT ...]")
   }
+  KernelContext.log("checkpoint 1")
   
   // Expand template before writing to file
   let spec = try substituteCwd(template: parsed[0], lineIndex: lineIndex)
