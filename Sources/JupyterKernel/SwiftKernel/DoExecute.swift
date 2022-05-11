@@ -13,6 +13,12 @@ func doExecute(code: String) throws -> PythonObject? {
   let handler = StdoutHandler()
   handler.start()
   
+  func handleError(_ error: LocalizedError, label: String) -> PythonObject {
+    let message = [label, error.localizedDescription]
+    sendIOPubErrorMessage(message)
+    return makeExecuteReplyErrorMessage(message)
+  }
+  
   // Execute the cell, handle unexpected exceptions, and make sure to always 
   // clean up the stdout handler.
   var result: ExecutionResult
@@ -24,9 +30,10 @@ func doExecute(code: String) throws -> PythonObject? {
     result = try executeCell(code: code)
   } catch _ as InterruptException {
     return nil
+  } catch let error as PreprocessorException {
+    return handleError(error, "Preprocessor error")
   } catch let error as PackageInstallException {
-    sendIOPubErrorMessage([error.localizedDescription])
-    return makeExecuteReplyErrorMessage()
+    return handleError(error, "Package install error")
   } catch {
     let kernel = KernelContext.kernel
     sendIOPubErrorMessage([
@@ -51,8 +58,11 @@ func doExecute(code: String) throws -> PythonObject? {
   } else if result is SuccessWithoutValue {
     return nil
   } else if result is ExecutionResultError {
+    var message: [String]
+    
     if KernelContext.process_is_alive() == 0 {
-      sendIOPubErrorMessage([formatString("Process killed", ansiOptions: [33])])
+      message = [formatString("Process killed", ansiOptions: [33])]
+      sendIOPubErrorMessage(message)
       
       // Exit the kernel because there is no way to recover from a killed 
       // process. The UI will tell the user that the kernel has died and the UI 
@@ -66,15 +76,16 @@ func doExecute(code: String) throws -> PythonObject? {
       // stack frames are generated, at least show where the error originated.
       var errorSource: String?
       
-      var message = fetchStderr(errorSource: &errorSource)
+      message = fetchStderr(errorSource: &errorSource)
       message += try prettyPrintStackTrace(errorSource: errorSource)
       sendIOPubErrorMessage(message)
     } else if result is SwiftError {
       // There is no stdout, so it must be a compile error. Simply return the 
       // error without trying to get a stack trace.
-      let message = result.description.split( /* call formatting function */
+      message = result.description.split( /* call formatting function */
         separator: "\n", omittingEmptySubsequences: false).map(String.init)
-      sendIOPubErrorMessage(["Swift Error"] + message)
+      message = ["Swift error"] + message
+      sendIOPubErrorMessage(message)
     } else if result is PreprocessorError {
       // This is a custom error, so any styling should have been applied before 
       // it was thrown.
@@ -121,12 +132,14 @@ fileprivate func sendIOPubErrorMessage(_ message: [String]) {
   ])
 }
 
-fileprivate func makeExecuteReplyErrorMessage() -> PythonObject {
+fileprivate func makeExecuteReplyErrorMessage(
+  _ message: [String]
+) -> PythonObject {
   return [
     "status": "error",
     "execution_count": KernelContext.kernel.execution_count,
     "ename": "",
     "evalue": "",
-    "traceback": PythonObject([])
+    "traceback": PythonObject(message)
   ]
 }
