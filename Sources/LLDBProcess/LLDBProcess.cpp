@@ -223,15 +223,18 @@ int get_pretty_stack_trace(void ***frames, int *size) {
     auto function_name = frame.GetDisplayFunctionName();
     auto function_name_len = strlen(function_name);
     
-    // TODO: Find a way to incorporate the directory name, if it exists.
     auto file_name = file_spec.GetFilename();
     auto file_name_len = strlen(file_name);
     
-    // Let the Swift code format line and column. Right now, just serialize them
-    // in an 8-byte header.
+    auto directory_name = file_spec.GetDirectory();
+    auto directory_name_len = strlen(directory_name);
+    
+    // Let the Swift code format the line and column. Right now, just serialize 
+    // them in an 8-byte header.
     void *desc = malloc(
       /*line*/4 + /*column*/4 + function_name_len + separator_len + 
-      file_name_len + /*null terminator*/1);
+      file_name_len + /*null terminator*/1 + 
+      directory_name_len + /*null terminator*/1);
     
     // Write line and column
     uint32_t *header = (uint32_t*)desc;
