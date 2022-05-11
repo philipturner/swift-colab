@@ -29,12 +29,12 @@ struct SwiftError: ExecutionResultError {
 /// There was an error preprocessing the code.
 protocol PreprocessorError: LocalizedError {
   static var label: String { get }
-  var line: Int
+  var lineIndex: Int
 }
 
 struct ParseException: LocalizedError {
   static let label = "Parse error"
-  var line: Int
+  var lineIndex: Int
   var errorDescription: String?
   init(line: Int, message: String) { 
     self.line = line
@@ -44,7 +44,7 @@ struct ParseException: LocalizedError {
 
 struct PackageInstallException: LocalizedError {
   static let label = "Package install error"
-  var line: Int
+  var lineIndex: Int
   var errorDescription: String?
   init(line: Int, message: String) { 
     self.line = line
