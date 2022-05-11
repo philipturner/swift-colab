@@ -128,9 +128,10 @@ func prettyPrintStackTrace(errorSource: String?) throws -> [String] {
     let function = formatString(extractComponent(), ansiOptions: [34])
     let file = extractComponent()
     let directory = extractComponent()
-    var path: String
+    var path: String?
     
-    // Should never start with the symbolic link "/opt/swift/install-location"
+    // Should never start with the symbolic link "/opt/swift/install-location".
+    // Rather, it should start with that link's destination.
     if directory.hasPrefix(KernelContext.installLocation) {
       var module
     } else if directory.count > 0 {
@@ -139,6 +140,10 @@ func prettyPrintStackTrace(errorSource: String?) throws -> [String] {
     } else {
       // File is a notebook cell
       path = file
+    }
+    
+    if path == nil {
+      
     }
     
     var function = String(cString: UnsafePointer(data))
