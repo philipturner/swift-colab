@@ -177,6 +177,9 @@ fileprivate func extractPackage(fromPath: String) -> String? {
   guard url.hasPrefix("/") else { return nil }
   url = url.dropFirst(1)
   
-  // Drop package ID
-  let id = url.prefix(while: { $0.isHexDigit && !$0.isLetter })
+  return String(url)
+  // continue later
+  
+//   // Drop package ID
+//   let id = url.prefix(while: { $0.isHexDigit && !$0.isLetter })
 }
