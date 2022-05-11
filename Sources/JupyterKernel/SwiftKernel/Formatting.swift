@@ -52,13 +52,20 @@ func fetchStderr(errorSource: inout String?) -> [String] {
   guard let firstColonIndex = firstColonIndex, 
         let secondColonIndex = secondColonIndex else { return lines }
   
+  let fileNameStartIndex = firstLine.index(after: slashIndex)
+  var errorFile = String(firstLine[fileNameStartIndex..<firstColonIndex])
+  if let moduleName = moduleName {
+    errorFile = "\(moduleName)/\(errorFile)"
+  }
+  errorFile = formatString(errorFile, ansiOptions: [32])
+  
   // The substring ends at the character right before the second colon. This
   // means the source location does not include a column.
-  let fileNameStartIndex = firstLine.index(after: slashIndex)
-  errorSource = String(firstLine[fileNameStartIndex..<secondColonIndex])
-  if let moduleName = moduleName {
-    errorSource = "\(moduleName)/\(errorSource!)"
-  }
+  let errorLineStartIndex = firstLine.index(after: firstColonIndex)
+  var errorLine = String(firstLine[errorLineStartIndex..<secondColonIndex])
+  guard Int(errorLine) != nil else { return lines }
+  errorLine = formatString(errorLine, ansiOptions: [32])
+  errorSource = "\(errorFile), Line \(errorLine)"
   
   // The line could theoretically end right after the second colon.
   let messageStartIndex = firstLine.index(secondColonIndex, offsetBy: 2)
@@ -106,7 +113,7 @@ func prettyPrintStackTrace(errorSource: String?) throws -> [String] {
   }
   if size == 0 {
     output.append("Stack trace not available")
-    return
+    return output
   } else {
     output.append("Current stack trace:")
   }
@@ -156,13 +163,13 @@ func prettyPrintStackTrace(errorSource: String?) throws -> [String] {
   return output
 }
   
-fileprivate func extractPackage(fromPath: String) -> String? {
+fileprivate func extractPackage(fromPath path: String) -> String? {
   // Should never start with the symbolic link "/opt/swift/install-location".
   // Rather, it should start with that link's destination.
-  guard directory.hasPrefix(KernelContext.installLocation) else {
+  guard path.hasPrefix(KernelContext.installLocation) else {
     return nil
   }
-  var url = directory.dropFirst(KernelContext.installLocation.count)
+  var url = path.dropFirst(KernelContext.installLocation.count)
   guard url.hasPrefix("/") else { return nil }
   url = url.dropFirst(1)
   
