@@ -128,22 +128,17 @@ func prettyPrintStackTrace(errorSource: String?) throws -> [String] {
     let function = formatString(extractComponent(), ansiOptions: [34])
     let file = extractComponent()
     let directory = extractComponent()
-    var path: String?
+    var path: String
     
-    // Should never start with the symbolic link "/opt/swift/install-location".
-    // Rather, it should start with that link's destination.
-    if directory.hasPrefix(KernelContext.installLocation) {
-      var module
+    if let package = extractPackage(fromPath: directory) {
+      // File is in a package's build checkouts
+      path = package + "/" + file
     } else if directory.count > 0 {
       // File location not recognized
       path = directory + "/" + file
     } else {
       // File is a notebook cell
       path = file
-    }
-    
-    if path == nil {
-      
     }
     
     var function = String(cString: UnsafePointer(data))
@@ -171,4 +166,13 @@ func prettyPrintStackTrace(errorSource: String?) throws -> [String] {
     output.append(frameID + frame)
   }
   return output
+}
+  
+fileprivate func extractPackage(fromPath: String) -> String? {
+  // Should never start with the symbolic link "/opt/swift/install-location".
+  // Rather, it should start with that link's destination.
+  if directory.hasPrefix(KernelContext.installLocation) {
+    var url = directory.dropFirst(KernelContext.installLocation.count)
+
+  }
 }
