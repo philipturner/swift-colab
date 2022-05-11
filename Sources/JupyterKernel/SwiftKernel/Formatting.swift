@@ -182,13 +182,13 @@ fileprivate func extractPackage(fromPath path: String) -> String? {
   
   // Drop package ID
   let id = url.prefix(while: { $0.isHexDigit && !$0.isLetter })
-  guard Int(id) != nil else { retrn nil }
+  guard Int(id) != nil else { return nil }
   url = url.dropFirst(id.count)
   // url = /.build/checkouts/Lib/Folder
   
   let buildCheckouts = "/.build/checkouts/"
   guard url.hasPrefix(buildCheckouts) else { return nil }
-  url.dropFirst(buildCheckouts.count)
+  url = url.dropFirst(buildCheckouts.count)
   // url = Lib/Folder
   
   // Preserve "Folder" to demonstrate where the file is located within the 
