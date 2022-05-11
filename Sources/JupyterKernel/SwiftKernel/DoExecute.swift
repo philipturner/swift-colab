@@ -29,12 +29,12 @@ func doExecute(code: String) throws -> PythonObject? {
     return makeExecuteReplyErrorMessage()
   } catch {
     let kernel = KernelContext.kernel
-    sendIOPubErrorMessage("""
-      Kernel is in a bad state. Try restarting the kernel.
-      
-      Exception in cell \(kernel.execution_count):
-      \(error.localizedDescription)
-      """)
+    sendIOPubErrorMessage([
+      "Kernel is in a bad state. Try restarting the kernel.",
+      "",
+      "Exception in cell \(kernel.execution_count):",
+      "\(error.localizedDescription)"
+    ])
     throw error
   }
   
@@ -52,7 +52,7 @@ func doExecute(code: String) throws -> PythonObject? {
     return nil
   } else if result is ExecutionResultError {
     if KernelContext.process_is_alive() == 0 {
-      sendIOPubErrorMessage("Process killed")
+      sendIOPubErrorMessage(["Process killed"])
       
       // Exit the kernel because there is no way to recover from a killed 
       // process. The UI will tell the user that the kernel has died and the UI 
@@ -68,11 +68,11 @@ func doExecute(code: String) throws -> PythonObject? {
       
       var message = fetchStderr(errorSource: &errorSource)
       message += try prettyPrintStackTrace(errorSource: errorSource)
-      sendIOPubErrorMessage(String(message.joined(separator: "\n")))
+      sendIOPubErrorMessage(message)
     } else {
       // There is no stdout, so it must be a compile error. Simply return the 
       // error without trying to get a stack trace.
-      sendIOPubErrorMessage(result.description)
+      sendIOPubErrorMessage([result.description])
     }
     
     return makeExecuteReplyErrorMessage()
@@ -239,19 +239,13 @@ fileprivate func prettyPrintStackTrace(errorSource: String?) throws -> [String] 
   return output
 }
 
-fileprivate func sendIOPubErrorMessage(_ message: String) {
-  // Preserves all formatting and does not wrap lines.
-  KernelContext.sendResponse("stream", [
-    "name": "stdout",
-    "text": (message + "\n").pythonObject
-  ])
-  
-  // Erases bold/light formatting and forces lines to wrap in notebook, but also
-  // adds a button to search Stack Overflow.
+// Erases bold/light formatting, forces lines to wrap in notebook, and adds a
+// button to search Stack Overflow.
+fileprivate func sendIOPubErrorMessage(_ message: [String]) {
   KernelContext.sendResponse("error", [
     "ename": "",
     "evalue": "",
-    "traceback": PythonObject([])
+    "traceback": PythonObject(message)
   ])
 }
 
