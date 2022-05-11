@@ -83,8 +83,8 @@ fileprivate func handleTemplateError(
   }
   switch pythonError {
   case .exception(let error, _):
-    return PreprocessorException(
-      "Line \(lineIndex + 1): Invalid template argument \(error)")
+    return PreprocessorException(lineIndex: lineIndex, message:
+      "Invalid template argument \(error)")
   default:
     return pythonError
   }
@@ -101,17 +101,17 @@ fileprivate func processExtraIncludeCommand(
     stderr: subprocess.PIPE,
     shell: true)
   if result.returncode != 0 {
-    throw PreprocessorException("""
-      %install-extra-include-command returned nonzero \
-      exit code: \(result.returncode)
-      Stdout: \(result.stdout.decode("utf8"))
-      Stderr: \(result.stderr.decode("utf8"))
+    throw PreprocessorException(lineIndex: lineIndex, message: """
+      %install-extra-include-command returned nonzero exit code: \(result.returncode)
+      stdout: \(result.stdout.decode("utf8"))
+      stderr: \(result.stderr.decode("utf8"))
       """)
   }
   
   let includeDirs = shlex[dynamicMember: "split"](result.stdout.decode("utf8"))
   for includeDir in [String](includeDirs)! {
     if includeDir.prefix(2) != "-I" {
+      // TODO: Remove this once I know what it does
       KernelContext.kernel.log.warn("""
         Non "-I" output from \
         %install-extra-include-command: \(includeDir)
@@ -177,7 +177,7 @@ fileprivate func readInstalledPackages() throws {
   }
 }
 
-fileprivate func writeInstalledPackages() throws {
+fileprivate func writeInstalledPackages(lineIndex: Int) throws {
   let packagesString = installedPackages.reduce("") {
     $0 + $1 + "\n"
   }
@@ -185,7 +185,7 @@ fileprivate func writeInstalledPackages() throws {
   
   guard FileManager.default.createFile(
         atPath: installedPackagesLocation, contents: packagesData) else {
-    throw PackageInstallException("""
+    throw PackageInstallException(lineIndex: lineIndex, message: """
       Could not write to file "\(installedPackagesLocation!)"
       """)
   }
@@ -220,8 +220,8 @@ fileprivate func processInstall(
   KernelContext.log("checkpoint 0")
   let parsed = [String](shlex[dynamicMember: "split"](restOfLine))!
   if parsed.count < 2 {
-    throw PreprocessorException(
-      "Line \(lineIndex + 1): %install usage: SPEC PRODUCT [PRODUCT ...]")
+    throw PreprocessorException(lineIndex: lineIndex, message:
+      "%install usage: SPEC PRODUCT [PRODUCT ...]")
   }
   KernelContext.log("checkpoint 1")
   
@@ -249,7 +249,7 @@ fileprivate func processInstall(
     installedPackagesMap[spec] = packageID
   }
   
-  try writeInstalledPackages()
+  try writeInstalledPackages(lineIndex: lineIndex)
   
   // Summary of how this works:
   // - create a Swift package that depends all the modules that
@@ -312,7 +312,9 @@ fileprivate func processInstall(
     let filePath = "\(packagePath)/\(name)"
     let data = contents.data(using: .utf8)!
     guard fm.createFile(atPath: filePath, contents: data) else {
-      throw PackageInstallException("Could not write to file \"\(filePath)\".")
+      throw PackageInstallException(lineIndex: lineIndex, message: """
+        Could not write to file "\(filePath)".
+        """)
     }
   }
   
@@ -336,7 +338,7 @@ fileprivate func processInstall(
       buildProcess.stdout.readline, PythonBytes(Data())) {
     var str = String(buildOutputLine.decode("utf8"))!
     guard str.hasSuffix("\n") else {
-      throw PackageInstallException("""
+      throw PackageInstallException(lineIndex: lineIndex, message: """
         A build output line from SwiftPM did not end with "\\n":
         \(str)
         """)
@@ -364,7 +366,7 @@ fileprivate func processInstall(
   
   let buildReturnCode = buildProcess.wait()
   if buildReturnCode != 0 {
-    throw PackageInstallException("""
+    throw PackageInstallException(lineIndex: lineIndex, message: """
       Install Error: swift-build returned nonzero exit code \
       \(buildReturnCode).
       """)
@@ -389,7 +391,8 @@ fileprivate func processInstall(
   
   let buildDBPath = "\(binDir)/../build.db"
   guard fm.fileExists(atPath: buildDBPath) else {
-    throw PackageInstallException("build.db is missing")
+    throw PackageInstallException(lineIndex: lineIndex, message: 
+      "build.db is missing")
   }
   
   // Execute swift-package show-dependencies to get all dependencies' paths
@@ -447,7 +450,7 @@ fileprivate func processInstall(
       try fm.createSymbolicLink(
         atPath: linkPath, withDestinationPath: path)
     } catch {
-      throw PackageInstallException("""
+      throw PackageInstallException(lineIndex: lineIndex, message: """
         Could not create link "\(linkPath)" with destination "\(path)".
         """)
     }
