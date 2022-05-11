@@ -26,17 +26,26 @@ struct SwiftError: ExecutionResultError {
   var description: String
 }
 
-struct Exception: LocalizedError {
-  var errorDescription: String?
-  init(_ message: String) { errorDescription = message }
+protocol PreprocessorError: LocalizedError {
+  static var label: String { get }
+  var line: Int?
 }
 
-struct PreprocessorException: LocalizedError {
+struct ParseException: LocalizedError {
+  static let label = "Parse error"
   var errorDescription: String?
   init(_ message: String) { errorDescription = message }
 }
 
 struct PackageInstallException: LocalizedError {
+  static let label = "Package install error"
+  var errorDescription: String?
+  init(_ message: String) { errorDescription = message }
+}
+
+// Miscellaneous
+
+struct Exception: LocalizedError {
   var errorDescription: String?
   init(_ message: String) { errorDescription = message }
 }
