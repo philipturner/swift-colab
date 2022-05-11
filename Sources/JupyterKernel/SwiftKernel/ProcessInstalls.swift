@@ -7,6 +7,12 @@ fileprivate let sqlite3 = Python.import("sqlite3")
 fileprivate let string = Python.import("string")
 fileprivate let subprocess = Python.import("subprocess")
 
+fileprivate func shlexSplit(_ line: String) throws -> [String] {
+  let split = shlex[dynamicMember: "split"].throwing
+  let output = try split.dynamicallyCall(withArguments: line)
+  return [String](output)!
+}
+
 func processInstallDirective(
   line: String, lineIndex: Int, isValidDirective: inout Bool
 ) throws {
@@ -71,8 +77,7 @@ fileprivate func processSwiftPMFlags(
     swiftPMFlags = []
   }
   
-  let flags = shlex[dynamicMember: "split"](processedLine)
-  swiftPMFlags += [String](flags)!
+  swiftPMFlags += try shlexSplit(processedLine)
 }
 
 fileprivate func handleTemplateError(
@@ -108,11 +113,10 @@ fileprivate func processExtraIncludeCommand(
       """)
   }
   
-  let includeDirs = shlex[dynamicMember: "split"](result.stdout.decode("utf8"))
-  for includeDir in [String](includeDirs)! {
+  for includeDir in try shlexSplit(result.stdout.decode("utf8")) {
     if includeDir.prefix(2) != "-I" {
-      // TODO: Remove this once I know what it does
-      KernelContext.kernel.log.warn("""
+      // Warning goes to "Runtime" > "View runtime logs"
+      print("""
         Non "-I" output from \
         %install-extra-include-command: \(includeDir)
         """)
@@ -218,7 +222,7 @@ fileprivate func processInstall(
   restOfLine: String, lineIndex: Int
 ) throws {
   KernelContext.log("checkpoint 0")
-  let parsed = [String](shlex[dynamicMember: "split"](restOfLine))!
+  let parsed = try shlexSplit(restOfLine))
   if parsed.count < 2 {
     throw PreprocessorException(lineIndex: lineIndex, message:
       "%install usage: SPEC PRODUCT [PRODUCT ...]")
