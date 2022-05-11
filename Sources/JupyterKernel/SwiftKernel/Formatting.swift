@@ -109,7 +109,8 @@ func prettyPrintStackTrace(errorSource: String?) throws -> [String] {
   // frames.
   var output: [String] = []
   if let errorSource = errorSource {
-    output.append("Location: \(errorSource)")
+    let locationLabel = formatString("Location: ", ansiOptions: [31])
+    output.append("\(locationLabel)\(errorSource)")
   }
   if size == 0 {
     output.append("Stack trace not available")
@@ -140,9 +141,9 @@ func prettyPrintStackTrace(errorSource: String?) throws -> [String] {
     let directory = extractComponent()
     var path: String
     
-    if let package = extractPackage(fromPath: directory) {
+    if let folder = extractPackageFolder(fromPath: directory) {
       // File is in a package's build checkouts
-      path = package + "/" + file
+      path = folder + "/" + file
     } else if directory.count > 0 {
       // File location not recognized
       path = directory + "/" + file
@@ -165,7 +166,7 @@ func prettyPrintStackTrace(errorSource: String?) throws -> [String] {
 
 // This could theoretically work on any path, regardless of whether it's a 
 // directory or a full file path.
-fileprivate func extractPackage(fromPath path: String) -> String? {
+fileprivate func extractPackageFolder(fromPath path: String) -> String? {
   // Follow along this code with an example URL:
   // path = /opt/swift/packages/1/.build/checkouts/Lib/Folder
   
