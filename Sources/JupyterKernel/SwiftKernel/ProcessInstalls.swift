@@ -7,10 +7,17 @@ fileprivate let sqlite3 = Python.import("sqlite3")
 fileprivate let string = Python.import("string")
 fileprivate let subprocess = Python.import("subprocess")
 
-fileprivate func shlexSplit(_ line: String) throws -> [String] {
+fileprivate func shlexSplit(lineIndex: Int, line: String) throws -> [String] {
   let split = shlex[dynamicMember: "split"].throwing
-  let output = try split.dynamicallyCall(withArguments: line)
-  return [String](output)!
+  do {
+    let output = try split.dynamicallyCall(withArguments: line)
+    return [String](output)!
+  } catch {
+    throw PreprocessorError(lineIndex: lineIndex, message: """
+      Could not parse shell arguments: \(line)
+      Error message: \(error.localizedDescription)
+      """)
+  }
 }
 
 func processInstallDirective(
