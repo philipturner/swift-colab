@@ -38,10 +38,7 @@ public func JupyterKernel_registerSwiftKernel() {
   let kernelSpecPath = "\(jupyterKernelFolder)/kernel.json"
   try? fm.removeItem(atPath: kernelSpecPath)
   
-  // Does this even do anything? Can I avoid it since I'm just overwriting the Python kernel?
-//   fm.createFile(atPath: kernelSpecPath, contents: kernelSpec.data(using: .utf8)!)
-  // Do I need to add these file permissions?
-//   try! fm.setAttributes([.posixPermissions: NSNumber(0o755)], ofItemAtPath: kernelSpecPath)
+  fm.createFile(atPath: kernelSpecPath, contents: kernelSpec.data(using: .utf8)!)
   KernelSpecManager().install_kernel_spec(jupyterKernelFolder, "swift")
   
   // Overwrite Python kernel script
