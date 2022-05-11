@@ -110,10 +110,12 @@ func prettyPrintStackTrace(errorSource: (String, Int)?) throws -> [String] {
     output.append(getLocationLine(file: errorSource.0, line: errorSource.1))
   }
   if size == 0 {
-    output.append(formatString("Stack trace not available", ansiOptions: [31]))
+    output.append("Stack trace not available")
+//     output.append(formatString("Stack trace not available", ansiOptions: [31]))
     return output
   } else {
-    output.append(formatString("Current stack trace:", ansiOptions: [31]))
+    output.append("Current stack trace:")
+//     output.append(formatString("Current stack trace:", ansiOptions: [31]))
   }
   
   // Number of characters, including digits and spaces, before a function name.
