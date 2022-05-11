@@ -13,19 +13,6 @@ func doExecute(code: String) throws -> PythonObject? {
   let handler = StdoutHandler()
   handler.start()
   
-  func handleError(_ error: PreprocessorError) -> PythonObject {
-    let cellID = Int(KernelContext.kernel.execution_count)!
-    let label = formatString(error.label, ansiOptions: [31])
-    let file = formatString("<Cell \(cellID)>", ansiOptions: [32])
-    let line = formatString("\(error.line)", ansiOptions: [32])
-    
-    var message = 
-    // TODO: possibly merge them onto the same line
-    let message = [formattedLabel, error.localizedDescription]
-    sendIOPubErrorMessage(message)
-    return makeExecuteReplyErrorMessage(message)
-  }
-  
   // Execute the cell, handle unexpected exceptions, and make sure to always 
   // clean up the stdout handler.
   var result: ExecutionResult
@@ -37,10 +24,19 @@ func doExecute(code: String) throws -> PythonObject? {
     result = try executeCell(code: code)
   } catch _ as InterruptException {
     return nil
-  } catch let error as PreprocessorException {
-    return handleError(error, label: "Preprocessor error")
   } catch let error as PreprocessorError {
-    return handleError(error, label: "Package install error")
+    let cellID = Int(KernelContext.kernel.execution_count)!
+    let label = formatString("\(error.label): ", ansiOptions: [31])
+    let locationLabel = formatString("Location: ", ansiOptions: [31])
+    let file = formatString("<Cell \(cellID)>", ansiOptions: [32])
+    let line = formatString("\(error.line)", ansiOptions: [32])
+    
+    let message = [
+      "\(label)\(error.localizedDescription)",
+      "\(locationLabel)\(file), Line \(line)"
+    ]
+    sendIOPubErrorMessage(message)
+    return makeExecuteReplyErrorMessage(message)
   } catch {
     let kernel = KernelContext.kernel
     sendIOPubErrorMessage([
