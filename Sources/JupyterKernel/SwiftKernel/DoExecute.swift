@@ -25,7 +25,7 @@ func doExecute(code: String) throws -> PythonObject? {
   } catch _ as InterruptException {
     return nil
   } catch let error as PreprocessorError {
-    let label = formatString("\(error.label): ", ansiOptions: [31])
+    let label = formatString("\(type(of: error).label): ", ansiOptions: [31])
     let locationLabel = formatString("Location: ", ansiOptions: [31])
     
     let cellID = Int(KernelContext.kernel.execution_count)!
