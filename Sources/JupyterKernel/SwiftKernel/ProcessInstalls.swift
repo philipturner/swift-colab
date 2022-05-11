@@ -126,12 +126,10 @@ fileprivate func processExtraIncludeCommand(
 
 // %install-location
 
-fileprivate var installLocation = "/opt/swift/packages"
-
 fileprivate func processInstallLocation(
   restOfLine: String, lineIndex: Int
 ) throws {
-  installLocation = try substituteCwd(
+  KernelContext.installLocation = try substituteCwd(
     template: restOfLine, lineIndex: lineIndex)
 }
 
@@ -165,7 +163,7 @@ fileprivate var installedPackagesMap: [String: Int]! = nil
 
 fileprivate func readInstalledPackages() throws {
   installedPackages = []
-  installedPackagesLocation = "\(installLocation)/index"
+  installedPackagesLocation = "\(KernelContext.installLocation)/index"
   installedPackagesMap = [:]
   
   if let packagesData = FileManager.default.contents(
@@ -201,7 +199,7 @@ fileprivate func readClangModules() {
   loadedClangModules = []
   let fm = FileManager.default
   
-  let moduleSearchPath = "\(installLocation)/modules"
+  let moduleSearchPath = "\(KernelContext.installLocation)/modules"
   let items = try! fm.contentsOfDirectory(atPath: moduleSearchPath)
   for item in items {
     guard item.hasPrefix("module-") else {
@@ -235,9 +233,10 @@ fileprivate func processInstall(
   let linkPath = "/opt/swift/install-location"
   try? fm.removeItem(atPath: linkPath)
   try fm.createSymbolicLink(
-    atPath: linkPath, withDestinationPath: installLocation)
+    atPath: linkPath, withDestinationPath: KernelContext.installLocation)
   
-  if installedPackages == nil || installedPackagesLocation != installLocation {
+  if installedPackages == nil || 
+     installedPackagesLocation != KernelContext.installLocation {
     try readInstalledPackages()
   }
   
@@ -302,10 +301,10 @@ fileprivate func processInstall(
         \(spec)
     \(modulesHumanDescription)
     With SwiftPM flags: \(swiftPMFlags)
-    Working in: \(installLocation)
+    Working in: \(KernelContext.installLocation)
     """)
   
-  let packagePath = "\(installLocation)/\(packageID + 1)"
+  let packagePath = "\(KernelContext.installLocation)/\(packageID + 1)"
   try? fm.createDirectory(
     atPath: packagePath, withIntermediateDirectories: false)
   
@@ -381,7 +380,7 @@ fileprivate func processInstall(
   
   // == Copy .swiftmodule and modulemap files to Swift module search path ==
   
-  let moduleSearchPath = "\(installLocation)/modules"
+  let moduleSearchPath = "\(KernelContext.installLocation)/modules"
   try? fm.createDirectory(
     atPath: moduleSearchPath, withIntermediateDirectories: false)
   if loadedClangModules == nil {
