@@ -232,7 +232,7 @@ fileprivate func processInstall(
   let products = Array(parsed[1...])
   
   let fm = FileManager.default
-  let linkPath = "/opt/swift/install_location"
+  let linkPath = "/opt/swift/install-location"
   try? fm.removeItem(atPath: linkPath)
   try fm.createSymbolicLink(
     atPath: linkPath, withDestinationPath: installLocation)
@@ -305,7 +305,7 @@ fileprivate func processInstall(
     Working in: \(installLocation)
     """)
   
-  let packagePath = "\(installLocation)/\(packageName)"
+  let packagePath = "\(installLocation)/package\(packageID + 1)"
   try? fm.createDirectory(
     atPath: packagePath, withIntermediateDirectories: false)
   
