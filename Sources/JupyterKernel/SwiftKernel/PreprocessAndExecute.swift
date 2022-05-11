@@ -126,12 +126,14 @@ fileprivate func preprocess(line: String, index lineIndex: Int) throws -> String
   return line
 }
 
-// This has the `internal` access level so that "ProcessInstalls.swift" can use 
-// it. This attempts to replicate:
+// This attempts to replicate the code linked below. The function has the
+// `internal` access level so that "ProcessInstalls.swift" can use it.
 // https://github.com/ipython/ipython/blob/master/IPython/utils/_process_posix.py,
 //   def system(self, cmd):
-func executeSystemCommand(restOfLine: String) throws -> Int {
-  let process = pexpect.spawn("/bin/sh", args: ["-c", restOfLine])
+func executeSystemCommand(
+  restOfLine: String, cwd: String? = nil
+) throws -> Int {
+  let process = pexpect.spawn("/bin/sh", args: ["-c", restOfLine], cwd: cwd)
   let flush = sys.stdout.flush
   let patterns = [pexpect.TIMEOUT, pexpect.EOF]
   var outSize: Int = 0
