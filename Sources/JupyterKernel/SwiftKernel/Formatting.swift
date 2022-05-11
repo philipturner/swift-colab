@@ -1,5 +1,4 @@
 import Foundation
-import PythonKit
 
 func formatString(_ input: String, ansiOptions: [Int]) -> String {
   var formatSequence = "\u{1b}[0"
