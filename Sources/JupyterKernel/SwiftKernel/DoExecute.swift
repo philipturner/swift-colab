@@ -74,11 +74,13 @@ func doExecute(code: String) throws -> PythonObject? {
       // error without trying to get a stack trace.
       let message = result.description.split( /* call formatting function */
         separator: "\n", omittingEmptySubsequences: false).map(String.init)
-      sendIOPubErrorMessage(message)
-    } else /* PreprocessorError or other */ {
+      sendIOPubErrorMessage(["Swift Error"] + message)
+    } else if result is PreprocessorError {
       // This is a custom error, so any styling should have been applied before 
       // it was thrown.
-    sendIOPubErrorMessage([result.description])
+      sendIOPubErrorMessage(["Preprocessor Error"] + [result.description])
+    } else {
+      fatalError("This should never happen.")
     }
     
     return makeExecuteReplyErrorMessage()
