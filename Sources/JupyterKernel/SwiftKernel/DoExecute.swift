@@ -211,23 +211,23 @@ fileprivate func prettyPrintStackTrace(errorSource: String?) throws -> [String] 
   
   var output: [String] = ["Current stack trace:"]
   for i in 0..<Int(size) {
-    let frame = frames[i]
-    defer { free(frame) }
+    let frameBytes = frames[i]
+    defer { free(frameBytes) }
     
-    var data = frame.advanced(by: 8).assumingMemoryBound(to: CChar.self)
+    var data = frameBytes.advanced(by: 8).assumingMemoryBound(to: CChar.self)
     let fileName = String(cString: UnsafePointer(data))
-    description = formatString(fileName, ansiOptions: [34])
+    var frame = formatString(fileName, ansiOptions: [34])
     
-    let header = frame.assumingMemoryBound(to: UInt32.self)
+    let header = frameBytes.assumingMemoryBound(to: UInt32.self)
     let line = formatString("\(header[0])", ansiOptions: [32])
     let column = formatString("\(header[1])", ansiOptions: [32])
-    description += ", Line \(line), Column \(column)"
+    frame += ", Line \(line), Column \(column)"
     
     data = data.advanced(by: fileName.count + 1)
     let directory = String(cString: UnsafePointer(data))
     if directory.count > 0 {
       let dummyDirectory = formatString("/Dummy/Directory", ansiOptions: [32])
-      description += ", Directory: \(dummyDirectory)"
+      frame += ", Directory: \(dummyDirectory)"
     }
     
     var frameID = String(i + 1) + " "
@@ -235,7 +235,7 @@ fileprivate func prettyPrintStackTrace(errorSource: String?) throws -> [String] 
       frameID += String(
         repeating: " " as Character, count: padding - frameID.count)
     }
-    output.append(frameID + description)
+    output.append(frameID + frame)
   }
   return output
 }
