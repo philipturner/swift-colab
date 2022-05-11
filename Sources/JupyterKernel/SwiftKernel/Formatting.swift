@@ -10,7 +10,7 @@ func formatString(_ input: String, ansiOptions: [Int]) -> String {
   return formatSequence + input + clearSequence
 }
 
-func fetchStderr(errorSource: inout (String, Int)?) -> [String] {
+func fetchStderr(errorSource: inout (file: String, line: Int)?) -> [String] {
   guard let stderr = getStderr(readData: true) else {
     return []
   }
