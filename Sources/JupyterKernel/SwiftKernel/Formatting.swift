@@ -128,6 +128,12 @@ func prettyPrintStackTrace(errorSource: String?) throws -> [String] {
     let function = formatString(extractComponent(), ansiOptions: [34])
     let file = extractComponent()
     let directory = extractComponent()
+    var fullPath: String?
+    
+    // Should never start with the symbolic link "/opt/swift/install-location"
+    if directory.hasPrefix(KernelContext.installLocation) {
+      var module
+    }
     
     var function = String(cString: UnsafePointer(data))
     function = formatString(function, ansiOptions: [34])
