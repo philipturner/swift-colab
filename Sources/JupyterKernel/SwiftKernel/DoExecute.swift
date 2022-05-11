@@ -146,7 +146,7 @@ fileprivate func fetchStderr(errorSource: inout String?) -> [String] {
   let angleBracketIndex = firstLine.index(after: slashIndex) // index of "<"
   errorSource = String(firstLine[angleBracketIndex..<secondColonIndex])
   if let moduleName = moduleName {
-    errorSource = "\(moduleName)/\(errorSource)"
+    errorSource = "\(moduleName)/\(errorSource!)"
   }
   
   // The line could theoretically end right after the second colon.
