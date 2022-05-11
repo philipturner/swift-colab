@@ -14,7 +14,7 @@ func doExecute(code: String) throws -> PythonObject? {
   handler.start()
   
   func handleError(_ error: LocalizedError, label: String) -> PythonObject {
-    let formattedLabel = formatString(label, ansiOptions: [33])
+    let formattedLabel = formatString(label, ansiOptions: [31])
     // TODO: possibly merge them onto the same line
     let message = [formattedLabel, error.localizedDescription]
     sendIOPubErrorMessage(message)
