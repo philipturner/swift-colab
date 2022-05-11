@@ -1,7 +1,5 @@
 import Foundation
-fileprivate let pexpect = Python.import("pexpect")
 fileprivate let re = Python.import("re")
-fileprivate let sys = Python.import("sys")
 fileprivate let time = Python.import("time")
 
 func preprocessAndExecute(
