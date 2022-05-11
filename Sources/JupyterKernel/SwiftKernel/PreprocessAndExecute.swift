@@ -111,7 +111,7 @@ fileprivate func preprocess(line: String, index lineIndex: Int) throws -> String
   let systemMatch = re.match(systemRegularExpression, line)
   guard systemMatch == Python.None else {
     let restOfLine = String(systemMatch.group(1))!
-    try executeSystemCommand(restOfLine: restOfLine)
+    _ = try executeSystemCommand(restOfLine: restOfLine)
     return ""
   }
   
@@ -133,7 +133,7 @@ fileprivate func preprocess(line: String, index lineIndex: Int) throws -> String
 
 // From https://github.com/ipython/ipython/blob/master/IPython/utils/_process_posix.py,
 //   def system(self, cmd):
-fileprivate func executeSystemCommand(restOfLine: String) throws {
+func executeSystemCommand(restOfLine: String) throws -> Int {
   let process = pexpect.spawn("/bin/sh", args: ["-c", restOfLine])
   let flush = sys.stdout.flush
   let patterns = [pexpect.TIMEOUT, pexpect.EOF]
@@ -160,15 +160,24 @@ fileprivate func executeSystemCommand(restOfLine: String) throws {
     
     if KernelContext.isInterrupted {
       process.terminate(force: true)
-      break
+      throw InterruptException(
+        "User interrupted execution during a `%system` command.")
     } else if Int(resIdx)! == 1 {
       break
     }
   }
+  process.isalive()
   
-  if KernelContext.isInterrupted {
-    throw InterruptException(
-      "User interrupted execution during a `%system` command.")
+  if let exitstatus = Int(process.exitstatus) {
+    if exitstatus > 128 {
+      return -(exitstatus - 128)
+    } else {
+      return exitstatus
+    }
+  } else if let signalstatus = Int(process.signalstatus) {
+    return -signalstatus
+  } else {
+    return 0
   }
 }
 
