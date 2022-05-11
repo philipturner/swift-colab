@@ -204,7 +204,7 @@ fileprivate func extractPackageFolder(fromPath path: String) -> String? {
 }
 
 func getLocationLine(file: String, line: Int) -> String {
-  let locationLabel = formatString("Location: ", ansiOptions: [31])
+  let locationLabel = "Location: "
   let formattedFile = formatString(file, ansiOptions: [32])
   let lineLabel = formatString(", line ", ansiOptions: [36])
   let formattedLine = formatString("\(line)", ansiOptions: [32])
