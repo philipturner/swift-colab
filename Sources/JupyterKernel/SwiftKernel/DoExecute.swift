@@ -14,6 +14,8 @@ func doExecute(code: String) throws -> PythonObject? {
   handler.start()
   
   func handleError(_ error: LocalizedError, label: String) -> PythonObject {
+    let formattedLabel = formatString(label, ansiOptions: [33])
+    // TODO: possibly merge them onto the same line
     let message = [label, error.localizedDescription]
     sendIOPubErrorMessage(message)
     return makeExecuteReplyErrorMessage(message)
@@ -88,7 +90,7 @@ func doExecute(code: String) throws -> PythonObject? {
       sendIOPubErrorMessage(message)
     }
     
-    return makeExecuteReplyErrorMessage()
+    return makeExecuteReplyErrorMessage(message)
   } else {
     fatalError("This should never happen.")
   }
