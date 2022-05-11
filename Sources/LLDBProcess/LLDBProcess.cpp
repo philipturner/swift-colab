@@ -225,9 +225,14 @@ int get_pretty_stack_trace(void ***frames, int *size) {
     auto file_name = file_spec.GetFilename();
     auto file_name_len = strlen(file_name);
     
-    const char *directory_name = "/Dummy/Directory";
-//     auto directory_name = file_spec.GetDirectory();
-    auto directory_name_len = strlen(directory_name);
+    const char *directory_name = NULL;
+    size_t directory_name_len = 0;
+    
+    if file_spec.Exists() {
+      const char *directory_name = "/Dummy/Directory";
+//       auto directory_name = file_spec.GetDirectory();
+      auto directory_name_len = strlen(directory_name);
+    }
     
     // Let the Swift code format the line and column. Right now, just serialize 
     // them into an 8-byte header.
@@ -259,8 +264,10 @@ int get_pretty_stack_trace(void ***frames, int *size) {
     str_ptr += 1;
     
     // Write directory name
-    memcpy((char*)desc + str_ptr, directory_name, directory_name_len);
-    str_ptr += directory_name_len;
+    if (directory_name_len > 0) {
+      memcpy((char*)desc + str_ptr, directory_name, directory_name_len);
+      str_ptr += directory_name_len;
+    }
     
     // Write null terminator
     ((char*)desc)[str_ptr] = 0;
