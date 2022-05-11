@@ -13,8 +13,13 @@ func doExecute(code: String) throws -> PythonObject? {
   let handler = StdoutHandler()
   handler.start()
   
-  func handleError(_ error: LocalizedError, label: String) -> PythonObject {
-    let formattedLabel = formatString(label, ansiOptions: [31])
+  func handleError(_ error: PreprocessorError) -> PythonObject {
+    let cellID = Int(KernelContext.kernel.execution_count)!
+    let label = formatString(error.label, ansiOptions: [31])
+    let file = formatString("<Cell \(cellID)>", ansiOptions: [32])
+    let line = formatString("\(error.line)", ansiOptions: [32])
+    
+    var message = 
     // TODO: possibly merge them onto the same line
     let message = [formattedLabel, error.localizedDescription]
     sendIOPubErrorMessage(message)
@@ -34,7 +39,7 @@ func doExecute(code: String) throws -> PythonObject? {
     return nil
   } catch let error as PreprocessorException {
     return handleError(error, label: "Preprocessor error")
-  } catch let error as PackageInstallException {
+  } catch let error as PreprocessorError {
     return handleError(error, label: "Package install error")
   } catch {
     let kernel = KernelContext.kernel
