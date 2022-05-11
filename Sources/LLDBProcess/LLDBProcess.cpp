@@ -198,7 +198,8 @@ int get_pretty_stack_trace(void ***frames, int *size) {
   // Separates function name from source location in descriptions, clearing any 
   // previous ANSI escape sequences. It also sets up blue formatting for the
   // file name.
-  const char *separator = "\x1b[0m - \x1b[0;38;5;2m";
+//   const char *separator = "\x1b[0m - \x1b[0;38;5;2m";
+  const char *separator = " - ";
   int separator_len = strlen(separator);
   
   for (uint32_t i = 0; i < allocated_size; ++i) {
