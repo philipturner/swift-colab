@@ -29,12 +29,9 @@ func doExecute(code: String) throws -> PythonObject? {
     let locationLabel = formatString("Location: ", ansiOptions: [31])
     
     let cellID = Int(KernelContext.kernel.execution_count)!
-    let file = formatString("<Cell \(cellID)>", ansiOptions: [32])
-    let line = formatString("\(error.lineIndex + 1)", ansiOptions: [32])
-    
     let message = [
       "\(label)\(error.localizedDescription)",
-      "\(locationLabel)\(file), Line \(line)"
+      getLocationLine(file: "<Cell \(cellID)>", line: error.lineIndex + 1)
     ]
     sendIOPubErrorMessage(message)
     return makeExecuteReplyErrorMessage(message)
