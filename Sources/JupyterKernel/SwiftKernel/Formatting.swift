@@ -107,14 +107,13 @@ func prettyPrintStackTrace(errorSource: (String, Int)?) throws -> [String] {
   // frames.
   var output: [String] = []
   if let errorSource = errorSource {
-    let locationLabel = formatString("Location: ", ansiOptions: [31])
-    output.append("\(locationLabel)\(errorSource)")
+    output.append(getLocationLine(file: errorSource.0, line: errorSource.1))
   }
   if size == 0 {
-    output.append("Stack trace not available")
+    output.append(formatString("Stack trace not available", ansiOptions: [31]))
     return output
   } else {
-    output.append("Current stack trace:")
+    output.append(formatString("Current stack trace:", ansiOptions: [31]))
   }
   
   // Number of characters, including digits and spaces, before a function name.
@@ -156,8 +155,12 @@ func prettyPrintStackTrace(errorSource: (String, Int)?) throws -> [String] {
       frameID += String(
         repeating: " " as Character, count: padding - frameID.count)
     }
+    let separator = formatString(" - ", ansiOptions: [36])
+    let lineLabel = formatString(", line ", ansiOptions: [36])
+    let columnLabel = formatString(", column ", ansiOptions: [36])
     output.append(
-      "\(frameID)\(function) - \(path), line \(line), column \(column)")
+      frameID + function + separator + path + lineLabel + line + columnLabel + 
+      column
   }
   return output
 }
