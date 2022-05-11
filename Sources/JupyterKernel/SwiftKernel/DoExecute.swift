@@ -31,9 +31,9 @@ func doExecute(code: String) throws -> PythonObject? {
   } catch _ as InterruptException {
     return nil
   } catch let error as PreprocessorException {
-    return handleError(error, "Preprocessor error")
+    return handleError(error, label: "Preprocessor error")
   } catch let error as PackageInstallException {
-    return handleError(error, "Package install error")
+    return handleError(error, label: "Package install error")
   } catch {
     let kernel = KernelContext.kernel
     sendIOPubErrorMessage([
