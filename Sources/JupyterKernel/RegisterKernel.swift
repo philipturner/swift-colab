@@ -7,7 +7,7 @@ public func JupyterKernel_registerSwiftKernel() {
   print("Registering Swift Jupyter kernel")
   
   let fm = FileManager.default
-  let jupyterKernelFolder = "/opt/swift/packages/JupyterKernel"
+  let jupyterKernelFolder = "/opt/swift/internal-modules/JupyterKernel"
   
   let pythonScript = """
   from ctypes import PyDLL
@@ -39,7 +39,7 @@ public func JupyterKernel_registerSwiftKernel() {
   try? fm.removeItem(atPath: kernelSpecPath)
   
   // Does this even do anything? Can I avoid it since I'm just overwriting the Python kernel?
-  fm.createFile(atPath: kernelSpecPath, contents: kernelSpec.data(using: .utf8)!)
+//   fm.createFile(atPath: kernelSpecPath, contents: kernelSpec.data(using: .utf8)!)
   // Do I need to add these file permissions?
   try! fm.setAttributes([.posixPermissions: NSNumber(0o755)], ofItemAtPath: kernelSpecPath)
   KernelSpecManager().install_kernel_spec(jupyterKernelFolder, "swift")
