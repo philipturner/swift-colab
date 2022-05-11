@@ -94,19 +94,22 @@ func prettyPrintStackTrace(errorSource: String?) throws -> [String] {
   }
   defer { free(frames) }
   
+  // Show where the error originated, regardless of whether there are stack 
+  // frames.
+  var output: [String] = []
+  if let errorSource = errorSource {
+    output.append("Location: \(errorSource)")
+  }
+  
   if size == 0 {
-    // If there are no frames, try to show where the error originated.
-    if let errorSource = errorSource {
-      return ["Location: \(errorSource)"]
-    } else {
-      return ["Stack trace not available"]
-    }
+    output.append("Stack trace not available")
+    return
+  } else {
+    output.append("Current stack trace:")
   }
   
   // Number of characters, including digits and spaces, before a function name.
   let padding = 5
-  
-  var output: [String] = ["Current stack trace:"]
   for i in 0..<Int(size) {
     let frameBytes = frames[i]
     defer { free(frameBytes) }
