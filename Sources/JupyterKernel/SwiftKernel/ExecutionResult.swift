@@ -5,6 +5,12 @@ protocol ExecutionResult: CustomStringConvertible {
   var description: String { get }
 }
 
+/// Protocol for an error from preprocessing code.
+protocol PreprocessorError: LocalizedError {
+  static var label: String { get }
+  var lineIndex: Int
+}
+
 /// Protocol for the result of successfully executing code.
 protocol ExecutionResultSuccess: ExecutionResult {}
 
@@ -26,13 +32,17 @@ struct SwiftError: ExecutionResultError {
   var description: String
 }
 
-/// There was an error preprocessing the code.
-protocol PreprocessorError: LocalizedError {
-  static var label: String { get }
-  var lineIndex: Int
+struct Exception: LocalizedError {
+  var errorDescription: String?
+  init(_ message: String) { errorDescription = message }
 }
 
-struct ParseException: LocalizedError {
+struct InterruptException: LocalizedError {
+  var errorDescription: String?
+  init(_ message: String) { errorDescription = message }
+}
+
+struct ParseException: PreprocessorError {
   static let label = "Parse error"
   var lineIndex: Int
   var errorDescription: String?
@@ -42,7 +52,7 @@ struct ParseException: LocalizedError {
   }
 }
 
-struct PackageInstallException: LocalizedError {
+struct PackageInstallException: PreprocessorError {
   static let label = "Package install error"
   var lineIndex: Int
   var errorDescription: String?
@@ -50,16 +60,4 @@ struct PackageInstallException: LocalizedError {
     self.line = line
     self.errorDescription = message 
   }
-}
-
-// Miscellaneous
-
-struct Exception: LocalizedError {
-  var errorDescription: String?
-  init(_ message: String) { errorDescription = message }
-}
-
-struct InterruptException: LocalizedError {
-  var errorDescription: String?
-  init(_ message: String) { errorDescription = message }
 }
