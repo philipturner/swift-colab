@@ -111,7 +111,7 @@ fileprivate func preprocess(line: String, index lineIndex: Int) throws -> String
   let systemMatch = re.match(systemRegularExpression, line)
   guard systemMatch == Python.None else {
     let restOfLine = String(systemMatch.group(1))!
-    _ = try executeSystemCommand(restOfLine: restOfLine)
+    try runTerminalProcess(args: [restOfLine])
     return ""
   }
   
@@ -124,59 +124,6 @@ fileprivate func preprocess(line: String, index lineIndex: Int) throws -> String
     return try readInclude(restOfLine: restOfLine, lineIndex: lineIndex)
   }
   return line
-}
-
-// This attempts to replicate the code linked below. The function has the
-// `internal` access level so that "ProcessInstalls.swift" can use it.
-// https://github.com/ipython/ipython/blob/master/IPython/utils/_process_posix.py,
-//   def system(self, cmd):
-func executeSystemCommand(restOfLine: String
-) throws -> Int {
-  let process = pexpect.spawn("/bin/sh", args: ["-c", restOfLine], cwd: cwd)
-  let flush = sys.stdout.flush
-  let patterns = [pexpect.TIMEOUT, pexpect.EOF]
-  var outSize: Int = 0
-  
-  while true {
-    var waitTime: Double = 0.05
-    if KernelContext.isInterrupted {
-      waitTime = 0.2
-      process.sendline(Python.chr(3))
-      outSize = process.before.count
-    }
-    
-    let resIdx = process.expect_list(patterns, waitTime)
-    let str = String(process.before[outSize...].decode("utf8", "replace"))!
-    if str.count > 0 {
-      KernelContext.sendResponse("stream", [
-        "name": "stdout",
-        "text": str
-      ])
-    }
-    flush()
-    outSize = process.before.count
-    
-    if KernelContext.isInterrupted {
-      process.terminate(force: true)
-      throw InterruptException(
-        "User interrupted execution during a `%system` command.")
-    } else if Int(resIdx)! == 1 {
-      break
-    }
-  }
-  process.isalive()
-  
-  if let exitstatus = Int(process.exitstatus) {
-    if exitstatus > 128 {
-      return -(exitstatus - 128)
-    } else {
-      return exitstatus
-    }
-  } else if let signalstatus = Int(process.signalstatus) {
-    return -signalstatus
-  } else {
-    return 0
-  }
 }
 
 fileprivate var previouslyReadPaths: Set<String> = []
