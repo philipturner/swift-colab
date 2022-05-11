@@ -7,7 +7,9 @@ fileprivate let sqlite3 = Python.import("sqlite3")
 fileprivate let string = Python.import("string")
 fileprivate let subprocess = Python.import("subprocess")
 
-fileprivate func shlexSplit(lineIndex: Int, line: String) throws -> [String] {
+fileprivate func shlexSplit(
+  lineIndex: Int, line: PythonConvertible
+) throws -> [String] {
   let split = shlex[dynamicMember: "split"].throwing
   do {
     let output = try split.dynamicallyCall(withArguments: line)
@@ -84,7 +86,7 @@ fileprivate func processSwiftPMFlags(
     swiftPMFlags = []
   }
   
-  swiftPMFlags += try shlexSplit(processedLine)
+  swiftPMFlags += try shlexSplit(lineIndex: lineIndex, line: processedLine)
 }
 
 fileprivate func handleTemplateError(
@@ -120,7 +122,9 @@ fileprivate func processExtraIncludeCommand(
       """)
   }
   
-  for includeDir in try shlexSplit(result.stdout.decode("utf8")) {
+  let preprocessed = result.stdout.decode("utf8")
+  let includeDirs = try shlexSplit(lineIndex: lineIndex, line: preprocessed)
+  for includeDir in includeDirs {
     if includeDir.prefix(2) != "-I" {
       // Warning goes to "Runtime" > "View runtime logs"
       print("""
@@ -229,7 +233,7 @@ fileprivate func processInstall(
   restOfLine: String, lineIndex: Int
 ) throws {
   KernelContext.log("checkpoint 0")
-  let parsed = try shlexSplit(restOfLine))
+  let parsed = try shlexSplit(lineIndex: lineIndex, line: restOfLine))
   if parsed.count < 2 {
     throw PreprocessorException(lineIndex: lineIndex, message:
       "%install usage: SPEC PRODUCT [PRODUCT ...]")
