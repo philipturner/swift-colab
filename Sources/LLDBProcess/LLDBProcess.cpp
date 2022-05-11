@@ -195,9 +195,8 @@ int get_pretty_stack_trace(void ***frames, int *size) {
   void **out = (void**)malloc(allocated_size * sizeof(char*));
   int filled_size = 0;
   
-////////////////////////////////////////////////////////////////////////////////
   // Separates function name from source location in descriptions, clearing any 
-  // previous ANSI escape sequences. It also sets up ???yellow??? formatting for the
+  // previous ANSI escape sequences. It also sets up blue formatting for the
   // file name.
   const char *separator = "\x1b[0m - \x1b[0;38;5;2m";
   int separator_len = strlen(separator);
@@ -230,7 +229,7 @@ int get_pretty_stack_trace(void ***frames, int *size) {
     auto directory_name_len = strlen(directory_name);
     
     // Let the Swift code format the line and column. Right now, just serialize 
-    // them in an 8-byte header.
+    // them into an 8-byte header.
     void *desc = malloc(
       /*line*/4 + /*column*/4 + function_name_len + separator_len + 
       file_name_len + /*null terminator*/1 + 
@@ -240,22 +239,31 @@ int get_pretty_stack_trace(void ***frames, int *size) {
     uint32_t *header = (uint32_t*)desc;
     header[0] = line_entry.GetLine();
     header[1] = line_entry.GetColumn();
+    int str_ptr = 4 + 4;
     
     // Write function name
-    int str_ptr = 8;
     memcpy((char*)desc + str_ptr, function_name, function_name_len);
+    str_ptr += function_name_len;
     
     // Write separator
-    str_ptr += function_name_len;
     memcpy((char*)desc + str_ptr, separator, separator_len);
-    
-    // Write source location
     str_ptr += separator_len;
+    
+    // Write file name
     memcpy((char*)desc + str_ptr, file_name, file_name_len);
+    str_ptr += file_name_len;
     
     // Write null terminator
-    str_ptr += file_name_len;
     ((char*)desc)[str_ptr] = 0;
+    str_ptr += 1;
+    
+    // Write directory name
+    memcpy((char*)desc + str_ptr, directory_name, directory_name_len);
+    str_ptr += directory_name_len;
+    
+    // Write null terminator
+    ((char*)desc)[str_ptr] = 0;
+    str_ptr += 1;
     
     out[filled_size] = desc;
     filled_size += 1;
