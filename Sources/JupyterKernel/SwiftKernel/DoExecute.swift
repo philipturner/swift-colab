@@ -65,7 +65,8 @@ func doExecute(code: String) throws -> PythonObject? {
       // this problem, extract where it crashed from the error message. If no
       // stack frames are generated, at least show where the error originated.
       // TODO: Parse the error source from (file:line) to (file, Line line)
-      // within `prettyPrintStackTrace`.
+      // within `prettyPrintStackTrace`. Also extract module name earlier, so
+      // that it can be returned alongside `errorSource`.
       var errorSource: String?
       
       var message = fetchStderr(errorSource: &errorSource)
