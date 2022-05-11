@@ -64,8 +64,8 @@ func doExecute(code: String) throws -> PythonObject? {
       // If it crashed while unwrapping `nil`, there is no stack trace. To solve
       // this problem, extract where it crashed from the error message. If no
       // stack frames are generated, at least show where the error originated.
-      // TODO: Parse the error source from (file:line) to (file, Line line, 
-      // Module: moduleName) within `fetchStderr`.
+      // TODO: Parse the error source from (module/file:line) to (module/file, 
+      // Line line) with style in `fetchStderr`.
       var errorSource: String?
       
       var message = fetchStderr(errorSource: &errorSource)
