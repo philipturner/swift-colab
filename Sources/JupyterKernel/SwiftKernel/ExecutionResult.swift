@@ -46,8 +46,8 @@ struct PreprocessorException: PreprocessorError {
   static let label = "Preprocessor error"
   var lineIndex: Int
   var errorDescription: String?
-  init(line: Int, message: String) { 
-    self.line = line
+  init(lineIndex: Int, message: String) { 
+    self.lineIndex = lineIndex
     self.errorDescription = message 
   }
 }
@@ -56,8 +56,8 @@ struct PackageInstallException: PreprocessorError {
   static let label = "Package install error"
   var lineIndex: Int
   var errorDescription: String?
-  init(line: Int, message: String) { 
-    self.line = line
+  init(lineIndex: Int, message: String) { 
+    self.lineIndex = lineIndex
     self.errorDescription = message 
   }
 }
