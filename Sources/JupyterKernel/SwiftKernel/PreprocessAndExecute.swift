@@ -126,12 +126,9 @@ fileprivate func preprocess(line: String, index lineIndex: Int) throws -> String
   return line
 }
 
-// TODO: Separate this functionality into IOHandlers.swift to share it with
-// package installation process?
-// TODO: Is it possible to make this accept stdin? Can I make IPython have stdin?
-// TODO: Can I make the code transferred into IOHandlers have a return code?
-
-// From https://github.com/ipython/ipython/blob/master/IPython/utils/_process_posix.py,
+// This has the `internal` access level so that "ProcessInstalls.swift" can use 
+// it. This attempts to replicate:
+// https://github.com/ipython/ipython/blob/master/IPython/utils/_process_posix.py,
 //   def system(self, cmd):
 func executeSystemCommand(restOfLine: String) throws -> Int {
   let process = pexpect.spawn("/bin/sh", args: ["-c", restOfLine])
