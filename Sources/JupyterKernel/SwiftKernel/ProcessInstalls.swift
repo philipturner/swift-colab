@@ -73,8 +73,6 @@ fileprivate func processSwiftPMFlags(
   
   let flags = shlex[dynamicMember: "split"](processedLine)
   swiftPMFlags += [String](flags)!
-  
-  sendStdout("\(swiftPMFlags)")
 }
 
 fileprivate func handleTemplateError(
