@@ -47,10 +47,10 @@ fi
 
 if [[ ! -d /opt/swift ]]; then
   mkdir /opt/swift
-  mkdir /opt/swift/build
   mkdir /opt/swift/include
   mkdir /opt/swift/lib
   mkdir /opt/swift/internal-modules
+  mkdir /opt/swift/packages
   mkdir /opt/swift/progress
   echo "swift" > /opt/swift/runtime
 fi
