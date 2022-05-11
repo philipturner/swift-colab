@@ -113,12 +113,10 @@ func prettyPrintStackTrace(
       getLocationLine(file: errorSource.file, line: errorSource.line))
   }
   if size == 0 {
-    output.append("Stack trace not available")
-//     output.append(formatString("Stack trace not available", ansiOptions: [31]))
+    output.append(formatString("Stack trace not available", ansiOptions: [36]))
     return output
   } else {
-    output.append("Current stack trace:")
-//     output.append(formatString("Current stack trace:", ansiOptions: [31]))
+    output.append(formatString("Current stack trace:", ansiOptions: [36]))
   }
   
   // Number of characters, including digits and spaces, before a function name.
@@ -138,7 +136,7 @@ func prettyPrintStackTrace(
       return output
     }
     
-    let function = extractComponent()
+    let function = formatString(extractComponent(), ansiOptions: [33])
     let file = extractComponent()
     let directory = extractComponent()
     var path: String
@@ -160,6 +158,8 @@ func prettyPrintStackTrace(
       frameID += String(
         repeating: " " as Character, count: padding - frameID.count)
     }
+    frameID = formatString(frameID, ansiOptions: [36])
+    
     let separator = formatString(" - ", ansiOptions: [36])
     let lineLabel = formatString(", line ", ansiOptions: [36])
     let columnLabel = formatString(", column ", ansiOptions: [36])
