@@ -150,30 +150,8 @@ func prettyPrintStackTrace(errorSource: String?) throws -> [String] {
       frameID += String(
         repeating: " " as Character, count: padding - frameID.count)
     }
-    
     output.append(
       "\(frameID)\(function) - \(path), Line \(line), Column \(column)")
-    
-    
-    var function = String(cString: UnsafePointer(data))
-    function = formatString(function, ansiOptions: [34])
-    
-    var frame = formatString(fileName, ansiOptions: [34])
-    
-    
-    frame += ", Line \(line), Column \(column)"
-    
-    data = data.advanced(by: fileName.count + 1)
-    let directory = String(cString: UnsafePointer(data))
-    if directory.count > 0 {
-      // I'm torn on whether to say "Directory" or "Path" here. "Path" isn't
-      // entirely accurate, because its last component (the file name) is left
-      // out for brevity.
-      frame += ", Path: \(formatString(directory, ansiOptions: [32]))"
-    }
-    
-    
-    output.append(frameID + frame)
   }
   return output
 }
