@@ -17,7 +17,7 @@ fileprivate func shlexSplit(
   } catch {
     throw PreprocessorException(lineIndex: lineIndex, message: """
       Could not parse shell arguments: \(line)
-      Error message: \(error.localizedDescription)
+      Error message: \(error)
       """)
   }
 }
