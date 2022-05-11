@@ -25,11 +25,12 @@ func doExecute(code: String) throws -> PythonObject? {
   } catch _ as InterruptException {
     return nil
   } catch let error as PreprocessorError {
-    let cellID = Int(KernelContext.kernel.execution_count)!
     let label = formatString("\(error.label): ", ansiOptions: [31])
     let locationLabel = formatString("Location: ", ansiOptions: [31])
+    
+    let cellID = Int(KernelContext.kernel.execution_count)!
     let file = formatString("<Cell \(cellID)>", ansiOptions: [32])
-    let line = formatString("\(error.line)", ansiOptions: [32])
+    let line = formatString("\(error.lineIndex + 1)", ansiOptions: [32])
     
     let message = [
       "\(label)\(error.localizedDescription)",
