@@ -36,22 +36,26 @@ func fetchStderr(errorSource: inout String?) -> [String] {
   }
   
   var numColons = 0
+  var firstColonIndex: String.Index?
   var secondColonIndex: String.Index?
   for index in firstLine[slashIndex...].indices {
     if firstLine[index] == ":" {
       numColons += 1
     }
-    if numColons == 2 {
+    if numColons == 1 {
+      firstColonIndex = index
+    } else if numColons == 2 {
       secondColonIndex = index
       break
     }
   }
-  guard let secondColonIndex = secondColonIndex else { return lines }
+  guard let firstColonIndex = firstColonIndex, 
+        let secondColonIndex = secondColonIndex else { return lines }
   
   // The substring ends at the character right before the second colon. This
   // means the source location does not include a column.
-  let angleBracketIndex = firstLine.index(after: slashIndex) // index of "<"
-  errorSource = String(firstLine[angleBracketIndex..<secondColonIndex])
+  let fileNameStartIndex = firstLine.index(after: slashIndex)
+  errorSource = String(firstLine[fileNameStartIndex..<secondColonIndex])
   if let moduleName = moduleName {
     errorSource = "\(moduleName)/\(errorSource!)"
   }
