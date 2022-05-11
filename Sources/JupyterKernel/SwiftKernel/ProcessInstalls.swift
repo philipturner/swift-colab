@@ -220,7 +220,7 @@ fileprivate func processInstall(
   KernelContext.log("checkpoint 0")
   let parsed = [String](shlex[dynamicMember: "split"](restOfLine))!
   if parsed.count < 2 {
-    throw PackageInstallException(
+    throw PreprocessorException(
       "Line \(lineIndex + 1): %install usage: SPEC PRODUCT [PRODUCT ...]")
   }
   KernelContext.log("checkpoint 1")
