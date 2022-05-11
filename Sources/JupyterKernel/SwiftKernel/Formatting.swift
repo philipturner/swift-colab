@@ -1,7 +1,17 @@
 import Foundation
 import PythonKit
 
-fileprivate func fetchStderr(errorSource: inout String?) -> [String] {
+func formatString(_ input: String, ansiOptions: [Int]) -> String {
+  var formatSequence = "\u{1b}[0"
+  for option in ansiOptions {
+    formatSequence += ";\(option)"
+  }
+  formatSequence += "m"
+  let clearSequence = "\u{1b}[0m"
+  return formatSequence + input + clearSequence
+}
+
+func fetchStderr(errorSource: inout String?) -> [String] {
   guard let stderr = getStderr(readData: true) else {
     return []
   }
@@ -75,17 +85,7 @@ fileprivate func colorizeErrorMessage(_ message: String) -> String {
   return labelPortion + String(message[contentsStartIndex...])
 }
 
-fileprivate func formatString(_ input: String, ansiOptions: [Int]) -> String {
-  var formatSequence = "\u{1b}[0"
-  for option in ansiOptions {
-    formatSequence += ";\(option)"
-  }
-  formatSequence += "m"
-  let clearSequence = "\u{1b}[0m"
-  return formatSequence + input + clearSequence
-}
-
-fileprivate func prettyPrintStackTrace(errorSource: String?) throws -> [String] {
+func prettyPrintStackTrace(errorSource: String?) throws -> [String] {
   var frames: UnsafeMutablePointer<UnsafeMutableRawPointer>?
   var size: Int32 = 0
   let error = KernelContext.get_pretty_stack_trace(&frames, &size);
