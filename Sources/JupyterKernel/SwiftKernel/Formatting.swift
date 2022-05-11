@@ -100,7 +100,6 @@ func prettyPrintStackTrace(errorSource: String?) throws -> [String] {
   if let errorSource = errorSource {
     output.append("Location: \(errorSource)")
   }
-  
   if size == 0 {
     output.append("Stack trace not available")
     return
@@ -179,5 +178,5 @@ fileprivate func extractPackage(fromPath: String) -> String? {
   url = url.dropFirst(1)
   
   // Drop package ID
-  prefix(while:)
+  let id = url.prefix(while: { $0.isHexDigit && !$0.isLetter })
 }
