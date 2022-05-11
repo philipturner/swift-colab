@@ -214,8 +214,8 @@ fileprivate func prettyPrintStackTrace(errorSource: String?) throws -> [String] 
     let header = frame.assumingMemoryBound(to: UInt32.self)
     let data = frame.advanced(by: 8).assumingMemoryBound(to: CChar.self)
     var description = String(cString: UnsafePointer(data))
-    description = formatString(description, ansiOptions: [36])
-    description += ", Line \(header[0]), Column \(header[1])"
+    description = formatString(description, ansiOptions: [33])
+    description += ", Line \(header[0]), Column \(header[1]), Directory: "
     
     var frameID = String(i + 1) + " "
     if frameID.count < padding {
