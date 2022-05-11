@@ -117,13 +117,17 @@ func prettyPrintStackTrace(errorSource: String?) throws -> [String] {
     let header = frameBytes.assumingMemoryBound(to: UInt32.self)
     let line = formatString("\(header[0])", ansiOptions: [32])
     let column = formatString("\(header[1])", ansiOptions: [32])
-    var data = frameBytes.advanced(by: 8).assumingMemoryBound(to: CChar.self)
     
+    var data = frameBytes.advanced(by: 8).assumingMemoryBound(to: CChar.self)
     func extractComponent() -> String {
       let output = String(cString: UnsafePointer(data))
       data += output.count + 1
       return output
     }
+    
+    let function = formatString(extractComponent(), ansiOptions: [34])
+    let file = extractComponent()
+    let directory = extractComponent()
     
     var function = String(cString: UnsafePointer(data))
     function = formatString(function, ansiOptions: [34])
