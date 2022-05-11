@@ -1,5 +1,7 @@
 import Foundation
+fileprivate let pexpect = Python.import("pexpect")
 fileprivate let signal = Python.import("signal")
+fileprivate let sys = Python.import("sys")
 fileprivate let threading = Python.import("threading")
 fileprivate let time = Python.import("time")
 
