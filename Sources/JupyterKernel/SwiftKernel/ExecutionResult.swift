@@ -26,21 +26,30 @@ struct SwiftError: ExecutionResultError {
   var description: String
 }
 
+/// There was an error preprocessing the code.
 protocol PreprocessorError: LocalizedError {
   static var label: String { get }
-  var line: Int?
+  var line: Int
 }
 
 struct ParseException: LocalizedError {
   static let label = "Parse error"
+  var line: Int
   var errorDescription: String?
-  init(_ message: String) { errorDescription = message }
+  init(line: Int, message: String) { 
+    self.line = line
+    self.errorDescription = message 
+  }
 }
 
 struct PackageInstallException: LocalizedError {
   static let label = "Package install error"
+  var line: Int
   var errorDescription: String?
-  init(_ message: String) { errorDescription = message }
+  init(line: Int, message: String) { 
+    self.line = line
+    self.errorDescription = message 
+  }
 }
 
 // Miscellaneous
