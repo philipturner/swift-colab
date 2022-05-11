@@ -57,7 +57,7 @@ func doExecute(code: String) throws -> PythonObject? {
     return nil
   } else if result is SuccessWithoutValue {
     return nil
-  } else if result is ExecutionResultError {
+  } else if result is SwiftError {
     var message: [String]
     
     if KernelContext.process_is_alive() == 0 {
@@ -79,19 +79,13 @@ func doExecute(code: String) throws -> PythonObject? {
       message = fetchStderr(errorSource: &errorSource)
       message += try prettyPrintStackTrace(errorSource: errorSource)
       sendIOPubErrorMessage(message)
-    } else if result is SwiftError {
+    } else {
       // There is no stdout, so it must be a compile error. Simply return the 
       // error without trying to get a stack trace.
       message = result.description.split( /* call formatting function */
         separator: "\n", omittingEmptySubsequences: false).map(String.init)
       message = ["Swift error"] + message
       sendIOPubErrorMessage(message)
-    } else if result is PreprocessorError {
-      // This is a custom error, so any styling should have been applied before 
-      // it was thrown.
-      sendIOPubErrorMessage(["Preprocessor Error"] + [result.description])
-    } else {
-      fatalError("This should never happen.")
     }
     
     return makeExecuteReplyErrorMessage()
