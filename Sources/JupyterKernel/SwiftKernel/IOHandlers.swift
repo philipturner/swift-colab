@@ -139,7 +139,7 @@ func getStderr(readData: Bool) -> String? {
 // This attempts to replicate the code located at:
 // https://github.com/ipython/ipython/blob/master/IPython/utils/_process_posix.py,
 //   def system(self, cmd):
-func executeSystemCommand(
+func runTerminalProcess(
   args: [String], cwd: String? = nil
 ) throws -> Int {
   let process = pexpect.spawn("/bin/sh", args: ["-c"] + args, cwd: cwd)
