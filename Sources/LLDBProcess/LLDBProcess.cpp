@@ -225,7 +225,8 @@ int get_pretty_stack_trace(void ***frames, int *size) {
     auto file_name = file_spec.GetFilename();
     auto file_name_len = strlen(file_name);
     
-    auto directory_name = file_spec.GetDirectory();
+    const char *directory_name = "/Dummy/Directory";
+//     auto directory_name = file_spec.GetDirectory();
     auto directory_name_len = strlen(directory_name);
     
     // Let the Swift code format the line and column. Right now, just serialize 
