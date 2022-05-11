@@ -61,8 +61,8 @@ func fetchStderr(errorSource: inout (String, Int)?) -> [String] {
   // The substring ends at the character right before the second colon. This
   // means the source location does not include a column.
   let errorLineStartIndex = firstLine.index(after: firstColonIndex)
-  var errorLine = String(firstLine[errorLineStartIndex..<secondColonIndex])
-  guard Int(errorLine) != nil else { return lines }
+  var errorLineStr = String(firstLine[errorLineStartIndex..<secondColonIndex])
+  guard errorLine = Int(errorLineStr) else { return lines }
   errorSource = (errorFile, errorLine)
   
   // The line could theoretically end right after the second colon.
@@ -162,7 +162,7 @@ func prettyPrintStackTrace(errorSource: (String, Int)?) throws -> [String] {
     let columnLabel = formatString(", column ", ansiOptions: [36])
     output.append(
       frameID + function + separator + path + lineLabel + line + columnLabel + 
-      column
+      column)
   }
   return output
 }
