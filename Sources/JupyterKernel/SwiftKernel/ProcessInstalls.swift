@@ -83,7 +83,7 @@ fileprivate func handleTemplateError(
   }
   switch pythonError {
   case .exception(let error, _):
-    return PackageInstallException(
+    return PreprocessorException(
       "Line \(lineIndex + 1): Invalid template argument \(error)")
   default:
     return pythonError
@@ -101,7 +101,7 @@ fileprivate func processExtraIncludeCommand(
     stderr: subprocess.PIPE,
     shell: true)
   if result.returncode != 0 {
-    throw PackageInstallException("""
+    throw PreprocessorException("""
       %install-extra-include-command returned nonzero \
       exit code: \(result.returncode)
       Stdout: \(result.stdout.decode("utf8"))
