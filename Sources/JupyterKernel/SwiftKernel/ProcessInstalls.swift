@@ -520,8 +520,8 @@ fileprivate func processInstall(
     let newFilePath = "\(newFolderPath)/module.modulemap"
     let modulemapData = modulemapContents.data(using: .utf8)!
     guard fm.createFile(atPath: newFilePath, contents: modulemapData) else {
-      throw PackageInstallException("""
-        Could not write to "\(newFilePath)".
+      throw PackageInstallException(lineIndex: lineIndex, message: """
+        Could not write to file "\(newFilePath)".
         """)
     }
   }
@@ -545,14 +545,14 @@ fileprivate func processInstall(
   dlopen("\(libPath)", RTLD_NOW)
   """)
   guard let dynamicLoadResult = dynamicLoadResult as? SuccessWithValue else {
-    throw PackageInstallException("""
+    throw PackageInstallException(lineIndex: lineIndex, message: """
       Install error: dlopen crashed: \(dynamicLoadResult)
       """)
   }
 
   if dynamicLoadResult.description.hasSuffix("nil") {
     let error = execute(code: "String(cString: dlerror())")
-    throw PackageInstallException("""
+    throw PackageInstallException(lineIndex: lineIndex, message: """
       Install error: dlopen returned `nil`: \(error)
       """)
   }
