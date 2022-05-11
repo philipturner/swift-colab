@@ -171,8 +171,13 @@ func prettyPrintStackTrace(errorSource: String?) throws -> [String] {
 fileprivate func extractPackage(fromPath: String) -> String? {
   // Should never start with the symbolic link "/opt/swift/install-location".
   // Rather, it should start with that link's destination.
-  if directory.hasPrefix(KernelContext.installLocation) {
-    var url = directory.dropFirst(KernelContext.installLocation.count)
-
+  guard directory.hasPrefix(KernelContext.installLocation) else {
+    return nil
   }
+  var url = directory.dropFirst(KernelContext.installLocation.count)
+  guard url.hasPrefix("/") else { return nil }
+  url = url.dropFirst(1)
+  
+  // Drop package ID
+  prefix(while:)
 }
