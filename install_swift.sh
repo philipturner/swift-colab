@@ -50,7 +50,7 @@ if [[ ! -d /opt/swift ]]; then
   mkdir /opt/swift/build
   mkdir /opt/swift/include
   mkdir /opt/swift/lib
-  mkdir /opt/swift/packages
+  mkdir /opt/swift/builtin-modules
   mkdir /opt/swift/progress
   echo "swift" > /opt/swift/runtime
 fi
@@ -176,7 +176,7 @@ if [[ $mode == "dev" || ! -e "progress/jupyterkernel-compiler-version" ||
 then
   echo "Compiling JupyterKernel"
   
-  jupyterkernel_path="packages/JupyterKernel"
+  jupyterkernel_path="build-modules/JupyterKernel"
   if [[ -d $jupyterkernel_path ]]; then
     echo "\
 Previously compiled with a different Swift version. \
@@ -189,7 +189,6 @@ Removing existing JupyterKernel build products."
   source_files=$(find $(pwd) -name '*.swift' -print)
   
   mkdir build && cd build
-  pythonkit_products="/opt/swift/packages/PythonKit/.build/release"
   swiftc -Onone $source_files \
     -emit-module -emit-library -module-name "JupyterKernel"
   
