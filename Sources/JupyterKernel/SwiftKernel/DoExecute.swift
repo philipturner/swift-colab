@@ -26,8 +26,6 @@ func doExecute(code: String) throws -> PythonObject? {
     return nil
   } catch let error as PreprocessorError {
     let label = formatString("\(type(of: error).label): ", ansiOptions: [31])
-    let locationLabel = formatString("Location: ", ansiOptions: [31])
-    
     let cellID = Int(KernelContext.kernel.execution_count)!
     let message = [
       "\(label)\(error.localizedDescription)",
