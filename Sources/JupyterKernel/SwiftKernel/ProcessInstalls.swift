@@ -578,8 +578,8 @@ func removeJSONBlob(_ line: String) -> String? {
                 insertIndex, offsetBy: clearSequence.count)
             }
 
-            let blueSequence = "QQ"//"\u{1b}[0;36m"
-            let resetSequence = "QQ"//"\u{1b}[0m"
+            let blueSequence = ""//"\u{1b}[0;36m"
+            let resetSequence = ""//"\u{1b}[0m"
             temp.insert(contentsOf: blueSequence, at: temp.startIndex)
             temp.append(contentsOf: resetSequence)
 
