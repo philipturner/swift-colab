@@ -541,32 +541,19 @@ fileprivate func processInstall(
 }
 
 // Whenever the Swift package has been built at least one time before, it 
-  // outputs a massive, ugly JSON blob that cannot be suppressed. This 
-  // workaround filters that out.
+// outputs a massive, ugly JSON blob that cannot be suppressed. This workaround 
+// filters that out.
 func removeJSONBlob(_ line: String) -> String? {
-  KernelContext.log("\(line.data(using: .utf8)!.map { $0 })")
   var output: String = ""
   var temp: String = ""
   var insideBraces = false
   var appendedPreviousLine = true
   var previousChar: Character = "\n"
-
-  func makeArray() -> String {
-    let data = temp.data(using: .utf8)!
-    let array = data.map { $0 } as [UInt8]
-    return "\(array)"
-  }
-
-  for char in line.utf8.map(Unicode.Scalar.init).map(Character.init) {
-    var myFlag = false
+  
+  for char in line.utf8.map({ Character(Unicode.Scalar($0)) }) {
     defer { 
-      if myFlag {
-        previousChar = "k"
-      } else {
-        previousChar = char 
-      }
+      previousChar = char 
     }
-    
     if char == "\r" || char == "\n" {
       func getAppended() -> String {
         var copy = temp
@@ -581,7 +568,7 @@ func removeJSONBlob(_ line: String) -> String? {
         insideBraces = false
       } else if !insideBraces {
         if Int(temp) == nil {
-          if previousChar == "\r" {
+          if previousChar == "\r" && !appendedPreviousLine {
             // pass if it's something like "}\r\n"
           } else {
             temp.append(char)
