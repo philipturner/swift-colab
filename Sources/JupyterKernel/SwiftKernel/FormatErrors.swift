@@ -325,6 +325,12 @@ fileprivate func formatCompileErrorLine(_ input: String) -> String {
     return formatMessage()
   }
   
+   // Attempt to shorten file name
+  var file = message[..<firstColonIndex]
+  if let folderWithFile = extractFolderName(fromPath: file) {
+    file = folderWithFile
+  }
+  
   let shortenedMessage = String(message[messageStartIndex...])
   switch messageType {
   case .error:
@@ -348,7 +354,7 @@ fileprivate func formatCompileErrorLine(_ input: String) -> String {
     }
   }
   
-  // Attempt to shorten file name
+ 
   
-  return formatString(message, ansiOptions: [31])
+  return formatString(file + " " + message, ansiOptions: [31])
 }
