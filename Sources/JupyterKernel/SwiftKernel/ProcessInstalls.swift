@@ -585,7 +585,7 @@ func removeJSONBlob(_ line: String) -> String? {
         myFlag = true
         continue
       } else if !insideBraces {
-        if Int(temp) == nil {
+        if Int(temp) == nil && temp.count > 0 {
           if previousChar == "\r" {
             precondition(char == "\n")
             if appendedPreviousLine {
