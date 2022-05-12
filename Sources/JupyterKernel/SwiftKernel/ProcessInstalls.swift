@@ -339,9 +339,40 @@ fileprivate func processInstall(
   
   // == Ask SwiftPM to build the package ==
   
+  // Whenever the Swift package has been built at least one time before, it 
+  // outputs a massive, ugly JSON blob that cannot be suppressed. This 
+  // workaround filters that out.
+  var currentlyInsideBrackets = false
+  func removeJSONBlob(_ line: String) -> String? {
+    // possibly remove this
+    var shortenedLine = line
+    if shortenedLine.last == "\n" {
+      shortenedLine = String(shortenedLine.dropLast())
+    }
+    
+    if Int(shortenedLine) != nil {
+      // Return `nil` if the line is an integer.
+      return nil
+    } else if shortenedLine.first == "{" {
+      currentlyInsideBrackets = true
+      return nil
+    } else if shortenedLine.first == "}" {
+      currentlyInsideBrackets = false
+      return nil
+    }
+    
+    if currentlyInsideBrackets {
+      return nil
+    } else {
+      return line
+    }
+  }
+
   let swiftBuildPath = "/opt/swift/toolchain/usr/bin/swift-build"
   let buildReturnCode = try runTerminalProcess(
-    args: [swiftBuildPath] + swiftPMFlags, cwd: packagePath)
+    args: [swiftBuildPath] + swiftPMFlags, cwd: packagePath, 
+    process: removeJSONBlob)
+////////////////////////////////////////////////////////////////////////////////
 //   let buildProcess = subprocess.Popen(
 //     [swiftBuildPath] + swiftPMFlags,
 //     stdout: subprocess.PIPE,
