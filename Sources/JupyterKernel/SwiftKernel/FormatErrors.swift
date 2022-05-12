@@ -212,7 +212,7 @@ func getLocationLine(file: String, line: Int) -> String {
 }
 
 func formatCompilerError(_ input: String) -> [String] {
-  let label = formatString("Compiler error: ", ansiOptions: [31])
+  let label = formatString("Compile error: ", ansiOptions: [31])
   var lines = input.split(
     separator: "\n", omittingEmptySubsequences: false).map(String.init)
   guard lines.count > 0 else {
