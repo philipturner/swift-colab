@@ -349,8 +349,10 @@ fileprivate func processInstall(
     var outputLines: [String.SubSequence] = []
     
     for subLine in subLines {
-      KernelContext.log(String(subLine))
-      KernelContext.log("\(subLine.count)")
+      KernelContext.log("STR \(String(subLine)) STR")
+      KernelContext.log("SPACE")
+      KernelContext.log("NUM \(subLine.count) NUM ")
+      KernelContext.log("SPACE")
       if Int(subLine) != nil {
         // Don't add if the line is an integer.
         continue
