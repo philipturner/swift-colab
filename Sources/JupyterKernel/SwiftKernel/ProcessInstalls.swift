@@ -597,8 +597,8 @@ func removeJSONBlob(_ line: String) -> String? {
     } else {
       segment = String(rawSegment.dropFirst("[2K\r".count))
     }
-    let blueSequence = "Q"//"\u{1b}[0;36m"
-    let resetSequence = "Q"//"\u{1b}[0m"
+    let blueSequence = "\u{001B}[0m"//"\u{1b}[0;36m"
+    let resetSequence = "\u{001B}[0m"//"\u{1b}[0m"
     segment = blueSequence + segment + resetSequence
     
     if isFirstElement {
