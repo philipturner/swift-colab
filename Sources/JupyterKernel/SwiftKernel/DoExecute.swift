@@ -79,7 +79,14 @@ func doExecute(code: String) throws -> PythonObject? {
       // There is no stdout, so it must be a compile error. Simply return the 
       // error without trying to get a stack trace.
       message = formatCompilerError(result.description)
-      sendIOPubErrorMessage(message)
+      
+      // Forward this as "stream" instead of "error" to preserve bold 
+      // formatting. This also means the lines will not wrap.
+      KernelContext.sendResponse("stream", [
+        "name": "stdout",
+        "text": message.joined(separator: "\n")
+      ])
+      sendIOPubErrorMessage([])
     }
     
     return makeExecuteReplyErrorMessage(message)
