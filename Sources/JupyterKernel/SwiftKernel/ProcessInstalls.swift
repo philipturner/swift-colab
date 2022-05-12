@@ -371,7 +371,7 @@ fileprivate func processInstall(
   let swiftBuildPath = "/opt/swift/toolchain/usr/bin/swift-build"
   let buildReturnCode = try runTerminalProcess(
     args: [swiftBuildPath] + swiftPMFlags, cwd: packagePath, 
-    filter: removeJSONBlob)
+    filterStdout: removeJSONBlob)
 ////////////////////////////////////////////////////////////////////////////////
 //   let buildProcess = subprocess.Popen(
 //     [swiftBuildPath] + swiftPMFlags,
