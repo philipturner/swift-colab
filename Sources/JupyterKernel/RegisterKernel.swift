@@ -26,11 +26,11 @@ public func JupyterKernel_registerSwiftKernel() {
   fm.createFile(atPath: swiftKernelPath, contents: pythonScript.data(using: .utf8)!)
   
   // Create kernel spec
-  
+  // Python.import("sys").executable != Bundle.main.executablePath! ???
   let kernelSpec = """
   {
     "argv": [
-      "\(Bundle.main.executablePath!)",
+      "\(Python.import("sys").executable)",
       "\(swiftKernelPath)",
       "-f",
       "{connection_file}"
