@@ -569,8 +569,6 @@ func removeJSONBlob(_ line: String) -> String? {
           if previousChar == "\r" && !appendedPreviousLine {
             // pass if it's something like "}\r\n"
           } else {
-            temp.append(char)
-
             var insertIndex = temp.startIndex
             let clearSequence = "\u{001B}[2K"
             if temp.hasPrefix(clearSequence) {
@@ -582,6 +580,8 @@ func removeJSONBlob(_ line: String) -> String? {
             let resetSequence = "Q"//"\u{1b}[0m"
             temp.insert(contentsOf: blueSequence, at: temp.startIndex)
             temp.append(contentsOf: resetSequence)
+            
+            temp.append(char)
 
             output.append(temp)
             appendedThisLine = true
