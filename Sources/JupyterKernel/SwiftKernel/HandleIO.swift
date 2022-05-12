@@ -104,7 +104,7 @@ fileprivate func getAndSendStdout(handler: PythonObject) {
         """)
       // I don't know why, but the character immediately following "HEADER" is 
       // not a newline.
-      stdout.removeFirst(header.count + 1)
+      stdout.removeFirst(header.count)
       let char = stdout.first!
       KernelContext.log("a char: \(String(char).data(using: .utf8)!.map { $0 })")
       stdout.removeFirst(1)
