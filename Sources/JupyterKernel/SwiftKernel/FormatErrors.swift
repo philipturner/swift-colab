@@ -231,7 +231,7 @@ func formatCompilerError(_ input: String) -> [String] {
     case pointer
     case suggestion
   }
-  var lineType = LineType.errorMessage
+  var lineType: LineType = .errorMessage
   
   for i in lines[1...].indices {
     let line = lines[i]
