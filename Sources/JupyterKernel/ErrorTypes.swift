@@ -43,7 +43,7 @@ struct InterruptException: LocalizedError {
 }
 
 struct PreprocessorException: PreprocessorError {
-  static let label = "Preprocessor error"
+  static let label = "Preprocessing error"
   var lineIndex: Int
   var errorDescription: String?
   init(lineIndex: Int, message: String) { 
