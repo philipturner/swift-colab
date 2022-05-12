@@ -367,8 +367,10 @@ fileprivate func processInstall(
         } else if !insideBraces {
           if Int(temp) == nil {
             // To prevent "}\r\n" from being changed into "\n"
-            if lastLineWasClosingBrace && char == "\r" {
-              lastLineWasClosingBrace = false
+            if lastLineWasClosingBrace {
+              if char == "\n" {
+                lastLineWasClosingBrace = false
+              }
             } else {
               temp.append(char)
               KernelContext.log("<appended>\(makeArray())</appended>")
