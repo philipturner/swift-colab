@@ -11,7 +11,7 @@ public func JupyterKernel_createSwiftKernel() {
   let currentRuntime = read(path: "/opt/swift/runtime")
   let currentMode = read(path: "/opt/swift/mode")
   
-  // Whether to automatically alternate between runtimes
+  // Whether to automatically alternate between runtimes.
   let isRelease = currentMode.contains("release")
   let runtime1 = isRelease ? "python3" : "swift"
   let runtime2 = isRelease ? "swift" : "python3"
@@ -82,14 +82,14 @@ fileprivate func activateSwiftKernel() {
   // `type(_:_:_:)` method makes it `traitlets.traitlets.SwiftKernel`
   // instead of `__main__.SwiftKernel`.
   PyRun_SimpleString("""
-  from ctypes import *; from ipykernel.kernelbase import Kernel
-  class SwiftKernel(Kernel):
-      def __init__(self, **kwargs):
-          super().__init__(**kwargs)
-   
-  func = PyDLL("/opt/swift/lib/libJupyterKernel.so").JupyterKernel_constructSwiftKernelClass
-  func.argtypes = [c_void_p]; func(c_void_p(id(SwiftKernel)))
-  """)
+    from ctypes import *; from ipykernel.kernelbase import Kernel
+    class SwiftKernel(Kernel):
+        def __init__(self, **kwargs):
+            super().__init__(**kwargs)
+
+    func = PyDLL("/opt/swift/lib/libJupyterKernel.so").JupyterKernel_constructSwiftKernelClass
+    func.argtypes = [c_void_p]; func(c_void_p(id(SwiftKernel)))
+    """)
   
   let IPKernelApp = Python.import("ipykernel.kernelapp").IPKernelApp
   // We pass the kernel name as a command-line arg, since Jupyter gives those
@@ -107,11 +107,11 @@ fileprivate func activatePythonKernel() {
   // Remove the CWD from sys.path while we load stuff.
   // This is added back by InteractiveShellApp.init_path()
   PyRun_SimpleString("""
-  import sys; from ipykernel import kernelapp as app
-  if sys.path[0] == "":
-      del sys.path[0]
-  
-  app.launch_new_instance()          
-  """)
+    import sys; from ipykernel import kernelapp as app
+    if sys.path[0] == "":
+        del sys.path[0]
+
+    app.launch_new_instance()          
+    """)
 }
 
