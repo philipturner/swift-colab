@@ -9,6 +9,8 @@ public func JupyterKernel_registerSwiftKernel() {
   let fm = FileManager.default
   let jupyterKernelFolder = "/opt/swift/internal-modules/JupyterKernel"
   
+  // can this become /usr/bin/swift equivalent?
+  
   // About sys.path[0]:
   // Remove the CWD from sys.path while we load stuff.
   // This is added back by InteractiveShellApp.init_path()
@@ -30,7 +32,7 @@ public func JupyterKernel_registerSwiftKernel() {
   let kernelSpec = """
   {
     "argv": [
-      "\(Python.import("sys").executable)",
+      "/usr/bin/python3",
       "\(swiftKernelPath)",
       "-f",
       "{connection_file}"
