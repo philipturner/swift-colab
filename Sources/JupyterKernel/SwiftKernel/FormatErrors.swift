@@ -302,7 +302,7 @@ fileprivate func formatCompileErrorLine(_ input: String) -> String {
     }
   }
   
-  func formatMessage() -> [String] {
+  func formatMessage() -> String {
     return formatString(message, ansiOptions: [36])
   }
   
