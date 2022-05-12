@@ -585,11 +585,24 @@ func removeJSONBlob(_ line: String) -> String? {
   }
   output.append(temp)
   
-  KernelContext.log(output)
   let splitOutput = output.split(
     separator: "\u{001B}", omittingEmptySubsequences: false)
+  var isFirstElement = true
+  output = ""
+  
+  for rawRegment in splitOutput {
+    var segment: String
+    if isFirstElement {
+      isFirstElement = false
+      segment = String(rawSegment)
+    } else {
+      segment = String(rawSegment.dropFirst("[2K\r".count))
+    }
+  }
+  
+  
+  
   // TODO: Remove "[2K\r" from the beginnings of strings
-  KernelContext.log("\(splitOutput)")
 //               let blueSequence = ""//"\u{1b}[0;36m"
 //               let resetSequence = " Q"//"\u{1b}[0m"
 //               temp = "Q" + temp
