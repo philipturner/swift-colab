@@ -587,7 +587,8 @@ func removeJSONBlob(_ line: String) -> String? {
   
   KernelContext.log(output)
   let splitOutput = output.split(
-    separator: "\u{001B}[2K\r", omittingEmptySubsequences: false)
+    separator: "\u{001B}", omittingEmptySubsequences: false)
+  // TODO: Remove "[2K\r" from the beginnings of strings
   KernelContext.log("\(splitOutput)")
 //               let blueSequence = ""//"\u{1b}[0;36m"
 //               let resetSequence = " Q"//"\u{1b}[0m"
