@@ -358,11 +358,11 @@ fileprivate func processInstall(
         }
         subLine1 = String(subLine1_small.dropFirst("[2K".count))
       } else {
-        subLines1 = subLine1_small
+        subLine1 = subLine1_small
       }
       var currentlyInsideBrackets = false
       //
-      let subLines2 = subline1.split(
+      let subLines2 = subLine1.split(
         separator: "\n", omittingEmptySubsequences: false).map(String.init)
       var outputLines2: [String] = []
       
