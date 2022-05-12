@@ -258,19 +258,19 @@ func formatCompilerError(_ input: String) -> [String] {
 }
 
 fileprivate func formatCompileErrorLine(_ input: String) -> String {
-  var shortenedInput: String
+  var message: String
   let extraneousLabel = "error: "
   if input.hasPrefix(extraneousLabel) {
-    shortenedInput = String(input.dropFirst(extraneousLabel.count))
+    message = String(input.dropFirst(extraneousLabel.count))
   } else {
-    shortenedInput = input
+    message = input
   }
   
   var firstColonIndex: String.Index?
   var secondColonIndex: String.Index?
   var thirdColonIndex: String.Index?
-  for i in shortenedInput.indices {
-    let char = shortenedInput[i]
+  for i in message.indices {
+    let char = message[i]
     guard char == ":" else {
       continue
     }
@@ -284,21 +284,31 @@ fileprivate func formatCompileErrorLine(_ input: String) -> String {
     }
   }
   
+  func formatMessage() -> String {
+    return formatString(message, ansiOptions: [36])
+  }
+  
   guard let firstColonIndex = firstColonIndex,
         let secondColonIndex = secondColonIndex,
         let thirdColonIndex = thirdColonIndex else {
-    return formatString(shortenedInput, ansiOptions: [36])
+    return formatMessage()
   }
   
-  var file: String?
-  var line: Int?
-  var column: Int?
-  if let firstColonIndex = 
+  let lineStartIndex = message.index(after: firstColonIndex)
+  let columnStartIndex = message.index(after: secondColonIndex)
+  var messageStartIndex = message.index(after: thirdColonIndex)
+  messageStartIndex = message.index(after: messageStartIndex)
   
-  
-  var message: String
+  let lineRange = lineStartIndex..<secondColonIndex
+  let columnRange = columnStartIndex..<thirdColonIndex
+  guard let line = Int(message[lineRange]),
+        let column = Int(message[columnRange]),
+        message.indices.contains(messageStartIndex) else {
+    return formatMessage()
+  }
+  message = String(message[messageStartIndex...])
   
   // Attempt to shorten file name
   
-  return formatString(input, ansiOptions: [31])
+  return formatString(message, ansiOptions: [31])
 }
