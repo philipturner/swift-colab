@@ -211,7 +211,10 @@ func getLocationLine(file: String, line: Int) -> String {
   return locationLabel + formattedFile + lineLabel + formattedLine
 }
 
-func formatCompilerError(_ input: String) -> String {
+func formatCompilerError(_ input: String) -> [String] {
   let lines = input.split(separator: "\n", omittingEmptySubsequences: false)
-  
+  guard lines[0] == "expression failed to parse:" else {
+    return input
+  }
+  return formatString(input, ansiOptions: [32])
 }
