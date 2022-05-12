@@ -12,10 +12,21 @@ public func JupyterKernel_registerSwiftKernel() {
   // can this become /usr/bin/swift equivalent?
   
   let pythonScript = """
-  from ctypes import PyDLL
-  if __name__ == "__main__":
-      PyDLL("/opt/swift/lib/libJupyterKernel.so").JupyterKernel_createSwiftKernel()
-  """
+  import Foundation
+  let libJupyterKernel = dlopen("/opt/swift/lib/libJupyterKernel.so", RTLD_LAZY | RTLD_GLOBAL)!
+  let funcAddress = dlsym(libJupyterKernel, "JupyterKernel_createSwiftKernel")!
+  
+  let JupyterKernel_createSwiftKernel = unsafeBitCast(
+    funcAddress, to: (@convention(c) () -> Void).self)
+  JupyterKernel_createSwiftKernel()
+  
+  """ // Do I need an extra newline here?
+  
+//   let pythonScript = """
+//   from ctypes import PyDLL
+//   if __name__ == "__main__":
+//       PyDLL("/opt/swift/lib/libJupyterKernel.so").JupyterKernel_createSwiftKernel()
+//   """
   
   let swiftKernelPath = "\(jupyterKernelFolder)/swift_kernel.py"
   try? fm.removeItem(atPath: swiftKernelPath)
