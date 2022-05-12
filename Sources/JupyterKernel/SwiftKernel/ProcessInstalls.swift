@@ -558,7 +558,15 @@ func removeJSONBlob(_ line: String) -> String? {
   }
 
   for char in line.utf8.map(Unicode.Scalar.init).map(Character.init) {
-    defer { previousChar = char }
+    var myFlag = false
+    defer { 
+      if myFlag {
+        previousChar = "k"
+      } else {
+        previousChar = char 
+      }
+    }
+    
     if char == "\r" || char == "\n" {
       func getAppended() -> String {
         var copy = temp
@@ -574,6 +582,7 @@ func removeJSONBlob(_ line: String) -> String? {
       } else if getAppended() == "\u{001B}[2K\r" {
         output.append("\u{001B}[2K\r")
         temp.removeAll(keepingCapacity: true)
+        myFlag = true
         continue
       } else if !insideBraces {
         if Int(temp) == nil {
