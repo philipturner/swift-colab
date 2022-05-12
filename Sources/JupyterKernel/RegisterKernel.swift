@@ -9,34 +9,22 @@ public func JupyterKernel_registerSwiftKernel() {
   let fm = FileManager.default
   let jupyterKernelFolder = "/opt/swift/internal-modules/JupyterKernel"
   
-  // can this become /usr/bin/swift equivalent?
-  
+  // Cannot be a Swift script because that causes a crash.
   let pythonScript = """
-  import Foundation
-  let libJupyterKernel = dlopen("/opt/swift/lib/libJupyterKernel.so", RTLD_LAZY | RTLD_GLOBAL)!
-  let funcAddress = dlsym(libJupyterKernel, "JupyterKernel_createSwiftKernel")!
+  from ctypes import PyDLL
+  if __name__ == "__main__":
+      PyDLL("/opt/swift/lib/libJupyterKernel.so").JupyterKernel_createSwiftKernel()
+  """
   
-  let JupyterKernel_createSwiftKernel = unsafeBitCast(
-    funcAddress, to: (@convention(c) () -> Void).self)
-  JupyterKernel_createSwiftKernel()
-  
-  """ // Do I need an extra newline here?
-  
-//   let pythonScript = """
-//   from ctypes import PyDLL
-//   if __name__ == "__main__":
-//       PyDLL("/opt/swift/lib/libJupyterKernel.so").JupyterKernel_createSwiftKernel()
-//   """
-  
-  let swiftKernelPath = "\(jupyterKernelFolder)/swift_kernel.py"
+  let swiftKernelPath = "\(jupyterKernelFolder)/swift_kernel"
   try? fm.removeItem(atPath: swiftKernelPath)
   fm.createFile(atPath: swiftKernelPath, contents: pythonScript.data(using: .utf8)!)
-  // /usr/bin/python3
+  
   // Create kernel spec
   let kernelSpec = """
   {
     "argv": [
-      "/opt/swift/toolchain/usr/bin/swift",
+      "/usr/bin/python3",
       "\(swiftKernelPath)",
       "-f",
       "{connection_file}"
