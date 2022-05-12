@@ -544,7 +544,7 @@ fileprivate func processInstall(
   // outputs a massive, ugly JSON blob that cannot be suppressed. This 
   // workaround filters that out.
 func removeJSONBlob(_ line: String) -> String? {
-  KernelContext.log("\(line.data(using: .utf8).map { $0 })")
+  KernelContext.log("\(line.data(using: .utf8)!.map { $0 })")
   var output: String = ""
   var temp: String = ""
   var insideBraces = false
