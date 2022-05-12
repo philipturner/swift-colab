@@ -107,10 +107,7 @@ fileprivate func activatePythonKernel() {
   // Remove the CWD from sys.path while we load stuff.
   // This is added back by InteractiveShellApp.init_path()
   PyRun_SimpleString("""
-  import sys; from ipykernel import kernelapp as app
-  if sys.path[0] == '':
-    del sys.path[0]
-  
+  from ipykernel import kernelapp as app
   app.launch_new_instance()          
   """)
 }
