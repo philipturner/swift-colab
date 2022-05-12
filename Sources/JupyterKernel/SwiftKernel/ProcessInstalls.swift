@@ -579,7 +579,7 @@ func removeJSONBlob(_ line: String) -> String? {
             }
 
             let blueSequence = ""//"\u{1b}[0;36m"
-            let resetSequence = "\u{1b}[0m"
+            let resetSequence = "Q"//"\u{1b}[0m"
             temp.insert(contentsOf: blueSequence, at: temp.startIndex)
             temp.append(contentsOf: resetSequence)
 
