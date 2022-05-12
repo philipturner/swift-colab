@@ -379,7 +379,7 @@ fileprivate func processInstall(
         }
 
         if !currentlyInsideBrackets {
-          outputLines2.append(subLine)
+          outputLines2.append(subLine2)
         }
       }
       
