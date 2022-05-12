@@ -344,60 +344,6 @@ fileprivate func processInstall(
   
   // == Ask SwiftPM to build the package ==
   
-  // Whenever the Swift package has been built at least one time before, it 
-  // outputs a massive, ugly JSON blob that cannot be suppressed. This 
-  // workaround filters that out.
-  func removeJSONBlob(_ line: String) -> String? {
-    var output: String = ""
-    var temp: String = ""
-    var insideBraces = false
-    var appendedPreviousLine = true
-    var previousChar: Character = "\n"
-    
-    func makeArray() -> String {
-      let data = temp.data(using: .utf8)!
-      let array = data.map { $0 } as [UInt8]
-      return "\(array)"
-    }
-    
-    for char in line.utf8.map(Unicode.Scalar.init).map(Character.init) {
-      defer { previousChar = char }
-      if char == "\r" || char == "\n" {
-        var appendedThisLine = false
-        if temp.first == "{" {
-          insideBraces = true
-        } else if temp.first == "}" {
-          insideBraces = false
-        } else if !insideBraces {
-          if Int(temp) == nil {
-            if previousChar == "\r" && !appendedPreviousLine {
-              // pass if it's something like "}\r\n"
-            } else {
-              temp.append(char)
-              
-              var insertIndex: String.Index
-              if temp.hasPrefix("\u{001B}[2K")
-              
-              let blueSequence = "\u{1b}[0;36m"
-              let resetSequence = "\u{1b}[0m"
-              temp.insert(contentsOf: blueSequence, at: temp.startIndex)
-              temp.append(contentsOf: resetSequence)
-              
-              output.append(temp)
-              appendedThisLine = true
-            }
-          }
-        }
-        temp.removeAll(keepingCapacity: true)
-        appendedPreviousLine = appendedThisLine
-      } else {
-        temp.append(char)
-      }
-    }
-    output.append(temp)
-    return output
-  }
-
   let swiftBuildPath = "/opt/swift/toolchain/usr/bin/swift-build"
   let buildReturnCode = try runTerminalProcess(
     args: [swiftBuildPath] + swiftPMFlags, cwd: packagePath, 
@@ -592,4 +538,62 @@ fileprivate func processInstall(
       dlopen returned `nil`: \(error)
       """)
   }
+}
+
+// Whenever the Swift package has been built at least one time before, it 
+  // outputs a massive, ugly JSON blob that cannot be suppressed. This 
+  // workaround filters that out.
+func removeJSONBlob(_ line: String) -> String? {
+  var output: String = ""
+  var temp: String = ""
+  var insideBraces = false
+  var appendedPreviousLine = true
+  var previousChar: Character = "\n"
+
+  func makeArray() -> String {
+    let data = temp.data(using: .utf8)!
+    let array = data.map { $0 } as [UInt8]
+    return "\(array)"
+  }
+
+  for char in line.utf8.map(Unicode.Scalar.init).map(Character.init) {
+    defer { previousChar = char }
+    if char == "\r" || char == "\n" {
+      var appendedThisLine = false
+      if temp.first == "{" {
+        insideBraces = true
+      } else if temp.first == "}" {
+        insideBraces = false
+      } else if !insideBraces {
+        if Int(temp) == nil {
+          if previousChar == "\r" && !appendedPreviousLine {
+            // pass if it's something like "}\r\n"
+          } else {
+            temp.append(char)
+
+            var insertIndex = temp.startIndex
+            let clearSequence = "\u{001B}[2K"
+            if temp.hasPrefix(clearSequence) {
+              insertIndex = temp.index(
+                insertIndex, offsetBy: clearSequence.count)
+            }
+
+            let blueSequence = "\u{1b}[0;36m"
+            let resetSequence = "\u{1b}[0m"
+            temp.insert(contentsOf: blueSequence, at: temp.startIndex)
+            temp.append(contentsOf: resetSequence)
+
+            output.append(temp)
+            appendedThisLine = true
+          }
+        }
+      }
+      temp.removeAll(keepingCapacity: true)
+      appendedPreviousLine = appendedThisLine
+    } else {
+      temp.append(char)
+    }
+  }
+  output.append(temp)
+  return output
 }
