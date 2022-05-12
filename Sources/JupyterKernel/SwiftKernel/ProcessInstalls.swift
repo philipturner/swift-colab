@@ -349,7 +349,7 @@ fileprivate func processInstall(
     var outputLines: [String.SubSequence] = []
     
     for subLine in subLines {
-      KernelContext.log(subLine)
+      KernelContext.log(String(subLine))
       KernelContext.log(subLine.count)
       if Int(subLine) != nil {
         // Don't add if the line is an integer.
