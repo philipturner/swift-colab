@@ -364,10 +364,8 @@ fileprivate func processInstall(
         var appendedThisLine = false
         if temp.first == "{" {
           insideBraces = true
-          lastLineWasBrace = true
         } else if temp.first == "}" {
           insideBraces = false
-          lastLineWasBrace = true
         } else if !insideBraces {
           if Int(temp) == nil {
             // Check if it's something like "}\r\n"
