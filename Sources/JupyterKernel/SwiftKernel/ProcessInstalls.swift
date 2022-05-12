@@ -347,6 +347,7 @@ fileprivate func processInstall(
     var output: String = ""
     var temp: String = ""
     var insideBraces = false
+    var lastLineWasClosingBrace = false
     
     func makeArray() -> String {
       let data = temp.data(using: .utf8)!
@@ -362,15 +363,22 @@ fileprivate func processInstall(
           insideBraces = true
         } else if temp.first == "}" {
           insideBraces = false
+          lastLineWasClosingBrace = true
         } else if !insideBraces {
           if Int(temp) == nil {
-            temp.append(char)
-            KernelContext.log("<appended>\(makeArray())</appended>")
-            output.append(temp)
+            // To prevent "}\r\n" from being changed into "\n"
+            if lastLineWasClosingBrace {
+              lastLineWasClosingBrace = false
+            } else {
+              temp.append(char)
+              KernelContext.log("<appended>\(makeArray())</appended>")
+              output.append(temp)
+            }
           }
         }
         KernelContext.log("<temp>\(makeArray())</temp>")
         temp.removeAll(keepingCapacity: true)
+        lastChar = char
       } else {
         temp.append(char)
       }
