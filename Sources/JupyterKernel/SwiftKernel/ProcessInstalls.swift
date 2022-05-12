@@ -353,13 +353,17 @@ fileprivate func processInstall(
       defer { numLinesTried += 1 }
       var subLine1: String
       if numLinesTried > 0 {
+        KernelContext.log("<check 1.0>")
+        KernelContext.log(subLine1_small)
+        KernelContext.log("</check 1.0>")
         guard subLine1_small.hasPrefix("[2K") else {
-          KernelContext.log("<check 1>")
-          KernelContext.log(subLine1_small)
-          KernelContext.log("</check 1>")
+          KernelContext.log("<check 1.1></check 1.1>")
           continue
         }
         subLine1 = String(subLine1_small.dropFirst("[2K".count))
+        KernelContext.log("<check 1.2>")
+        KernelContext.log(subLine1)
+        KernelContext.log("</check 1.2>")
       } else {
         KernelContext.log("<check 0>")
         KernelContext.log(subLine1_small)
