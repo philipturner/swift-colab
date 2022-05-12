@@ -332,16 +332,19 @@ fileprivate func formatCompileErrorLine(_ input: String) -> String {
   }
   
   let shortenedMessage = String(message[messageStartIndex...])
+  var label: String
   switch messageType {
   case .error:
     if shortenedMessage.hasPrefix(errorLabel) {
       message = String(shortenedMessage.dropFirst(errorLabel.count))
+      label = errorLabel
     } else {
       return formatMessage()
     }
   case .warning:
     if shortenedMessage.hasPrefix(warningLabel) {
       message = String(shortenedMessage.dropFirst(warningLabel.count))
+      label = warningLabel
     } else {
       return formatMessage()
     }
@@ -349,12 +352,11 @@ fileprivate func formatCompileErrorLine(_ input: String) -> String {
     let noteLabel = "note: "
     if shortenedMessage.hasPrefix(noteLabel) {
       message = String(shortenedMessage.dropFirst(noteLabel.count))
+      label = noteLabel
     } else {
       return formatMessage()
     }
   }
-  
- 
   
   return formatString(file + " " + message, ansiOptions: [31])
 }
