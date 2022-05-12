@@ -597,6 +597,9 @@ func removeJSONBlob(_ line: String) -> String? {
     } else {
       segment = String(rawSegment.dropFirst("[2K\r".count))
     }
+    let blueSequence = "Q"//"\u{1b}[0;36m"
+    let resetSequence = ""//"\u{1b}[0m"
+    segment = blueSequence + segment + resetSequence
     
     if isFirstElement {
       output += segment
@@ -605,12 +608,5 @@ func removeJSONBlob(_ line: String) -> String? {
     }
     isFirstElement = false
   }
-  
-  // TODO: Remove "[2K\r" from the beginnings of strings
-//               let blueSequence = ""//"\u{1b}[0;36m"
-//               let resetSequence = " Q"//"\u{1b}[0m"
-//               temp = "Q" + temp
-//               temp.insert(contentsOf: blueSequence, at: temp.startIndex)
-//               temp.append(contentsOf: resetSequence)
   return output
 }
