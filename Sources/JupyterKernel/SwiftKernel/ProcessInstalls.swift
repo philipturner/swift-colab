@@ -382,8 +382,7 @@ fileprivate func processInstall(
 //   let buildReturnCode = buildProcess.wait()
   if buildReturnCode != 0 {
     throw PackageInstallException(lineIndex: lineIndex, message: """
-      Install Error: swift-build returned nonzero exit code \
-      \(buildReturnCode).
+      swift-build returned nonzero exit code \(buildReturnCode).
       """)
   }
   
@@ -561,16 +560,14 @@ fileprivate func processInstall(
   """)
   guard let dynamicLoadResult = dynamicLoadResult as? SuccessWithValue else {
     throw PackageInstallException(lineIndex: lineIndex, message: """
-      Install error: dlopen crashed: \(dynamicLoadResult)
+      dlopen crashed: \(dynamicLoadResult)
       """)
   }
 
   if dynamicLoadResult.description.hasSuffix("nil") {
     let error = execute(code: "String(cString: dlerror())")
     throw PackageInstallException(lineIndex: lineIndex, message: """
-      Install error: dlopen returned `nil`: \(error)
+      dlopen returned `nil`: \(error)
       """)
   }
-
-  sendStdout("Installation complete!")
 }
