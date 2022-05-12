@@ -356,6 +356,8 @@ fileprivate func processInstall(
     
     for char in line {
       if char == "\r" || char == "\n" {
+        precondition(!temp.contains("\r"))
+        precondition(!temp.contains("\n"))
         if temp.first == "{" {
           insideBraces = true
         } else if temp.first == "}" {
