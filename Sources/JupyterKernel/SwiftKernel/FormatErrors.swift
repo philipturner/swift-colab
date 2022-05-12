@@ -364,7 +364,7 @@ fileprivate func formatCompileErrorLine(_ input: String) -> String {
   }
   
   file = formatString(file, ansiOptions: [1])
-  label = formatString(file, ansiOptions: [1, ansiColor])
+  label = formatString(label, ansiOptions: [1, ansiColor])
   message = formatString(message, ansiOptions: [1])
   return file + label + message
 }
