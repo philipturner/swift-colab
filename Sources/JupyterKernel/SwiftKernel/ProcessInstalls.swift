@@ -347,7 +347,7 @@ fileprivate func processInstall(
     var output: String = ""
     var temp: String = ""
     var insideBraces = false
-    var lastLineWasBrace = false
+    var lastLineWasBrace = false // change this mechanism to: auto-detecting "\r" vs "\r\n" vs "\n"
     
     func makeArray() -> String {
       let data = temp.data(using: .utf8)!
