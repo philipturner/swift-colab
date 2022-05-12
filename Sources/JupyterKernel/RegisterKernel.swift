@@ -11,15 +11,9 @@ public func JupyterKernel_registerSwiftKernel() {
   
   // can this become /usr/bin/swift equivalent?
   
-  // About sys.path[0]:
-  // Remove the CWD from sys.path while we load stuff.
-  // This is added back by InteractiveShellApp.init_path()
   let pythonScript = """
-  import sys; from ctypes import PyDLL
+  from ctypes import PyDLL
   if __name__ == "__main__":
-      if sys.path[0] == '':
-          del sys.path[0]
-      
       PyDLL("/opt/swift/lib/libJupyterKernel.so").JupyterKernel_createSwiftKernel()
   """
   
@@ -28,7 +22,6 @@ public func JupyterKernel_registerSwiftKernel() {
   fm.createFile(atPath: swiftKernelPath, contents: pythonScript.data(using: .utf8)!)
   
   // Create kernel spec
-  // Python.import("sys").executable != Bundle.main.executablePath! ???
   let kernelSpec = """
   {
     "argv": [
