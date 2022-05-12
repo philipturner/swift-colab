@@ -60,10 +60,9 @@ func execute(
   }
 }
 
-// Location directive for the current cell
-//
-// This adds one to `lineIndex` before creating the string.
-// This does not include the newline that should come after the directive.
+// Location directive for the current cell. This adds one to `lineIndex` before 
+// creating the string. This does not include the newline that should come after 
+// the directive.
 fileprivate func getLocationDirective(
   lineIndex: Int, 
   executionCount: Int = Int(KernelContext.kernel.execution_count)!
