@@ -327,7 +327,7 @@ fileprivate func formatCompileErrorLine(_ input: String) -> String {
   
    // Attempt to shorten file name
   var file = message[..<firstColonIndex]
-  if let folderWithFile = extractFolderName(fromPath: file) {
+  if let folderWithFile = extractPackageFolder(fromPath: file) {
     file = folderWithFile
   }
   
