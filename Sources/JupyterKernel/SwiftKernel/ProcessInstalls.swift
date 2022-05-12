@@ -374,11 +374,10 @@ fileprivate func processInstall(
               // pass if it's something like "}\r\n"
             } else {
               temp.append(char)
-              
               let blueSequence = "\u{1b}[0;36m"
               let resetSequence = "\u{1b}[0m"
-              temp.insert(blueSequence, at: temp.indices.first)
-              temp.append(resetSequence)
+              temp.insert(contentsOf: blueSequence, at: temp.indices.first)
+              temp.append(contentsOf: resetSequence)
               
               output.append(temp)
               appendedThisLine = true
