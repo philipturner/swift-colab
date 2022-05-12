@@ -258,5 +258,38 @@ func formatCompilerError(_ input: String) -> [String] {
 }
 
 fileprivate func formatCompileErrorLine(_ input: String) -> String {
+  var shortenedInput: String
+  let extraneousLabel = "error: "
+  if input.hasPrefix(extraneousLabel) {
+    shortenedInput = String(input.dropFirst(extraneousLabel.count))
+  } else {
+    shortenedInput = input
+  }
+  
+  var firstColonIndex: String.Index?
+  var secondColonIndex: String.Index?
+  var thirdColonIndex: String.Index?
+  for i in shortenedInput.indices {
+    let char = shortenedInput[i]
+    guard char == ":" else {
+      continue
+    }
+    if firstColonIndex == nil {
+      firstColonIndex = i
+    } else if secondColonIndex == nil {
+      secondColonIndex = i
+    } else if thirdColonIndex == nil {
+      thirdColonIndex = i
+      break
+    }
+  }
+  
+  var line: Int?
+  var column: Int?
+  var file: String
+  var message: String
+  
+  // Attempt to shorten file name
+  
   return formatString(input, ansiOptions: [31])
 }
