@@ -210,3 +210,8 @@ func getLocationLine(file: String, line: Int) -> String {
   let formattedLine = formatString("\(line)", ansiOptions: [32])
   return locationLabel + formattedFile + lineLabel + formattedLine
 }
+
+func formatCompilerError(_ input: String) -> String {
+  let lines = input.split(separator: "\n", omittingEmptySubsequences: false)
+  
+}
