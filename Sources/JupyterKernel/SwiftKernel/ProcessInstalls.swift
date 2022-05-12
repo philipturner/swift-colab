@@ -309,13 +309,18 @@ fileprivate func processInstall(
     $0 + eightSpaces + $1 + "\n"
   }
   modulesHumanDescription.removeLast()
+  
+  func makeBlue(_ label: String) -> String {
+    return formatString(label, ansiOptions: [36])
+  }
   sendStdout("""
-    Installing package:
+    \(makeBlue("Installing package:"))
         \(spec)
     \(modulesHumanDescription)
-    With SwiftPM flags: \(swiftPMFlags)
-    Working in: \(KernelContext.installLocation)
+    \(makeBlue("With SwiftPM flags: "))\(swiftPMFlags)
+    \(makeBlue("Working in: "))\(KernelContext.installLocation)
     """)
+  
   
   let packagePath = "\(KernelContext.installLocation)/\(packageID + 1)"
   try? fm.createDirectory(
