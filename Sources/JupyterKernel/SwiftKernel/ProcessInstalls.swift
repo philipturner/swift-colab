@@ -342,40 +342,44 @@ fileprivate func processInstall(
   // Whenever the Swift package has been built at least one time before, it 
   // outputs a massive, ugly JSON blob that cannot be suppressed. This 
   // workaround filters that out.
-  var currentlyInsideBrackets = false
   func removeJSONBlob(_ line: String) -> String? {
-    let subLines = line.split(
-      separator: "\n", omittingEmptySubsequences: false)
-    var outputLines: [String.SubSequence] = []
+    let subLines1 = line.split(
+      separator: "\u{001B}[2K", omittingEmptySubsequences: false).map(String.init)
+    var outputLines1: [String] = []
     
-    for subLine in subLines {
-      KernelContext.log("STR \(String(subLine)) STR")
-      KernelContext.log("SPACE")
-      if subLine.hasPrefix("\u{001B}[2K") {
-        KernelContext.log("1B2K")
-      }
-      KernelContext.log("NUM \(subLine.count) NUM ")
-      KernelContext.log("SPACE")
-      if Int(subLine) != nil {
-        // Don't add if the line is an integer.
-        continue
-      } else if subLine.first == "{" {
-        currentlyInsideBrackets = true
-        continue
-      } else if subLine.first == "}" {
-        currentlyInsideBrackets = false
-        continue
-      }
+    for subLine1 in subLines1 {
+      var currentlyInsideBrackets = false
+      //
+      let subLines2 = subline1.split(
+        separator: "\n", omittingEmptySubsequences: false).map(String.init)
+      var outputLines2: [String] = []
+      
+      for subLine2 in subLines2 {
+        if Int(subLine2) != nil {
+          // Don't add if the line is an integer.
+          continue
+        } else if subLine2.first == "{" {
+          currentlyInsideBrackets = true
+          continue
+        } else if subLine2.first == "}" {
+          currentlyInsideBrackets = false
+          continue
+        }
 
-      if !currentlyInsideBrackets {
-        outputLines.append(subLine)
+        if !currentlyInsideBrackets {
+          outputLines2.append(subLine)
+        }
+      }
+      
+      if outputLines2.count > 0 {
+        outputLines1.append(outputLines2.joined(separator: "\n"))
       }
     }
     
-    if outputLines.count == 0 {
+    if outputLines1.count == 0 {
       return nil
     } else {
-      return outputLines.joined(separator: "\n")
+      return outputLines1.joined(separator: "\u{001B}[2K")
     }
   }
 
