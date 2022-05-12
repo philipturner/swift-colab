@@ -20,12 +20,12 @@ public func JupyterKernel_registerSwiftKernel() {
   let swiftKernelPath = "\(jupyterKernelFolder)/swift_kernel.py"
   try? fm.removeItem(atPath: swiftKernelPath)
   fm.createFile(atPath: swiftKernelPath, contents: pythonScript.data(using: .utf8)!)
-  
+  // /usr/bin/python3
   // Create kernel spec
   let kernelSpec = """
   {
     "argv": [
-      "/usr/bin/python3",
+      "/opt/swift/toolchain/usr/bin/swift",
       "\(swiftKernelPath)",
       "-f",
       "{connection_file}"
