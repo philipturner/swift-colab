@@ -225,6 +225,14 @@ func formatCompilerError(_ input: String) -> [String] {
     return lines
   }
   
+  enum LineType {
+    case errorMessage
+    case sourceCode
+    case pointer
+    case suggestion
+  }
+  var lineType = LineType.errorMessage
+  
   for i in lines[1...].indices {
     lines[i] = formatString(String(lines[i]), ansiOptions: [32])
   }
