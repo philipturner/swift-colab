@@ -344,6 +344,7 @@ fileprivate func processInstall(
   // workaround filters that out.
   var currentlyInsideBrackets = false
   func removeJSONBlob(_ line: String) -> String? {
+    KernelContext.log("\(line.count)")
     // possibly remove this
     var shortenedLine = line
     if shortenedLine.last == "\n" {
