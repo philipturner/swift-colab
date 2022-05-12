@@ -363,7 +363,7 @@ fileprivate func processInstall(
         } else if !insideBraces {
           if Int(temp) == nil {
             temp.append(char)
-            Kernelcontext.log("<appended>\(makeArray())</appended>")
+            KernelContext.log("<appended>\(makeArray())</appended>")
             output.append(temp)
           }
         }
@@ -374,7 +374,7 @@ fileprivate func processInstall(
       }
     }
     
-    Kernelcontext.log("<appended-final>\(makeArray())</appended-final>")
+    KernelContext.log("<appended-final>\(makeArray())</appended-final>")
     output.append(temp)
     return output
     
