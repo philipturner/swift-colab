@@ -65,10 +65,6 @@ fileprivate let SwiftShell = PythonClass(
     "kernel": Instance(
       "ipykernel.inprocess.ipkernel.InProcessKernel", allow_none: true),
     
-    // -------------------------------------------------------------------------
-    // InteractiveShell interface
-    // -------------------------------------------------------------------------
-    
     // Enable GUI integration for the kernel.
     "enable_gui": PythonInstanceMethod { (args: [PythonObject]) in
       let `self` = args[0]
