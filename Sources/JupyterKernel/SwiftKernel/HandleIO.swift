@@ -97,17 +97,12 @@ fileprivate func getAndSendStdout(handler: PythonObject) {
   if stdout.count > 0 {
     if Bool(handler.had_stdout)! == false {
       // Remove header that signalled that the code successfully compiled.
-      let header = "HEADER"
+      let header = "HEADER\r\n"
       precondition(stdout.hasPrefix(header), """
         stdout did not start with the expected header "\(header)". stdout was:
         \(stdout)
         """)
-      // I don't know why, but the character immediately following "HEADER" is 
-      // not a newline.
       stdout.removeFirst(header.count)
-      let char = stdout.first!
-      KernelContext.log("a char: \(String(char).data(using: .utf8)!.map { $0 })")
-      stdout.removeFirst(1)
       handler.had_stdout = true
     }
     KernelContext.log("received stdout")
