@@ -220,8 +220,12 @@ func formatCompilerError(_ input: String) -> [String] {
   
   let errorIsRecognized = lines[0] == "expression failed to parse:"
   lines[0] = label + lines[0]
-  guard lines[0] == "expression failed to parse:" else {
+  guard errorIsRecognized else {
     return lines
   }
-  return formatString(input, ansiOptions: [32])
+  
+  for i in lines[1...].indices {
+    lines[i] = formatString(lines[i], ansiOptions: [32])
+  }
+  return lines
 }
