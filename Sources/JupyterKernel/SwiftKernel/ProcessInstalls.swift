@@ -347,7 +347,8 @@ fileprivate func processInstall(
     var output: String = ""
     var temp: String = ""
     var insideBraces = false
-    var lastLineWasBrace = false // change this mechanism to: auto-detecting "\r" vs "\r\n" vs "\n"
+    var appendedPreviousLine = true
+    var previousChar: Character = "\n"
     
     func makeArray() -> String {
       let data = temp.data(using: .utf8)!
@@ -356,9 +357,11 @@ fileprivate func processInstall(
     }
     
     for char in line.utf8.map(Unicode.Scalar.init).map(Character.init) {
+      defer { previousChar = char }
       if char == "\r" || char == "\n" {
         precondition(!temp.contains("\r"))
         precondition(!temp.contains("\n"))
+        var appendedThisLine = false
         if temp.first == "{" {
           insideBraces = true
           lastLineWasBrace = true
@@ -367,20 +370,20 @@ fileprivate func processInstall(
           lastLineWasBrace = true
         } else if !insideBraces {
           if Int(temp) == nil {
-            // To prevent "}\r\n" from being changed into "\n"
-            if lastLineWasBrace {
-              if char == "\n" {
-                lastLineWasBrace = false
-              }
+            // Check if it's something like "}\r\n"
+            if previousChar == "\r" && !appendedPreviousLine {
+              // pass
             } else {
               temp.append(char)
               KernelContext.log("<appended>\(makeArray())</appended>")
               output.append(temp)
+              appendedThisLine = true
             }
           }
         }
         KernelContext.log("<temp>\(makeArray())</temp>")
         temp.removeAll(keepingCapacity: true)
+        appendedPreviousLine = appendedThisLine
       } else {
         temp.append(char)
       }
