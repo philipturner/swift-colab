@@ -232,6 +232,7 @@ func formatCompilerError(_ input: String) -> [String] {
     case suggestion
   }
   var lineType: LineType = .errorMessage
+  var handledErrorLine = false
   
   for i in lines[1...].indices {
     let line = lines[i]
@@ -240,6 +241,7 @@ func formatCompilerError(_ input: String) -> [String] {
       if line != "" {
         lines[i] = formatCompileErrorLine(line)
         lineType = .sourceCode
+        handledErrorLine = true
       }
     case .sourceCode:
       lineType = .pointer
@@ -253,6 +255,9 @@ func formatCompilerError(_ input: String) -> [String] {
         lineType = .errorMessage
       }
     }
+  }
+  if handledErrorLine {
+    lines.removeFirst()
   }
   return lines
 }
