@@ -263,12 +263,25 @@ func formatCompilerError(_ input: String) -> [String] {
 }
 
 fileprivate func formatCompileErrorLine(_ input: String) -> String {
+  enum MessageType {
+    case error
+    case warning
+    case note
+  }
+  var messageType: MessageType
+  
   var message: String
-  let extraneousLabel = "error: "
-  if input.hasPrefix(extraneousLabel) {
-    message = String(input.dropFirst(extraneousLabel.count))
+  let errorLabel = "error: "
+  let warningLabel = "warning: "
+  if input.hasPrefix(errorLabel) {
+    message = String(input.dropFirst(errorLabel.count))
+    messageType = .error
+  } else if input.hasPrefix(warningLabel) {
+    message = String(input.dropFirst(warningLabel.count))
+    messageType = .warning
   } else {
     message = input
+    messageType = .note
   }
   
   var firstColonIndex: String.Index?
@@ -311,7 +324,29 @@ fileprivate func formatCompileErrorLine(_ input: String) -> String {
         message.indices.contains(messageStartIndex) else {
     return formatMessage()
   }
-  message = String(message[messageStartIndex...])
+  
+  let shortenedMessage = String(message[messageStartIndex...])
+  switch messageType {
+  case .error:
+    if shortenedMessage.hasPrefix(errorLabel) {
+      message = String(shortenedMessage.dropFirst(errorLabel.count))
+    } else {
+      return formatMessage()
+    }
+  case .warning:
+    if shortenedMessage.hasPrefix(warningLabel) {
+      message = String(shortenedMessage.dropFirst(warningLabel.count))
+    } else {
+      return formatMessage()
+    }
+  case .note:
+    let noteLabel = "note: "
+    if shortenedMessage.hasPrefix(noteLabel) {
+      message = String(shortenedMessage.dropFirst(noteLabel.count))
+    } else {
+      return formatMessage()
+    }
+  }
   
   // Attempt to shorten file name
   
