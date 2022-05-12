@@ -357,6 +357,9 @@ fileprivate func processInstall(
       if subLine.contains("[2K") {
         KernelContext.log("2K")
       }
+      if subLine.contains("\u{001B}[2K") {
+        KernelContext.log("1B2K")
+      }
       KernelContext.log("NUM \(subLine.count) NUM ")
       KernelContext.log("SPACE")
       if Int(subLine) != nil {
