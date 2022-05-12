@@ -351,10 +351,10 @@ fileprivate func processInstall(
     for subLine in subLines {
       KernelContext.log("STR \(String(subLine)) STR")
       KernelContext.log("SPACE")
-      if String(subLine).contais("\u{001B}") {
+      if subLine.contains("\u{001B}") {
         KernelContext.log("1B")
       }
-      if String(subLine).contains("[2K") {
+      if subLine.contains("[2K") {
         KernelContext.log("2K")
       }
       KernelContext.log("NUM \(subLine.count) NUM ")
