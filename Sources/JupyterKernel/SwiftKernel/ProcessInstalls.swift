@@ -353,9 +353,12 @@ fileprivate func processInstall(
       defer { numLinesTried += 1 }
       var subLine1: String
       if numLinesTried > 0 {
-        guard subLine1_small.hasPrefix*
+        guard subLine1_small.hasPrefix("[2K") else {
+          continue
+        }
+        subLine1 = String(subLine1_small.dropFirst("[2K".count))
       } else {
-        subLines1 = String(subLine1_small)
+        subLines1 = subLine1_small
       }
       var currentlyInsideBrackets = false
       //
