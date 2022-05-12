@@ -142,13 +142,13 @@ func prettyPrintStackTrace(
     var path: String
     
     if let folder = extractPackageFolder(fromPath: directory) {
-      // File is in a package's build checkouts
+      // File is in a package's build checkouts.
       path = folder + "/" + file
     } else if directory.count > 0 {
-      // File location not recognized
+      // File location not recognized.
       path = directory + "/" + file
     } else {
-      // File is a notebook cell
+      // File is a notebook cell.
       path = file
     }
     path = formatString(path, ansiOptions: [32])
@@ -173,7 +173,7 @@ func prettyPrintStackTrace(
 // This could theoretically work on any path, regardless of whether it's a 
 // directory or a full file path.
 fileprivate func extractPackageFolder(fromPath path: String) -> String? {
-  // Follow along this code with an example URL:
+  // Follow along with an example URL:
   // path = /opt/swift/packages/1/.build/checkouts/Lib/Folder
   
   // Should never start with the symbolic link "/opt/swift/install-location".
@@ -305,7 +305,6 @@ fileprivate func formatCompileErrorLine(_ input: String) -> String {
   func formatMessage() -> String {
     return formatString(message, ansiOptions: [36])
   }
-  
   guard let firstColonIndex = firstColonIndex,
         let secondColonIndex = secondColonIndex,
         let thirdColonIndex = thirdColonIndex else {
@@ -325,7 +324,7 @@ fileprivate func formatCompileErrorLine(_ input: String) -> String {
     return formatMessage()
   }
   
-   // Attempt to shorten file name
+  // Attempt to shorten file name.
   var file = String(message[..<firstColonIndex])
   if let folderWithFile = extractPackageFolder(fromPath: file) {
     file = folderWithFile
