@@ -14,10 +14,10 @@ fileprivate func shlexSplit(
   do {
     let output = try split.dynamicallyCall(withArguments: line)
     return [String](output)!
-  } catch {
+  } catch let error as PythonError {
     throw PreprocessorException(lineIndex: lineIndex, message: """
       Could not parse shell arguments: \(line)
-      Error message: \(error)
+      \(error)
       """)
   }
 }
