@@ -374,6 +374,10 @@ fileprivate func processInstall(
               // pass if it's something like "}\r\n"
             } else {
               temp.append(char)
+              
+              var insertIndex: String.Index
+              if temp.hasPrefix("\u{001B}[2K")
+              
               let blueSequence = "\u{1b}[0;36m"
               let resetSequence = "\u{1b}[0m"
               temp.insert(contentsOf: blueSequence, at: temp.startIndex)
