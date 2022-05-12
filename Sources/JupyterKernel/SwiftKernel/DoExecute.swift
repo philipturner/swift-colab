@@ -14,6 +14,7 @@ func doExecute(code: String) throws -> PythonObject? {
   
   // Execute the cell, handle unexpected exceptions, and make sure to always 
   // clean up the stdout handler.
+  let cellID = KernelContext.kernel.execution_count
   var result: ExecutionResult
   do {
     defer {
@@ -25,7 +26,6 @@ func doExecute(code: String) throws -> PythonObject? {
     return nil
   } catch let error as PreprocessorError {
     let label = formatString("\(type(of: error).label): ", ansiOptions: [31])
-    let cellID = Int(KernelContext.kernel.execution_count)!
     let message = [
       "\(label)\(error.localizedDescription)",
       getLocationLine(file: "<Cell \(cellID)>", line: error.lineIndex + 1)
@@ -33,11 +33,10 @@ func doExecute(code: String) throws -> PythonObject? {
     sendIOPubErrorMessage(message)
     return makeExecuteReplyErrorMessage(message)
   } catch {
-    let kernel = KernelContext.kernel
     sendIOPubErrorMessage([
       "Kernel is in a bad state. Try restarting the kernel.",
       "",
-      "Exception in cell \(kernel.execution_count):",
+      "Exception in cell \(cellID):",
       "\(error.localizedDescription)"
     ])
     throw error
@@ -46,7 +45,7 @@ func doExecute(code: String) throws -> PythonObject? {
   // Send values/errors and status to the client.
   if result is SuccessWithValue {
     KernelContext.sendResponse("execute_result", [
-      "execution_count": KernelContext.kernel.execution_count,
+      "execution_count": cellID,
       "data": [
         "text/plain": result.description.pythonObject
       ],
@@ -57,7 +56,6 @@ func doExecute(code: String) throws -> PythonObject? {
     return nil
   } else if result is SwiftError {
     var message: [String]
-    
     if KernelContext.process_is_alive() == 0 {
       message = [formatString("Process killed", ansiOptions: [33])]
       sendIOPubErrorMessage(message)
@@ -81,13 +79,7 @@ func doExecute(code: String) throws -> PythonObject? {
       // There is no stdout, so it must be a compile error. Simply return the 
       // error without trying to get a stack trace.
       let label = formatString("Compiler error: ", ansiOptions: [31])
-      message = result.description.split( /* call formatting function */
-        separator: "\n", omittingEmptySubsequences: false).map(String.init)
-      if message.count == 0 {
-        message = [label]
-      } else {
-        message[0] = label + message[0]
-      }
+      message = [label + result.description]
       sendIOPubErrorMessage(message)
     }
     
