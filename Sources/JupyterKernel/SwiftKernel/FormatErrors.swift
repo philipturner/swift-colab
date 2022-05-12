@@ -212,7 +212,14 @@ func getLocationLine(file: String, line: Int) -> String {
 }
 
 func formatCompilerError(_ input: String) -> [String] {
+  let label = formatString("Compiler error: ", ansiOptions: [31])
   let lines = input.split(separator: "\n", omittingEmptySubsequences: false)
+  guard lines.count > 0 else {
+    return [label + "no error message available"]
+  }
+  
+  let errorIsRecognized = lines[0] == "expression failed to parse:"
+  lines[0] = label + lines[0]
   guard lines[0] == "expression failed to parse:" else {
     return lines
   }
