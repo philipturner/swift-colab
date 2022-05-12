@@ -586,14 +586,21 @@ func removeJSONBlob(_ line: String) -> String? {
         continue
       } else if !insideBraces {
         if Int(temp) == nil {
+          func extractChar(_ x: Character) -> UInt8 {
+            let string = String(x)
+            let data = string.data(using: .utf8)!
+            let array = data.map { $0 }
+            return array[0]
+          }
+          
           if previousChar == "\r" {
-            precondition(char == "\n", "Found char: \(char)")
+            precondition(char == "\n", "Found char: \(extractChar(char))")
             if appendedPreviousLine {
               output.append("\n")
             }
             // pass if it's something like "}\r\n"
           } else {
-            precondition(char == "\r", "Found char: \(char)")
+            precondition(char == "\r", "Found char: \(extractChar(char))")
 
 //               let blueSequence = ""//"\u{1b}[0;36m"
 //               let resetSequence = " Q"//"\u{1b}[0m"
