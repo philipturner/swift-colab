@@ -165,7 +165,7 @@ func runTerminalProcess(
       if let filterStdout = filterStdout {
         filteredStr = filterStdout(str)
       }
-      if let filteredStr = filteredStd {
+      if let filteredStr = filteredStr {
         KernelContext.sendResponse("stream", [
           "name": "stdout",
           "text": filteredStr
