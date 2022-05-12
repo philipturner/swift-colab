@@ -284,9 +284,18 @@ fileprivate func formatCompileErrorLine(_ input: String) -> String {
     }
   }
   
+  guard let firstColonIndex = firstColonIndex,
+        let secondColonIndex = secondColonIndex,
+        let thirdColonIndex = thirdColonIndex else {
+    return formatString(shortenedInput, ansiOptions: [36])
+  }
+  
+  var file: String?
   var line: Int?
   var column: Int?
-  var file: String
+  if let firstColonIndex = 
+  
+  
   var message: String
   
   // Attempt to shorten file name
