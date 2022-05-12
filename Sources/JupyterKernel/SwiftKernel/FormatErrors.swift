@@ -330,14 +330,17 @@ fileprivate func formatCompileErrorLine(_ input: String) -> String {
   if let folderWithFile = extractPackageFolder(fromPath: file) {
     file = folderWithFile
   }
+  file = "\(file):\(line):\(column): "
   
   let shortenedMessage = String(message[messageStartIndex...])
   var label: String
+  var ansiColor: Int
   switch messageType {
   case .error:
     if shortenedMessage.hasPrefix(errorLabel) {
       message = String(shortenedMessage.dropFirst(errorLabel.count))
       label = errorLabel
+      ansiColor = 31
     } else {
       return formatMessage()
     }
@@ -345,6 +348,7 @@ fileprivate func formatCompileErrorLine(_ input: String) -> String {
     if shortenedMessage.hasPrefix(warningLabel) {
       message = String(shortenedMessage.dropFirst(warningLabel.count))
       label = warningLabel
+      ansiColor = 35
     } else {
       return formatMessage()
     }
@@ -353,12 +357,14 @@ fileprivate func formatCompileErrorLine(_ input: String) -> String {
     if shortenedMessage.hasPrefix(noteLabel) {
       message = String(shortenedMessage.dropFirst(noteLabel.count))
       label = noteLabel
+      ansiColor = 90
     } else {
       return formatMessage()
     }
   }
   
-  
-  
-  return formatString(file + " " + message, ansiOptions: [31])
+  file = formatString(file, ansiOptions: [1])
+  label = formatString(file, ansiOptions: [1, ansiColor])
+  message = formatString(message, ansiOptions: [1])
+  return file + label + message
 }
