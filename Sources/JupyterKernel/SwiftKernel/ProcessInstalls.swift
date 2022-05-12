@@ -378,7 +378,7 @@ fileprivate func processInstall(
       
       for subLine2 in subLines2 {
         KernelContext.log("<check 2>")
-        KernelContext.log(subLine1_small)
+        KernelContext.log(subLine2)
         KernelContext.log("</check 2>")
         
         if Int(subLine2) != nil {
