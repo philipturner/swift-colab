@@ -233,13 +233,14 @@ func formatCompilerError(_ input: String) -> [String] {
   }
   var lineType: LineType = .errorMessage
   var handledErrorLine = false
+  var output: [String] = []
   
   for i in lines[1...].indices {
     let line = lines[i]
     switch lineType {
     case .errorMessage:
       if line != "" {
-        lines[i] = formatCompileErrorLine(line)
+        output += formatCompileErrorLine(line)
         lineType = .sourceCode
         handledErrorLine = true
       }
@@ -247,7 +248,7 @@ func formatCompilerError(_ input: String) -> [String] {
       lineType = .pointer
     case .pointer:
       if line.contains("^") {
-        lines[i] = formatString(line, ansiOptions: [32])
+        output.append(formatString(line, ansiOptions: [32]))
         lineType = .suggestion
       }
     case .suggestion:
@@ -257,12 +258,13 @@ func formatCompilerError(_ input: String) -> [String] {
     }
   }
   if handledErrorLine {
-    lines.removeFirst()
+    return output
+  } else {
+    return lines
   }
-  return lines
 }
 
-fileprivate func formatCompileErrorLine(_ input: String) -> String {
+fileprivate func formatCompileErrorLine(_ input: String) -> [String] {
   enum MessageType {
     case error
     case warning
@@ -302,8 +304,8 @@ fileprivate func formatCompileErrorLine(_ input: String) -> String {
     }
   }
   
-  func formatMessage() -> String {
-    return formatString(message, ansiOptions: [36])
+  func formatMessage() -> [String] {
+    return [formatString(message, ansiOptions: [36])]
   }
   
   guard let firstColonIndex = firstColonIndex,
@@ -350,5 +352,5 @@ fileprivate func formatCompileErrorLine(_ input: String) -> String {
   
   // Attempt to shorten file name
   
-  return formatString(message, ansiOptions: [31])
+  return [formatString(message, ansiOptions: [31])]
 }
