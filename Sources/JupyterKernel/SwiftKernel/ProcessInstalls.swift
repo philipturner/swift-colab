@@ -354,10 +354,16 @@ fileprivate func processInstall(
       var subLine1: String
       if numLinesTried > 0 {
         guard subLine1_small.hasPrefix("[2K") else {
+          KernelContext.log("<check 1>")
+          KernelContext.log(subLine1_small)
+          KernelContext.log("</check 1>")
           continue
         }
         subLine1 = String(subLine1_small.dropFirst("[2K".count))
       } else {
+        KernelContext.log("<check 0>")
+        KernelContext.log(subLine1_small)
+        KernelContext.log("</check 0>")
         subLine1 = subLine1_small
       }
       var currentlyInsideBrackets = false
@@ -367,6 +373,10 @@ fileprivate func processInstall(
       var outputLines2: [String] = []
       
       for subLine2 in subLines2 {
+        KernelContext.log("<check 2>")
+        KernelContext.log(subLine1_small)
+        KernelContext.log("</check 2>")
+        
         if Int(subLine2) != nil {
           // Don't add if the line is an integer.
           continue
@@ -377,6 +387,10 @@ fileprivate func processInstall(
           currentlyInsideBrackets = false
           continue
         }
+        
+        KernelContext.log("<check 3>")
+        KernelContext.log("\(currentlyInsideBrackets)")
+        KernelContext.log("</check 3>")
 
         if !currentlyInsideBrackets {
           outputLines2.append(subLine2)
