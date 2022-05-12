@@ -234,7 +234,29 @@ func formatCompilerError(_ input: String) -> [String] {
   var lineType = LineType.errorMessage
   
   for i in lines[1...].indices {
-    lines[i] = formatString(String(lines[i]), ansiOptions: [32])
+    let line = lines[i]
+    switch lineType {
+    case .errorMessage:
+      if line != "" {
+        lines[i] = formatCompileErrorLine(line)
+        lineType = .sourceCode
+      }
+    case .sourceCode:
+      lineType = .pointer
+    case .pointer:
+      if line.contains("^") {
+        lines[i] = formatString(line, ansiOptions: [32])
+        lineType = .suggestion
+      }
+    case .suggestion:
+      if line == "" {
+        lineType = .errorMessage
+      }
+    }
   }
   return lines
+}
+
+fileprivate func formatCompileErrorLine(_ input: String) -> String {
+  return formatString(input, ansiOptions: [31])
 }
