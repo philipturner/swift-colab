@@ -247,7 +247,7 @@ func formatCompilerError(_ input: String) -> [String] {
       lineType = .pointer
     case .pointer:
       if line.contains("^") {
-        lines[i] = formatString(line, ansiOptions: [32])
+        lines[i] = formatString(line, ansiOptions: [1, 32])
         lineType = .suggestion
       }
     case .suggestion:
