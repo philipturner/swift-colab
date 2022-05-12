@@ -590,7 +590,7 @@ func removeJSONBlob(_ line: String) -> String? {
   var isFirstElement = true
   output = ""
   
-  for rawRegment in splitOutput {
+  for rawSegment in splitOutput {
     var segment: String
     if isFirstElement {
       segment = String(rawSegment)
