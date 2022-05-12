@@ -143,7 +143,7 @@ func getStderr(readData: Bool) -> String? {
 //   def system(self, cmd):
 func runTerminalProcess(args: [String], cwd: String? = nil) throws -> Int {
   let joinedArgs = args.joined(separator: " ")
-  let process = pexpect.spawn("/bin/sh", args: ["-c" + joinedArgs], cwd: cwd)
+  let process = pexpect.spawn("/bin/sh", args: ["-c", joinedArgs], cwd: cwd)
   let flush = sys.stdout.flush
   let patterns = [pexpect.TIMEOUT, pexpect.EOF]
   var outSize: Int = 0
