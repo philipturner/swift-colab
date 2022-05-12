@@ -354,7 +354,7 @@ fileprivate func processInstall(
       return "\(array)"
     }
     
-    for char in line {
+    for char in line.utf8.map(Unicode.Scalar.init).map(Character.init) {
       if char == "\r" || char == "\n" {
         precondition(!temp.contains("\r"))
         precondition(!temp.contains("\n"))
