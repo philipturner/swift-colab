@@ -376,7 +376,7 @@ fileprivate func processInstall(
               temp.append(char)
               let blueSequence = "\u{1b}[0;36m"
               let resetSequence = "\u{1b}[0m"
-              temp.insert(contentsOf: blueSequence, at: temp.indices.first)
+              temp.insert(contentsOf: blueSequence, at: temp.firstIndex)
               temp.append(contentsOf: resetSequence)
               
               output.append(temp)
