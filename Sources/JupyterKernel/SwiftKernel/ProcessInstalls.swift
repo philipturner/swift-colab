@@ -386,7 +386,7 @@ fileprivate func processInstall(
       }
     }
     output.append(temp)
-    return makeBlue(output)
+    return output
   }
 
   let swiftBuildPath = "/opt/swift/toolchain/usr/bin/swift-build"
