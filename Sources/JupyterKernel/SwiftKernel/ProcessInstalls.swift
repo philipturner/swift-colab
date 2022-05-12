@@ -348,6 +348,12 @@ fileprivate func processInstall(
     var temp: String = ""
     var insideBraces = false
     
+    func makeArray() -> String {
+      let data = temp.data(using: .utf8)!
+      let array = data.map { $0 } as [UInt8]
+      return "\(array)"
+    }
+    
     for char in line {
       if char == "\r" || char == "\n" {
         if temp.first == "{" {
@@ -357,15 +363,18 @@ fileprivate func processInstall(
         } else if !insideBraces {
           if Int(temp) == nil {
             temp.append(char)
+            Kernelcontext.log("<appended>\(makeArray())</appended>")
             output.append(temp)
           }
         }
+        KernelContext.log("<temp>\(makeArray())</temp>")
         temp.removeAll(keepingCapacity: true)
       } else {
         temp.append(char)
       }
     }
     
+    Kernelcontext.log("<appended-final>\(makeArray())</appended-final>")
     output.append(temp)
     return output
     
