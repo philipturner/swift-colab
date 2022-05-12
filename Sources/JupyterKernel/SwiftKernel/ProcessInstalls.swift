@@ -580,6 +580,7 @@ func removeJSONBlob(_ line: String) -> String? {
       } else if temp.first == "}" {
         insideBraces = false
       } else if getAppended() == "\u{001B}[2K\r" {
+        // rather, try hasSuffix(...), then do something special with formatting before and after it.
         output.append("\u{001B}[2K\r")
         temp.removeAll(keepingCapacity: true)
         myFlag = true
