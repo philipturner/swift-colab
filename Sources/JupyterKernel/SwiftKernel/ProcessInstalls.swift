@@ -343,83 +343,88 @@ fileprivate func processInstall(
   // outputs a massive, ugly JSON blob that cannot be suppressed. This 
   // workaround filters that out.
   func removeJSONBlob(_ line: String) -> String? {
-    let subLines1 = line.split(
-      separator: "\u{001B}", omittingEmptySubsequences: false).map(String.init)
-    var outputLines1: [String] = []
+    let data = line.data(using: .utf8)!
+    let array = data.map { $0 } as [UInt8]
+    KernelContext.log("\(array)")
     
-    var numLinesTried = 0
-    var currentlyInsideBrackets = false
+    return line
+//     let subLines1 = line.split(
+//       separator: "\u{001B}", omittingEmptySubsequences: false).map(String.init)
+//     var outputLines1: [String] = []
     
-    for subLine1_small in subLines1 {
-      defer { numLinesTried += 1 }
-      var subLine1: String
-      if numLinesTried > 0 {
-        KernelContext.log("<check 1.0>")
-        KernelContext.log(subLine1_small)
-        KernelContext.log("</check 1.0>")
-        guard subLine1_small.hasPrefix("[2K") else {
-          KernelContext.log("<check 1.1></check 1.1>")
-          continue
-        }
-        subLine1 = String(subLine1_small.dropFirst("[2K".count))
-        KernelContext.log("<check 1.2>")
-        KernelContext.log(subLine1)
-        KernelContext.log("</check 1.2>")
-      } else {
-        KernelContext.log("<check 0>")
-        KernelContext.log(subLine1_small)
-        KernelContext.log("</check 0>")
-        subLine1 = subLine1_small
-      }
+//     var numLinesTried = 0
+//     var currentlyInsideBrackets = false
+    
+//     for subLine1_small in subLines1 {
+//       defer { numLinesTried += 1 }
+//       var subLine1: String
+//       if numLinesTried > 0 {
+//         KernelContext.log("<check 1.0>")
+//         KernelContext.log(subLine1_small)
+//         KernelContext.log("</check 1.0>")
+//         guard subLine1_small.hasPrefix("[2K") else {
+//           KernelContext.log("<check 1.1></check 1.1>")
+//           continue
+//         }
+//         subLine1 = String(subLine1_small.dropFirst("[2K".count))
+//         KernelContext.log("<check 1.2>")
+//         KernelContext.log(subLine1)
+//         KernelContext.log("</check 1.2>")
+//       } else {
+//         KernelContext.log("<check 0>")
+//         KernelContext.log(subLine1_small)
+//         KernelContext.log("</check 0>")
+//         subLine1 = subLine1_small
+//       }
       
-      //
-      let subLines2 = subLine1.split(
-        separator: "\r", omittingEmptySubsequences: false).map(String.init)
-      var outputLines2: [String] = []
+//       //
+//       let subLines2 = subLine1.split(
+//         separator: "\r", omittingEmptySubsequences: false).map(String.init)
+//       var outputLines2: [String] = []
       
-      for subLine2_small in subLines2 {
-        KernelContext.log("<check 2>")
-        KernelContext.log(subLine2_small)
-        KernelContext.log("</check 2>")
-        var subLine2: String
-        var ending: String = ""
-        if subLine2_small.last == "\n" {
-          subLine2 = String(subLine2_small.dropLast(1))
-          ending = "\n"
-        } else {
-          subLine2 = subLine2_small
-        }
+//       for subLine2_small in subLines2 {
+//         KernelContext.log("<check 2>")
+//         KernelContext.log(subLine2_small)
+//         KernelContext.log("</check 2>")
+//         var subLine2: String
+//         var ending: String = ""
+//         if subLine2_small.last == "\n" {
+//           subLine2 = String(subLine2_small.dropLast(1))
+//           ending = "\n"
+//         } else {
+//           subLine2 = subLine2_small
+//         }
         
-        if Int(subLine2) != nil {
-          // Don't add if the line is an integer.
-          continue
-        } else if subLine2.first == "{" {
-          currentlyInsideBrackets = true
-          continue
-        } else if subLine2.first == "}" {
-          currentlyInsideBrackets = false
-          continue
-        }
+//         if Int(subLine2) != nil {
+//           // Don't add if the line is an integer.
+//           continue
+//         } else if subLine2.first == "{" {
+//           currentlyInsideBrackets = true
+//           continue
+//         } else if subLine2.first == "}" {
+//           currentlyInsideBrackets = false
+//           continue
+//         }
         
-        KernelContext.log("<check 3>")
-        KernelContext.log("\(currentlyInsideBrackets)")
-        KernelContext.log("</check 3>")
+//         KernelContext.log("<check 3>")
+//         KernelContext.log("\(currentlyInsideBrackets)")
+//         KernelContext.log("</check 3>")
 
-        if !currentlyInsideBrackets {
-          outputLines2.append(subLine2 + ending)
-        }
-      }
+//         if !currentlyInsideBrackets {
+//           outputLines2.append(subLine2 + ending)
+//         }
+//       }
       
-      if outputLines2.count > 0 {
-        outputLines1.append(outputLines2.joined(separator: "\n"))
-      }
-    }
+//       if outputLines2.count > 0 {
+//         outputLines1.append(outputLines2.joined(separator: "\n"))
+//       }
+//     }
     
-    if outputLines1.count == 0 {
-      return nil
-    } else {
-      return outputLines1.joined(separator: "\u{001B}[2K")
-    }
+//     if outputLines1.count == 0 {
+//       return nil
+//     } else {
+//       return outputLines1.joined(separator: "\u{001B}[2K")
+//     }
   }
 
   let swiftBuildPath = "/opt/swift/toolchain/usr/bin/swift-build"
