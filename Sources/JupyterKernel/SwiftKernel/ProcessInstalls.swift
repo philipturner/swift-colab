@@ -344,10 +344,19 @@ fileprivate func processInstall(
   // workaround filters that out.
   func removeJSONBlob(_ line: String) -> String? {
     let subLines1 = line.split(
-      separator: "\u{001B}[2K", omittingEmptySubsequences: false).map(String.init)
+      separator: "\u{001B}", omittingEmptySubsequences: false).map(String.init)
     var outputLines1: [String] = []
     
-    for subLine1 in subLines1 {
+    var numLinesTried = 0
+    
+    for subLine1_small in subLines1 {
+      defer { numLinesTried += 1 }
+      var subLine1: String
+      if numLinesTried > 0 {
+        guard subLine1_small.hasPrefix*
+      } else {
+        subLines1 = String(subLine1_small)
+      }
       var currentlyInsideBrackets = false
       //
       let subLines2 = subline1.split(
