@@ -378,7 +378,6 @@ fileprivate func processInstall(
         }
         KernelContext.log("<temp>\(makeArray())</temp>")
         temp.removeAll(keepingCapacity: true)
-        lastChar = char
       } else {
         temp.append(char)
       }
