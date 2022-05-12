@@ -358,5 +358,7 @@ fileprivate func formatCompileErrorLine(_ input: String) -> String {
     }
   }
   
+  
+  
   return formatString(file + " " + message, ansiOptions: [31])
 }
