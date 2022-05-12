@@ -141,9 +141,9 @@ int process_is_alive() {
 // 3rd level of recursion:
 // - first 8 bytes (UInt64): header that says how long the byte array is
 // - rest of line: data in the byte array, with allocated capacity rounded
-// up to a multiple of 8 bytes
+//   up to a multiple of 8 bytes
 //
-// Caller must deallocate `serialized_output`
+// Caller must deallocate `serialized_output`.
 int after_successful_execution(uint64_t **serialized_output) {
   const char *code = "JupyterKernel.communicator.triggerAfterSuccessfulExecution()";
   auto result = target.EvaluateExpression(code, expr_opts);
@@ -215,20 +215,18 @@ int get_pretty_stack_trace(void ***frames, int *size) {
     
     auto function_name = frame.GetDisplayFunctionName();
     auto function_name_len = strlen(function_name);
-    
     auto file_name = file_spec.GetFilename();
     auto file_name_len = strlen(file_name);
     
     const char *directory_name = NULL;
     size_t directory_name_len = 0;
-    
     if (file_spec.Exists()) {
       directory_name = file_spec.GetDirectory();
       directory_name_len = strlen(directory_name);
     }
     
-    // Let the Swift code format the line and column. Right now, just serialize 
-    // them into an 8-byte header.
+    // Let the Swift code format the line and column. Serialize them into an 
+    // 8-byte header.
     void *desc = malloc(
       /*line*/4 + /*column*/4 + 
       function_name_len + /*null terminator*/1 + 
