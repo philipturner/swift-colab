@@ -81,9 +81,14 @@ func doExecute(code: String) throws -> PythonObject? {
     } else {
       // There is no stdout, so it must be a compile error. Simply return the 
       // error without trying to get a stack trace.
+      let label = formatString("Compiler error: ", ansiOptions: [31])
       message = result.description.split( /* call formatting function */
         separator: "\n", omittingEmptySubsequences: false).map(String.init)
-      message = ["Swift error"] + message
+      if message.count == 0 {
+        message = [label]
+      } else {
+        message[0] = label + message[0]
+      }
       sendIOPubErrorMessage(message)
     }
     
