@@ -68,7 +68,8 @@ struct KernelContext {
 
 fileprivate struct LLDBProcessLibrary {
   static var library: UnsafeMutableRawPointer = {
-    _ = dlopen("/opt/swift/toolchain/usr/lib/liblldb.so", RTLD_LAZY | RTLD_GLOBAL)!
+    _ = dlopen(
+      "/opt/swift/toolchain/usr/lib/liblldb.so", RTLD_LAZY | RTLD_GLOBAL)!
     return dlopen("/opt/swift/lib/libLLDBProcess.so", RTLD_LAZY | RTLD_GLOBAL)!
   }()
   
