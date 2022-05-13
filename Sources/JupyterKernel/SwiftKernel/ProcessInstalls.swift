@@ -539,7 +539,9 @@ fileprivate func processInstall(
 // Whenever the Swift package has been built at least one time before, it 
 // outputs a massive, ugly JSON blob that cannot be suppressed. This workaround 
 // filters that out.
-func removeJSONBlob(_ line: String) -> String? {
+func removeJSONBlob(_ line: String) -> String {
+  return line
+  /*
   var output: String = ""
   var temp: String = ""
   var insideBraces = false
@@ -581,7 +583,7 @@ func removeJSONBlob(_ line: String) -> String? {
   }
   output.append(temp)
   return output
-  
+  */
 //   let splitOutput = output.split(
 //     separator: "\u{001B}", omittingEmptySubsequences: false)
 //   var isFirstElement = true
