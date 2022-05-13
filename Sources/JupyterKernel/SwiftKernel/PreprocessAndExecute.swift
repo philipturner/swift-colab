@@ -58,7 +58,7 @@ func execute(
 // the directive.
 fileprivate func getLocationDirective(lineIndex: Int) -> String {
   return """
-    #sourceLocation(file: "<Cell \(executionCount)>", line: \(lineIndex + 1))
+    #sourceLocation(file: "<Cell \(KernelContext.cellID)>", line: \(lineIndex + 1))
     """
 }
 
