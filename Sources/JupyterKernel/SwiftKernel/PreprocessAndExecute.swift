@@ -7,13 +7,9 @@ func preprocessAndExecute(
 ) throws -> ExecutionResult {
   let preprocessed = try preprocess(code: code)
   var executionResult: ExecutionResult?
-  // Need to avoid accessing Python from the background thread.
-  let executionCount = Int(KernelContext.kernel.execution_count)!
-
   DispatchQueue.global().async {
     executionResult = execute(
-      code: preprocessed, lineIndex: isCell ? 0 : nil, isCell: isCell,
-      executionCount: executionCount)
+      code: preprocessed, lineIndex: isCell ? 0 : nil, isCell: isCell)
   }
 
   while executionResult == nil {
@@ -25,16 +21,13 @@ func preprocessAndExecute(
 }
 
 func execute(
-  code: String, lineIndex: Int? = nil, isCell: Bool = false,
-  executionCount: Int = Int(KernelContext.kernel.execution_count)!
+  code: String, lineIndex: Int? = nil, isCell: Bool = false
 ) -> ExecutionResult {
   // Send a header to stdout, letting the StdoutHandler know that it compiled 
   // without errors and executed in LLDB.
   var prefixCode = isCell ? "print(\"HEADER\")\n" : ""
-  
   if let lineIndex = lineIndex {
-    prefixCode += getLocationDirective(
-      lineIndex: lineIndex, executionCount: executionCount)
+    prefixCode += getLocationDirective(lineIndex: lineIndex)
   } else {
     prefixCode += """
       #sourceLocation(file: "n/a", line: 1)
@@ -63,10 +56,7 @@ func execute(
 // Location directive for the current cell. This adds one to `lineIndex` before 
 // creating the string. This does not include the newline that should come after 
 // the directive.
-fileprivate func getLocationDirective(
-  lineIndex: Int, 
-  executionCount: Int = Int(KernelContext.kernel.execution_count)!
-) -> String {
+fileprivate func getLocationDirective(lineIndex: Int) -> String {
   return """
     #sourceLocation(file: "<Cell \(executionCount)>", line: \(lineIndex + 1))
     """
