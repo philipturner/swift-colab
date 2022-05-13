@@ -151,6 +151,7 @@ func runTerminalProcess(
   KernelContext.log("2")
   
   while true {
+    KernelContext.log("2.1")
     var waitTime: Double = 0.05
     var shouldCheckStr = true
     if KernelContext.isInterrupted {
@@ -162,8 +163,10 @@ func runTerminalProcess(
         shouldCheckStr = false
       }
     }
+    KernelContext.log("2.2")
     
     let resIdx = process.expect_list(patterns, waitTime)
+    KernelContext.log("2.3")
     if shouldCheckStr {
       let str = String(process.before[outSize...].decode("utf8", "replace"))!
       if str.count > 0 {
@@ -180,7 +183,9 @@ func runTerminalProcess(
       }
       outSize = process.before.checking.count ?? 0
     }
+    KernelContext.log("2.4")
     flush()
+    KernelContext.log("2.5")
     
     if KernelContext.isInterrupted {
       process.terminate(force: true)
@@ -189,6 +194,7 @@ func runTerminalProcess(
     } else if Int(resIdx)! == 1 {
       break
     }
+    KernelContext.log("2.6")
   }
   KernelContext.log("3")
   process.isalive()
