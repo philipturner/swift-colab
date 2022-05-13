@@ -249,7 +249,7 @@ fileprivate func processInstall(
   
   
    _ = try runTerminalProcess(args: ["cd /opt/swift/packages/1 && /opt/swift/toolchain/usr/bin/swift-build"])
-  return
+  return;
   
   
   try? fm.removeItem(atPath: linkPath)
