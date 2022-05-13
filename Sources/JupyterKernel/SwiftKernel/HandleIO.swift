@@ -178,7 +178,7 @@ func runTerminalProcess(
           ])
         }
       }
-      outSize = process.before.count
+      outSize = process.before.checking.count ?? 0
     }
     flush()
     
