@@ -343,18 +343,18 @@ fileprivate func processInstall(
   // Ask SwiftPM to build the package.
   
   let swiftBuildPath = "/opt/swift/toolchain/usr/bin/swift-build"
-  KernelContext.log("Swift package:")
-  KernelContext.log("\(packagePath)")
-  KernelContext.log("\([swiftBuildPath] + swiftPMFlags)")
+  _ = try runTerminalProcess(args: [
+    ["cd \(packagePath) && \(swiftBuildPath)"] + swiftPMFlags
+  ])
   
-  let buildReturnCode = try runTerminalProcess(
-    args: [swiftBuildPath] + swiftPMFlags, cwd: packagePath, 
-    filterStdout: removeJSONBlob)
-  if buildReturnCode != 0 {
-    throw PackageInstallException(lineIndex: lineIndex, message: """
-      swift-build returned nonzero exit code \(buildReturnCode).
-      """)
-  }
+//   let buildReturnCode = try runTerminalProcess(
+//     args: [swiftBuildPath] + swiftPMFlags, cwd: packagePath, 
+//     filterStdout: removeJSONBlob)
+//   if buildReturnCode != 0 {
+//     throw PackageInstallException(lineIndex: lineIndex, message: """
+//       swift-build returned nonzero exit code \(buildReturnCode).
+//       """)
+//   }
   
 //   let showBinPathResult = subprocess.run(
 //     [swiftBuildPath, "--show-bin-path"] + swiftPMFlags,
