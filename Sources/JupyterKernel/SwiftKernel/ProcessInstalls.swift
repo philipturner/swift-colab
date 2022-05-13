@@ -344,8 +344,12 @@ fileprivate func processInstall(
   
   let swiftBuildPath = "/opt/swift/toolchain/usr/bin/swift-build"
   _ = try runTerminalProcess(args:
-    ["cd \(packagePath) && \(swiftBuildPath)"] + swiftPMFlags
+    ["cd /opt/swift/packages/1 && /opt/swift/toolchain/usr/bin/swift-build"]
   )
+  
+//   _ = try runTerminalProcess(args:
+//     ["cd \(packagePath) && \(swiftBuildPath)"] + swiftPMFlags
+//   )
   
 //   let buildReturnCode = try runTerminalProcess(
 //     args: [swiftBuildPath] + swiftPMFlags, cwd: packagePath, 
