@@ -152,28 +152,35 @@ func runTerminalProcess(
   
   while true {
     var waitTime: Double = 0.05
+    var shouldCheckStr = true
     if KernelContext.isInterrupted {
       waitTime = 0.2
       process.sendline(Python.chr(3))
-      outSize = process.before.count
+      if let count = process.before.checking.count {
+        outSize = count
+      } else {
+        shouldCheckStr = false
+      }
     }
     
     let resIdx = process.expect_list(patterns, waitTime)
-    let str = String(process.before[outSize...].decode("utf8", "replace"))!
-    if str.count > 0 {
-      var filteredStr: String? = str
-      if let filterStdout = filterStdout {
-        filteredStr = filterStdout(str)
+    if shouldCheckStr {
+      let str = String(process.before[outSize...].decode("utf8", "replace"))!
+      if str.count > 0 {
+        var filteredStr: String? = str
+        if let filterStdout = filterStdout {
+          filteredStr = filterStdout(str)
+        }
+        if let filteredStr = filteredStr {
+          KernelContext.sendResponse("stream", [
+            "name": "stdout",
+            "text": filteredStr
+          ])
+        }
       }
-      if let filteredStr = filteredStr {
-        KernelContext.sendResponse("stream", [
-          "name": "stdout",
-          "text": filteredStr
-        ])
-      }
+      outSize = process.before.count
     }
     flush()
-    outSize = process.before.count
     
     if KernelContext.isInterrupted {
       process.terminate(force: true)
