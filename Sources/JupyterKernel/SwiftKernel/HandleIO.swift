@@ -142,13 +142,11 @@ func getStderr(readData: Bool) -> String? {
 func runTerminalProcess(
   args: [String], cwd: String? = nil, filterStdout: ((String) -> String?)? = nil
 ) throws -> Int {
-  KernelContext.log("1")
   let joinedArgs = args.joined(separator: " ")
   let process = pexpect.spawn("/bin/sh", args: ["-c", joinedArgs], cwd: cwd)
   let flush = sys.stdout.flush
   let patterns = [pexpect.TIMEOUT, pexpect.EOF]
   var outSize: Int = 0
-  KernelContext.log("2")
   
   func getBefore() -> PythonObject? {
     let before = process.before
@@ -160,27 +158,18 @@ func runTerminalProcess(
   }
   
   while true {
-    KernelContext.log("2.1")
     var waitTime: Double = 0.05
     var shouldCheckStr = true
     if KernelContext.isInterrupted {
       waitTime = 0.2
-      KernelContext.log("2.1.1")
       process.sendline(Python.chr(3))
-      KernelContext.log("2.1.2")
       if let count = getBefore()?.count {
-        KernelContext.log("2.1.3")
         outSize = count
-      } else {
-        KernelContext.log("2.1.3")
-        shouldCheckStr = false
       }
     }
-    KernelContext.log("2.2")
     
     let resIdx = process.expect_list(patterns, waitTime)
-    KernelContext.log("2.3")
-    if shouldCheckStr, let before = getBefore() {
+    if let before = getBefore() {
       let str = String(before[outSize...].decode("utf8", "replace"))!
       if str.count > 0 {
         var filteredStr: String? = str
@@ -196,9 +185,7 @@ func runTerminalProcess(
       }
       outSize = before.count
     }
-    KernelContext.log("2.4")
     flush()
-    KernelContext.log("2.5")
     
     if KernelContext.isInterrupted {
       process.terminate(force: true)
@@ -207,11 +194,8 @@ func runTerminalProcess(
     } else if Int(resIdx)! == 1 {
       break
     }
-    KernelContext.log("2.6")
   }
-  KernelContext.log("3")
   process.isalive()
-  defer { KernelContext.log("4") }
   
   if let exitstatus = Int(process.exitstatus) {
     if exitstatus > 128 {
