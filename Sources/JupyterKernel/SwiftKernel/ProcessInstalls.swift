@@ -247,11 +247,6 @@ fileprivate func processInstall(
   try fm.createSymbolicLink(
     atPath: linkPath, withDestinationPath: KernelContext.installLocation)
   
-   _ = try runTerminalProcess(args: ["cd /opt/swift/packages/1 && /opt/swift/toolchain/usr/bin/swift-build"])
-  return;
-  
-  
-  
   if installedPackages == nil || 
      installedPackagesLocation != KernelContext.installLocation {
     try readInstalledPackages()
@@ -265,8 +260,10 @@ fileprivate func processInstall(
     installedPackages.append(spec)
     installedPackagesMap[spec] = packageID
   }
-  
   try writeInstalledPackages(lineIndex: lineIndex)
+  
+  _ = try runTerminalProcess(args: ["cd /opt/swift/packages/1 && /opt/swift/toolchain/usr/bin/swift-build"])
+  return;
   
   // Summary of how this works:
   // - create a Swift package that depends all the modules that
