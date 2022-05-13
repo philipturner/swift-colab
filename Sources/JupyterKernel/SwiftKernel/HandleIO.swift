@@ -82,7 +82,7 @@ fileprivate func sendStdout(_ stdout: String) {
       "wait": false
     ])
     sendStdout(String(stdout[range.upperBound...]))
-  } else {
+  } /* add case for [2K */ else {
     KernelContext.sendResponse("stream", [
       "name": "stdout",
       "text": stdout
@@ -167,13 +167,14 @@ func runTerminalProcess(
     if let before = getBefore() {
       var str = String(before[outSize...].decode("utf8", "replace"))!
       if str.count > 0 {
-        if let filterStdout = filterStdout {
-          str = filterStdout(str)
-        }
-        KernelContext.sendResponse("stream", [
-          "name": "stdout",
-          "text": str
-        ])
+        sendStdout(str)
+//         if let filterStdout = filterStdout {
+//           str = filterStdout(str)
+//         }
+//         KernelContext.sendResponse("stream", [
+//           "name": "stdout",
+//           "text": str
+//         ])
       }
       outSize = before.count
     }
