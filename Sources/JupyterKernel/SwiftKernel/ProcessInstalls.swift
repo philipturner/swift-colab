@@ -554,10 +554,15 @@ func removeJSONBlob(_ line: String) -> String {
 //   var appendedPreviousLine = true
 //   var previousChar: Character = "\n"
   
-  for char in line.utf8.map({ Character(Unicode.Scalar($0)) }) {
-    if char != "\r" {
+  for char in line {//.utf8.map({ Character(Unicode.Scalar($0)) }) {
+    if char == "\r\n" {
+      output.append("\n")
+    } else {
       output.append(char)
     }
+//     if char != "\r" {
+//       output.append(char)
+//     }
 //     defer { 
 //       previousChar = char 
 //     }
