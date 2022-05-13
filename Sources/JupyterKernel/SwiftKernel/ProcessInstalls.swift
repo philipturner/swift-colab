@@ -544,58 +544,14 @@ fileprivate func processInstall(
 // outputs a massive, ugly JSON blob that cannot be suppressed. This workaround 
 // filters that out.
 func removeJSONBlob(_ line: String) -> String {
-//   let array = line.data(using: .utf8)!.map { $0 }
-//   KernelContext.log("\(array)")
-//   return line
-  
   var output: String = ""
-//   var temp: String = ""
-//   var insideBraces = false
-//   var appendedPreviousLine = true
-//   var previousChar: Character = "\n"
-  
-  for char in line {//.utf8.map({ Character(Unicode.Scalar($0)) }) {
+  for char in line {
     if char == "\r\n" {
       output.append("\n")
     } else {
       output.append(char)
     }
-//     if char != "\r" {
-//       output.append(char)
-//     }
-//     defer { 
-//       previousChar = char 
-//     }
-//     if char == "\r" || char == "\n" {
-//       func getAppended() -> String {
-//         var copy = temp
-//         copy.append(char)
-//         return copy
-//       }
-//       var appendedThisLine = false
-      
-//       if temp.first == "{" {
-//         insideBraces = true
-//       } else if temp.first == "}" {
-//         insideBraces = false
-//       } else if !insideBraces {
-//         if Int(temp) == nil {
-//           if previousChar == "\r" && !appendedPreviousLine {
-//             // Pass if it's something like "}\r\n".
-//           } else {
-//             temp.append(char)
-//             output.append(temp)
-//             appendedThisLine = true
-//           }
-//         }
-//       }
-//       temp.removeAll(keepingCapacity: true)
-//       appendedPreviousLine = appendedThisLine
-//     } else {
-//       temp.append(char)
-//     }
   }
-//   output.append(temp)
   return output
   
 //   let splitOutput = output.split(
