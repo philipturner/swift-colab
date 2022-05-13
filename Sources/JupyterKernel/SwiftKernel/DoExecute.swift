@@ -48,7 +48,7 @@ func doExecute(code: String) throws -> PythonObject? {
     KernelContext.sendResponse("execute_result", [
       "execution_count": KernelContext.cellID,
       "data": [
-        "text/plain": result.description.pythonObject
+        "text/plain": result.description
       ],
       "metadata": [:]
     ])
@@ -94,7 +94,6 @@ func doExecute(code: String) throws -> PythonObject? {
       ])
       sendIOPubErrorMessage([])
     }
-    
     return makeExecuteReplyErrorMessage(message)
   } else {
     fatalError("This should never happen.")
