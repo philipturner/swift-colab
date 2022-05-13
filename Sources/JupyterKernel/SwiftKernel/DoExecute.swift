@@ -73,6 +73,11 @@ func doExecute(code: String) throws -> PythonObject? {
       var errorSource: (file: String, line: Int)?
       
       message = fetchStderr(errorSource: &errorSource)
+      if message.count == 0 && KernelContext.isInterrupted {
+        // LLDB returned an error because it was interrupted. No need for a 
+        // diagnostic explaining that.
+        return nil
+      }
       message += try prettyPrintStackTrace(errorSource: errorSource)
       sendIOPubErrorMessage(message)
     } else {
