@@ -206,8 +206,10 @@ fi
 # Overwrite Python kernel
 
 if [[ $mode == "dev" || ! -e "progress/registered-jupyter-kernel" ]]; then
-  register_kernel='import Foundation
-let libJupyterKernel = dlopen("/opt/swift/lib/libJupyterKernel.so", RTLD_LAZY | RTLD_GLOBAL)!
+  register_kernel='
+import Foundation
+let libJupyterKernel = dlopen(
+  "/opt/swift/lib/libJupyterKernel.so", RTLD_LAZY | RTLD_GLOBAL)!
 let funcAddress = dlsym(libJupyterKernel, "JupyterKernel_registerSwiftKernel")!
 
 let JupyterKernel_registerSwiftKernel = unsafeBitCast(
