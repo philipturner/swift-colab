@@ -356,7 +356,7 @@ fileprivate func formatCompileErrorLine(_ input: String) -> String {
     if shortenedMessage.hasPrefix(noteLabel) {
       message = String(shortenedMessage.dropFirst(noteLabel.count))
       label = noteLabel
-      ansiColor = 90
+      ansiColor = 30
     } else {
       return formatMessage()
     }
