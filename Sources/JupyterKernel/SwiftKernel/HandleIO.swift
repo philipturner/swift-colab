@@ -43,7 +43,6 @@ let StdoutHandler = PythonClass(
     },
     
     "run": PythonInstanceMethod { (`self`: PythonObject) in
-      KernelContext.log("began stdout handler")
       while true {
         time.sleep(0.05)
         if !KernelContext.pollingStdout {
@@ -52,7 +51,6 @@ let StdoutHandler = PythonClass(
         getAndSendStdout(handler: `self`)
       }
       getAndSendStdout(handler: `self`)
-      KernelContext.log("ended stdout handler")
       return Python.None
     }
   ]
@@ -105,7 +103,6 @@ fileprivate func getAndSendStdout(handler: PythonObject) {
       stdout.removeFirst(header.count)
       handler.had_stdout = true
     }
-    KernelContext.log("received stdout")
     sendStdout(stdout)
   }
 }
@@ -118,7 +115,6 @@ func getStderr(readData: Bool) -> String? {
   
   fseek(errorFilePointer, 0, SEEK_END)
   let newErrorStreamEnd = ftell(errorFilePointer)
-  
   let messageSize = newErrorStreamEnd - errorStreamEnd
   defer { errorStreamEnd = newErrorStreamEnd }
   if messageSize == 0 || !readData {
