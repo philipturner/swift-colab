@@ -343,6 +343,10 @@ fileprivate func processInstall(
   // Ask SwiftPM to build the package.
   
   let swiftBuildPath = "/opt/swift/toolchain/usr/bin/swift-build"
+  KernelContext.log("Swift package:")
+  KernelContext.log("\(packagePath)")
+  KernelContext.log("\([swiftBuildPath] + swiftPMFlags)")
+  
   let buildReturnCode = try runTerminalProcess(
     args: [swiftBuildPath] + swiftPMFlags, cwd: packagePath, 
     filterStdout: removeJSONBlob)
