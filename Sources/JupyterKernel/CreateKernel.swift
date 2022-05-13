@@ -18,8 +18,7 @@ public func JupyterKernel_createSwiftKernel() {
   
   let nextRuntime = currentRuntime.contains("python") ? runtime1 : runtime2
   fm.createFile(
-    atPath: "/opt/swift/runtime", 
-    contents: nextRuntime.data(using: .utf8)!)
+    atPath: "/opt/swift/runtime", contents: nextRuntime.data(using: .utf8)!)
   
   // In dev mode, switch back into Python mode on the next runtime restart. This 
   // makes debugging a lot easier and decreases the chance my main account will 
@@ -55,14 +54,14 @@ public func JupyterKernel_constructSwiftKernelClass(_ classObj: OpaquePointer) {
     if !KernelContext.debuggerInitialized {
       KernelContext.kernel = args[0]
       try initSwift()
-      KernelContext.log("finished initSwift")
       KernelContext.debuggerInitialized = true
+      KernelContext.log("finished initSwift")
     }
     
     let response = try doExecute(code: String(args[1])!)
     return response ?? [
       "status": "ok",
-      "execution_count": KernelContext.kernel.execution_count,
+      "execution_count": KernelContext.cellID,
       "payload": [],
       "user_expressions": [:],
     ]
