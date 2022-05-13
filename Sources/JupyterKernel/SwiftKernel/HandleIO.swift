@@ -150,6 +150,10 @@ func runTerminalProcess(
   var outSize: Int = 0
   KernelContext.log("2")
   
+  func getBefore() -> PythonObject? {
+    return Optional(process.before)
+  }
+  
   while true {
     KernelContext.log("2.1")
     var waitTime: Double = 0.05
@@ -159,7 +163,7 @@ func runTerminalProcess(
       KernelContext.log("2.1.1")
       process.sendline(Python.chr(3))
       KernelContext.log("2.1.2")
-      if let count = process.before.checking.count {
+      if let count = getBefore().count {
         KernelContext.log("2.1.3")
         outSize = count
       } else {
@@ -171,8 +175,8 @@ func runTerminalProcess(
     
     let resIdx = process.expect_list(patterns, waitTime)
     KernelContext.log("2.3")
-    if shouldCheckStr {
-      let str = String(process.before[outSize...].decode("utf8", "replace"))!
+    if shouldCheckStr, let before = getBefore() {
+      let str = String(before[outSize...].decode("utf8", "replace"))!
       if str.count > 0 {
         var filteredStr: String? = str
         if let filterStdout = filterStdout {
@@ -185,7 +189,7 @@ func runTerminalProcess(
           ])
         }
       }
-      outSize = process.before.checking.count ?? 0
+      outSize = before.count
     }
     KernelContext.log("2.4")
     flush()
