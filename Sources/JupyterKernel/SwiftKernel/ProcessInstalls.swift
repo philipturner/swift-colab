@@ -333,16 +333,16 @@ fileprivate func processInstall(
     }
   }
   
-  try createFile(name: "Package.swift", contents: manifest)
-  
-  _ = try runTerminalProcess(args: ["cd /opt/swift/packages/1 && /opt/swift/toolchain/usr/bin/swift-build"])
-  return;
-  
-  
   try createFile(name: "\(packageName).swift", contents: """
     // intentionally blank
     
     """)
+  
+  _ = try runTerminalProcess(args: ["cd /opt/swift/packages/1 && /opt/swift/toolchain/usr/bin/swift-build"])
+  return;
+  
+  try createFile(name: "Package.swift", contents: manifest)
+  
   
   // Ask SwiftPM to build the package.
   
