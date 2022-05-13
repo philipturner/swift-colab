@@ -326,8 +326,13 @@ fileprivate func processInstall(
   func createFile(name: String, contents: String) throws {
     let filePath = "\(packagePath)/\(name)"
     let data = contents.data(using: .utf8)!
-    // If you overwrite the contents of "\(packageName).swift", regardless of whether you actually change it, 
-    // you will trigger a massive JSON blob in Stdout if the package has been built before.
+    
+    // If you overwrite the contents of "\(packageName).swift", regardless of 
+    // whether you actually change it, you will trigger a massive JSON blob in 
+    // stdout if the package has been built before. So, don't overwrite it.
+    if data == fm.contents(atPath: filePath) {
+      return
+    }
     guard fm.createFile(atPath: filePath, contents: data) else {
       throw PackageInstallException(lineIndex: lineIndex, message: """
         Could not write to file "\(filePath)".
