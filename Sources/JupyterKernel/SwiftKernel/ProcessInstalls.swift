@@ -323,9 +323,6 @@ fileprivate func processInstall(
   try? fm.createDirectory(
     atPath: packagePath, withIntermediateDirectories: false)
   
-  _ = try runTerminalProcess(args: ["cd /opt/swift/packages/1 && /opt/swift/toolchain/usr/bin/swift-build"])
-  return;
-  
   func createFile(name: String, contents: String) throws {
     let filePath = "\(packagePath)/\(name)"
     let data = contents.data(using: .utf8)!
@@ -337,6 +334,11 @@ fileprivate func processInstall(
   }
   
   try createFile(name: "Package.swift", contents: manifest)
+  
+  _ = try runTerminalProcess(args: ["cd /opt/swift/packages/1 && /opt/swift/toolchain/usr/bin/swift-build"])
+  return;
+  
+  
   try createFile(name: "\(packageName).swift", contents: """
     // intentionally blank
     
