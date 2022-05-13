@@ -136,7 +136,7 @@ func getStderr(readData: Bool) -> String? {
 // https://github.com/ipython/ipython/blob/master/IPython/utils/_process_posix.py,
 //   def system(self, cmd):
 func runTerminalProcess(
-  args: [String], cwd: String? = nil, filterStdout: ((String) -> String?)? = nil
+  args: [String], cwd: String? = nil, filterStdout: ((String) -> String)? = nil
 ) throws -> Int {
   let joinedArgs = args.joined(separator: " ")
   let process = pexpect.spawn("/bin/sh", args: ["-c", joinedArgs], cwd: cwd)
@@ -165,18 +165,15 @@ func runTerminalProcess(
     
     let resIdx = process.expect_list(patterns, waitTime)
     if let before = getBefore() {
-      let str = String(before[outSize...].decode("utf8", "replace"))!
+      var str = String(before[outSize...].decode("utf8", "replace"))!
       if str.count > 0 {
-        var filteredStr: String? = str
         if let filterStdout = filterStdout {
-          filteredStr = filterStdout(str)
+          str = filterStdout(str)
         }
-        if let filteredStr = filteredStr {
-          KernelContext.sendResponse("stream", [
-            "name": "stdout",
-            "text": filteredStr
-          ])
-        }
+        KernelContext.sendResponse("stream", [
+          "name": "stdout",
+          "text": str
+        ])
       }
       outSize = before.count
     }
