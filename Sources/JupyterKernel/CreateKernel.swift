@@ -61,7 +61,7 @@ public func JupyterKernel_constructSwiftKernelClass(_ classObj: OpaquePointer) {
     let response = try doExecute(code: String(args[1])!)
     return response ?? [
       "status": "ok",
-      "execution_count": KernelContext.cellID,
+      "execution_count": PythonObject(KernelContext.cellID),
       "payload": [],
       "user_expressions": [:],
     ]
