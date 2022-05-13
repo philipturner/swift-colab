@@ -44,7 +44,7 @@ func processInstallDirective(
   try attempt(command: processSwiftPMFlags, ###"""
     ^\s*%install-swiftpm-flags (.*)$
     """###)
-    if isValidDirective { return }
+  if isValidDirective { return }
   
   try attempt(command: processExtraIncludeCommand, ###"""
     ^\s*%install-extra-include-command (.*)$
@@ -128,8 +128,7 @@ fileprivate func processExtraIncludeCommand(
     if includeDir.prefix(2) != "-I" {
       // Warning goes to "Runtime" > "View runtime logs"
       print("""
-        Non "-I" output from \
-        %install-extra-include-command: \(includeDir)
+        Non "-I" output from %install-extra-include-command: \(includeDir)
         """)
       continue
     }
@@ -272,7 +271,7 @@ fileprivate func processInstall(
   //   created to the Swift module search path
   // - dlopen the .so file that SwiftPM created
   
-  // == Create the Swift package ==
+  // Create the Swift package.
   
   let packageName = "jupyterInstalledPackages\(packageID + 1)"
   let packageNameQuoted = "\"\(packageName)\""
@@ -321,7 +320,6 @@ fileprivate func processInstall(
     \(makeBlue("Working in: "))\(KernelContext.installLocation)
     """)
   
-  
   let packagePath = "\(KernelContext.installLocation)/\(packageID + 1)"
   try? fm.createDirectory(
     atPath: packagePath, withIntermediateDirectories: false)
@@ -343,6 +341,7 @@ fileprivate func processInstall(
     """)
   
   // Ask SwiftPM to build the package.
+  
   let swiftBuildPath = "/opt/swift/toolchain/usr/bin/swift-build"
   let buildReturnCode = try runTerminalProcess(
     args: [swiftBuildPath] + swiftPMFlags, cwd: packagePath, 
@@ -362,6 +361,7 @@ fileprivate func processInstall(
   let libPath = "\(binDir)/lib\(packageName).so"
   
   // Copy .swiftmodule and modulemap files to Swift module search path.
+  
   let moduleSearchPath = "\(KernelContext.installLocation)/modules"
   try? fm.createDirectory(
     atPath: moduleSearchPath, withIntermediateDirectories: false)
@@ -518,10 +518,10 @@ fileprivate func processInstall(
   
   // dlopen the shared lib.
   let dynamicLoadResult = execute(code: """
-  import func Glibc.dlopen
-  import var Glibc.RTLD_NOW
-  dlopen("\(libPath)", RTLD_NOW)
-  """)
+    import func Glibc.dlopen
+    import var Glibc.RTLD_NOW
+    dlopen("\(libPath)", RTLD_NOW)
+    """)
   guard let dynamicLoadResult = dynamicLoadResult as? SuccessWithValue else {
     throw PackageInstallException(lineIndex: lineIndex, message: """
       dlopen crashed: \(dynamicLoadResult)
