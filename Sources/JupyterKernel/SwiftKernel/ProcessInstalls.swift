@@ -349,7 +349,8 @@ fileprivate func processInstall(
   // Ask SwiftPM to build the package.
   let swiftBuildPath = "/opt/swift/toolchain/usr/bin/swift-build"
   let buildReturnCode = try runTerminalProcess(
-    args: [swiftBuildPath] + swiftPMFlags, cwd: packagePath)
+    args: [swiftBuildPath] + swiftPMFlags, cwd: packagePath,
+    filterStdout: removeJSONBlob)
   if buildReturnCode != 0 {
     throw PackageInstallException(lineIndex: lineIndex, message: """
       swift-build returned nonzero exit code \(buildReturnCode).
@@ -545,15 +546,18 @@ fileprivate func processInstall(
 func removeJSONBlob(_ line: String) -> String {
 //   let array = line.data(using: .utf8)!.map { $0 }
 //   KernelContext.log("\(array)")
-  return line
+//   return line
   
-//   var output: String = ""
+  var output: String = ""
 //   var temp: String = ""
 //   var insideBraces = false
 //   var appendedPreviousLine = true
 //   var previousChar: Character = "\n"
   
-//   for char in line.utf8.map({ Character(Unicode.Scalar($0)) }) {
+  for char in line.utf8.map({ Character(Unicode.Scalar($0)) }) {
+    if char != "\r" {
+      output.append(char)
+    }
 //     defer { 
 //       previousChar = char 
 //     }
@@ -585,9 +589,9 @@ func removeJSONBlob(_ line: String) -> String {
 //     } else {
 //       temp.append(char)
 //     }
-//   }
+  }
 //   output.append(temp)
-//   return output
+  return output
   
 //   let splitOutput = output.split(
 //     separator: "\u{001B}", omittingEmptySubsequences: false)
