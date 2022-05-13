@@ -231,14 +231,13 @@ fileprivate func readClangModules() {
 fileprivate func processInstall(
   restOfLine: String, lineIndex: Int
 ) throws {
-  _ = try runTerminalProcess(args: ["cd /opt/swift/packages/1 && /opt/swift/toolchain/usr/bin/swift-build"])
-  return
-  
   let parsed = try shlexSplit(lineIndex: lineIndex, line: restOfLine)
   if parsed.count < 2 {
     throw PreprocessorException(lineIndex: lineIndex, message:
       "%install usage: SPEC PRODUCT [PRODUCT ...]")
   }
+  
+ 
   
   // Expand template before writing to file.
   let spec = try substituteCwd(template: parsed[0], lineIndex: lineIndex)
@@ -246,6 +245,13 @@ fileprivate func processInstall(
   
   let fm = FileManager.default
   let linkPath = "/opt/swift/install-location"
+  
+  
+  
+   _ = try runTerminalProcess(args: ["cd /opt/swift/packages/1 && /opt/swift/toolchain/usr/bin/swift-build"])
+  return
+  
+  
   try? fm.removeItem(atPath: linkPath)
   try fm.createSymbolicLink(
     atPath: linkPath, withDestinationPath: KernelContext.installLocation)
