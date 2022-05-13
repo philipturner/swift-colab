@@ -231,10 +231,6 @@ fileprivate func readClangModules() {
 fileprivate func processInstall(
   restOfLine: String, lineIndex: Int
 ) throws {
-   _ = try runTerminalProcess(args: ["cd /opt/swift/packages/1 && /opt/swift/toolchain/usr/bin/swift-build"])
-  return
-  
-  
   let parsed = try shlexSplit(lineIndex: lineIndex, line: restOfLine)
   if parsed.count < 2 {
     throw PreprocessorException(lineIndex: lineIndex, message:
@@ -347,7 +343,8 @@ fileprivate func processInstall(
   // Ask SwiftPM to build the package.
   
   let swiftBuildPath = "/opt/swift/toolchain/usr/bin/swift-build"
- 
+  _ = try runTerminalProcess(args: ["cd /opt/swift/packages/1 && /opt/swift/toolchain/usr/bin/swift-build"])
+  return
   
 //   _ = try runTerminalProcess(args:
 //     ["cd \(packagePath) && \(swiftBuildPath)"] + swiftPMFlags
