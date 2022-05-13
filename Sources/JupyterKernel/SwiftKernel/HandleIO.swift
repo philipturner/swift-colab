@@ -151,7 +151,12 @@ func runTerminalProcess(
   KernelContext.log("2")
   
   func getBefore() -> PythonObject? {
-    return Optional(process.before)
+    let before = process.before
+    if before == Python.None {
+      return nil
+    } else {
+      return before
+    }
   }
   
   while true {
