@@ -346,210 +346,197 @@ fileprivate func processInstall(
     
     """)
   
-  _ = try runTerminalProcess(args: ["cd /opt/swift/packages/1 && /opt/swift/toolchain/usr/bin/swift-build"])
-  return;
-  
-  
   // Ask SwiftPM to build the package.
-  
   let swiftBuildPath = "/opt/swift/toolchain/usr/bin/swift-build"
+  let buildReturnCode = try runTerminalProcess(
+    args: [swiftBuildPath] + swiftPMFlags, cwd: packagePath)
+  if buildReturnCode != 0 {
+    throw PackageInstallException(lineIndex: lineIndex, message: """
+      swift-build returned nonzero exit code \(buildReturnCode).
+      """)
+  }
   
+  let showBinPathResult = subprocess.run(
+    [swiftBuildPath, "--show-bin-path"] + swiftPMFlags,
+    stdout: subprocess.PIPE,
+    stderr: subprocess.PIPE,
+    cwd: packagePath)
+  let binDir = String(showBinPathResult.stdout.decode("utf8").strip())!
+  let libPath = "\(binDir)/lib\(packageName).so"
   
-//   _ = try runTerminalProcess(args:
-//     ["cd \(packagePath) && \(swiftBuildPath)"] + swiftPMFlags
-//   )
+  // Copy .swiftmodule and modulemap files to Swift module search path.
+  let moduleSearchPath = "\(KernelContext.installLocation)/modules"
+  try? fm.createDirectory(
+    atPath: moduleSearchPath, withIntermediateDirectories: false)
+  if loadedClangModules == nil {
+    readClangModules()
+  }
   
-//   let buildReturnCode = try runTerminalProcess(
-//     args: [swiftBuildPath] + swiftPMFlags, cwd: packagePath, 
-//     filterStdout: removeJSONBlob)
-//   if buildReturnCode != 0 {
-//     throw PackageInstallException(lineIndex: lineIndex, message: """
-//       swift-build returned nonzero exit code \(buildReturnCode).
-//       """)
-//   }
+  let buildDBPath = "\(binDir)/../build.db"
+  guard fm.fileExists(atPath: buildDBPath) else {
+    throw PackageInstallException(lineIndex: lineIndex, message: 
+      "build.db is missing")
+  }
   
-//   let showBinPathResult = subprocess.run(
-//     [swiftBuildPath, "--show-bin-path"] + swiftPMFlags,
-//     stdout: subprocess.PIPE,
-//     stderr: subprocess.PIPE,
-//     cwd: packagePath)
-//   let binDir = String(showBinPathResult.stdout.decode("utf8").strip())!
-//   let libPath = "\(binDir)/lib\(packageName).so"
+  // Execute swift-package show-dependencies to get all dependencies' paths.
+  let swiftPackagePath = "/opt/swift/toolchain/usr/bin/swift-package"
+  let dependenciesResult = subprocess.run(
+    [swiftPackagePath, "show-dependencies", "--format", "json"],
+    stdout: subprocess.PIPE,
+    stderr: subprocess.PIPE,
+    cwd: packagePath)
+  let dependenciesJSON = dependenciesResult.stdout.decode("utf8")
+  let dependenciesObj = json.loads(dependenciesJSON)
   
-//   // Copy .swiftmodule and modulemap files to Swift module search path.
+  func flattenDepsPaths(_ dep: PythonObject) -> [PythonObject] {
+    var paths = [dep["path"]]
+    if let dependencies = dep.checking["dependencies"] {
+      for d in dependencies {
+        paths += flattenDepsPaths(d)
+      }
+    }
+    return paths
+  }
   
-//   let moduleSearchPath = "\(KernelContext.installLocation)/modules"
-//   try? fm.createDirectory(
-//     atPath: moduleSearchPath, withIntermediateDirectories: false)
-//   if loadedClangModules == nil {
-//     readClangModules()
-//   }
+  // Make list of paths where we expect .swiftmodule and .modulemap files of 
+  // dependencies.
+  let dependenciesSet = Python.set(flattenDepsPaths(dependenciesObj))
+  let dependenciesPaths = [String](Python.list(dependenciesSet))!
   
-//   let buildDBPath = "\(binDir)/../build.db"
-//   guard fm.fileExists(atPath: buildDBPath) else {
-//     throw PackageInstallException(lineIndex: lineIndex, message: 
-//       "build.db is missing")
-//   }
+  func isValidDependency(_ path: String) -> Bool {
+    for p in dependenciesPaths {
+      if path.hasPrefix(p) {
+        return true
+      }
+    }
+    return false
+  }
   
-//   // Execute swift-package show-dependencies to get all dependencies' paths.
-//   let swiftPackagePath = "/opt/swift/toolchain/usr/bin/swift-package"
-//   let dependenciesResult = subprocess.run(
-//     [swiftPackagePath, "show-dependencies", "--format", "json"],
-//     stdout: subprocess.PIPE,
-//     stderr: subprocess.PIPE,
-//     cwd: packagePath)
-//   let dependenciesJSON = dependenciesResult.stdout.decode("utf8")
-//   let dependenciesObj = json.loads(dependenciesJSON)
+  // Query to get build files list from build.db.
+  // SUBSTR because string starts with "N" (why?)
+  let SQL_FILES_SELECT = 
+    "SELECT SUBSTR(key, 2) FROM 'key_names' WHERE key LIKE ?"
   
-//   func flattenDepsPaths(_ dep: PythonObject) -> [PythonObject] {
-//     var paths = [dep["path"]]
-//     if let dependencies = dep.checking["dependencies"] {
-//       for d in dependencies {
-//         paths += flattenDepsPaths(d)
-//       }
-//     }
-//     return paths
-//   }
+  // Connect to build.db.
+  let dbConnection = sqlite3.connect(buildDBPath)
+  let cursor = dbConnection.cursor()
   
-//   // Make list of paths where we expect .swiftmodule and .modulemap files of 
-//   // dependencies.
-//   let dependenciesSet = Python.set(flattenDepsPaths(dependenciesObj))
-//   let dependenciesPaths = [String](Python.list(dependenciesSet))!
+  // Process *.swiftmodule files.
+  cursor.execute(SQL_FILES_SELECT, ["%.swiftmodule"])
+  let swiftModules = cursor.fetchall().map { row in String(row[0])! }
+    .filter(isValidDependency)
+  for path in swiftModules {
+    let fileName = URL(fileURLWithPath: path).lastPathComponent
+    let linkPath = "\(moduleSearchPath)/\(fileName)"
+    try? fm.removeItem(atPath: linkPath)
+    do {
+      try fm.createSymbolicLink(
+        atPath: linkPath, withDestinationPath: path)
+    } catch {
+      throw PackageInstallException(lineIndex: lineIndex, message: """
+        Could not create link "\(linkPath)" with destination "\(path)".
+        """)
+    }
+  }
   
-//   func isValidDependency(_ path: String) -> Bool {
-//     for p in dependenciesPaths {
-//       if path.hasPrefix(p) {
-//         return true
-//       }
-//     }
-//     return false
-//   }
+  var warningClangModules: Set<String> = []
   
-//   // Query to get build files list from build.db.
-//   // SUBSTR because string starts with "N" (why?)
-//   let SQL_FILES_SELECT = 
-//     "SELECT SUBSTR(key, 2) FROM 'key_names' WHERE key LIKE ?"
-  
-//   // Connect to build.db.
-//   let dbConnection = sqlite3.connect(buildDBPath)
-//   let cursor = dbConnection.cursor()
-  
-//   // Process *.swiftmodule files.
-//   cursor.execute(SQL_FILES_SELECT, ["%.swiftmodule"])
-//   let swiftModules = cursor.fetchall().map { row in String(row[0])! }
-//     .filter(isValidDependency)
-//   for path in swiftModules {
-//     let fileName = URL(fileURLWithPath: path).lastPathComponent
-//     let linkPath = "\(moduleSearchPath)/\(fileName)"
-//     try? fm.removeItem(atPath: linkPath)
-//     do {
-//       try fm.createSymbolicLink(
-//         atPath: linkPath, withDestinationPath: path)
-//     } catch {
-//       throw PackageInstallException(lineIndex: lineIndex, message: """
-//         Could not create link "\(linkPath)" with destination "\(path)".
-//         """)
-//     }
-//   }
-  
-//   var warningClangModules: Set<String> = []
-  
-//   // Process modulemap files.
-//   cursor.execute(SQL_FILES_SELECT, ["%/module.modulemap"])
-//   let modulemapPaths = cursor.fetchall().map { row in String(row[0])! }
-//     .filter(isValidDependency)
-//   for index in 0..<modulemapPaths.count {
-//     // Create a separate directory for each modulemap file because the
-//     // ClangImporter requires that they are all named "module.modulemap".
-//     //
-//     // Use the module name to prevent two modulemaps for the same dependency
-//     // from ending up in multiple directories after several installations, 
-//     // causing the kernel to end up in a bad state. Make all relative header
-//     // paths in module.modulemap absolute because we copy file to different 
-//     // location.
-//     let filePath = modulemapPaths[index]
-//     var fileURL = URL(fileURLWithPath: filePath)
-//     fileURL.deleteLastPathComponent()
-//     let srcFolder = fileURL.path
+  // Process modulemap files.
+  cursor.execute(SQL_FILES_SELECT, ["%/module.modulemap"])
+  let modulemapPaths = cursor.fetchall().map { row in String(row[0])! }
+    .filter(isValidDependency)
+  for index in 0..<modulemapPaths.count {
+    // Create a separate directory for each modulemap file because the
+    // ClangImporter requires that they are all named "module.modulemap".
+    //
+    // Use the module name to prevent two modulemaps for the same dependency
+    // from ending up in multiple directories after several installations, 
+    // causing the kernel to end up in a bad state. Make all relative header
+    // paths in module.modulemap absolute because we copy file to different 
+    // location.
+    let filePath = modulemapPaths[index]
+    var fileURL = URL(fileURLWithPath: filePath)
+    fileURL.deleteLastPathComponent()
+    let srcFolder = fileURL.path
     
-//     var modulemapContents = 
-//       String(data: fm.contents(atPath: filePath)!, encoding: .utf8)!
-//     let lambda = PythonFunction { (m: PythonObject) in
-//       let relativePath = m.group(1)
-//       var absolutePath: PythonObject
-//       if Bool(os.path.isabs(relativePath))! {
-//         absolutePath = relativePath
-//       } else {
-//         absolutePath = os.path.abspath(
-//           srcFolder + "/" + String(relativePath)!)
-//       }
-//       return """
-//         header "\(absolutePath)"
-//         """
-//     }
-//     let headerRegularExpression = ###"""
-//       header\s+"(.*?)"
-//       """###
-//     modulemapContents = String(re.sub(
-//       headerRegularExpression, lambda, modulemapContents))!
+    var modulemapContents = 
+      String(data: fm.contents(atPath: filePath)!, encoding: .utf8)!
+    let lambda = PythonFunction { (m: PythonObject) in
+      let relativePath = m.group(1)
+      var absolutePath: PythonObject
+      if Bool(os.path.isabs(relativePath))! {
+        absolutePath = relativePath
+      } else {
+        absolutePath = os.path.abspath(
+          srcFolder + "/" + String(relativePath)!)
+      }
+      return """
+        header "\(absolutePath)"
+        """
+    }
+    let headerRegularExpression = ###"""
+      header\s+"(.*?)"
+      """###
+    modulemapContents = String(re.sub(
+      headerRegularExpression, lambda, modulemapContents))!
     
-//     let moduleRegularExpression = ###"""
-//       module\s+([^\s]+)\s.*{
-//       """###
-//     let moduleMatch = re.match(moduleRegularExpression, modulemapContents)
-//     var moduleFolderName: String
-//     if moduleMatch != Python.None {
-//       let moduleName = String(moduleMatch.group(1))!
-//       moduleFolderName = "module-\(moduleName)"
-//       if !loadedClangModules.contains(moduleName) {
-//         warningClangModules.insert(moduleName)
-//       }
-//     } else {
-//       moduleFolderName = "modulenoname-\(packageID + 1)-\(index + 1)"
-//     }
+    let moduleRegularExpression = ###"""
+      module\s+([^\s]+)\s.*{
+      """###
+    let moduleMatch = re.match(moduleRegularExpression, modulemapContents)
+    var moduleFolderName: String
+    if moduleMatch != Python.None {
+      let moduleName = String(moduleMatch.group(1))!
+      moduleFolderName = "module-\(moduleName)"
+      if !loadedClangModules.contains(moduleName) {
+        warningClangModules.insert(moduleName)
+      }
+    } else {
+      moduleFolderName = "modulenoname-\(packageID + 1)-\(index + 1)"
+    }
     
-//     let newFolderPath = "\(moduleSearchPath)/\(moduleFolderName)"
-//     try? fm.createDirectory(
-//       atPath: newFolderPath, withIntermediateDirectories: false)
+    let newFolderPath = "\(moduleSearchPath)/\(moduleFolderName)"
+    try? fm.createDirectory(
+      atPath: newFolderPath, withIntermediateDirectories: false)
     
-//     let newFilePath = "\(newFolderPath)/module.modulemap"
-//     let modulemapData = modulemapContents.data(using: .utf8)!
-//     guard fm.createFile(atPath: newFilePath, contents: modulemapData) else {
-//       throw PackageInstallException(lineIndex: lineIndex, message: """
-//         Could not write to file "\(newFilePath)".
-//         """)
-//     }
-//   }
+    let newFilePath = "\(newFolderPath)/module.modulemap"
+    let modulemapData = modulemapContents.data(using: .utf8)!
+    guard fm.createFile(atPath: newFilePath, contents: modulemapData) else {
+      throw PackageInstallException(lineIndex: lineIndex, message: """
+        Could not write to file "\(newFilePath)".
+        """)
+    }
+  }
   
-//   if !warningClangModules.isEmpty {
-//     sendStdout("""
-//       === ------------------------------------------------------------------------ ===
-//       === The following Clang modules cannot be imported in your source code until ===
-//       === you restart the runtime. If you do not intend to explicitly import       ===
-//       === modules listed here, ignore this warning.                                ===
-//       === \(warningClangModules)
-//       === ------------------------------------------------------------------------ ===
-//       """)
-//   }
+  if !warningClangModules.isEmpty {
+    sendStdout("""
+      === ------------------------------------------------------------------------ ===
+      === The following Clang modules cannot be imported in your source code until ===
+      === you restart the runtime. If you do not intend to explicitly import       ===
+      === modules listed here, ignore this warning.                                ===
+      === \(warningClangModules)
+      === ------------------------------------------------------------------------ ===
+      """)
+  }
   
-//   // dlopen the shared lib.
-//   let dynamicLoadResult = execute(code: """
-//     import func Glibc.dlopen
-//     import var Glibc.RTLD_NOW
-//     dlopen("\(libPath)", RTLD_NOW)
-//     """)
-//   guard let dynamicLoadResult = dynamicLoadResult as? SuccessWithValue else {
-//     throw PackageInstallException(lineIndex: lineIndex, message: """
-//       dlopen crashed: \(dynamicLoadResult)
-//       """)
-//   }
+  // dlopen the shared lib.
+  let dynamicLoadResult = execute(code: """
+    import func Glibc.dlopen
+    import var Glibc.RTLD_NOW
+    dlopen("\(libPath)", RTLD_NOW)
+    """)
+  guard let dynamicLoadResult = dynamicLoadResult as? SuccessWithValue else {
+    throw PackageInstallException(lineIndex: lineIndex, message: """
+      dlopen crashed: \(dynamicLoadResult)
+      """)
+  }
 
-//   if dynamicLoadResult.description.hasSuffix("nil") {
-//     let error = execute(code: "String(cString: dlerror())")
-//     throw PackageInstallException(lineIndex: lineIndex, message: """
-//       dlopen returned `nil`: \(error)
-//       """)
-//   }
+  if dynamicLoadResult.description.hasSuffix("nil") {
+    let error = execute(code: "String(cString: dlerror())")
+    throw PackageInstallException(lineIndex: lineIndex, message: """
+      dlopen returned `nil`: \(error)
+      """)
+  }
 }
 
 // Whenever the Swift package has been built at least one time before, it 
