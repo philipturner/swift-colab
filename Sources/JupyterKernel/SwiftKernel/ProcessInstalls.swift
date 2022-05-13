@@ -237,24 +237,20 @@ fileprivate func processInstall(
       "%install usage: SPEC PRODUCT [PRODUCT ...]")
   }
   
- 
-  
   // Expand template before writing to file.
   let spec = try substituteCwd(template: parsed[0], lineIndex: lineIndex)
   let products = Array(parsed[1...])
   
   let fm = FileManager.default
   let linkPath = "/opt/swift/install-location"
-  
-  
+  try? fm.removeItem(atPath: linkPath)
+  try fm.createSymbolicLink(
+    atPath: linkPath, withDestinationPath: KernelContext.installLocation)
   
    _ = try runTerminalProcess(args: ["cd /opt/swift/packages/1 && /opt/swift/toolchain/usr/bin/swift-build"])
   return;
   
   
-  try? fm.removeItem(atPath: linkPath)
-  try fm.createSymbolicLink(
-    atPath: linkPath, withDestinationPath: KernelContext.installLocation)
   
   if installedPackages == nil || 
      installedPackagesLocation != KernelContext.installLocation {
