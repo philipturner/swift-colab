@@ -31,7 +31,7 @@ if [[ $# == 1 ]]; then
   # Release mode - fine-tuned for the fastest user experience.
   mode="release"
 elif [[ $# == 2 && $2 == "--swift-colab-dev" ]]; then
-  # Dev mode - for debugging and modifying Swift-Colab.
+  # Dev mode - best for debugging and modifying Swift-Colab.
   mode="dev"
 else
   # Unrecognized flags were passed in.
