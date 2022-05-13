@@ -163,7 +163,7 @@ func runTerminalProcess(
       KernelContext.log("2.1.1")
       process.sendline(Python.chr(3))
       KernelContext.log("2.1.2")
-      if let count = getBefore().count {
+      if let count = getBefore()?.count {
         KernelContext.log("2.1.3")
         outSize = count
       } else {
