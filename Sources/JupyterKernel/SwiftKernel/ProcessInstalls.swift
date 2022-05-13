@@ -262,9 +262,6 @@ fileprivate func processInstall(
   }
   try writeInstalledPackages(lineIndex: lineIndex)
   
-  _ = try runTerminalProcess(args: ["cd /opt/swift/packages/1 && /opt/swift/toolchain/usr/bin/swift-build"])
-  return;
-  
   // Summary of how this works:
   // - create a Swift package that depends all the modules that
   //   the user requested
@@ -321,6 +318,9 @@ fileprivate func processInstall(
     \(makeBlue("With SwiftPM flags: "))\(swiftPMFlags)
     \(makeBlue("Working in: "))\(KernelContext.installLocation)
     """)
+  
+  _ = try runTerminalProcess(args: ["cd /opt/swift/packages/1 && /opt/swift/toolchain/usr/bin/swift-build"])
+  return;
   
   let packagePath = "\(KernelContext.installLocation)/\(packageID + 1)"
   try? fm.createDirectory(
