@@ -156,10 +156,14 @@ func runTerminalProcess(
     var shouldCheckStr = true
     if KernelContext.isInterrupted {
       waitTime = 0.2
+      KernelContext.log("2.1.1")
       process.sendline(Python.chr(3))
+      KernelContext.log("2.1.2")
       if let count = process.before.checking.count {
+        KernelContext.log("2.1.3")
         outSize = count
       } else {
+        KernelContext.log("2.1.3")
         shouldCheckStr = false
       }
     }
