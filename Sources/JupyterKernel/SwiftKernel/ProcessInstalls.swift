@@ -319,12 +319,12 @@ fileprivate func processInstall(
     \(makeBlue("Working in: "))\(KernelContext.installLocation)
     """)
   
-  _ = try runTerminalProcess(args: ["cd /opt/swift/packages/1 && /opt/swift/toolchain/usr/bin/swift-build"])
-  return;
-  
   let packagePath = "\(KernelContext.installLocation)/\(packageID + 1)"
   try? fm.createDirectory(
     atPath: packagePath, withIntermediateDirectories: false)
+  
+  _ = try runTerminalProcess(args: ["cd /opt/swift/packages/1 && /opt/swift/toolchain/usr/bin/swift-build"])
+  return;
   
   func createFile(name: String, contents: String) throws {
     let filePath = "\(packagePath)/\(name)"
