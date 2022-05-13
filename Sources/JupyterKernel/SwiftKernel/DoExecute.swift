@@ -46,9 +46,9 @@ func doExecute(code: String) throws -> PythonObject? {
   // Send values/errors and status to the client.
   if result is SuccessWithValue {
     KernelContext.sendResponse("execute_result", [
-      "execution_count": KernelContext.cellID,
+      "execution_count": PythonObject(KernelContext.cellID),
       "data": [
-        "text/plain": result.description
+        "text/plain": PythonObject(result.description)
       ],
       "metadata": [:]
     ])
