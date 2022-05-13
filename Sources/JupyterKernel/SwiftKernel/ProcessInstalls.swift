@@ -580,29 +580,30 @@ func removeJSONBlob(_ line: String) -> String? {
     }
   }
   output.append(temp)
-  
-  let splitOutput = output.split(
-    separator: "\u{001B}", omittingEmptySubsequences: false)
-  var isFirstElement = true
-  output = ""
-  
-  for rawSegment in splitOutput {
-    var segment: String
-    if isFirstElement {
-      segment = String(rawSegment)
-    } else {
-      segment = String(rawSegment.dropFirst("[2K\r".count))
-    }
-    let blueSequence = "\u{001B}[0;36m"
-    let resetSequence = "\u{001B}[0m"
-    segment = blueSequence + segment + resetSequence
-    
-    if isFirstElement {
-      output += segment
-    } else {
-      output += "\u{001B}[2K\r" + segment
-    }
-    isFirstElement = false
-  }
   return output
+  
+//   let splitOutput = output.split(
+//     separator: "\u{001B}", omittingEmptySubsequences: false)
+//   var isFirstElement = true
+//   output = ""
+  
+//   for rawSegment in splitOutput {
+//     var segment: String
+//     if isFirstElement {
+//       segment = String(rawSegment)
+//     } else {
+//       segment = String(rawSegment.dropFirst("[2K\r".count))
+//     }
+//     let blueSequence = "\u{001B}[0;36m"
+//     let resetSequence = "\u{001B}[0m"
+//     segment = blueSequence + segment + resetSequence
+    
+//     if isFirstElement {
+//       output += segment
+//     } else {
+//       output += "\u{001B}[2K\r" + segment
+//     }
+//     isFirstElement = false
+//   }
+//   return output
 }
