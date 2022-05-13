@@ -159,7 +159,6 @@ func runTerminalProcess(
   
   while true {
     var waitTime: Double = 0.05
-    var shouldCheckStr = true
     if KernelContext.isInterrupted {
       waitTime = 0.2
       process.sendline(Python.chr(3))
