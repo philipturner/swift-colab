@@ -142,11 +142,13 @@ func getStderr(readData: Bool) -> String? {
 func runTerminalProcess(
   args: [String], cwd: String? = nil, filterStdout: ((String) -> String?)? = nil
 ) throws -> Int {
+  KernelContext.log("1")
   let joinedArgs = args.joined(separator: " ")
   let process = pexpect.spawn("/bin/sh", args: ["-c", joinedArgs], cwd: cwd)
   let flush = sys.stdout.flush
   let patterns = [pexpect.TIMEOUT, pexpect.EOF]
   var outSize: Int = 0
+  KernelContext.log("2")
   
   while true {
     var waitTime: Double = 0.05
@@ -181,7 +183,9 @@ func runTerminalProcess(
       break
     }
   }
+  KernelContext.log("3")
   process.isalive()
+  defer { KernelContext.log("4") }
   
   if let exitstatus = Int(process.exitstatus) {
     if exitstatus > 128 {
