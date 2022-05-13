@@ -6,7 +6,7 @@ Swift-Colab is an accessible way to do programming with Swift. It runs in a brow
 
 For an in-depth look at how and why this repository was created, check out the [summary of its history](./Documentation/ColabSupportHistory.md).
 
-> Parts of this README from here on out are extremely out of date. They mirror how to use Swift-Colab 1.0, yet version 2.1 is currently in development. Furthermore, Swift-Colab may soon becoe the official successor to google/swift-jupyter. There will no longer be a notice to look at the old repository for any instructions.
+> Parts of this README from here on out are extremely out of date. They mirror how to use Swift-Colab 1.0, yet version 2.1 is currently in development. Furthermore, Swift-Colab may soon become the official successor to google/swift-jupyter. There will no longer be a notice to look at the old repository for any instructions.
 
 ## How to run Swift on Google Colaboratory
 
