@@ -5,6 +5,7 @@ fileprivate let jsonutil = Python.import("jupyter_client").jsonutil
 func doExecute(code: String) throws -> PythonObject? {
   KernelContext.isInterrupted = false
   KernelContext.pollingStdout = true
+  KernelContext.cellID = Int(KernelContext.kernel.execution_count)!
   
   // Flush stderr
   _ = getStderr(readData: false)
@@ -14,7 +15,6 @@ func doExecute(code: String) throws -> PythonObject? {
   
   // Execute the cell, handle unexpected exceptions, and make sure to always 
   // clean up the stdout handler.
-  let cellID = KernelContext.kernel.execution_count
   var result: ExecutionResult
   do {
     defer {
@@ -26,6 +26,7 @@ func doExecute(code: String) throws -> PythonObject? {
     return nil
   } catch let error as PreprocessorError {
     let label = formatString("\(type(of: error).label): ", ansiOptions: [31])
+    let cellID = KernelContext.cellID
     let message = [
       "\(label)\(error.localizedDescription)",
       getLocationLine(file: "<Cell \(cellID)>", line: error.lineIndex + 1)
@@ -36,7 +37,7 @@ func doExecute(code: String) throws -> PythonObject? {
     sendIOPubErrorMessage([
       "Kernel is in a bad state. Try restarting the kernel.",
       "",
-      "Exception in cell \(cellID):",
+      "Exception in cell \(KernelContext.cellID):",
       "\(error.localizedDescription)"
     ])
     throw error
@@ -45,7 +46,7 @@ func doExecute(code: String) throws -> PythonObject? {
   // Send values/errors and status to the client.
   if result is SuccessWithValue {
     KernelContext.sendResponse("execute_result", [
-      "execution_count": cellID,
+      "execution_count": KernelContext.cellID,
       "data": [
         "text/plain": result.description.pythonObject
       ],
@@ -71,8 +72,8 @@ func doExecute(code: String) throws -> PythonObject? {
       // this problem, extract where it crashed from the error message. If no
       // stack frames are generated, at least show where the error originated.
       var errorSource: (file: String, line: Int)?
-      
       message = fetchStderr(errorSource: &errorSource)
+      
       if message.count == 0 && KernelContext.isInterrupted {
         // LLDB returned an error because it was interrupted. No need for a 
         // diagnostic explaining that.
@@ -137,7 +138,7 @@ fileprivate func makeExecuteReplyErrorMessage(
 ) -> PythonObject {
   return [
     "status": "error",
-    "execution_count": KernelContext.kernel.execution_count,
+    "execution_count": PythonObject(KernelContext.cellID),
     "ename": "",
     "evalue": "",
     "traceback": PythonObject(message)
