@@ -232,7 +232,7 @@ fileprivate func processInstall(
   restOfLine: String, lineIndex: Int
 ) throws {
    _ = try runTerminalProcess(args: ["cd /opt/swift/packages/1 && /opt/swift/toolchain/usr/bin/swift-build"])
-  
+  return
   
   
   let parsed = try shlexSplit(lineIndex: lineIndex, line: restOfLine)
