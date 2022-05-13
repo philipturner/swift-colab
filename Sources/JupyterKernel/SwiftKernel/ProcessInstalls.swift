@@ -171,7 +171,7 @@ fileprivate func sendStdout(_ message: String, insertNewLine: Bool = true) {
 
 fileprivate var installedPackages: [String]! = nil
 fileprivate var installedPackagesLocation: String! = nil
-// To prevent the search for matching packages from becoming O(n^2)
+// To prevent the search for matching packages from becoming O(n^2).
 fileprivate var installedPackagesMap: [String: Int]! = nil
 
 fileprivate func readInstalledPackages() throws {
@@ -238,7 +238,7 @@ fileprivate func processInstall(
       "%install usage: SPEC PRODUCT [PRODUCT ...]")
   }
   
-  // Expand template before writing to file
+  // Expand template before writing to file.
   let spec = try substituteCwd(template: parsed[0], lineIndex: lineIndex)
   let products = Array(parsed[1...])
   
@@ -277,32 +277,32 @@ fileprivate func processInstall(
   let packageName = "jupyterInstalledPackages\(packageID + 1)"
   let packageNameQuoted = "\"\(packageName)\""
   
-  let /*communist*/ manifest/*o*/ =
-  """
-  // swift-tools-version:4.2
-  import PackageDescription
-  let package = Package(
-    name: \(packageNameQuoted),
-    products: [
-      .library(
-        name: \(packageNameQuoted),
-        type: .dynamic,
-        targets: [\(packageNameQuoted)]
-      )
-    ],
-    dependencies: [
-      \(spec)
-    ],
-    targets: [
-      .target(
-        name: \(packageNameQuoted),
-        dependencies: \(products),
-        path: ".",
-        sources: ["\(packageName).swift"]
-      )
-    ]
-  )
-  """
+  let /*communist*/ manifest/*o*/ = 
+    """
+    // swift-tools-version:4.2
+    import PackageDescription
+    let package = Package(
+      name: \(packageNameQuoted),
+      products: [
+        .library(
+          name: \(packageNameQuoted),
+          type: .dynamic,
+          targets: [\(packageNameQuoted)]
+        )
+      ],
+      dependencies: [
+        \(spec)
+      ],
+      targets: [
+        .target(
+          name: \(packageNameQuoted),
+          dependencies: \(products),
+          path: ".",
+          sources: ["\(packageName).swift"]
+        )
+      ]
+    )
+    """
   
   let eightSpaces = String(repeating: Character(" "), count: 8)
   var modulesHumanDescription = products.reduce("") {
@@ -342,8 +342,7 @@ fileprivate func processInstall(
     
     """)
   
-  // == Ask SwiftPM to build the package ==
-  
+  // Ask SwiftPM to build the package.
   let swiftBuildPath = "/opt/swift/toolchain/usr/bin/swift-build"
   let buildReturnCode = try runTerminalProcess(
     args: [swiftBuildPath] + swiftPMFlags, cwd: packagePath, 
@@ -362,8 +361,7 @@ fileprivate func processInstall(
   let binDir = String(showBinPathResult.stdout.decode("utf8").strip())!
   let libPath = "\(binDir)/lib\(packageName).so"
   
-  // == Copy .swiftmodule and modulemap files to Swift module search path ==
-  
+  // Copy .swiftmodule and modulemap files to Swift module search path.
   let moduleSearchPath = "\(KernelContext.installLocation)/modules"
   try? fm.createDirectory(
     atPath: moduleSearchPath, withIntermediateDirectories: false)
@@ -377,7 +375,7 @@ fileprivate func processInstall(
       "build.db is missing")
   }
   
-  // Execute swift-package show-dependencies to get all dependencies' paths
+  // Execute swift-package show-dependencies to get all dependencies' paths.
   let swiftPackagePath = "/opt/swift/toolchain/usr/bin/swift-package"
   let dependenciesResult = subprocess.run(
     [swiftPackagePath, "show-dependencies", "--format", "json"],
@@ -398,7 +396,7 @@ fileprivate func processInstall(
   }
   
   // Make list of paths where we expect .swiftmodule and .modulemap files of 
-  // dependencies
+  // dependencies.
   let dependenciesSet = Python.set(flattenDepsPaths(dependenciesObj))
   let dependenciesPaths = [String](Python.list(dependenciesSet))!
   
@@ -411,16 +409,16 @@ fileprivate func processInstall(
     return false
   }
   
-  // Query to get build files list from build.db
+  // Query to get build files list from build.db.
   // SUBSTR because string starts with "N" (why?)
   let SQL_FILES_SELECT = 
     "SELECT SUBSTR(key, 2) FROM 'key_names' WHERE key LIKE ?"
   
-  // Connect to build.db
+  // Connect to build.db.
   let dbConnection = sqlite3.connect(buildDBPath)
   let cursor = dbConnection.cursor()
   
-  // Process *.swiftmodule files
+  // Process *.swiftmodule files.
   cursor.execute(SQL_FILES_SELECT, ["%.swiftmodule"])
   let swiftModules = cursor.fetchall().map { row in String(row[0])! }
     .filter(isValidDependency)
@@ -440,21 +438,20 @@ fileprivate func processInstall(
   
   var warningClangModules: Set<String> = []
   
-  // Process modulemap files
+  // Process modulemap files.
   cursor.execute(SQL_FILES_SELECT, ["%/module.modulemap"])
   let modulemapPaths = cursor.fetchall().map { row in String(row[0])! }
     .filter(isValidDependency)
   for index in 0..<modulemapPaths.count {
-    let filePath = modulemapPaths[index]
     // Create a separate directory for each modulemap file because the
-    // ClangImporter requires that they are all named
-    // "module.modulemap".
-    // Use the module name to prevent two modulemaps for the same
-    // dependency ending up in multiple directories after several
-    // installations, causing the kernel to end up in a bad state.
-    // Make all relative header paths in module.modulemap absolute
-    // because we copy file to different location.
-    
+    // ClangImporter requires that they are all named "module.modulemap".
+    //
+    // Use the module name to prevent two modulemaps for the same dependency
+    // from ending up in multiple directories after several installations, 
+    // causing the kernel to end up in a bad state. Make all relative header
+    // paths in module.modulemap absolute because we copy file to different 
+    // location.
+    let filePath = modulemapPaths[index]
     var fileURL = URL(fileURLWithPath: filePath)
     fileURL.deleteLastPathComponent()
     let srcFolder = fileURL.path
@@ -471,18 +468,18 @@ fileprivate func processInstall(
           srcFolder + "/" + String(relativePath)!)
       }
       return """
-      header "\(absolutePath)"
-      """
+        header "\(absolutePath)"
+        """
     }
     let headerRegularExpression = ###"""
-    header\s+"(.*?)"
-    """###
+      header\s+"(.*?)"
+      """###
     modulemapContents = String(re.sub(
       headerRegularExpression, lambda, modulemapContents))!
     
     let moduleRegularExpression = ###"""
-    module\s+([^\s]+)\s.*{
-    """###
+      module\s+([^\s]+)\s.*{
+      """###
     let moduleMatch = re.match(moduleRegularExpression, modulemapContents)
     var moduleFolderName: String
     if moduleMatch != Python.None {
@@ -510,17 +507,16 @@ fileprivate func processInstall(
   
   if !warningClangModules.isEmpty {
     sendStdout("""
-    === ------------------------------------------------------------------------ ===
-    === The following Clang modules cannot be imported in your source code until ===
-    === you restart the runtime. If you do not intend to explicitly import       ===
-    === modules listed here, ignore this warning.                                ===
-    === \(warningClangModules)
-    === ------------------------------------------------------------------------ ===
-    """)
+      === ------------------------------------------------------------------------ ===
+      === The following Clang modules cannot be imported in your source code until ===
+      === you restart the runtime. If you do not intend to explicitly import       ===
+      === modules listed here, ignore this warning.                                ===
+      === \(warningClangModules)
+      === ------------------------------------------------------------------------ ===
+      """)
   }
   
-  // == dlopen the shared lib ==
-  
+  // dlopen the shared lib.
   let dynamicLoadResult = execute(code: """
   import func Glibc.dlopen
   import var Glibc.RTLD_NOW
@@ -569,7 +565,7 @@ func removeJSONBlob(_ line: String) -> String? {
       } else if !insideBraces {
         if Int(temp) == nil {
           if previousChar == "\r" && !appendedPreviousLine {
-            // pass if it's something like "}\r\n"
+            // Pass if it's something like "}\r\n".
           } else {
             temp.append(char)
             output.append(temp)
