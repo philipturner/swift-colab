@@ -6,7 +6,7 @@ Why this doesn't work in Swift - summarize the threads talking about this issue,
 
 ```swift
 from google.colab import drive
-drive.mount("TODO")
+drive.mount("/content")
 ```
 
 TODO: Change ColabSupportHistory link to direct here
