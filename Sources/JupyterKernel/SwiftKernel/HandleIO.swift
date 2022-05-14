@@ -163,9 +163,9 @@ func runTerminalProcess(args: [String], cwd: String? = nil) throws -> Int {
     
     let resIdx = process.expect_list(patterns, waitTime)
     if let before = getBefore() {
-      var str = String(before[outSize...].decode("utf8", "replace"))!
-      if str.count > 0 {
-        sendStdout(str)
+      let stdout = String(before[outSize...].decode("utf8", "replace"))!
+      if stdout.count > 0 {
+        sendStdout(stdout)
       }
       outSize = before.count
     }
