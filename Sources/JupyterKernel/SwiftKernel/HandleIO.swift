@@ -82,7 +82,7 @@ fileprivate func sendStdout(_ stdout: String) {
       "wait": false
     ])
     sendStdout(String(stdout[range.upperBound...]))
-  } /* add case for [2K */ else {
+  } else {
     KernelContext.sendResponse("stream", [
       "name": "stdout",
       "text": stdout
@@ -135,9 +135,7 @@ func getStderr(readData: Bool) -> String? {
 // This attempts to replicate the code located at:
 // https://github.com/ipython/ipython/blob/master/IPython/utils/_process_posix.py,
 //   def system(self, cmd):
-func runTerminalProcess(
-  args: [String], cwd: String? = nil, filterStdout: ((String) -> String)? = nil
-) throws -> Int {
+func runTerminalProcess(args: [String], cwd: String? = nil) throws -> Int {
   let joinedArgs = args.joined(separator: " ")
   let process = pexpect.spawn("/bin/sh", args: ["-c", joinedArgs], cwd: cwd)
   let flush = sys.stdout.flush
@@ -168,13 +166,6 @@ func runTerminalProcess(
       var str = String(before[outSize...].decode("utf8", "replace"))!
       if str.count > 0 {
         sendStdout(str)
-//         if let filterStdout = filterStdout {
-//           str = filterStdout(str)
-//         }
-//         KernelContext.sendResponse("stream", [
-//           "name": "stdout",
-//           "text": str
-//         ])
       }
       outSize = before.count
     }
