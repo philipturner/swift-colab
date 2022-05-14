@@ -331,7 +331,7 @@ fileprivate func processInstall(
     // whether you actually change it, you will trigger a massive JSON blob in 
     // stdout if the package has been built before. So, don't overwrite it.
     if data == fm.contents(atPath: filePath) {
-      return
+//       return
     }
     guard fm.createFile(atPath: filePath, contents: data) else {
       throw PackageInstallException(lineIndex: lineIndex, message: """
