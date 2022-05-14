@@ -349,8 +349,7 @@ fileprivate func processInstall(
   // Ask SwiftPM to build the package.
   let swiftBuildPath = "/opt/swift/toolchain/usr/bin/swift-build"
   let buildReturnCode = try runTerminalProcess(
-    args: [swiftBuildPath] + swiftPMFlags, cwd: packagePath,
-    filterStdout: removeJSONBlob)
+    args: [swiftBuildPath] + swiftPMFlags, cwd: packagePath)
   if buildReturnCode != 0 {
     throw PackageInstallException(lineIndex: lineIndex, message: """
       swift-build returned nonzero exit code \(buildReturnCode).
@@ -538,44 +537,4 @@ fileprivate func processInstall(
       dlopen returned `nil`: \(error)
       """)
   }
-}
-
-// Whenever the Swift package has been built at least one time before, it 
-// outputs a massive, ugly JSON blob that cannot be suppressed. This workaround 
-// filters that out.
-func removeJSONBlob(_ line: String) -> String {
-  var output: String = ""
-  for char in line {
-    if char == "\r\n" {
-      output.append("\n")
-    } else {
-      output.append(char)
-    }
-  }
-  return output
-  
-//   let splitOutput = output.split(
-//     separator: "\u{001B}", omittingEmptySubsequences: false)
-//   var isFirstElement = true
-//   output = ""
-  
-//   for rawSegment in splitOutput {
-//     var segment: String
-//     if isFirstElement {
-//       segment = String(rawSegment)
-//     } else {
-//       segment = String(rawSegment.dropFirst("[2K\r".count))
-//     }
-//     let blueSequence = "\u{001B}[0;36m"
-//     let resetSequence = "\u{001B}[0m"
-//     segment = blueSequence + segment + resetSequence
-    
-//     if isFirstElement {
-//       output += segment
-//     } else {
-//       output += "\u{001B}[2K\r" + segment
-//     }
-//     isFirstElement = false
-//   }
-//   return output
 }
