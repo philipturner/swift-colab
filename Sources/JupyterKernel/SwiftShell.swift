@@ -65,12 +65,8 @@ fileprivate let SwiftShell = PythonClass(
     "kernel": Instance(
       "ipykernel.inprocess.ipkernel.InProcessKernel", allow_none: true),
     
-    // -------------------------------------------------------------------------
-    // InteractiveShell interface
-    // -------------------------------------------------------------------------
-    
     // Enable GUI integration for the kernel.
-    "enable_gui": PythonInstanceMethod { (args: [PythonObject]) in
+    "enable_gui": PythonInstanceMethod { args in
       let `self` = args[0]
       var gui = args[1]
       if gui == Python.None {
@@ -81,11 +77,11 @@ fileprivate let SwiftShell = PythonClass(
     },
     
     // Enable matplotlib integration for the kernel.
-    "enable_matplotlib": PythonInstanceMethod { (args: [PythonObject]) in
+    "enable_matplotlib": PythonInstanceMethod { args in
       let `self` = args[0]
       var gui = args[1]
       if gui == Python.None {
-        gui = `self`.kernel.gui
+        gui = args[0].kernel.gui
       }
       try ZMQInteractiveShell.enable_matplotlib.throwing
         .dynamicallyCall(withArguments: [`self`, gui])
@@ -93,7 +89,7 @@ fileprivate let SwiftShell = PythonClass(
     },
     
     // Enable pylab support at runtime.
-    "enable_pylab": PythonInstanceMethod { (args: [PythonObject]) in
+    "enable_pylab": PythonInstanceMethod { args in
       let `self` = args[0]
       var gui = args[1]
       if gui == Python.None {

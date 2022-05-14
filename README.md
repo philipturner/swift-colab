@@ -1,10 +1,12 @@
 # Swift-Colab
 
-> Warning: Some of this documentation may be outdated because Swift-Colab is in the middle of a major overhaul. For a 100% reliable guide, check out the README in [swift-colab-dev](https://github.com/philipturner/swift-colab-dev). To try the faster, undocumented Swift-Colab 2.0, pull from `main` instead of `release/latest` in the first code block described below.
+In March 2021, Google [ended](./Documentation/ColabSupportHistory.md) built-in Swift support on Colaboratory as part of their *attempt* to end [Swift for TensorFlow (S4TF)](https://github.com/tensorflow/swift). Now that new contributors are working on S4TF, Colab support is essential for ensuring that TPU acceleration still works. This repository is the successor to [google/swift-jupyter](https://github.com/google/swift-jupyter), rewritten entirely in Swift.
 
-In March 2021, Google ended built-in Swift support on Colaboratory as part of their *attempt* to end [Swift for TensorFlow](https://github.com/tensorflow/swift) (S4TF). Less than a year later, the open-source community is resurrecting S4TF, and Colab support is a vital component of that effort. It allows testing on TPUs and ensuring new modifications don't break existing hardware acceleration.
+Swift-Colab is an accessible way to do programming with Swift. It runs in a browser, taking only 30 seconds to start up. It is perfect for programming on Chromebooks and tablets, which do not have the full functionality of a desktop. You can access a free NVIDIA GPU for machine learning, using the real C bindings for OpenCL and CUDA instead of Python wrappers. In the near future, you will be able to experiment with the [new S4TF](https://github.com/s4tf/s4tf) as well.
 
-Furthermore, Colab is a very accessible way to do programming with Swift. It runs instantly without downloading an IDE, and it can even run on a Chromebook or mobile device.
+For an in-depth look at how and why this repository was created, check out the [summary of its history](./Documentation/ColabSupportHistory.md).
+
+> Parts of this README from here on out are extremely out of date. They mirror how to use Swift-Colab 1.0, yet version 2.1 is currently in development. Furthermore, Swift-Colab is now recognized as the successor to google/swift-jupyter. There will no longer be a notice to look at the old repository for any instructions.
 
 ## How to run Swift on Google Colaboratory
 
@@ -12,7 +14,7 @@ Copy [this template](https://colab.research.google.com/drive/1EACIWrk9IWloUckRm3
 
 ```swift
 !curl "https://raw.githubusercontent.com/philipturner/swift-colab/release/latest/install_swift.sh" -o "install_swift.sh"
-!bash "install_swift.sh" "5.6" #// Replace 5.6 with newest Swift version
+!bash "install_swift.sh" "5.6" #// Replace 5.6 with newest Swift version.
 #// After this command finishes, go to Runtime > Restart runtime.
 ```
 
@@ -28,7 +30,7 @@ In the output stream, you will see:
 
 You will be instructed to restart the runtime. This is necessary because it shuts down the Python kernel and starts the Swift kernel.
 
-> Tip: If you factory reset the runtime or exceed the time limit, Colab will restart in Python mode. Just re-run the first code cell to return to Swift mode.
+> Tip: If you exceed the time limit or disconnect and delete the runtime, Colab will restart in Python mode. Just re-run the first code cell to return to Swift mode.
 
 Type the following code into the second code cell:
 
@@ -102,4 +104,4 @@ To test Swift-Colab against recent Swift toolchains and ensure support is never 
 | [kernel tests](https://colab.research.google.com/drive/1vooU1XVHSpolOSmVUKM4Wj6opEJBt7zs?usp=sharing) | ✅ | Swift 5.5.3 (March 2022) |
 | [own kernel tests](https://colab.research.google.com/drive/1nHitEZm9QZNheM-ALajARyRZY2xpZr00?usp=sharing) | ✅ | Swift 5.5.3 (March 2022) |
 | [simple notebook tests](https://colab.research.google.com/drive/18316eFVMw-NIlA9OandB7djvp0J4jI0-?usp=sharing) | ✅ | Swift 5.5.3 (March 2022) |
-| [swiftplot tests](https://colab.research.google.com/drive/1Rxs7OfuKIJ_hAm2gUQT2gWSuIcyaeZfz?usp=sharing) | ✅ | Swift 5.6 (April 2022) |
+| [SwiftPlot](https://colab.research.google.com/drive/1Rxs7OfuKIJ_hAm2gUQT2gWSuIcyaeZfz?usp=sharing) | ✅ | Swift 5.6 (April 2022) |

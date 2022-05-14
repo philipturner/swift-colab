@@ -31,7 +31,7 @@ if [[ $# == 1 ]]; then
   # Release mode - fine-tuned for the fastest user experience.
   mode="release"
 elif [[ $# == 2 && $2 == "--swift-colab-dev" ]]; then
-  # Dev mode - for debugging and modifying Swift-Colab.
+  # Dev mode (undocumented) - best for debugging and modifying Swift-Colab.
   mode="dev"
 else
   # Unrecognized flags were passed in.
@@ -47,9 +47,9 @@ fi
 
 if [[ ! -d /opt/swift ]]; then
   mkdir /opt/swift
-  mkdir /opt/swift/build
   mkdir /opt/swift/include
   mkdir /opt/swift/lib
+  mkdir /opt/swift/internal-modules
   mkdir /opt/swift/packages
   mkdir /opt/swift/progress
   echo "swift" > /opt/swift/runtime
@@ -106,7 +106,6 @@ else
   tar_file="$release-ubuntu18.04.tar.gz"
   url="https://download.swift.org/$branch/ubuntu1804/$release/$tar_file"
   
-  echo $url
   curl $url | tar -xz
   mv "$release-ubuntu18.04" "toolchain"
   
@@ -122,7 +121,7 @@ if [[ $mode == "dev" || ! -e "progress/downloaded-swift-colab" ]]; then
     rm -r "swift-colab"
   fi
   
-  git clone --depth 1 --branch release/2.0 \
+  git clone --depth 1 --branch release/2.1 \
     "https://github.com/philipturner/swift-colab"
   
   swift_colab_include="/opt/swift/swift-colab/Sources/include"
@@ -176,7 +175,7 @@ if [[ $mode == "dev" || ! -e "progress/jupyterkernel-compiler-version" ||
 then
   echo "Compiling JupyterKernel"
   
-  jupyterkernel_path="packages/JupyterKernel"
+  jupyterkernel_path="internal-modules/JupyterKernel"
   if [[ -d $jupyterkernel_path ]]; then
     echo "\
 Previously compiled with a different Swift version. \
@@ -189,7 +188,6 @@ Removing existing JupyterKernel build products."
   source_files=$(find $(pwd) -name '*.swift' -print)
   
   mkdir build && cd build
-  pythonkit_products="/opt/swift/packages/PythonKit/.build/release"
   swiftc -Onone $source_files \
     -emit-module -emit-library -module-name "JupyterKernel"
   
@@ -208,8 +206,10 @@ fi
 # Overwrite Python kernel
 
 if [[ $mode == "dev" || ! -e "progress/registered-jupyter-kernel" ]]; then
-  register_kernel='import Foundation
-let libJupyterKernel = dlopen("/opt/swift/lib/libJupyterKernel.so", RTLD_LAZY | RTLD_GLOBAL)!
+  register_kernel='
+import Foundation
+let libJupyterKernel = dlopen(
+  "/opt/swift/lib/libJupyterKernel.so", RTLD_LAZY | RTLD_GLOBAL)!
 let funcAddress = dlsym(libJupyterKernel, "JupyterKernel_registerSwiftKernel")!
 
 let JupyterKernel_registerSwiftKernel = unsafeBitCast(
@@ -218,6 +218,7 @@ JupyterKernel_registerSwiftKernel()
 '
   echo "$register_kernel" > register_kernel.swift
   swift register_kernel.swift
+  rm register_kernel.swift
   
   touch "progress/registered-jupyter-kernel"
 fi

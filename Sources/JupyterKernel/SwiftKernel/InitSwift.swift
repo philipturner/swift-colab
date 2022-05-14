@@ -28,8 +28,9 @@ fileprivate var sigintHandler: PythonObject!
 
 func initSwift() throws {
   try initReplProcess()
+  KernelContext.log("finished initReplProcess")
   try initKernelCommunicator()
-  try initBitWidth()
+  KernelContext.log("finished initKernelCommunicator")
   
   sigintHandler = SIGINTHandler()
   sigintHandler.start()
@@ -38,7 +39,7 @@ func initSwift() throws {
 fileprivate func initReplProcess() throws {
   let environment = ProcessInfo.processInfo.environment
   let cEnvironment = CEnvironment(environment: environment)
-  
+
   let error = KernelContext.init_repl_process(
     cEnvironment.envp, FileManager.default.currentDirectoryPath)
   if error != 0 {
@@ -48,8 +49,8 @@ fileprivate func initReplProcess() throws {
 
 fileprivate func initKernelCommunicator() throws {
   var result = try preprocessAndExecute(code: """
-  %include "KernelCommunicator.swift"
-  """)
+    %include "KernelCommunicator.swift"
+    """)
   if result is ExecutionResultError {
     throw Exception("Error initializing KernelCommunicator: \(result)")
   }
@@ -60,28 +61,13 @@ fileprivate func initKernelCommunicator() throws {
   let username = String(session.username)!
   
   result = try preprocessAndExecute(code: """
-  enum JupyterKernel {
-    static var communicator = KernelCommunicator(
-      jupyterSession: KernelCommunicator.JupyterSession(
-        id: "\(id)", key: "\(key)", username: "\(username)"))
-  }
-  """)
+    enum JupyterKernel {
+      static var communicator = KernelCommunicator(
+        jupyterSession: KernelCommunicator.JupyterSession(
+          id: "\(id)", key: "\(key)", username: "\(username)"))
+    }
+    """)
   if result is ExecutionResultError {
     throw Exception("Error declaring JupyterKernel: \(result)")
   }
-}
-
-// This is no longer needed for any functional purpose, but it serves
-// as a quick validation test that Swift-Colab actually works.
-fileprivate func initBitWidth() throws {
-  let result = execute(code: "Int.bitWidth")
-  guard let result = result as? SuccessWithValue else {
-    if result is SuccessWithoutValue {
-      throw Exception("Got SuccessWithoutValue from Int.bitWidth")
-    } else {
-      throw Exception("Expected value from Int.bitWidth, but got: \(String(reflecting: result))")
-    }
-  }
-  precondition(result.description.contains("64"), 
-    "Int.bitWidth returned \(result.description) when '64' was expected.")
 }

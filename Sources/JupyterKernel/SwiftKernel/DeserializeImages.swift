@@ -13,16 +13,15 @@ func afterSuccessfulExecution() throws {
     throw Exception(
       "C++ part of `afterSuccessfulExecution` failed with error code \(error).")
   }
-   
+  
+  defer { free(serializedOutput) }
   let output = try deserialize(executionOutput: serializedOutput)
   
   let kernel = KernelContext.kernel
-  let send_multipart = kernel.iopub_socket.send_multipart.throwing
+  let send_multipart = kernel.iopub_socket.send_multipart
   for message in output {
-    try send_multipart.dynamicallyCall(withArguments: message.pythonObject)
+    send_multipart(message)
   }
-  
-  free(serializedOutput)
 }
 
 fileprivate func deserialize(

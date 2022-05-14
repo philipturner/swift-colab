@@ -3,149 +3,101 @@ fileprivate let json = Python.import("json")
 fileprivate let jsonutil = Python.import("jupyter_client").jsonutil
 
 func doExecute(code: String) throws -> PythonObject? {
-  // TODO: make this happen in the very first cell, regardless of
-  // whether it's whitespace. In fact, just remove the check for 
-  // whether the code is blank. Try to initialize Swift in the
-  // kernel object's initializer.
-  if !KernelContext.debuggerInitialized {
-    try initSwift()
-    KernelContext.debuggerInitialized = true
-  }
+  KernelContext.isInterrupted = false
+  KernelContext.pollingStdout = true
+  KernelContext.cellID = Int(KernelContext.kernel.execution_count)!
   
-  // Start up a new thread to collect stdout.
-  let stdoutHandler = StdoutHandler()
-  stdoutHandler.start()
+  // Flush stderr
+  _ = getStderr(readData: false)
   
-  // Execute the cell, handle unexpected exceptions, and make sure to
-  // always clean up the stdout handler.
+  let handler = StdoutHandler()
+  handler.start()
+  
+  // Execute the cell, handle unexpected exceptions, and make sure to always 
+  // clean up the stdout handler.
   var result: ExecutionResult
   do {
     defer {
-      stdoutHandler.stop_event.set()
-      stdoutHandler.join()
+      KernelContext.pollingStdout = false
+      handler.join()
     }
     result = try executeCell(code: code)
-  } catch let error as PackageInstallException {
-    let traceback = [error.localizedDescription]
-    sendIOPubErrorMessage(traceback)
-    return makeExecuteReplyErrorMessage(traceback)
+  } catch _ as InterruptException {
+    return nil
+  } catch let error as PreprocessorError {
+    let label = formatString("\(type(of: error).label): ", ansiOptions: [31])
+    let cellID = KernelContext.cellID
+    let message = [
+      "\(label)\(error.localizedDescription)",
+      getLocationLine(file: "<Cell \(cellID)>", line: error.lineIndex + 1)
+    ]
+    sendIOPubErrorMessage(message)
+    return makeExecuteReplyErrorMessage(message)
   } catch {
-    let kernel = KernelContext.kernel
     sendIOPubErrorMessage([
       "Kernel is in a bad state. Try restarting the kernel.",
       "",
-      "Exception in cell \(kernel.execution_count):",
-      error.localizedDescription
+      "Exception in cell \(KernelContext.cellID):",
+      "\(error.localizedDescription)"
     ])
     throw error
   }
   
   // Send values/errors and status to the client.
   if result is SuccessWithValue {
-    let kernel = KernelContext.kernel
-    kernel.send_response(kernel.iopub_socket, "execute_result", [
-      "execution_count": kernel.execution_count,
+    KernelContext.sendResponse("execute_result", [
+      "execution_count": PythonObject(KernelContext.cellID),
       "data": [
-        "text/plain": result.description.pythonObject
+        "text/plain": PythonObject(result.description)
       ],
       "metadata": [:]
     ])
     return nil
   } else if result is SuccessWithoutValue {
     return nil
-  } else if result is ExecutionResultError {
-    var traceback: [String]
-    var isAlive: Int32 = 0
-    _ = KernelContext.process_is_alive(&isAlive)
-    
-    if isAlive == 0 {
-      traceback = ["Process killed"]
-      sendIOPubErrorMessage(traceback)
+  } else if result is SwiftError {
+    var message: [String]
+    if KernelContext.process_is_alive() == 0 {
+      message = [formatString("Process killed", ansiOptions: [33])]
+      sendIOPubErrorMessage(message)
       
-      // Exit the kernel because there is no way to recover from a
-      // killed process. The UI will tell the user that the kernel has
-      // died and the UI will automatically restart the kernel.
-      // We do the exit in a callback so that this execute request can
-      // cleanly finish before the kernel exits.
-      let loop = Python.import("ioloop").IOLoop.current()
+      // Exit the kernel because there is no way to recover from a killed 
+      // process. The UI will tell the user that the kernel has died and the UI 
+      // will automatically restart the kernel. We do the exit in a callback so 
+      // that this execute request can cleanly finish before the kernel exits.
+      let loop = Python.import("tornado").ioloop.IOLoop.current()
       loop.add_timeout(Python.import("time").time() + 0.1, loop.stop)
-    } else if Bool(stdoutHandler.had_stdout)! {
-      // When there is stdout, it is a runtime error. Stdout, which we
-      // have already sent to the client, contains the error message
-      // (plus some other ugly traceback that we should eventually
-      // figure out how to suppress), so this block of code only needs
-      // to add a traceback.
-      traceback = ["Current stack trace:"]
-      traceback += try prettyPrintStackTrace()
-      sendIOPubErrorMessage(traceback)      
+    } else if Bool(handler.had_stdout)! {
+      // If it crashed while unwrapping `nil`, there is no stack trace. To solve
+      // this problem, extract where it crashed from the error message. If no
+      // stack frames are generated, at least show where the error originated.
+      var errorSource: (file: String, line: Int)?
+      message = fetchStderr(errorSource: &errorSource)
+      
+      if message.count == 0 && KernelContext.isInterrupted {
+        // LLDB returned an error because it was interrupted. No need for a 
+        // diagnostic explaining that.
+        return nil
+      }
+      message += try prettyPrintStackTrace(errorSource: errorSource)
+      sendIOPubErrorMessage(message)
     } else {
-      // There is no stdout, so it must be a compile error. Simply return
-      // the error without trying to get a stack trace.
-      traceback = [result.description]
-      sendIOPubErrorMessage(traceback)
+      // There is no stdout, so it must be a compile error. Simply return the 
+      // error without trying to get a stack trace.
+      message = formatCompilerError(result.description)
+      
+      // Forward this as "stream" instead of "error" to preserve bold 
+      // formatting. This also means the lines will not wrap.
+      KernelContext.sendResponse("stream", [
+        "name": "stdout",
+        "text": message.joined(separator: "\n")
+      ])
+      sendIOPubErrorMessage([])
     }
-    
-    return makeExecuteReplyErrorMessage(traceback)
+    return makeExecuteReplyErrorMessage(message)
   } else {
     fatalError("This should never happen.")
   }
-}
-
-fileprivate func setParentMessage() throws {
-  let parentHeader = KernelContext.kernel._parent_header
-  let jsonObj = json.dumps(json.dumps(jsonutil.squash_dates(parentHeader)))
-  
-  let result = execute(code: """
-  JupyterKernel.communicator.updateParentMessage(
-    to: KernelCommunicator.ParentMessage(json: \(String(jsonObj)!)))
-  """)
-  if result is ExecutionResultError {
-    throw Exception("Error setting parent message: \(result)")
-  }
-}
-
-fileprivate func prettyPrintStackTrace() throws -> [String] {
-  var output: [String] = []
-  
-  var frames: UnsafeMutablePointer<UnsafeMutablePointer<CChar>>?
-  var size: Int32 = 0
-  let error = KernelContext.get_pretty_stack_trace(&frames, &size);
-  guard let frames = frames else {
-    throw Exception(
-      "`get_pretty_stack_trace` failed with error code \(error).")
-  }
-  
-  for i in 0..<Int(size) {
-    let frame = frames[i]
-    let description = String(cString: UnsafePointer(frame))
-    var frameID = String(i + 1) + " "
-    if frameID.count < 5 {
-      frameID += String(repeating: " " as Character, count: 5 - frameID.count)
-    }
-    output.append(frameID + description)
-    free(frame)
-  }
-  free(frames)
-  return output
-}
-
-fileprivate func makeExecuteReplyErrorMessage(_ message: [String]) -> PythonObject {
-  return [
-    "status": "error",
-    "execution_count": KernelContext.kernel.execution_count,
-    "ename": "",
-    "evalue": "",
-    "traceback": message.pythonObject
-  ]
-}
-
-fileprivate func sendIOPubErrorMessage(_ message: [String]) {
-  let kernel = KernelContext.kernel
-  kernel.send_response(kernel.iopub_socket, "error", [
-    "ename": "",
-    "evalue": "",
-    "traceback": message.pythonObject
-  ])
 }
 
 fileprivate func executeCell(code: String) throws -> ExecutionResult {
@@ -155,4 +107,39 @@ fileprivate func executeCell(code: String) throws -> ExecutionResult {
     try afterSuccessfulExecution()
   }
   return result
+}
+
+fileprivate func setParentMessage() throws {
+  let parentHeader = KernelContext.kernel._parent_header
+  let jsonObj = json.dumps(json.dumps(jsonutil.squash_dates(parentHeader)))
+  
+  let result = execute(code: """
+    JupyterKernel.communicator.updateParentMessage(
+      to: KernelCommunicator.ParentMessage(json: \(String(jsonObj)!)))
+    """)
+  if result is ExecutionResultError {
+    throw Exception("Error setting parent message: \(result)")
+  }
+}
+
+// Erases bold/light formatting, forces lines to wrap in notebook, and adds a
+// button to search Stack Overflow.
+fileprivate func sendIOPubErrorMessage(_ message: [String]) {
+  KernelContext.sendResponse("error", [
+    "ename": "",
+    "evalue": "",
+    "traceback": PythonObject(message)
+  ])
+}
+
+fileprivate func makeExecuteReplyErrorMessage(
+  _ message: [String]
+) -> PythonObject {
+  return [
+    "status": "error",
+    "execution_count": PythonObject(KernelContext.cellID),
+    "ename": "",
+    "evalue": "",
+    "traceback": PythonObject(message)
+  ]
 }

@@ -1,29 +1,42 @@
 import Foundation
 fileprivate let re = Python.import("re")
-fileprivate let subprocess = Python.import("subprocess")
+fileprivate let time = Python.import("time")
 
-func preprocessAndExecute(code: String, isCell: Bool = false) throws -> ExecutionResult {
-  do {
-    let preprocessed = try preprocess(code: code)
-    return execute(code: preprocessed, lineIndex: isCell ? 0 : nil)
-  } catch let e as PreprocessorException {
-    return PreprocessorError(exception: e)
+func preprocessAndExecute(
+  code: String, isCell: Bool = false
+) throws -> ExecutionResult {
+  let preprocessed = try preprocess(code: code)
+  var executionResult: ExecutionResult?
+  DispatchQueue.global().async {
+    executionResult = execute(
+      code: preprocessed, lineIndex: isCell ? 0 : nil, isCell: isCell)
   }
+
+  while executionResult == nil {
+    // Using Python's `time` module instead of Foundation.usleep releases the
+    // GIL.
+    time.sleep(0.05)
+  }
+  return executionResult!
 }
 
-func execute(code: String, lineIndex: Int? = nil) -> ExecutionResult {
-  var locationDirective: String
+func execute(
+  code: String, lineIndex: Int? = nil, isCell: Bool = false
+) -> ExecutionResult {
+  // Send a header to stdout, letting the StdoutHandler know that it compiled 
+  // without errors and executed in LLDB.
+  var prefixCode = isCell ? "print(\"HEADER\")\n" : ""
   if let lineIndex = lineIndex {
-    locationDirective = getLocationDirective(lineIndex: lineIndex)
+    prefixCode += getLocationDirective(lineIndex: lineIndex)
   } else {
-    locationDirective = """
-    #sourceLocation(file: "n/a", line: 1)
-    """
+    prefixCode += """
+      #sourceLocation(file: "n/a", line: 1)
+      """
   }
-  let codeWithLocationDirective = locationDirective + "\n" + code
   
+  let codeWithPrefix = prefixCode + "\n" + code
   var descriptionPtr: UnsafeMutablePointer<CChar>?
-  let error = KernelContext.execute(codeWithLocationDirective, &descriptionPtr)
+  let error = KernelContext.execute(codeWithPrefix, &descriptionPtr)
   
   var description: String?
   if let descriptionPtr = descriptionPtr {
@@ -40,15 +53,13 @@ func execute(code: String, lineIndex: Int? = nil) -> ExecutionResult {
   }
 }
 
-// Location directive for the current cell
-//
-// This adds one to `lineIndex` before creating the string.
-// This does not include the newline that should come after the directive.
+// Location directive for the current cell. This adds one to `lineIndex` before 
+// creating the string. This does not include the newline that should come after 
+// the directive.
 fileprivate func getLocationDirective(lineIndex: Int) -> String {
-  let executionCount = Int(KernelContext.kernel.execution_count)!
   return """
-  #sourceLocation(file: "<Cell \(executionCount)>", line: \(lineIndex + 1))
-  """
+    #sourceLocation(file: "<Cell \(KernelContext.cellID)>", line: \(lineIndex + 1))
+    """
 }
 
 fileprivate func preprocess(code: String) throws -> String {
@@ -66,8 +77,8 @@ fileprivate func preprocess(code: String) throws -> String {
 
 fileprivate func preprocess(line: String, index lineIndex: Int) throws -> String {
   let installRegularExpression = ###"""
-  ^\s*%install
-  """###
+    ^\s*%install
+    """###
   let installMatch = re.match(installRegularExpression, line)
   if installMatch != Python.None {
     var isValidDirective = false
@@ -76,24 +87,24 @@ fileprivate func preprocess(line: String, index lineIndex: Int) throws -> String
     if isValidDirective {
       return ""
     } else {
-      // This was not a valid %install-XXX command. Continue through
-      // regular processing and let the Swift parser throw an error.
+      // This was not a valid %install-XXX command. Continue through regular 
+      // processing and let the Swift parser throw an error.
     }
   }
   
   let systemRegularExpression = ###"""
-  ^\s*%system (.*)$
-  """###
+    ^\s*%system (.*)$
+    """###
   let systemMatch = re.match(systemRegularExpression, line)
   guard systemMatch == Python.None else {
     let restOfLine = String(systemMatch.group(1))!
-    executeSystemCommand(restOfLine: restOfLine)
+    _ = try runTerminalProcess(args: [restOfLine])
     return ""
   }
   
   let includeRegularExpression = ###"""
-  ^\s*%include (.*)$
-  """###
+    ^\s*%include (.*)$
+    """###
   let includeMatch = re.match(includeRegularExpression, line)
   guard includeMatch == Python.None else {
     let restOfLine = String(includeMatch.group(1))!
@@ -102,32 +113,16 @@ fileprivate func preprocess(line: String, index lineIndex: Int) throws -> String
   return line
 }
 
-fileprivate func executeSystemCommand(restOfLine: String) {
-  let process = subprocess.Popen(
-    restOfLine,
-    stdout: subprocess.PIPE,
-    stderr: subprocess.STDOUT,
-    shell: true)
-  process.wait()
-    
-  let commandResult = process.stdout.read().decode("utf-8")
-  let kernel = KernelContext.kernel
-  kernel.send_response(kernel.iopub_socket, "stream", [
-    "name": "stdout",
-    "text": commandResult
-  ])
-}
-
 fileprivate var previouslyReadPaths: Set<String> = []
 
 fileprivate func readInclude(restOfLine: String, lineIndex: Int) throws -> String {
   let nameRegularExpression = ###"""
-  ^\s*"([^"]+)"\s*$
-  """###
+    ^\s*"([^"]+)"\s*$
+    """###
   let nameMatch = re.match(nameRegularExpression, restOfLine)
   guard nameMatch != Python.None else {
-    throw PreprocessorException(
-            "Line \(lineIndex + 1): %include must be followed by a name in quotes")
+    throw PreprocessorException(lineIndex: lineIndex, message:
+      "%include must be followed by a name in quotes")
   }
   
   let name = String(nameMatch.group(1))!
@@ -157,14 +152,14 @@ fileprivate func readInclude(restOfLine: String, lineIndex: Int) throws -> Strin
     }
     
     // Reversing `includePaths` to show the highest-priority one first.
-    throw PreprocessorException(
-        "Line \(lineIndex + 1): Could not find \"\(name)\". Searched \(includePaths.reversed()).")
+    throw PreprocessorException(lineIndex: lineIndex, message:
+      "Could not find \"\(name)\". Searched \(includePaths.reversed()).")
   }
   previouslyReadPaths.insert(chosenPath)
   return """
-  #sourceLocation(file: "\(chosenPath)", line: 1)
-  \(code)
-  \(getLocationDirective(lineIndex: lineIndex))
-  
-  """
+    #sourceLocation(file: "\(chosenPath)", line: 1)
+    \(code)
+    \(getLocationDirective(lineIndex: lineIndex))
+    
+    """
 }

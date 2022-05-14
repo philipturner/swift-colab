@@ -10,6 +10,7 @@ SBProcess process;
 SBExpressionOptions expr_opts;
 SBThread main_thread;
 
+
 int read_byte_array(SBValue sbvalue, 
                     uint64_t *output_size, 
                     uint64_t *output_capacity, 
@@ -27,12 +28,7 @@ int init_repl_process(const char **repl_env,
   debugger.SetAsync(false);
   debugger.HandleCommand(
     "settings append target.swift-module-search-paths "
-    "/opt/swift/install_location/modules");
-  
-  // LLDB will not crash when scripting because this isn't macOS. However,
-  // disabling scripting could decrease startup time if the debugger needs to
-  // "load the Python scripting stuff".
-  debugger.SetScriptLanguage(eScriptLanguageNone);
+    "/opt/swift/install-location/modules");
   
   const char *repl_swift = "/opt/swift/toolchain/usr/bin/repl_swift";
   target = debugger.CreateTarget(repl_swift);
@@ -44,16 +40,23 @@ int init_repl_process(const char **repl_env,
   if (!main_bp.IsValid())
     return 3;
   
-  // Turn off "disable ASLR". This feature uses the "personality" syscall
-  // in a way that is forbidden by the default Docker security policy.
-  // Although Colab is not Docker, ASLR still prevents the Swift stdlib
+  // Turn off "disable ASLR". This feature prevents the Swift Standard Library
   // from loading.
-  auto launch_info = target.GetLaunchInfo();
-  auto launch_flags = launch_info.GetLaunchFlags();
-  launch_info.SetLaunchFlags(launch_flags & ~eLaunchFlagDisableASLR);
-  target.SetLaunchInfo(launch_info);
+  auto launch_flags = target.GetLaunchInfo().GetLaunchFlags();
+  launch_flags &= ~eLaunchFlagDisableASLR;
   
-  process = target.LaunchSimple(NULL, repl_env, cwd);
+  // Redirect stderr to something that Swift-Colab can manually process. This
+  // suppresses the ugly backtraces that appear in stdout.
+  const char *errorFilePath = "/opt/swift/err";
+  FILE *errorFilePointer = fopen(errorFilePath, "w");
+  fclose(errorFilePointer);
+  
+  SBListener listener;
+  SBError error;
+  process = target.Launch(
+    listener, /*argv=*/NULL, repl_env, /*stdin_path=*/NULL, 
+    /*stdout_path=*/NULL, errorFilePath, cwd, launch_flags, 
+    /*stop_at_entry=*/false, error);
   if (!process.IsValid())
     return 4;
   
@@ -64,7 +67,7 @@ int init_repl_process(const char **repl_env,
   expr_opts.SetUnwindOnError(false);
   expr_opts.SetGenerateDebugInfo(true);
   
-  // Sets an infinite timeout so that users can run aribtrarily long
+  // Sets an infinite timeout so that users can run arbitrarily long
   // computations.
   expr_opts.SetTimeoutInMicroSeconds(0);
   
@@ -115,7 +118,7 @@ int execute(const char *code, char **description) {
   }
 }
 
-int process_is_alive(int *is_alive) {
+int process_is_alive() {
   auto s = process.GetState();
   if (s == eStateAttaching ||
       s == eStateLaunching ||
@@ -124,11 +127,10 @@ int process_is_alive(int *is_alive) {
       s == eStateStepping || 
       s == eStateCrashed || 
       s == eStateSuspended) {
-    *is_alive = 1;
+    return 1;
   } else {
-    *is_alive = 0;
+    return 0;
   }
-  return 0;
 }
 
 // Output is in a serialized format:
@@ -139,9 +141,9 @@ int process_is_alive(int *is_alive) {
 // 3rd level of recursion:
 // - first 8 bytes (UInt64): header that says how long the byte array is
 // - rest of line: data in the byte array, with allocated capacity rounded
-// up to a multiple of 8 bytes
+//   up to a multiple of 8 bytes
 //
-// Caller must deallocate `serialized_output`
+// Caller must deallocate `serialized_output`.
 int after_successful_execution(uint64_t **serialized_output) {
   const char *code = "JupyterKernel.communicator.triggerAfterSuccessfulExecution()";
   auto result = target.EvaluateExpression(code, expr_opts);
@@ -186,16 +188,12 @@ int after_successful_execution(uint64_t **serialized_output) {
 int get_stdout(char *dst, int *buffer_size) {
   return int(process.GetSTDOUT(dst, size_t(buffer_size)));
 }
-  
+
 // Caller must deallocate `frames` and every string within `frames`.
-int get_pretty_stack_trace(char ***frames, int *size) {
+int get_pretty_stack_trace(void ***frames, int *size) {
   uint32_t allocated_size = main_thread.GetNumFrames();
-  char **out = (char**)malloc(allocated_size * sizeof(char*));
+  void **out = (void**)malloc(allocated_size * sizeof(char*));
   int filled_size = 0;
-  
-  // Separates function name from source location in descriptions.
-  const char *separator = " - ";
-  int separator_len = strlen(separator);
   
   for (uint32_t i = 0; i < allocated_size; ++i) {
     auto frame = main_thread.GetFrameAtIndex(i);
@@ -217,30 +215,51 @@ int get_pretty_stack_trace(char ***frames, int *size) {
     
     auto function_name = frame.GetDisplayFunctionName();
     auto function_name_len = strlen(function_name);
+    auto file_name = file_spec.GetFilename();
+    auto file_name_len = strlen(file_name);
     
-    SBStream stream;
-    line_entry.GetDescription(stream);
-    auto source_loc = stream.GetData();
-    auto source_loc_len = strlen(source_loc);
+    const char *directory_name = NULL;
+    size_t directory_name_len = 0;
+    if (file_spec.Exists()) {
+      directory_name = file_spec.GetDirectory();
+      directory_name_len = strlen(directory_name);
+    }
     
-    char *desc = (char*)malloc(
-      function_name_len + separator_len + source_loc_len + 1);
+    // Let the Swift code format the line and column. Serialize them into an 
+    // 8-byte header.
+    void *desc = malloc(
+      /*line*/4 + /*column*/4 + 
+      function_name_len + /*null terminator*/1 + 
+      file_name_len + /*null terminator*/1 + 
+      directory_name_len + /*null terminator*/1);
+    
+    // Write line and column
+    uint32_t *header = (uint32_t*)desc;
+    header[0] = line_entry.GetLine();
+    header[1] = line_entry.GetColumn();
+    int str_ptr = 4 + 4;
     
     // Write function name
-    memcpy(desc, function_name, function_name_len);
+    memcpy((char*)desc + str_ptr, function_name, function_name_len);
+    str_ptr += function_name_len;
+    ((char*)desc)[str_ptr] = 0; // Write null terminator
+    str_ptr += 1;
     
-    // Write separator
-    int str_ptr = function_name_len;
-    memcpy(desc + str_ptr, separator, separator_len);
+    // Write file name
+    memcpy((char*)desc + str_ptr, file_name, file_name_len);
+    str_ptr += file_name_len;
+    ((char*)desc)[str_ptr] = 0; // Write null terminator
+    str_ptr += 1;
     
-    // Write source location
-    str_ptr += separator_len;
-    memcpy(desc + str_ptr, source_loc, source_loc_len);
+    // Write directory name
+    if (directory_name_len > 0) {
+      memcpy((char*)desc + str_ptr, directory_name, directory_name_len);
+      str_ptr += directory_name_len;
+    }
+    ((char*)desc)[str_ptr] = 0; // Write null terminator
+    str_ptr += 1;
     
-    // Write null terminator
-    str_ptr += source_loc_len;
-    desc[str_ptr] = 0;
-    
+    // Store description pointer
     out[filled_size] = desc;
     filled_size += 1;
   }

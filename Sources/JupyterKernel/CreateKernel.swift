@@ -11,15 +11,14 @@ public func JupyterKernel_createSwiftKernel() {
   let currentRuntime = read(path: "/opt/swift/runtime")
   let currentMode = read(path: "/opt/swift/mode")
   
-  // Whether to automatically alternate between runtimes
+  // Whether to automatically alternate between runtimes.
   let isRelease = currentMode.contains("release")
   let runtime1 = isRelease ? "python3" : "swift"
   let runtime2 = isRelease ? "swift" : "python3"
   
   let nextRuntime = currentRuntime.contains("python") ? runtime1 : runtime2
   fm.createFile(
-    atPath: "/opt/swift/runtime", 
-    contents: nextRuntime.data(using: .utf8)!)
+    atPath: "/opt/swift/runtime", contents: nextRuntime.data(using: .utf8)!)
   
   // In dev mode, switch back into Python mode on the next runtime restart. This 
   // makes debugging a lot easier and decreases the chance my main account will 
@@ -31,8 +30,8 @@ public func JupyterKernel_createSwiftKernel() {
   }
 }
 
-// A stored reference to the SwiftKernel type object, used as a workaround
-// for the fact that it must be initialized in Python code.
+// A stored reference to the SwiftKernel type object, used as a workaround for 
+// the fact that it must be initialized in Python code.
 fileprivate var preservedSwiftKernelRef: PythonObject!
 
 @_cdecl("JupyterKernel_constructSwiftKernelClass")
@@ -51,19 +50,18 @@ public func JupyterKernel_constructSwiftKernelClass(_ classObj: OpaquePointer) {
     "version": ""
   ]
   
-  SwiftKernel.do_execute = PythonInstanceMethod { (args: [PythonObject]) in
-    KernelContext.kernel = args[0]
-    let code = args[1]
-    var response: PythonObject?
-    
-    if Python.len(code) > 0 && 
-       Bool(code.isspace()) == false {
-      response = try doExecute(code: String(code)!)
+  SwiftKernel.do_execute = PythonInstanceMethod { args in
+    if !KernelContext.debuggerInitialized {
+      KernelContext.kernel = args[0]
+      try initSwift()
+      KernelContext.debuggerInitialized = true
+      KernelContext.log("finished initSwift")
     }
     
+    let response = try doExecute(code: String(args[1])!)
     return response ?? [
       "status": "ok",
-      "execution_count": KernelContext.kernel.execution_count,
+      "execution_count": PythonObject(KernelContext.cellID),
       "payload": [],
       "user_expressions": [:],
     ]
@@ -83,14 +81,14 @@ fileprivate func activateSwiftKernel() {
   // `type(_:_:_:)` method makes it `traitlets.traitlets.SwiftKernel`
   // instead of `__main__.SwiftKernel`.
   PyRun_SimpleString("""
-  from ctypes import *; from ipykernel.kernelbase import Kernel
-  class SwiftKernel(Kernel):
-      def __init__(self, **kwargs):
-          super().__init__(**kwargs)
-   
-  func = PyDLL("/opt/swift/lib/libJupyterKernel.so").JupyterKernel_constructSwiftKernelClass
-  func.argtypes = [c_void_p]; func(c_void_p(id(SwiftKernel)))
-  """)
+    from ctypes import *; from ipykernel.kernelbase import Kernel
+    class SwiftKernel(Kernel):
+        def __init__(self, **kwargs):
+            super().__init__(**kwargs)
+
+    func = PyDLL("/opt/swift/lib/libJupyterKernel.so").JupyterKernel_constructSwiftKernelClass
+    func.argtypes = [c_void_p]; func(c_void_p(id(SwiftKernel)))
+    """)
   
   let IPKernelApp = Python.import("ipykernel.kernelapp").IPKernelApp
   // We pass the kernel name as a command-line arg, since Jupyter gives those
@@ -108,11 +106,11 @@ fileprivate func activatePythonKernel() {
   // Remove the CWD from sys.path while we load stuff.
   // This is added back by InteractiveShellApp.init_path()
   PyRun_SimpleString("""
-  import sys; from ipykernel import kernelapp as app
-  if sys.path[0] == '':
-    del sys.path[0]
-  
-  app.launch_new_instance()          
-  """)
+    import sys; from ipykernel import kernelapp as app
+    if sys.path[0] == "":
+        del sys.path[0]
+
+    app.launch_new_instance()          
+    """)
 }
 
