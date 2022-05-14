@@ -15,7 +15,7 @@ Copy [this template](https://colab.research.google.com/drive/1EACIWrk9IWloUckRm3
 ```swift
 !curl "https://raw.githubusercontent.com/philipturner/swift-colab/release/latest/install_swift.sh" -o "install_swift.sh"
 !bash "install_swift.sh" "5.6.1" #// Replace 5.6.1 with newest Swift version.
-#// After this command finishes, go to Runtime > Restart runtime.
+#// After this cell finishes, go to Runtime > Restart runtime.
 ```
 
 In the output stream, you will see:
