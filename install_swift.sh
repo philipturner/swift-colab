@@ -121,7 +121,7 @@ if [[ $mode == "dev" || ! -e "progress/downloaded-swift-colab" ]]; then
     rm -r "swift-colab"
   fi
   
-  git clone --depth 1 --branch release/2.1 \
+  git clone --depth 1 --branch release/latest \
     "https://github.com/philipturner/swift-colab"
   
   swift_colab_include="/opt/swift/swift-colab/Sources/include"
