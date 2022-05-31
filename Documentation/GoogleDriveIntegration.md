@@ -9,4 +9,8 @@ from google.colab import drive
 drive.mount("/content")
 ```
 
+> Python code presented with Swift syntax coloring. This is awkward, but it's how the code will appear in the Google Colab IDE.
+
 TODO: Change ColabSupportHistory link to direct here
+
+TODO: Warn to not connect a Google Drive containing sensitive or important data.
