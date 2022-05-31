@@ -13,7 +13,7 @@ For an in-depth look at how and why this repository was created, check out the [
 Copy [this template](https://colab.research.google.com/drive/1EACIWrk9IWloUckRm3wu973bKUBXQDKR?usp=sharing) of a Swift Colab notebook. Do not create one directly from Google Drive, as notebooks are configured for Python by default. Copy the following commands into the first code cell and run it:
 
 ```swift
-!curl "https://raw.githubusercontent.com/philipturner/swift-colab/release/latest/install_swift.sh" -o "install_swift.sh"
+!curl "https://raw.githubusercontent.com/philipturner/swift-colab/release/latest/install_swift.sh" --output "install_swift.sh"
 !bash "install_swift.sh" "5.6.1" #// Replace 5.6.1 with newest Swift version.
 #// After this cell finishes, go to Runtime > Restart runtime.
 ```
