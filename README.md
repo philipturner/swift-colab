@@ -18,19 +18,9 @@ Copy [this template](https://colab.research.google.com/drive/1EACIWrk9IWloUckRm3
 #// After this cell finishes, go to Runtime > Restart runtime.
 ```
 
-In the output stream, you will see:
-
-```
-=== Downloading Swift ===
-...
-=== Swift successfully downloaded ===
-...
-=== Swift successfully installed ===
-```
-
 You will be instructed to restart the runtime. This is necessary because it shuts down the Python kernel and starts the Swift kernel.
 
-> Tip: If you exceed the time limit or disconnect and delete the runtime, Colab will restart in Python mode. Just re-run the first code cell to return to Swift mode.
+> Tip: If you exceed the time limit or disconnect and delete the runtime, Colab will restart in Python mode. Repeat the process outlined above to return to Swift mode.
 
 Type the following code into the second code cell:
 
@@ -39,23 +29,36 @@ Int.bitWidth
 ```
 
 After running it, the following output appears:
-
 ```
 64
 ```
 
-For further guidance on how to use Swift on Google Colab, check out the [usage instructions](https://github.com/google/swift-jupyter#usage-instructions) on [google/swift-jupyter](https://github.com/google/swift-jupyter). You must use Swift on Google Colab in a slightly different way than described on google/swift-jupyter. The differences are explained in the rest of this document.
+Swift-Colab has several features, such as built-in magic commands and Google Drive integration. Unfortunately, they are not adequately documented at the moment. Follow the [usage instructions](https://github.com/google/swift-jupyter#usage-instructions) of the old [google/swift-jupyter](https://github.com/google.swift-jupyter) in the meantime.
 
 ## Installing packages
+
+To install a Swift package, first add an `%install` command followed by a Swift 4.2-style package specification. After that, type the module names you want to compile. In another line, import the module. Unlike with [swift-jupyter](https://github.com/google.swift-jupyter), you can install packages in any cell, even after some code has already executed. 
+
+If you restart the runtime, you must replay the `%install` command for installing it. This command tells the Swift interpreter that the package is ready to be imported. It will also take less time to compile, because it's utilizing cached build products from the previous Jupyter session.
+
+# Plotting support
+
+To use IPython graphs or SwiftPlot, enter a few magic commands as shown below. [`EnableIPythonDisplay.swift`](https://github.com/philipturner/swift-colab/blob/main/Sources/include/EnableIPythonDisplay.swift) depends on the PythonKit and SwiftPlot libraries. SwiftPlot takes 23 seconds to compile, so avoid importing it unless you intend to use it. If you change your mind an want to display plots coming from SwiftPlot, restart the runtime.
+
+> If you change your mind an want to display plots coming from SwiftPlot, restart the runtime.
 
 To use Python interop or automatic differentiation, you must explicitly import their packages in first cell executed in Swift mode. Also, you cannot include `EnableJupyterDisplay.swift` (include `EnableIPythonDisplay.swift` instead).
 
 ```swift
-%install '.package(url: "https://github.com/pvieito/PythonKit.git", .branch("master"))' PythonKit
-%install '.package(url: "https://github.com/philipturner/differentiation", .branch("main"))' _Differentiation
+%install '.package(url: "https://github.com/pvieito/PythonKit", .branch("master"))' PythonKit
+%install '.package(url: "https://github.com/KarthikRIyer/swiftplot", .branch("master"))' SwiftPlot AGGRenderer
+```
+
+You must include `EnableIPythonDisplay.swift` after installing the Swift packages, otherwise it will allow plotting. The file injects code for importing the PythonKit, SwiftPlot, and AGGRenderer modules. The code samples here do not explicitly import them, as that would be redundant.
+
+
+```swift
 %include "EnableIPythonDisplay.swift"
-import PythonKit
-import Differentiation
 ```
 
 ## Sample code
