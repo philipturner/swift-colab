@@ -168,7 +168,7 @@ func configure_inline_support(shell: PythonObject, backend: PythonObject) throws
     } catch let error as PythonError {
       switch error {
       case .exception(let error, let traceback):
-        if Python.isinstance(error, Python.ValueError) {
+        if Bool(Python.isinstance(error, Python.ValueError))! {
           break
         } else {
           throw error
