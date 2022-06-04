@@ -8,9 +8,7 @@ For an in-depth look at how and why this repository was created, check out the [
 
 ## Getting started
 
-Colab notebooks creates from Google Drive are configured for Python by default. Instead use the [official template](https://colab.research.google.com/drive/1EACIWrk9IWloUckRm3wu973bKUBXQDKR?usp=sharing) for Swift notebooks. It contains the following commands, which download and compile the Jupyter kernel. 
-
-There are several Jupyter notebooks created when Colab had built-in support for Swift. Paste the commands below into those notebooks to let them run again. If you encounter a notebook that behaves differently than before S4TF went dormant, please submit an issue on this repository. I strive to maintain backward compatibility.
+Colab notebooks creates from Google Drive are configured for Python by default. Instead use the [official template](https://colab.research.google.com/drive/1EACIWrk9IWloUckRm3wu973bKUBXQDKR?usp=sharing) for Swift notebooks. It contains the following commands, which download and compile the Jupyter kernel. In the notebook output, they instruct you to restart the runtime. This action shuts down the Python kernel and starts up the Swift kernel.
 
 ```swift
 !curl "https://raw.githubusercontent.com/philipturner/swift-colab/release/latest/install_swift.sh" --output "install_swift.sh"
@@ -18,9 +16,9 @@ There are several Jupyter notebooks created when Colab had built-in support for 
 #// After this cell finishes, go to Runtime > Restart runtime.
 ```
 
-You will be instructed to restart the runtime. This is necessary because it shuts down the Python kernel and starts the Swift kernel.
-
 > Tip: If you exceed the time limit or disconnect and delete the runtime, Colab will restart in Python mode. Repeat the process outlined above to return to Swift mode.
+
+There are several Jupyter notebooks created when Colab had built-in support for Swift. Paste the commands above into those notebooks to let them run again. If you encounter a notebook that behaves differently than before S4TF went dormant, please submit an issue on this repository. Swift-Colab should be backwards-compatible with swift-jupyter.
 
 Type the following code into the second code cell. Run it, and `64` appears in the output.
 
