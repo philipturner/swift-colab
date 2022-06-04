@@ -91,12 +91,9 @@ fileprivate let SwiftShell = PythonClass(
 //         .dynamicallyCall(withArguments: [`self`, gui])
       
 //       // TODO: Make these lines 80 characters
-      print("checkpoint 1.1.1")
-      let backend_inline = Python.import("matplotlib_inline").backend_inline
-      print("checkpoint 1.3")
-      let configure_inline_support = backend_inline.configure_inline_support
-      print("checkpoint 1.5")
+      print("checkpoint 1")
       let pt = Python.import("IPython.core.pylabtools")
+      print("checkpoint 1.5")
       var backend = Python.None
       print("checkpoint 2")
       (gui, backend) = pt.find_gui_and_backend(gui, `self`.pylab_gui_select).tuple2
@@ -109,7 +106,7 @@ fileprivate let SwiftShell = PythonClass(
       print("checkpoint 4")
       pt.activate_matplotlib(backend)
       print("checkpoint 5")
-      configure_inline_support(`self`, backend)
+      configure_inline_support(shell: `self`, backend: backend)
       print("checkpoint 6")
       
       `self`.enable_gui(gui)
@@ -117,63 +114,10 @@ fileprivate let SwiftShell = PythonClass(
       `self`.magics_manager.registry["ExecutionMagics"].default_runner = pt.mpl_runner(`self`.safe_execfile)
       print("checkpoint 8")
       return PythonObject(tupleOf: gui, backend)
-      
-      
-      
-      
-      def configure_inline_support(shell, backend):
-    """Configure an IPython shell object for matplotlib use.
-
-    Parameters
-    ----------
-    shell : InteractiveShell instance
-
-    backend : matplotlib backend
-    """
-    # If using our svg payload backend, register the post-execution
-    # function that will pick up the results for display.  This can only be
-    # done with access to the real shell object.
-
-    cfg = InlineBackend.instance(parent=shell)
-    cfg.shell = shell
-    if cfg not in shell.configurables:
-        shell.configurables.append(cfg)
-
-    if backend == 'module://matplotlib_inline.backend_inline':
-        shell.events.register('post_execute', flush_figures)
-
-        # Save rcParams that will be overwrittern
-        shell._saved_rcParams = {}
-        for k in cfg.rc:
-            shell._saved_rcParams[k] = matplotlib.rcParams[k]
-        # load inline_rc
-        matplotlib.rcParams.update(cfg.rc)
-        new_backend_name = "inline"
-    else:
-        try:
-            shell.events.unregister('post_execute', flush_figures)
-        except ValueError:
-            pass
-        if hasattr(shell, '_saved_rcParams'):
-            matplotlib.rcParams.update(shell._saved_rcParams)
-            del shell._saved_rcParams
-        new_backend_name = "other"
-
-    # only enable the formats once -> don't change the enabled formats (which the user may
-    # has changed) when getting another "%matplotlib inline" call.
-    # See https://github.com/ipython/ipykernel/issues/29
-    cur_backend = getattr(configure_inline_support, "current_backend", "unset")
-    if new_backend_name != cur_backend:
-        # Setup the default figure format
-        select_figure_formats(shell, cfg.figure_formats, **cfg.print_figure_kwargs)
-        configure_inline_support.current_backend = new_backend_name
-      
-      
-      
 //       return Python.None
     },
     
-//     Enable pylab support at runtime.
+    // Enable pylab support at runtime.
     "enable_pylab": PythonInstanceMethod { args in
       let `self` = args[0]
       var gui = args[1]
@@ -187,4 +131,16 @@ fileprivate let SwiftShell = PythonClass(
   ]
 ).pythonObject
 
-func configure)n
+func configure_inline_support(shell: PythonObject, backend: PythonObject) {
+  let cfg = InlineBackend.instance(parent: shell)
+  cfg.shell = shell
+  if !shell.configurables.contains(cfg) {
+    shell.configurables[dynamicMember: "append"](cfg)
+  }
+  
+  if backend == "module://matplotlib_inline.backend_inline" {
+    print("Control path 1")
+  } else {
+    print("Control path 2")
+  }
+}
