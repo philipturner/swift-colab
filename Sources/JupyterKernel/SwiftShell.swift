@@ -186,3 +186,5 @@ fileprivate let SwiftShell = PythonClass(
     }
   ]
 ).pythonObject
+
+func configure)n
