@@ -24,10 +24,11 @@ When Google sponsored S4TF from 2018 - 2021, the Swift community created several
 
 ## Using Swift-Colab
 
-Google Colab is like the Swift REPL, but it submits several lines of code at once. Fill the second code cell with the example shown below. Run it, and you will see `64`. No matter how many lines a cell has, only the last one affects output. To get around this restriction, use Swift's `print(...)` function to display values.
+Google Colab is like the Swift REPL, but it submits several lines of code at once. Fill the second code cell with the first example below. Run it, and you will see `64`. No matter how many lines a cell has, only the last one's return value appears. To get around this restriction, use Swift's `print(...)` function to display values.
 
 ```swift
 Int.bitWidth
+// Output: 64
 ```
 
 Swift-Colab has several powerful features, including magic commands and Google Drive integration. Unfortunately, they are not adequately documented yet. Refer to swift-jupyter's [usage instructions](https://github.com/google/swift-jupyter#usage-instructions) in the meantime.
