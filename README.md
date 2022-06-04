@@ -36,7 +36,7 @@ If you restart the runtime, you must replay the `%install` command for installin
 
 ## Swift for TensorFlow integration
 
-Coming soon! Initial support will likely come from an old fork of S4TF, not the head branch. This task is tracked by https://github.com/philipturner/swift-colab/issues/15.
+Coming in the future! Initial support will come from an old branch of S4TF, not the head branch. This task is tracked by https://github.com/philipturner/swift-colab/issues/15.
 
 <!--
 For in the future, when S4TF works in Colab. Either I fix the build system, or I hard-code some way to install the X10 binary.
