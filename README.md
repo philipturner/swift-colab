@@ -99,6 +99,8 @@ import SwiftPlot
 import AGGRenderer
 ```
 
+For tutorials on using the SwiftPlot API, check out [KarthikRIyer/swiftplot](https://github.com/KarthikRIyer/swiftplot).
+
 ## Testing
 
 These tests ensure that Swift-Colab runs on recent Swift toolchains. Some of them originate from [unit tests](https://github.com/google/swift-jupyter/tree/main/test/tests) in swift-jupyter, while others cover fixed bugs and third-party libraries. If any notebook fails or you have a suggestion for a new test, please [open an issue](https://github.com/philipturner/swift-colab/issues).
