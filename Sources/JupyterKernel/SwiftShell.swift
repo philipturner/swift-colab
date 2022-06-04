@@ -132,7 +132,7 @@ fileprivate let SwiftShell = PythonClass(
 ).pythonObject
 
 /// Configure an IPython shell object for matplotlib use.
-func configure_inline_support(shell: PythonObject, backend: PythonObject) {
+func configure_inline_support(shell: PythonObject, backend: PythonObject) throws {
   // If using our svg payload backend, register the post-execution
   // function that will pick up the results for display.  This can only be
   // done with access to the real shell object.
@@ -161,5 +161,17 @@ func configure_inline_support(shell: PythonObject, backend: PythonObject) {
     new_backend_name = "inline"
   } else {
     print("Control path 2")
+    
+    do {
+      try shell.events.unregister.throwing
+        .dynamicallyCall(withArguments: ["post_execute", flush_figures])
+    } catch let error as PythonError.exception(let error, let traceback) {
+      switch error {
+      case .exception(let error, let traceback):
+        break
+      default:
+        throw error
+      }
+    }
   }
 }
