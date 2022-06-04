@@ -72,4 +72,4 @@ To test Swift-Colab against recent Swift toolchains, you may run the following t
 | [SwiftPlot](https://colab.research.google.com/drive/1Rxs7OfuKIJ_hAm2gUQT2gWSuIcyaeZfz?usp=sharing) | ✅ | Swift 5.6 (April 2022) |
 | [S4TF with TF 2.4](https://colab.research.google.com/drive/1v3ZhraaHdAS2TGj03hE0cK-KRFzsqxO1?usp=sharing)* | ❌ | 2021-11-12 Nightly Snapshot (June 2022) |
 
-\*See https://github.com/philipturner/swift-colab/issues/15 for the status of this failure.
+\*https://github.com/philipturner/swift-colab/issues/15 tracks this failure.
