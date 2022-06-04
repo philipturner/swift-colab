@@ -85,36 +85,36 @@ fileprivate let SwiftShell = PythonClass(
         gui = args[0].kernel.gui
       }
 //       print("hello world 7")
-      return try ZMQInteractiveShell.enable_matplotlib.throwing
-        .dynamicallyCall(withArguments: [`self`, gui])
+//       return try ZMQInteractiveShell.enable_matplotlib.throwing
+//         .dynamicallyCall(withArguments: [`self`, gui])
       
 //       // TODO: Make these lines 80 characters
-//       print("checkpoint 1")
-//       let configure_inline_support = Python.import("matplotlib_inline.backend_inline").configure_inline_support
-// //       print("checkpoint 1.3")
-// //       let configure_inline_support = backend_inline.configure_inline_support
-// //       print("checkpoint 1.5")
-//       let pt = Python.import("IPython.core.pylabtools")
-//       var backend = Python.None
-//       print("checkpoint 2")
-//       (gui, backend) = pt.find_gui_and_backend(gui, `self`.pylab_gui_select).tuple2
-//       print("checkpoint 3")
+      print("checkpoint 1")
+      let backend_inline = Python.import("matplotlib_inline.backend_inline")
+      print("checkpoint 1.3")
+      let configure_inline_support = backend_inline.configure_inline_support
+      print("checkpoint 1.5")
+      let pt = Python.import("IPython.core.pylabtools")
+      var backend = Python.None
+      print("checkpoint 2")
+      (gui, backend) = pt.find_gui_and_backend(gui, `self`.pylab_gui_select).tuple2
+      print("checkpoint 3")
       
-//       if gui != "inline" {
-//         print("uh oh...")
-//         return Python.None
-//       }
-//       print("checkpoint 4")
-//       pt.activate_matplotlib(backend)
-//       print("checkpoint 5")
-//       configure_inline_support(`self`, backend)
-//       print("checkpoint 6")
+      if gui != "inline" {
+        print("uh oh...")
+        return Python.None
+      }
+      print("checkpoint 4")
+      pt.activate_matplotlib(backend)
+      print("checkpoint 5")
+      configure_inline_support(`self`, backend)
+      print("checkpoint 6")
       
-//       `self`.enable_gui(gui)
-//       print("checkpoint 7")
-//       `self`.magics_manager.registry["ExecutionMagics"].default_runner = pt.mpl_runner(`self`.safe_execfile)
-//       print("checkpoint 8")
-//       return PythonObject(tupleOf: gui, backend)
+      `self`.enable_gui(gui)
+      print("checkpoint 7")
+      `self`.magics_manager.registry["ExecutionMagics"].default_runner = pt.mpl_runner(`self`.safe_execfile)
+      print("checkpoint 8")
+      return PythonObject(tupleOf: gui, backend)
       
 //       return Python.None
     },
