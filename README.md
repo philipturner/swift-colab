@@ -6,9 +6,7 @@ Swift-Colab is an accessible way to do programming with Swift. It runs in a brow
 
 For an in-depth look at how and why this repository was created, check out the [summary of its history](./Documentation/ColabSupportHistory.md).
 
-> Parts of this README from here on out are extremely out of date. This includes all test notebooks except SwiftPlot. They mirror how to use Swift-Colab 1.0, but this repository is on version 2.1. Furthermore, Swift-Colab is now recognized as the successor to google/swift-jupyter. In the future, there will no longer be a notice to look at the old repository for any instructions.
-
-## How to run Swift on Google Colaboratory
+## Getting started
 
 Copy [this template](https://colab.research.google.com/drive/1EACIWrk9IWloUckRm3wu973bKUBXQDKR?usp=sharing) of a Swift Colab notebook. Do not create one directly from Google Drive, as notebooks are configured for Python by default. Copy the following commands into the first code cell and run it:
 
@@ -22,18 +20,13 @@ You will be instructed to restart the runtime. This is necessary because it shut
 
 > Tip: If you exceed the time limit or disconnect and delete the runtime, Colab will restart in Python mode. Repeat the process outlined above to return to Swift mode.
 
-Type the following code into the second code cell:
+Type the following code into the second code cell. Run it, and `64` appears in the output.
 
 ```swift
 Int.bitWidth
 ```
 
-After running it, the following output appears:
-```
-64
-```
-
-Swift-Colab has several features, such as built-in magic commands and Google Drive integration. Unfortunately, they are not adequately documented at the moment. Follow the [usage instructions](https://github.com/google/swift-jupyter#usage-instructions) of the old [google/swift-jupyter](https://github.com/google.swift-jupyter) in the meantime.
+Swift-Colab has several powerful features, such as built-in magic commands and Google Drive integration. Unfortunately, they are not adequately documented at the moment. Refer to the old google/swift-jupyter's [usage instructions](https://github.com/google/swift-jupyter#usage-instructions) in the meantime.
 
 ## Installing packages
 
