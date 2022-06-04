@@ -8,7 +8,7 @@ For an in-depth look at how and why this repository was created, check out the [
 
 ## Getting started
 
-Colab notebooks created directly from Google Drive have syntax coloring tailored for Python. When making a Swift notebook, copy the [official template](https://colab.research.google.com/drive/1EACIWrk9IWloUckRm3wu973bKUBXQDKR?usp=sharing) instead. It contains the commands listed below, which download and compile the Jupyter kernel. Run the first code cell and follow the instructions for restarting the runtime.
+Colab notebooks created directly from Google Drive are tailored for Python programming. When making a Swift notebook, copy the [official template](https://colab.research.google.com/drive/1EACIWrk9IWloUckRm3wu973bKUBXQDKR?usp=sharing) instead. It contains the commands listed below, which download and compile the Jupyter kernel. Run the first code cell and follow the instructions for restarting the runtime.
 
 ```swift
 !curl "https://raw.githubusercontent.com/philipturner/swift-colab/release/latest/install_swift.sh" --output "install_swift.sh"
