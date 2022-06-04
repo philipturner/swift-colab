@@ -41,6 +41,12 @@ To install a Swift package, first add an `%install` command followed by a Swift 
 
 If you restart the runtime, you must replay the `%install` command for installing it. This command tells the Swift interpreter that the package is ready to be imported. It will also take less time to compile, because it's utilizing cached build products from the previous Jupyter session.
 
+<!--
+## Swift for TensorFlow integration
+
+For in the future, when S4TF works in Colab. Either I fix the build system, or I hard-code some way to install the X10 binary.
+-->
+
 ## SwiftPlot integration
 
 To use IPython graphs or SwiftPlot, enter a few magic commands as shown below. [`EnableIPythonDisplay.swift`](https://github.com/philipturner/swift-colab/blob/main/Sources/include/EnableIPythonDisplay.swift) depends on the PythonKit and SwiftPlot libraries. SwiftPlot takes 23 seconds to compile, so avoid importing it unless you intend to use it. If you change your mind an want to use SwiftPlot later, just restart the runtime.
