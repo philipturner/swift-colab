@@ -28,13 +28,15 @@ Google Colab is like the Swift REPL, but it submits several lines of code at onc
 
 ```swift
 Int.bitWidth
-// Output: 64 (you can include this comment in the cell; it doesn't affect output)
+// Output: (you can include this comment in the cell; it doesn't affect output)
+// 64
 ```
 
 ```swift
 Int.bitWidth
 Int.bitWidth
-// Output: Still only one "64"
+// Output:
+// 64
 ```
 
 ```swift
