@@ -110,7 +110,7 @@ fileprivate let SwiftShell = PythonClass(
       print("checkpoint 7")
       `self`.magics_manager.registry['ExecutionMagics'].default_runner = pt.mpl_runner(`self`.safe_execfile)
       print("checkpoint 8")
-      return (gui, backend)
+      return PythonObject(tupleOf: gui, backend)
       
 //       return Python.None
     },
