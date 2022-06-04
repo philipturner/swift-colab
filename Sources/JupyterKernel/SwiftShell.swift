@@ -131,7 +131,12 @@ fileprivate let SwiftShell = PythonClass(
   ]
 ).pythonObject
 
+/// Configure an IPython shell object for matplotlib use.
 func configure_inline_support(shell: PythonObject, backend: PythonObject) {
+  // If using our svg payload backend, register the post-execution
+  // function that will pick up the results for display.  This can only be
+  // done with access to the real shell object.
+  
   // Move this import to the top of this file
   let InlineBackend = Python.import("matplotlib_inline.config").InlineBackend
   
@@ -141,8 +146,19 @@ func configure_inline_support(shell: PythonObject, backend: PythonObject) {
     shell.configurables[dynamicMember: "append"](cfg)
   }
   
+  var new_backend_name: String
   if backend == "module://matplotlib_inline.backend_inline" {
     print("Control path 1")
+    shell.events.register("post_execute", flush_figures)
+    
+    // Save rcParams that will be overwritten
+    shell._saved_rcParams = [:]
+    for k in cfg.rc {
+      shell._saved_rcParams[k] = matplotlib.rcParams[k]
+    }
+    // load inline_rc
+    matplotlib.rcParams.update(cfg.rc)
+    new_backend_name = "inline"
   } else {
     print("Control path 2")
   }
