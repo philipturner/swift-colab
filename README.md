@@ -78,7 +78,7 @@ Coming in the future! Initial support may come from an old branch of S4TF, not t
 <!--
 For in the future, when S4TF works in Colab. Either I fix the build system, or I hard-code some way to install the X10 binary.
 
-`%install-x10` command? If I change my mind, it's source-breaking.
+`%install-x10 TF_VERSION` command? If I change my mind, it's source-breaking.
 -->
 
 ## SwiftPlot Integration
