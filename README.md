@@ -18,9 +18,9 @@ Colab notebooks created from Google Drive are configured for Python by default. 
 
 > Tip: If you exceed the time limit or disconnect and delete the runtime, Colab will restart in Python mode. Repeat the process outlined above to return to Swift mode.
 
-During the era when Google sponsored S4TF, several Swift Jupyter notebooks were made. They no longer run as-is because Colab no longer officially supports Swift. However, they should run if you paste the commands above into their first cell. [File an issue](https://github.com/philipturner/swift-colab/issues) if you experience any problems with doing so.
+Several Swift Jupyter notebooks were made between the years 2018 - 2021, when Google sponsored S4TF. To run those notebooks again, you must slightly modify them. Add an extra cell to the top of them, filled with the commands shown above. Swift-Colab is backward-compatible with swift-jupyter, so the notebooks should run without any modifications besides the installation command. If you experience a problem, please [file an issue](https://github.com/philipturner/swift-colab/issues).
 
-Colab is similar to the Swift REPL, although it executes code in cells instead of line-by-line. Fill the second code cell with the example shown below. Run it, and you will see `64`.
+Colab is similar to the Swift REPL, with the added capability of submitting several code lines at once. Fill the second code cell with the example shown below. Run it, and you will see `64`.
 
 ```swift
 Int.bitWidth
