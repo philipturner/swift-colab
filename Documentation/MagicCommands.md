@@ -90,7 +90,7 @@ A B C D A B C D
 ```
 
 - Executes a command-line command, executes before the code in the cell
-- Does not forward print output (yet), so better to use bash in Python mode right now
+- Does not forward print output (yet (or does it?)), so better to use bash in Python mode right now
 ```swift
 %system cd "sample_data" && touch "$(uname -m).sh"
 ```
