@@ -34,9 +34,11 @@ To install a Swift package, make an `%install` command followed by a Swift 4.2-s
 
 If you restart the runtime, you must replay the `%install` command for installing it. This command tells the Swift interpreter that the package is ready to be imported. It will also take less time to compile, because it's utilizing cached build products from the previous Jupyter session.
 
-<!--
 ## Swift for TensorFlow integration
 
+Coming soon!
+
+<!--
 For in the future, when S4TF works in Colab. Either I fix the build system, or I hard-code some way to install the X10 binary.
 -->
 
