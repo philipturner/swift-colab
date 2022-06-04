@@ -58,7 +58,7 @@ Swift-Colab has several powerful features, including [magic commands](./Document
 
 ## Installing Packages
 
-To install a Swift package, type `%install`, followed by a Swift 4.2-style package declaration. The declaration should appear between two single quotes. After that, type the modules you want to compile. Before importing any module via a Swift `import` statement, execute its `%install` command. You can install packages in any cell, which was not possible in [swift-jupyter](https://github.com/google.swift-jupyter).
+To install a Swift package, type `%install` followed by a Swift 4.2-style package declaration. The declaration should appear between two single quotes. After that, type the modules you want to compile. Before importing any module via a Swift `import` statement, execute its `%install` command. You can install packages in any cell, which was not possible in [swift-jupyter](https://github.com/google.swift-jupyter).
 
 ```swift
 %install '.package(url: "https://github.com/pvieito/PythonKit", .branch("master"))' PythonKit
