@@ -106,7 +106,7 @@ fileprivate let SwiftShell = PythonClass(
       print("checkpoint 4")
       pt.activate_matplotlib(backend)
       print("checkpoint 5")
-      configure_inline_support(shell: `self`, backend: backend)
+      try configure_inline_support(shell: `self`, backend: backend)
       print("checkpoint 6")
       
       `self`.enable_gui(gui)
