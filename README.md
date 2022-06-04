@@ -26,7 +26,7 @@ Colab is similar to the Swift REPL, but it submits several lines of code at once
 Int.bitWidth
 ```
 
-Swift-Colab has several powerful features, including magic commands and Google Drive integration. Unfortunately, they are not adequately documented yet. Refer to the google/swift-jupyter's [usage instructions](https://github.com/google/swift-jupyter#usage-instructions) in the meantime.
+Swift-Colab has several powerful features, including magic commands and Google Drive integration. Unfortunately, they are not adequately documented yet. Refer to swift-jupyter's [usage instructions](https://github.com/google/swift-jupyter#usage-instructions) in the meantime.
 
 ## Installing packages
 
