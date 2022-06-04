@@ -18,7 +18,7 @@ Colab notebooks created directly from Google Drive are tailored for Python progr
 
 > Tip: If you exceed the time limit of Colab's free tier, it restarts in Python mode. That means Swift code executes as if it's Python code. In that situation, repeat the process outlined above to return to Swift mode.
 
-When Google sponsored S4TF from 2018 - 2021, several Swift Jupyter notebooks were made. To run those notebooks now, you must slightly modify them. Create a new cell at the top of the notebook, with the commands shown above. No further changes are necessary because of Swift-Colab's backward-compatibility. If you experience a problem, please [file an issue](https://github.com/philipturner/swift-colab/issues).
+When Google sponsored S4TF from 2018 - 2021, the Swift community created several Jupyter notebooks. To run those notebooks now, you must slightly modify them. Create a new cell at the top of each notebook, including the commands shown above. No further changes are necessary because of Swift-Colab's backward-compatibility. If you experience a problem, please [file an issue](https://github.com/philipturner/swift-colab/issues).
 
 ## Using Swift-Colab
 
