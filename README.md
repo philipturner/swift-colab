@@ -43,70 +43,33 @@ If you restart the runtime, you must replay the `%install` command for installin
 
 # Plotting support
 
-To use IPython graphs or SwiftPlot, enter a few magic commands as shown below. [`EnableIPythonDisplay.swift`](https://github.com/philipturner/swift-colab/blob/main/Sources/include/EnableIPythonDisplay.swift) depends on the PythonKit and SwiftPlot libraries. SwiftPlot takes 23 seconds to compile, so avoid importing it unless you intend to use it. If you change your mind an want to display plots coming from SwiftPlot, restart the runtime.
-
-> If you change your mind an want to display plots coming from SwiftPlot, restart the runtime.
-
-To use Python interop or automatic differentiation, you must explicitly import their packages in first cell executed in Swift mode. Also, you cannot include `EnableJupyterDisplay.swift` (include `EnableIPythonDisplay.swift` instead).
+To use IPython graphs or SwiftPlot, enter a few magic commands as shown below. [`EnableIPythonDisplay.swift`](https://github.com/philipturner/swift-colab/blob/main/Sources/include/EnableIPythonDisplay.swift) depends on the PythonKit and SwiftPlot libraries. SwiftPlot takes 23 seconds to compile, so avoid importing it unless you intend to use it. If you change your mind an want to use SwiftPlot later, just restart the runtime.
 
 ```swift
 %install '.package(url: "https://github.com/pvieito/PythonKit", .branch("master"))' PythonKit
 %install '.package(url: "https://github.com/KarthikRIyer/swiftplot", .branch("master"))' SwiftPlot AGGRenderer
-```
-
-You must include `EnableIPythonDisplay.swift` after installing the Swift packages, otherwise it will allow plotting. The file injects code for importing the PythonKit, SwiftPlot, and AGGRenderer modules. The code samples here do not explicitly import them, as that would be redundant.
-
-
-```swift
 %include "EnableIPythonDisplay.swift"
 ```
 
-## Sample code
-
-The code on the README of google/swift-jupyter about SwiftPlot will not compile. Replace it with the following:
+You must include `EnableIPythonDisplay.swift` after (instead of before) installing the Swift packages, otherwise it will not allow plotting. The file injects the following code into the interpreter, gated under import guards. The code samples here do not explicitly import them, as that would be redundant.
 
 ```swift
-import Foundation
+import PythonKit
 import SwiftPlot
 import AGGRenderer
-
-func function(_ x: Float) -> Float {
-    return 1.0 / x
-}
-
-var aggRenderer = AGGRenderer()
-var lineGraph = LineGraph<Float, Float>()
-lineGraph.addFunction(
-    function,
-    minX: -5.0,
-    maxX: 5.0,
-    numberOfSamples: 400,
-    clampY: -50...50,
-    label: "1/x",
-    color: .orange)
-lineGraph.plotTitle.title = "FUNCTION"
-lineGraph.drawGraph(renderer: aggRenderer)
-display(base64EncodedPNG: aggRenderer.base64Png())
-```
-
-And add these statements to the bottom of the code cell that imports PythonKit and Differentiation:
-
-```swift
-%install-swiftpm-flags -Xcc -isystem/usr/include/freetype2 -Xswiftc -lfreetype
-%install '.package(url: "https://github.com/KarthikRIyer/swiftplot", .branch("master"))' SwiftPlot AGGRenderer
 ```
 
 ## Testing
 
-To test Swift-Colab against recent Swift toolchains and ensure support is never dropped from Colab again, you can run the following tests. These Colab notebooks originated from Python [unit tests](https://github.com/google/swift-jupyter/tree/main/test/tests) in google/swift-jupyter:
+To test Swift-Colab against recent Swift toolchains, you may run the following tests. These Colab notebooks originated from Python [unit tests](https://github.com/google/swift-jupyter/tree/main/test/tests) in google/swift-jupyter:
 
 <!-- Emoji shortcuts for reference: ✅ ❌ -->
 
 | Test | Passing | Last Tested |
 | ---- | --------------- | ----------- |
-| [kernel tests](https://colab.research.google.com/drive/1vooU1XVHSpolOSmVUKM4Wj6opEJBt7zs?usp=sharing) | ✅ | Swift 5.5.3 (March 2022) |
-| [own kernel tests](https://colab.research.google.com/drive/1nHitEZm9QZNheM-ALajARyRZY2xpZr00?usp=sharing) | ✅ | Swift 5.5.3 (March 2022) |
-| [simple notebook tests](https://colab.research.google.com/drive/18316eFVMw-NIlA9OandB7djvp0J4jI0-?usp=sharing) | ✅ | Swift 5.5.3 (March 2022) |
+| [kernel tests](https://colab.research.google.com/drive/1vooU1XVHSpolOSmVUKM4Wj6opEJBt7zs?usp=sharing) (outdated) | ✅ | Swift 5.5.3 (March 2022) |
+| [own kernel tests](https://colab.research.google.com/drive/1nHitEZm9QZNheM-ALajARyRZY2xpZr00?usp=sharing) (outdated) | ✅ | Swift 5.5.3 (March 2022) |
+| [simple notebook tests](https://colab.research.google.com/drive/18316eFVMw-NIlA9OandB7djvp0J4jI0-?usp=sharing) (outdated) | ✅ | Swift 5.5.3 (March 2022) |
 | [SwiftPlot](https://colab.research.google.com/drive/1Rxs7OfuKIJ_hAm2gUQT2gWSuIcyaeZfz?usp=sharing) | ✅ | Swift 5.6 (April 2022) |
 | [S4TF with TF 2.4](https://colab.research.google.com/drive/1v3ZhraaHdAS2TGj03hE0cK-KRFzsqxO1?usp=sharing)* | ❌ | 2021-11-12 Nightly Snapshot (June 2022) |
 
