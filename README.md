@@ -20,7 +20,7 @@ Colab notebooks created directly from Google Drive are tailored for Python progr
 
 When Google sponsored S4TF from 2018 - 2021, the Swift community created several Jupyter notebooks. To run those notebooks now, you must slightly modify them. Create a new cell at the top of each notebook, including the commands shown above*. No further changes are necessary because of Swift-Colab's backward-compatibility. If you experience a problem, please [file an issue](https://github.com/philipturner/swift-colab/issues).
 
-\*For a more future-proof solution, fill that cell with a comment directing the user to Swift-Colab's repository. Whoever runs the notebook will likely not update the Swift version passed into `install_swift.sh`. I recommend this approach for the [fastai/swiftai](https://github.com/fastai/swiftai) notebooks and anything that must be maintained indefinitely.
+\*For a more future-proof solution, fill that cell with a comment directing the user to Swift-Colab's repository. Whoever runs the notebook will likely not update the Swift version passed into `install_swift.sh`. I recommend this approach for the [fastai/swiftai](https://github.com/fastai/swiftai) notebooks and anything else that must be maintained indefinitely.
 
 ## Using Swift-Colab
 
