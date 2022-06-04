@@ -34,7 +34,7 @@ Swift-Colab has several powerful features, including magic commands and Google D
 
 To install a Swift package, make an `%install` command followed by a Swift 4.2-style package specification. After that, type the modules you want to compile. Before importing the module with a Swift `import` statement, execute the `%install` command. You can install packages in any cell, which was not possible with [swift-jupyter](https://github.com/google.swift-jupyter).
 
-If you restart the runtime, remember to rerun the `%install` command for each package. This command tells the Swift interpreter that the package is ready to be imported. It will also take less time to compile, because it's utilizing cached build products from the previous Jupyter session.
+Upon restarting the runtime, remember to rerun the `%install` command for each package. This command tells the Swift interpreter that the package is ready to be imported. It will also take less time to compile, because it's utilizing cached build products from the previous Jupyter session.
 
 ## Swift for TensorFlow integration
 
