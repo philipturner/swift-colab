@@ -165,10 +165,14 @@ func configure_inline_support(shell: PythonObject, backend: PythonObject) throws
     do {
       try shell.events.unregister.throwing
         .dynamicallyCall(withArguments: ["post_execute", flush_figures])
-    } catch let error as PythonError.exception(let error, let traceback) {
+    } catch let error as PythonError {
       switch error {
       case .exception(let error, let traceback):
-        break
+        if Python.isinstance(error, Python.ValueError) {
+          break
+        } else {
+          throw error
+        }
       default:
         throw error
       }
