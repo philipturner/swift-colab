@@ -179,6 +179,7 @@ func runTerminalProcess(args: [String], cwd: String? = nil) throws -> Int {
       break
     }
   }
+  sendStdout("\u{1b}[0m")
   process.isalive()
   
   if let exitstatus = Int(process.exitstatus) {
