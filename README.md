@@ -46,7 +46,7 @@ For in the future, when S4TF works in Colab. Either I fix the build system, or I
 
 ## SwiftPlot integration
 
-To use IPython graphs or SwiftPlot plots, enter the magic commands shown below. [`EnableIPythonDisplay.swift`](https://github.com/philipturner/swift-colab/blob/main/Sources/include/EnableIPythonDisplay.swift) depends on the PythonKit and SwiftPlot libraries. SwiftPlot takes 23 seconds to compile, so avoid importing it unless you intend to use it. If you change your mind an want to use SwiftPlot later, just restart the runtime.
+To use IPython graphs or SwiftPlot plots, enter the magic commands shown below. [`EnableIPythonDisplay.swift`](https://github.com/philipturner/swift-colab/blob/main/Sources/include/EnableIPythonDisplay.swift) depends on the PythonKit and SwiftPlot libraries. SwiftPlot takes 23 seconds to compile, so skip importing it unless you intend to use it. However, you must restart the runtime if you change your mind.
 
 ```swift
 %install '.package(url: "https://github.com/pvieito/PythonKit", .branch("master"))' PythonKit
@@ -54,7 +54,7 @@ To use IPython graphs or SwiftPlot plots, enter the magic commands shown below. 
 %include "EnableIPythonDisplay.swift"
 ```
 
-You must include `EnableIPythonDisplay.swift` after (rather than before) installing the Swift packages, or else plots will not show. The file injects the following code into the interpreter, gated under import guards. The code samples here do not explicitly import these libraries, as doing so would be redundant. If you do not include `EnableIPythonDisplay.swift`, you must explicitly import these libraries before running any Swift code that depends on them.
+Include `EnableIPythonDisplay.swift` after (rather than before) installing the Swift packages, or else plots will not show. The file injects the following code into the interpreter, gated under import guards. The code samples here do not explicitly import these libraries, as doing so would be redundant. If you do not include `EnableIPythonDisplay.swift`, you must explicitly import these libraries before running any Swift code that depends on them.
 
 ```swift
 import PythonKit
