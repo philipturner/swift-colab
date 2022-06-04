@@ -4,6 +4,9 @@ Easiest to do this before executing install script
 
 Why this doesn't work in Swift - summarize the threads talking about this issue, link to them
 
+- https://github.com/google/swift-jupyter/issues/100
+- https://forums.fast.ai/t/python-textfield-output-not-working/51000/14
+
 ```swift
 from google.colab import drive
 drive.mount("/content")
