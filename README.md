@@ -60,7 +60,7 @@ import AGGRenderer
 
 ## Testing
 
-The following tests ensure Swift-Colab still runs with recent Swift toolchains. Some of these originated from [unit tests](https://github.com/google/swift-jupyter/tree/main/test/tests) in swift-jupyter, while others were created by the community. If you encounter a built failure in any test that is not outdated or have a suggestion for a new test notebook, please [open an issue](https://github.com/philipturner/swift-colab/issues).
+The following tests ensure Swift-Colab still runs with recent Swift toolchains. Some of these originated from [unit tests](https://github.com/google/swift-jupyter/tree/main/test/tests) in swift-jupyter, while others were created by the community. If any up-to-date notebook fails or you have a suggestion for a new test notebook, please [open an issue](https://github.com/philipturner/swift-colab/issues).
 
 <!-- Emoji shortcuts for reference: ✅ ❌ -->
 
