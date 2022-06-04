@@ -18,19 +18,19 @@ Colab notebooks created directly from Google Drive have syntax coloring tailored
 
 > Tip: If you exceed the time limit or disconnect and delete the runtime, Colab will restart in Python mode. That means Swift code will execute as if it's Python code. Repeat the process outlined above to return to Swift mode.
 
-Several Swift Jupyter notebooks were made between the years 2018 - 2021, when Google sponsored S4TF. To run those notebooks again, you must slightly modify them. Add an extra cell to the top of them, filled with the commands shown above. Swift-Colab is backward-compatible with swift-jupyter, so the notebooks should run without any modifications besides the installation command. If you experience a problem, please [file an issue](https://github.com/philipturner/swift-colab/issues).
+When Google sponsored S4TF from 2018 - 2021, several Swift Jupyter notebooks were made. To run those notebooks now, you must slightly modify them. Create a new cell at the top, adding the commands shown above. Swift-Colab is backward-compatible with swift-jupyter, so no further changes are necessary. If you experience a problem, please [file an issue](https://github.com/philipturner/swift-colab/issues).
 
-Colab is similar to the Swift REPL, with the added capability of submitting several code lines at once. Fill the second code cell with the example shown below. Run it, and you will see `64`. If you had executed several functions or property getters with non-`Void` return values, only the last one would show in output. To get around this restriction, pass anything you want to display into `print(...)`.
+Colab is similar to the Swift REPL, but it submits several lines of code at once. Fill the second code cell with the example shown below. Run it, and you will see `64`. If you had run several lines, only the last one would show in output. To get around this restriction, you can use Swift's `print(...)` function to display values.
 
 ```swift
 Int.bitWidth
 ```
 
-Swift-Colab has several powerful features, such as built-in magic commands and Google Drive integration. Unfortunately, they are not adequately documented at the moment. Refer to the old google/swift-jupyter's [usage instructions](https://github.com/google/swift-jupyter#usage-instructions) in the meantime.
+Swift-Colab has several powerful features, including magic commands and Google Drive integration. Unfortunately, they are not adequately documented at the moment. Refer to the old google/swift-jupyter's [usage instructions](https://github.com/google/swift-jupyter#usage-instructions) in the meantime.
 
 ## Installing packages
 
-To install a Swift package, first add an `%install` command followed by a Swift 4.2-style package specification. After that, type the module names you want to compile. In another line, import the module. Unlike with [swift-jupyter](https://github.com/google.swift-jupyter), you can install packages in any cell, even after some code has already executed. 
+To install a Swift package, make an `%install` command followed by a Swift 4.2-style package specification. After that, type the modules you want to compile. Before importing the module with a Swift `import` statement, execute the `%install` command. You can install packages in any cell, which was not possible with [swift-jupyter](https://github.com/google.swift-jupyter).
 
 If you restart the runtime, you must replay the `%install` command for installing it. This command tells the Swift interpreter that the package is ready to be imported. It will also take less time to compile, because it's utilizing cached build products from the previous Jupyter session.
 
