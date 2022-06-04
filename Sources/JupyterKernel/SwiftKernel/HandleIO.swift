@@ -181,7 +181,7 @@ func runTerminalProcess(args: [String], cwd: String? = nil) throws -> Int {
   }
   sendStdout("\u{1b}[0m")
   
-  process.isalive()
+  process.isalive() // Force `exitstatus` to materialize.
   if let exitstatus = Int(process.exitstatus) {
     if exitstatus > 128 {
       return -(exitstatus - 128)
