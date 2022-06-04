@@ -74,7 +74,7 @@ fileprivate let SwiftShell = PythonClass(
       }
       `self`.active_eventloop = gui
       return Python.None
-    }
+    },
     
     // If the normal `enable_matplotlib` is called, it might freeze while importing `matplotlib_inline.backend_inline`.
 
