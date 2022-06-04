@@ -50,7 +50,7 @@ To use IPython graphs or SwiftPlot, enter a few magic commands as shown below. [
 %include "EnableIPythonDisplay.swift"
 ```
 
-You must include `EnableIPythonDisplay.swift` after (instead of before) installing the Swift packages, otherwise it will not allow plotting. The file injects the following code into the interpreter, gated under import guards. The code samples here do not explicitly import them, as that would be redundant.
+You must include `EnableIPythonDisplay.swift` after (rather than before) installing the Swift packages, or else plots will not show. The file injects the following code into the interpreter, gated under import guards. The code samples here do not explicitly import these libraries, as doing so would be redundant. If you do not include `EnableIPythonDisplay.swift`, you must explicitly import these libraries before running any Swift code that depends on them.
 
 ```swift
 import PythonKit
