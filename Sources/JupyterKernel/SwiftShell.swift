@@ -78,13 +78,21 @@ fileprivate let SwiftShell = PythonClass(
     
     // Enable matplotlib integration for the kernel.
     "enable_matplotlib": PythonInstanceMethod { args in
+      print("hello world 1")
       let `self` = args[0]
       var gui = args[1]
       if gui == Python.None {
+        print("hello world 1.5")
         gui = args[0].kernel.gui
       }
+      print("hello world 2")
+      do {
       try ZMQInteractiveShell.enable_matplotlib.throwing
         .dynamicallyCall(withArguments: [`self`, gui])
+      } catch {
+        print("hello world 3 \(error)")
+      }
+      print("hello world 4")
       return Python.None
     },
     
