@@ -89,10 +89,10 @@ fileprivate let SwiftShell = PythonClass(
 //         .dynamicallyCall(withArguments: [`self`, gui])
       
 //       // TODO: Make these lines 80 characters
-      print("checkpoint 1")
-      let backend_inline = Python.import("matplotlib_inline.backend_inline")
-      print("checkpoint 1.3")
-      let configure_inline_support = backend_inline.configure_inline_support
+      print("checkpoint 1.1")
+      let configure_inline_support = Python.import("matplotlib_inline.backend_inline").configure_inline_support
+//       print("checkpoint 1.3")
+//       let configure_inline_support = backend_inline.configure_inline_support
       print("checkpoint 1.5")
       let pt = Python.import("IPython.core.pylabtools")
       var backend = Python.None
