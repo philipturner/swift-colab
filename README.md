@@ -16,7 +16,7 @@ Colab notebooks created directly from Google Drive have syntax coloring tailored
 #// After this cell finishes, go to Runtime > Restart runtime.
 ```
 
-> Tip: If you exceed the time limit or disconnect and delete the runtime, Colab will restart in Python mode. Repeat the process outlined above to return to Swift mode.
+> Tip: If you exceed the time limit or disconnect and delete the runtime, Colab will restart in Python mode. That means Swift code will execute as if it's Python code. Repeat the process outlined above to return to Swift mode.
 
 Several Swift Jupyter notebooks were made between the years 2018 - 2021, when Google sponsored S4TF. To run those notebooks again, you must slightly modify them. Add an extra cell to the top of them, filled with the commands shown above. Swift-Colab is backward-compatible with swift-jupyter, so the notebooks should run without any modifications besides the installation command. If you experience a problem, please [file an issue](https://github.com/philipturner/swift-colab/issues).
 
