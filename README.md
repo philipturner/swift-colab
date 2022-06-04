@@ -31,6 +31,20 @@ Int.bitWidth
 // Output: 64 (you can include this comment in the cell; it doesn't affect output)
 ```
 
+```swift
+Int.bitWidth
+Int.bitWidth
+// Output: Still only one "64"
+```
+
+```swift
+print(Int.bitWidth)
+Int.bitWidth
+// Output:
+// 64
+// 64
+```
+
 Swift-Colab has several powerful features, including magic commands and Google Drive integration. Unfortunately, they are not adequately documented yet. Refer to swift-jupyter's [usage instructions](https://github.com/google/swift-jupyter#usage-instructions) in the meantime.
 
 ## Installing packages
