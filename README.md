@@ -69,7 +69,7 @@ The following tests ensure Swift-Colab still runs with recent Swift toolchains. 
 | [kernel_tests.py](https://colab.research.google.com/drive/1vooU1XVHSpolOSmVUKM4Wj6opEJBt7zs?usp=sharing) (outdated) | ✅ | Swift 5.5.3 (March 2022) |
 | [own_kernel_tests.py](https://colab.research.google.com/drive/1nHitEZm9QZNheM-ALajARyRZY2xpZr00?usp=sharing) (outdated) | ✅ | Swift 5.5.3 (March 2022) |
 | [simple_notebook_tests.py](https://colab.research.google.com/drive/18316eFVMw-NIlA9OandB7djvp0J4jI0-?usp=sharing) (outdated) | ✅ | Swift 5.5.3 (March 2022) |
-| [SwiftPlot](https://colab.research.google.com/drive/1Rxs7OfuKIJ_hAm2gUQT2gWSuIcyaeZfz?usp=sharing) | ✅ | Swift 5.6 (April 2022) |
-| [S4TF with TF 2.4](https://colab.research.google.com/drive/1v3ZhraaHdAS2TGj03hE0cK-KRFzsqxO1?usp=sharing)* | ❌ | 2021-11-12 Nightly Snapshot (June 2022) |
+| [SwiftPlot](https://colab.research.google.com/drive/1Rxs7OfuKIJ_hAm2gUQT2gWSuIcyaeZfz?usp=sharing) | ✅ | Swift 5.6.1 (June 2022) |
+| [S4TF with TF 2.4](https://colab.research.google.com/drive/1v3ZhraaHdAS2TGj03hE0cK-KRFzsqxO1?usp=sharing)* | ❌ | November 12, 2021 Nightly Snapshot (June 2022) |
 
 \*https://github.com/philipturner/swift-colab/issues/15 tracks this failure.
