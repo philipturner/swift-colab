@@ -86,7 +86,7 @@ fileprivate let SwiftShell = PythonClass(
       }
       print("hello world 2")
       /*try*/ ZMQInteractiveShell.enable_matplotlib//.throwing
-        .dynamicallyCall(withArguments: `self`, gui)
+        .dynamicallyCall(withArguments: [`self`, gui])
       
 //       // TODO: Make these lines 80 characters
 //       print("checkpoint 1")
