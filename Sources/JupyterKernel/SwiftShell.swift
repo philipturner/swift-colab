@@ -84,7 +84,7 @@ fileprivate let SwiftShell = PythonClass(
       if gui == Python.None {
         gui = args[0].kernel.gui
       }
-      print("hello world 4")
+      print("hello world 5")
       try ZMQInteractiveShell.enable_matplotlib.throwing
         .dynamicallyCall(withArguments: `self`, gui)
       
