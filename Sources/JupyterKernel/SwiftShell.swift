@@ -118,6 +118,58 @@ fileprivate let SwiftShell = PythonClass(
       print("checkpoint 8")
       return PythonObject(tupleOf: gui, backend)
       
+      
+      
+      
+      def configure_inline_support(shell, backend):
+    """Configure an IPython shell object for matplotlib use.
+
+    Parameters
+    ----------
+    shell : InteractiveShell instance
+
+    backend : matplotlib backend
+    """
+    # If using our svg payload backend, register the post-execution
+    # function that will pick up the results for display.  This can only be
+    # done with access to the real shell object.
+
+    cfg = InlineBackend.instance(parent=shell)
+    cfg.shell = shell
+    if cfg not in shell.configurables:
+        shell.configurables.append(cfg)
+
+    if backend == 'module://matplotlib_inline.backend_inline':
+        shell.events.register('post_execute', flush_figures)
+
+        # Save rcParams that will be overwrittern
+        shell._saved_rcParams = {}
+        for k in cfg.rc:
+            shell._saved_rcParams[k] = matplotlib.rcParams[k]
+        # load inline_rc
+        matplotlib.rcParams.update(cfg.rc)
+        new_backend_name = "inline"
+    else:
+        try:
+            shell.events.unregister('post_execute', flush_figures)
+        except ValueError:
+            pass
+        if hasattr(shell, '_saved_rcParams'):
+            matplotlib.rcParams.update(shell._saved_rcParams)
+            del shell._saved_rcParams
+        new_backend_name = "other"
+
+    # only enable the formats once -> don't change the enabled formats (which the user may
+    # has changed) when getting another "%matplotlib inline" call.
+    # See https://github.com/ipython/ipykernel/issues/29
+    cur_backend = getattr(configure_inline_support, "current_backend", "unset")
+    if new_backend_name != cur_backend:
+        # Setup the default figure format
+        select_figure_formats(shell, cfg.figure_formats, **cfg.print_figure_kwargs)
+        configure_inline_support.current_backend = new_backend_name
+      
+      
+      
 //       return Python.None
     },
     
