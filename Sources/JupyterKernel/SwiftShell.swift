@@ -84,8 +84,8 @@ fileprivate let SwiftShell = PythonClass(
       if gui == Python.None {
         gui = args[0].kernel.gui
       }
-      print("hello world 7")
-      try ZMQInteractiveShell.enable_matplotlib.throwing
+//       print("hello world 7")
+      return try ZMQInteractiveShell.enable_matplotlib.throwing
         .dynamicallyCall(withArguments: [`self`, gui])
       
 //       // TODO: Make these lines 80 characters
@@ -116,7 +116,7 @@ fileprivate let SwiftShell = PythonClass(
 //       print("checkpoint 8")
 //       return PythonObject(tupleOf: gui, backend)
       
-      return Python.None
+//       return Python.None
     },
     
     // Enable pylab support at runtime.
