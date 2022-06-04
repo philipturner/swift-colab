@@ -161,7 +161,6 @@ func configure_inline_support(shell: PythonObject, backend: PythonObject) throws
     new_backend_name = "inline"
   } else {
     print("Control path 2")
-    
     do {
       try shell.events.unregister.throwing
         .dynamicallyCall(withArguments: ["post_execute", flush_figures])
@@ -177,5 +176,12 @@ func configure_inline_support(shell: PythonObject, backend: PythonObject) throws
         throw error
       }
     }
+    if let _saved_rcParams = shell.checking._saved_rcParams {
+      if _saved_rcParams != Python.None {
+        matplotlib.rcParams.update(_saved_rcParams)
+      }
+      shell._saved_rcParams = Python.None
+    }
+    new_backend_name = "other"
   }
 }
