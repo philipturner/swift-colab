@@ -58,7 +58,7 @@ func doExecute(code: String) throws -> PythonObject? {
   } else if result is SwiftError {
     var message: [String]
     if KernelContext.process_is_alive() == 0 {
-      message = [formatString("Process killed", ansiOptions: [33])]
+      message = [formatString("Process killed", ansiOptions: [31])]
       sendIOPubErrorMessage(message)
       
       // Exit the kernel because there is no way to recover from a killed 
