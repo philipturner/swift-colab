@@ -40,7 +40,12 @@ To install a Swift package, make an `%install` command followed by a Swift 4.2-s
 %install '.package(url: "https://github.com/pvieito/PythonKit", .branch("master"))' PythonKit
 ```
 
-Upon restarting the runtime, remember to rerun the `%install` command for each package. This command tells the Swift interpreter that the package is ready to be imported. It takes much less time to compile than when you ran it the firs time, because Swift-Colab utilizes cached build products from the previous Jupyter session.
+Upon restarting the runtime, remember to rerun the `%install` command for each package. This command tells the Swift interpreter that the package is ready to be imported. It runs much more quickly than the first time through, because Swift-Colab utilizes cached build products from the previous Jupyter session. You can even see this mechanism in action by redundantly importing the same package. Make sure both commands match character-for-character!
+
+```swift
+%install '.package(url: "https://github.com/pvieito/PythonKit", .branch("master"))' PythonKit
+%install '.package(url: "https://github.com/pvieito/PythonKit", .branch("master"))' PythonKit
+```
 
 ## Swift for TensorFlow integration
 
