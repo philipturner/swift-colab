@@ -6,7 +6,14 @@ Swift-Colab is an accessible way to do programming with Swift. It runs in a brow
 
 For an in-depth look at how and why this repository was created, check out the [summary of its history](./Documentation/ColabSupportHistory.md).
 
-## Getting started
+- [Getting Started](#getting-started)
+- [Using Swift-Colab](#using-swift-colab)
+- [Installing Packages](#installing-packages)
+- [Swift for TensorFlow Integration](#swift-for-tensorflow-integration)
+- [SwiftPlot Integration](#swiftplot-integration)
+- [Testing](#testing)
+
+## Getting Started
 
 Colab notebooks created directly from Google Drive are tailored for Python programming. When making a Swift notebook, copy the [official template](https://colab.research.google.com/drive/1EACIWrk9IWloUckRm3wu973bKUBXQDKR?usp=sharing) instead. It contains the commands listed below, which download and compile the Jupyter kernel. Run the first code cell and follow the instructions for restarting the runtime.
 
@@ -49,7 +56,7 @@ Int.bitWidth
 
 Swift-Colab has several powerful features, including magic commands and Google Drive integration. Unfortunately, they are not adequately documented yet. Refer to swift-jupyter's [usage instructions](https://github.com/google/swift-jupyter#usage-instructions) in the meantime.
 
-## Installing packages
+## Installing Packages
 
 To install a Swift package, make an `%install` command followed by a Swift 4.2-style package specification. After that, type the modules you want to compile. Before importing any module with a Swift `import` statement, execute its `%install` command. You can install packages in any cell, which was not possible with [swift-jupyter](https://github.com/google.swift-jupyter).
 
@@ -64,7 +71,7 @@ Upon restarting the runtime, remember to rerun the `%install` command for each p
 %install '.package(url: "https://github.com/pvieito/PythonKit", .branch("master"))' PythonKit
 ```
 
-## Swift for TensorFlow integration
+## Swift for TensorFlow Integration
 
 Coming in the future! Initial support may come from an old branch of S4TF, not the head branch. This task is tracked by https://github.com/philipturner/swift-colab/issues/15.
 
@@ -72,7 +79,7 @@ Coming in the future! Initial support may come from an old branch of S4TF, not t
 For in the future, when S4TF works in Colab. Either I fix the build system, or I hard-code some way to install the X10 binary.
 -->
 
-## SwiftPlot integration
+## SwiftPlot Integration
 
 To use IPython graphs or SwiftPlot plots, enter the magic commands shown below. [`EnableIPythonDisplay.swift`](https://github.com/philipturner/swift-colab/blob/main/Sources/include/EnableIPythonDisplay.swift) depends on the PythonKit and SwiftPlot libraries. SwiftPlot takes 23 seconds to compile, so skip importing it unless you intend to use it. However, you must restart the runtime if you change your mind.
 
