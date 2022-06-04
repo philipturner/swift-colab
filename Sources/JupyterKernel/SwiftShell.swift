@@ -166,6 +166,7 @@ func configure_inline_support(shell: PythonObject, backend: PythonObject) throws
       try shell.events.unregister.throwing
         .dynamicallyCall(withArguments: ["post_execute", flush_figures])
     } catch let error as PythonError {
+      print("An error happened")
       switch error {
       case .exception(let error, let traceback):
         if Bool(Python.isinstance(error, Python.ValueError))! {
