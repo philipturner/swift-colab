@@ -191,3 +191,10 @@ func configure_inline_support(shell: PythonObject, backend: PythonObject) throws
     // code disabled for now
   }
 }
+
+// Try loading all imports, then seeing if the top-level code is what breaks loading the file.
+
+fileprivate let flush_figures = PythonFunction { _ in
+  // TODO: implement
+  return Python.None
+}.pythonObject
