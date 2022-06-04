@@ -138,6 +138,7 @@ func configure_inline_support(shell: PythonObject, backend: PythonObject) throws
   // done with access to the real shell object.
   
   // Move this import to the top of this file
+  let matplotlib = Python.import("matplotlib")
   let InlineBackend = Python.import("matplotlib_inline.config").InlineBackend
   
   let cfg = InlineBackend.instance(parent: shell)
