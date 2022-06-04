@@ -183,5 +183,11 @@ func configure_inline_support(shell: PythonObject, backend: PythonObject) throws
       shell._saved_rcParams = Python.None
     }
     new_backend_name = "other"
+    
+    // only enable the formats once -> don't change the enabled formats (which the user may
+    // has changed) when getting another "%matplotlib inline" call.
+    // See https://github.com/ipython/ipykernel/issues/29
+    
+    // code disabled for now
   }
 }
