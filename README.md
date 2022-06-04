@@ -8,7 +8,7 @@ For an in-depth look at how and why this repository was created, check out the [
 
 ## Getting started
 
-Colab notebooks creates from Google Drive are configured for Python by default. Instead use the [official template](https://colab.research.google.com/drive/1EACIWrk9IWloUckRm3wu973bKUBXQDKR?usp=sharing) for Swift notebooks. It contains the following commands, which download and compile the Jupyter kernel. In the notebook output, they instruct you to restart the runtime. This action shuts down the Python kernel and starts up the Swift kernel.
+Colab notebooks created from Google Drive are configured for Python by default. To make a Swift notebook, copy the [official template](https://colab.research.google.com/drive/1EACIWrk9IWloUckRm3wu973bKUBXQDKR?usp=sharing) instead of creating a noteboook directly from Drive. It contains the commands listed below, which download and compile the Jupyter kernel. Run the first code cell, and you will be instructed to restart the runtime. Restarting the runtime deactivates the Python kernel and starts the Swift kernel.
 
 ```swift
 !curl "https://raw.githubusercontent.com/philipturner/swift-colab/release/latest/install_swift.sh" --output "install_swift.sh"
@@ -18,9 +18,9 @@ Colab notebooks creates from Google Drive are configured for Python by default. 
 
 > Tip: If you exceed the time limit or disconnect and delete the runtime, Colab will restart in Python mode. Repeat the process outlined above to return to Swift mode.
 
-There are several Jupyter notebooks created when Colab had built-in support for Swift. Paste the commands above into those notebooks to let them run again. If you encounter a notebook that behaves differently than before S4TF went dormant, please submit an issue on this repository. Swift-Colab should be backwards-compatible with swift-jupyter.
+During the era when Google sponsored S4TF, several Swift Jupyter notebooks were made. They no longer run as-is because Colab no longer officially supports Swift. However, they should run if you paste the commands above into their first cell. [File an issue](https://github.com/philipturner/swift-colab/issues) if you experience any problems with doing so.
 
-Type the following code into the second code cell. Run it, and `64` appears in the output.
+Colab is similar to the Swift REPL, although it executes code in cells instead of line-by-line. Fill the second code cell with the example shown below. Run it, and you will see `64`.
 
 ```swift
 Int.bitWidth
