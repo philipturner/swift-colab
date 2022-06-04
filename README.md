@@ -8,7 +8,9 @@ For an in-depth look at how and why this repository was created, check out the [
 
 ## Getting started
 
-Copy [this template](https://colab.research.google.com/drive/1EACIWrk9IWloUckRm3wu973bKUBXQDKR?usp=sharing) of a Swift Colab notebook. Do not create one directly from Google Drive, as notebooks are configured for Python by default. Copy the following commands into the first code cell and run it:
+Colab notebooks creates from Google Drive are configured for Python by default. Instead use the [official template](https://colab.research.google.com/drive/1EACIWrk9IWloUckRm3wu973bKUBXQDKR?usp=sharing) for Swift notebooks. It contains the following commands, which download and compile the Jupyter kernel. 
+
+There are several Jupyter notebooks created when Colab had built-in support for Swift. Paste the commands below into those notebooks to let them run again. If you encounter a notebook that behaves differently than before S4TF went dormant, please submit an issue on this repository. I strive to maintain backward compatibility.
 
 ```swift
 !curl "https://raw.githubusercontent.com/philipturner/swift-colab/release/latest/install_swift.sh" --output "install_swift.sh"
