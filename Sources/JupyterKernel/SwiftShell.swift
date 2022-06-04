@@ -132,6 +132,9 @@ fileprivate let SwiftShell = PythonClass(
 ).pythonObject
 
 func configure_inline_support(shell: PythonObject, backend: PythonObject) {
+  // Move this import to the top of this file
+  let InlineBackend = Python.import("matplotlib_inline.config").InlineBackend
+  
   let cfg = InlineBackend.instance(parent: shell)
   cfg.shell = shell
   if !shell.configurables.contains(cfg) {
