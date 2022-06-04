@@ -8,7 +8,7 @@ For an in-depth look at how and why this repository was created, check out the [
 
 ## Getting started
 
-Colab notebooks created from Google Drive are configured for Python by default. To make a Swift notebook, copy the [official template](https://colab.research.google.com/drive/1EACIWrk9IWloUckRm3wu973bKUBXQDKR?usp=sharing) instead of creating a noteboook directly from Drive. It contains the commands listed below, which download and compile the Jupyter kernel. Run the first code cell, and you will be instructed to restart the runtime. Restarting the runtime deactivates the Python kernel and starts the Swift kernel.
+Colab notebooks created from Google Drive are configured for Python by default. To make a Swift notebook, copy the [official template](https://colab.research.google.com/drive/1EACIWrk9IWloUckRm3wu973bKUBXQDKR?usp=sharing) instead. It contains the commands listed below, which download and compile the Jupyter kernel. Run the first code cell and follow the instructions for restarting the runtime.
 
 ```swift
 !curl "https://raw.githubusercontent.com/philipturner/swift-colab/release/latest/install_swift.sh" --output "install_swift.sh"
