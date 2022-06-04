@@ -22,7 +22,7 @@ When Google sponsored S4TF from 2018 - 2021, several Swift Jupyter notebooks wer
 
 ## Using Swift-Colab
 
-Colab is similar to the Swift REPL, but it submits several lines of code at once. Fill the second code cell with the example shown below. Run it, and you will see `64`. If you had run several lines, only the last one would show in output. To get around this restriction, you can use Swift's `print(...)` function to display values.
+Colab is similar to the Swift REPL, but it submits several lines of code at once. Fill the second code cell with the example shown below. Run it, and you will see `64`. No matter how many lines a cell has, only the last one affects output. To get around this restriction, use Swift's `print(...)` function to display values.
 
 ```swift
 Int.bitWidth
