@@ -95,8 +95,14 @@ fileprivate let SwiftShell = PythonClass(
       let pt = Python.import("IPython.core.pylabtools")
       print("checkpoint 1.5")
       var backend = Python.None
-      print("checkpoint 2")
-      (gui, backend) = pt.find_gui_and_backend(gui, `self`.pylab_gui_select).tuple2
+      print("checkpoint 2.1")
+      let pylab_gui_select = `self`.pylab_gui_select
+      print("checkpoint 2.2")
+      let find_gui_and_backend = pt.find_gui_and_backend
+      print("checkpoint 2.3")
+      let theTuple = find_gui_and_backend(gui, pylab_gui_select)
+      print("checkpoint 2.4")
+      (gui, backend) = theTuple.tuple2
       print("checkpoint 3")
       
       if gui != "inline" {
