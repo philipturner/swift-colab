@@ -12,21 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Since these imports are independent of PythonKit, it makes sense to insert
-// them into the code regardless of whether the user %include'd this file
-// properly.
+#if canImport(PythonKit)
+import PythonKit
+
+// These symbols disappear from the Swift interpreter after the file finishes
+// executing. Why?
 import func Glibc.dlopen
 import func Glibc.dlsym
 import var Glibc.RTLD_LAZY
-//
-// NOTE: Since these imports were added, a bug fix implemented in 
-// KernelCommunicator.swift has made them redundant. However, documentation
-// about the imports will remain for clarity.
-//
-// For some reason, they must be re-added?
-
-#if canImport(PythonKit)
-import PythonKit
 
 /// Hooks IPython to the KernelCommunicator, so that it can send display
 /// messages to Jupyter.
