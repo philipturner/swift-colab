@@ -9,7 +9,7 @@ fileprivate let InteractiveShellABC = interactiveshell.InteractiveShellABC
 fileprivate let Session = session.Session
 fileprivate let Instance = traitlets.Instance
 fileprivate let ZMQInteractiveShell = zmqshell.ZMQInteractiveShell
-////////////////////////////////////////////////////////////////////////////////
+
 // PythonKit sometimes hangs indefinitely when you import NumPy. In turn, this
 // causes matplotlib and other Python libraries depending on NumPy to hang. The
 // culprit is some Python code that executes automatically when you import the
@@ -22,8 +22,13 @@ fileprivate let ZMQInteractiveShell = zmqshell.ZMQInteractiveShell
 // `platform.system()` and `platform.machine()` from the built-in `platform`
 // library. It sometimes freezes while calling those functions. However, it
 // doesn't freeze if you call one of those functions long before loading NumPy.
-@_cdecl("prevent_import_hang")
-public func prevent_import_hang() {
+//
+// The workaround requires calling `system()` or `machine()` from the same
+// process that imports NumPy. The Jupyter kernel loads and executes this
+// symbol from within `KernelCommunicator.swift`, which runs inside the Swift
+// interpreter.
+@_cdecl("prevent_numpy_import_hang")
+public func prevent_numpy_import_hang() {
   let platform = Python.import("platform")
   _ = platform.system()
 }
