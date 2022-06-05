@@ -9,12 +9,13 @@ fileprivate let InteractiveShellABC = interactiveshell.InteractiveShellABC
 fileprivate let Session = session.Session
 fileprivate let Instance = traitlets.Instance
 fileprivate let ZMQInteractiveShell = zmqshell.ZMQInteractiveShell
-
 ////////////////////////////////////////////////////////////////////////////////
-// PythonKit sometimes freezes when you import NumPy. In turn, this allows
-// matplotlib and other Python libraries depending on NumPy to freeze. The
+// PythonKit sometimes hangs indefinitely when you import NumPy. In turn, this
+// causes matplotlib and other Python libraries depending on NumPy to hang. The
 // culprit is some Python code that executes automatically when you import the
-// module.
+// module. I cannot reproduce the hang/freeze while running Colab in Python
+// mode, although I have observed it while running Python code via
+// `PyRun_SimpleString` from within PythonKit (while Colab is in Swift mode).
 //
 // In `numpy.core._add_newdocs_scalars`, it tries generating documentation for
 // some scalar types at runtime. While generating the documentation, it calls
