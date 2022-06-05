@@ -10,6 +10,19 @@ fileprivate let Session = session.Session
 fileprivate let Instance = traitlets.Instance
 fileprivate let ZMQInteractiveShell = zmqshell.ZMQInteractiveShell
 
+////////////////////////////////////////////////////////////////////////////////
+// PythonKit sometimes freezes when you import NumPy. In turn, this allows
+// matplotlib and other Python libraries depending on NumPy to freeze. The
+// culprit is some Python code that executes automatically when you import the
+// module.
+//
+// In `numpy.core._add_newdocs_scalars`, it tries generating documentation for
+// some scalar types at runtime. While generating the documentation, it calls
+// `platform.system()` and `platform.machine()` from the built-in `platform`
+// library. It sometimes freezes while calling those functions. However, it
+// doesn't freeze if you call one of those functions long before loading NumPy.
+
+
 // Caller side: use `ctypes` to convert return value, which is the address of a
 // Python object, into an actual Python object. This Swift file stores a
 // reference to the return value's object so that it doesn't deallocate.
