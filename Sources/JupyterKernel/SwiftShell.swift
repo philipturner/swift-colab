@@ -27,8 +27,8 @@ fileprivate let ZMQInteractiveShell = zmqshell.ZMQInteractiveShell
 // process that imports NumPy. The Jupyter kernel loads and executes this
 // symbol from within `KernelCommunicator.swift`, which runs inside the Swift
 // interpreter.
-@_cdecl("prevent_numpy_import_hang")
-public func prevent_numpy_import_hang() {
+@_cdecl("prevent_import_hang")
+public func prevent_import_hang() {
   let platform = Python.import("platform")
   _ = platform.system()
 }
