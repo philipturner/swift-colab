@@ -102,18 +102,19 @@ struct KernelCommunicator {
     let username: String
   }
 }
-////////////////////////////////////////////////////////////////////////////////
-// See Sources/JupyterKernel/SwiftShell.swift for an explanation of this 
-// workaround. Injecting the symbols below makes their importing at the top of
-// EnableIPythonDisplay.swift redundant.
+
+// These symbols disappear from the Swift interpreter after the file finishes
+// executing. Why?
 import func Glibc.dlopen
 import func Glibc.dlsym
 import var Glibc.RTLD_LAZY
 
-do {
+// See Sources/JupyterKernel/SwiftShell.swift for an explanation of this 
+// workaround.
+// do {
   let libAddress = dlopen("/opt/swift/lib/libJupyterKernel.so", RTLD_LAZY)
   let funcAddress = dlsym(libAddress, "prevent_numpy_import_hang")
   let prevent_numpy_import_hang = unsafeBitCast(
     funcAddress, to: (@convention(c) () -> Void).self)
   prevent_numpy_import_hang()
-}
+// }
