@@ -263,5 +263,9 @@ fileprivate func activate_matplotlib(_ backend: PythonObject) {
   plt.show._needmain = false
   print("marker 4")
   
+  let flag_calls = Python.import("IPython.utils.decorators").flag_calls
+  print("marker 5")
+  
   plt.draw_if_interactive = flag_calls(plt.draw_if_interactive)
+  print("marker 6")
 }
