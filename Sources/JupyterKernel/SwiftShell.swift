@@ -96,13 +96,8 @@ fileprivate let SwiftShell = PythonClass(
       print("checkpoint 1.5")
       var backend = Python.None
       print("checkpoint 2.1")
-      let pylab_gui_select = `self`.pylab_gui_select
-      print("checkpoint 2.2")
-      let find_gui_and_backend = pt.find_gui_and_backend
-      print("checkpoint 2.3")
-      let theTuple = find_gui_and_backend(gui, pylab_gui_select)
-      print("checkpoint 2.4")
-      (gui, backend) = theTuple.tuple2
+//       let find_gui_and_backend = pt.find_gui_and_backend
+      (gui, backend) = find_gui_and_backend(gui, `self`.pylab_gui_select)
       print("checkpoint 3")
       
       if gui != "inline" {
@@ -208,3 +203,21 @@ fileprivate let flush_figures = PythonFunction { _ in
   // TODO: implement
   return Python.None
 }.pythonObject
+
+fileprivate func find_gui_and_backend(
+  gui input_gui: PythonObject, gui_select: PythonObject
+) -> (PythonObject, PythonObject) {
+  var gui = input_gui
+  var backend = Python.None
+  if gui != Python.None && gui != "auto" {
+    print("Internal control path 1")
+    backend = backends[gui]
+    if gui == "agg" {
+      gui = Python.None
+    }
+  } else {
+    print("Internal control path 2")
+    fatalError("Not yet accounted for")
+  }
+  return (gui, backend)
+}
