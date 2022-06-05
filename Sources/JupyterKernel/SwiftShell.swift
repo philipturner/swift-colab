@@ -169,12 +169,14 @@ func configure_inline_support(shell: PythonObject, backend: PythonObject) throws
       print("An error happened")
       switch error {
       case .exception(let error, let traceback):
+        print("Found an exception: \(error) \(traceback)")
         if Bool(Python.isinstance(error, Python.ValueError))! {
           break
         } else {
           throw error
         }
       default:
+        print("Found another error type: \(error)")
         throw error
       }
     }
