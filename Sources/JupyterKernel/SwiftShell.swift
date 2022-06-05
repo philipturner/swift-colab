@@ -204,6 +204,28 @@ fileprivate let flush_figures = PythonFunction { _ in
   return Python.None
 }.pythonObject
 
+fileprivate let backends: [String: String] = [
+  "tk": "TkAgg",
+  "gtk": "GTKAgg",
+  "gtk3": "GTK3Agg",
+  "gtk4": "GTK4Agg",
+  "wx": "WXAgg",
+  "qt4": "Qt4Agg",
+  "qt5": "Qt5Agg",
+  "qt6": "QtAgg",
+  "qt": "Qt5Agg",
+  "osx": "MacOSX",
+  "nbagg": "nbAgg",
+  "notebook": "nbAgg",
+  "agg": "agg",
+  "svg": "svg",
+  "pdf": "pdf",
+  "ps": "ps",
+  "inline": "module://matplotlib_inline.backend_inline",
+  "ipympl": "module://ipympl.backend_nbagg",
+  "widget": "module://ipympl.backend_nbagg",
+]
+
 fileprivate func find_gui_and_backend(
   gui input_gui: PythonObject, gui_select: PythonObject
 ) -> (PythonObject, PythonObject) {
@@ -211,7 +233,7 @@ fileprivate func find_gui_and_backend(
   var backend = Python.None
   if gui != Python.None && gui != "auto" {
     print("Internal control path 1")
-    backend = backends[gui]
+    backend = backends[String(gui)!]
     if gui == "agg" {
       gui = Python.None
     }
