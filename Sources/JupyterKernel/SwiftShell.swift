@@ -86,48 +86,49 @@ fileprivate let SwiftShell = PythonClass(
       if gui == Python.None {
         gui = args[0].kernel.gui
       }
-//       print("hello world 7")
-//       _ = Python.import("numpy")
-//       return try ZMQInteractiveShell.enable_matplotlib.throwing
-//         .dynamicallyCall(withArguments: [`self`, gui])
+      print("hello world 7")
+      _ = Python.import("numpy")
+      print("hello world 8")
+      return try ZMQInteractiveShell.enable_matplotlib.throwing
+        .dynamicallyCall(withArguments: [`self`, gui])
       
-//       // TODO: Make these lines 80 characters
-      print("checkpoint 1")
-      PyRun_SimpleString("""
-        import sys
-        import os
-        print("checkpoint 1.3")
+// //       // TODO: Make these lines 80 characters
+//       print("checkpoint 1")
+//       PyRun_SimpleString("""
+//         import sys
+//         import os
+//         print("checkpoint 1.3")
         
-        import matplotlib
-        print(matplotlib.__file__)
-        print("checkpoint 1.4")
-        """)
+//         import matplotlib
+//         print(matplotlib.__file__)
+//         print("checkpoint 1.4")
+//         """)
+// //       let pt = Python.import("IPython.core.pylabtools")
+//       print("checkpoint 1.5")
+//       var backend = Python.None
+//       print("checkpoint 2.1")
+// //       let find_gui_and_backend = pt.find_gui_and_backend
+//       (gui, backend) = find_gui_and_backend(gui, `self`.pylab_gui_select)
+//       print("checkpoint 3")
+      
+//       if gui != "inline" {
+//         print("uh oh...")
+//         return Python.None
+//       }
+//       print("checkpoint 4")
+//       activate_matplotlib(backend)
+//       print("checkpoint 5")
+//       try configure_inline_support(shell: `self`, backend: backend)
+//       print("checkpoint 6")
+      
+//       `self`.enable_gui(gui)
+//       print("checkpoint 7")
 //       let pt = Python.import("IPython.core.pylabtools")
-      print("checkpoint 1.5")
-      var backend = Python.None
-      print("checkpoint 2.1")
-//       let find_gui_and_backend = pt.find_gui_and_backend
-      (gui, backend) = find_gui_and_backend(gui, `self`.pylab_gui_select)
-      print("checkpoint 3")
-      
-      if gui != "inline" {
-        print("uh oh...")
-        return Python.None
-      }
-      print("checkpoint 4")
-      activate_matplotlib(backend)
-      print("checkpoint 5")
-      try configure_inline_support(shell: `self`, backend: backend)
-      print("checkpoint 6")
-      
-      `self`.enable_gui(gui)
-      print("checkpoint 7")
-      let pt = Python.import("IPython.core.pylabtools")
-      print("checkpoint 7.5")
-      `self`.magics_manager.registry["ExecutionMagics"].default_runner = pt.mpl_runner(`self`.safe_execfile)
-      print("checkpoint 8")
-      return PythonObject(tupleOf: gui, backend)
-//       return Python.None
+//       print("checkpoint 7.5")
+//       `self`.magics_manager.registry["ExecutionMagics"].default_runner = pt.mpl_runner(`self`.safe_execfile)
+//       print("checkpoint 8")
+//       return PythonObject(tupleOf: gui, backend)
+// //       return Python.None
     },
     
     // Enable pylab support at runtime.
