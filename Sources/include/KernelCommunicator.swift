@@ -111,5 +111,8 @@ import func Glibc.dlsym
 import var Glibc.RTLD_LAZY
 
 do {
-  
+  let libAddress = dlopen("/opt/swift/lib/libJupyterKernel.so", RTLD_LAZY)
+  let funcAddress = dlsym(libAddress, "prevent_numpy_import_hang")
+  let prevent_numpy_import_hang = unsafeBitCast(funcAddress, to: (@convention(c) (
+    
 }
