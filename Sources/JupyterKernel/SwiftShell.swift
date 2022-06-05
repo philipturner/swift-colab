@@ -96,6 +96,10 @@ fileprivate let SwiftShell = PythonClass(
         import sys
         import os
         print("checkpoint 1.3")
+        
+        import matplotlib
+        print(matplotlib.__file__)
+        print("checkpoint 1.4")
         """)
 //       let pt = Python.import("IPython.core.pylabtools")
       print("checkpoint 1.5")
