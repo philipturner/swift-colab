@@ -14,7 +14,7 @@ fileprivate let ZMQInteractiveShell = zmqshell.ZMQInteractiveShell
 // causes matplotlib and other Python libraries depending on NumPy to hang. The
 // culprit is some Python code that executes automatically when you import the
 // module. I cannot reproduce the hang/freeze while running Colab in Python
-// mode, although I have observed it while running Python code via
+// mode. Although, I have observed it while running Python code via
 // `PyRun_SimpleString` from within PythonKit (while Colab is in Swift mode).
 //
 // In `numpy.core._add_newdocs_scalars`, it tries generating documentation for
