@@ -21,7 +21,11 @@ fileprivate let ZMQInteractiveShell = zmqshell.ZMQInteractiveShell
 // `platform.system()` and `platform.machine()` from the built-in `platform`
 // library. It sometimes freezes while calling those functions. However, it
 // doesn't freeze if you call one of those functions long before loading NumPy.
-
+@_cdecl("prevent_import_hang")
+public func prevent_import_hang() {
+  let platform = Python.import("platform")
+  _ = platform.system()
+}
 
 // Caller side: use `ctypes` to convert return value, which is the address of a
 // Python object, into an actual Python object. This Swift file stores a
