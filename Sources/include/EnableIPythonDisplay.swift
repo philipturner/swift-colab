@@ -55,7 +55,7 @@ extension IPythonDisplay {
       return
     }
     
-    let /*Glibc.*/RTLD_LAZY = 1
+    let /*Glibc.*/RTLD_LAZY: Int32 = 1
     let libAddress = dlopen("/opt/swift/lib/libJupyterKernel.so", RTLD_LAZY)
     let funcAddress = dlsym(libAddress, "create_shell")
     let create_shell = unsafeBitCast(funcAddress, to: (@convention(c) (
