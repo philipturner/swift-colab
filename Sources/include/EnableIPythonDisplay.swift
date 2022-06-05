@@ -19,7 +19,6 @@ import PythonKit
 // executing. Why?
 import func Glibc.dlopen
 import func Glibc.dlsym
-import var Glibc.RTLD_LAZY
 
 /// Hooks IPython to the KernelCommunicator, so that it can send display
 /// messages to Jupyter.
@@ -55,6 +54,7 @@ extension IPythonDisplay {
       print("Warning: IPython display already enabled.")
       return
     }
+    let /*Glibc.*/RTLD_LAZY = 1
 
     let libAddress = dlopen("/opt/swift/lib/libJupyterKernel.so", RTLD_LAZY)
     let funcAddress = dlsym(libAddress, "create_shell")
