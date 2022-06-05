@@ -87,7 +87,7 @@ fileprivate let SwiftShell = PythonClass(
         gui = args[0].kernel.gui
       }
       print("hello world 7")
-      _ = Python.import("numpy")
+//       _ = Python.import("numpy")
       print("hello world 8")
       return try ZMQInteractiveShell.enable_matplotlib.throwing
         .dynamicallyCall(withArguments: [`self`, gui])
