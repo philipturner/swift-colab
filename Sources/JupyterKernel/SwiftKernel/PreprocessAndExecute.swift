@@ -5,7 +5,6 @@ fileprivate let time = Python.import("time")
 func preprocessAndExecute(
   code: String, isCell: Bool = false
 ) throws -> ExecutionResult {
-  _ = Python.import("platform").system()
   let preprocessed = try preprocess(code: code)
   var executionResult: ExecutionResult?
   DispatchQueue.global().async {
