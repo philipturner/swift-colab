@@ -3,16 +3,17 @@ fileprivate let re = Python.import("re")
 fileprivate let time = Python.import("time")
 
 ////////////////////////////////////////////////////////////////////////////////
-fileprivate let PyGILState_Ensure: @convention(c) () -> OpaquePointer =
-  PythonLibrary.loadSymbol(name: "PyGILState_Ensure")
+fileprivate let PyEval_SaveThread: @convention(c) () -> OpaquePointer =
+  PythonLibrary.loadSymbol(name: "PyEval_SaveThread")
 
-fileprivate let PyGILState_Release: @convention(c) (OpaquePointer) -> Void =
-  PythonLibrary.loadSymbol(name: "PyGILState_Release")
+fileprivate let PyEval_RestoreThread: @convention(c) (OpaquePointer) -> Void =
+  PythonLibrary.loadSymbol(name: "PyEval_RestoreThread")
 
 func preprocessAndExecute(
   code: String, isCell: Bool = false
 ) throws -> ExecutionResult {
   let preprocessed = try preprocess(code: code)
+  
   var executionResult: ExecutionResult?
   DispatchQueue.global().async {
     executionResult = execute(
@@ -22,7 +23,13 @@ func preprocessAndExecute(
   while executionResult == nil {
     // Using Python's `time` module instead of Foundation.usleep releases the
     // GIL.
-    time.sleep(0.05)
+//     time.sleep(0.05)
+    
+    // test with a long Print function
+    
+    let _save = PyEval_SaveThread()
+    usleep(50_000)
+    PyEval_RestoreThread(_save)
   }
   return executionResult!
 }
