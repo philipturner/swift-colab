@@ -2,6 +2,13 @@ import Foundation
 fileprivate let re = Python.import("re")
 fileprivate let time = Python.import("time")
 
+////////////////////////////////////////////////////////////////////////////////
+fileprivate let PyGILState_Ensure: @convention(c) () -> OpaquePointer =
+  PythonLibrary.loadSymbol(name: "PyGILState_Ensure")
+
+fileprivate let PyGILState_Release: @convention(c) (OpaquePointer) -> Void =
+  PythonLibrary.loadSymbol(name: "PyGILState_Release")
+
 func preprocessAndExecute(
   code: String, isCell: Bool = false
 ) throws -> ExecutionResult {
