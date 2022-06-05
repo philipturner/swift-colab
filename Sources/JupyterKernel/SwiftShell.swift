@@ -112,6 +112,8 @@ fileprivate let SwiftShell = PythonClass(
       
       `self`.enable_gui(gui)
       print("checkpoint 7")
+      let pt = Python.import("IPython.core.pylabtools")
+      print("checkpoint 7.5")
       `self`.magics_manager.registry["ExecutionMagics"].default_runner = pt.mpl_runner(`self`.safe_execfile)
       print("checkpoint 8")
       return PythonObject(tupleOf: gui, backend)
