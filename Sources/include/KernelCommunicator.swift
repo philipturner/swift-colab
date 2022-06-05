@@ -102,3 +102,14 @@ struct KernelCommunicator {
     let username: String
   }
 }
+////////////////////////////////////////////////////////////////////////////////
+// See Sources/JupyterKernel/SwiftShell.swift for an explanation of this 
+// workaround. Injecting the symbols below makes their importing at the top of
+// EnableIPythonDisplay.swift redundant.
+import func Glibc.dlopen
+import func Glibc.dlsym
+import var Glibc.RTLD_LAZY
+
+do {
+  
+}
