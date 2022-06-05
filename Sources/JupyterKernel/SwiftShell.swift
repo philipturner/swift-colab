@@ -227,7 +227,7 @@ fileprivate let backends: [String: String] = [
 ]
 
 fileprivate func find_gui_and_backend(
-  gui input_gui: PythonObject, gui_select: PythonObject
+  _ input_gui: PythonObject, _ gui_select: PythonObject
 ) -> (PythonObject, PythonObject) {
   var gui = input_gui
   var backend = Python.None
