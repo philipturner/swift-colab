@@ -92,6 +92,11 @@ fileprivate let SwiftShell = PythonClass(
       
 //       // TODO: Make these lines 80 characters
       print("checkpoint 1")
+      PyRun_SimpleString("""
+        import sys
+        import os
+        print("checkpoint 1.3")
+        """)
 //       let pt = Python.import("IPython.core.pylabtools")
       print("checkpoint 1.5")
       var backend = Python.None
