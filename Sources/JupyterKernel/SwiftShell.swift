@@ -105,7 +105,7 @@ fileprivate let SwiftShell = PythonClass(
         return Python.None
       }
       print("checkpoint 4")
-      pt.activate_matplotlib(backend)
+      activate_matplotlib(backend)
       print("checkpoint 5")
       try configure_inline_support(shell: `self`, backend: backend)
       print("checkpoint 6")
@@ -242,4 +242,18 @@ fileprivate func find_gui_and_backend(
     fatalError("Not yet accounted for")
   }
   return (gui, backend)
+}
+
+fileprivate func activate_matplotlib(_ backend: PythonObject) {
+  print("Pre-matplotlib import")
+  let matplotlib = Python.import("matplotlib")
+  print("Post-matplotlib import")
+  matplotlib.interactive(true)
+  print("marker 0")
+  
+  matplotlib.rcParams["backend"] = backend
+  print("marker 1")
+  
+  let plt = Python.import("matplotlib.pyplot")
+  print("marker 2")
 }
