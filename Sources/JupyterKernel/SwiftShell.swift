@@ -256,4 +256,12 @@ fileprivate func activate_matplotlib(_ backend: PythonObject) {
   
   let plt = Python.import("matplotlib.pyplot")
   print("marker 2")
+  
+  plt.switch_backend(backend)
+  print("marker 3")
+  
+  plt.show._needmain = false
+  print("marker 4")
+  
+  plt.draw_if_interactive = flag_calls(plt.draw_if_interactive)
 }
