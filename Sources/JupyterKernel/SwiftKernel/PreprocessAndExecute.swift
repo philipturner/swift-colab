@@ -14,6 +14,15 @@ func preprocessAndExecute(
 ) throws -> ExecutionResult {
   let preprocessed = try preprocess(code: code)
   
+  let imp = Python.import("imp")
+  let lock_held = Bool(imp.lock_held())!
+  KernelContext.log("Held lock: \(lock_held)")
+  
+//   _ = time
+  if lock_held {
+    imp.release_lock()
+  }
+  
   var executionResult: ExecutionResult?
   DispatchQueue.global().async {
     executionResult = execute(
@@ -27,10 +36,15 @@ func preprocessAndExecute(
     
     // test with a long Print function
     
-    let _save = PyEval_SaveThread()
+//     let _save = PyEval_SaveThread()
     usleep(50_000)
-    PyEval_RestoreThread(_save)
+//     PyEval_RestoreThread(_save)
   }
+  
+  if lock_held {
+    imp.acquire_lock()
+  }
+  
   return executionResult!
 }
 
