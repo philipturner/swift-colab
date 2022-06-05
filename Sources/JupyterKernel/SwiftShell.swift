@@ -233,7 +233,7 @@ fileprivate func find_gui_and_backend(
   var backend = Python.None
   if gui != Python.None && gui != "auto" {
     print("Internal control path 1")
-    backend = backends[String(gui)!]
+    backend = PythonObject(backends[String(gui)!])
     if gui == "agg" {
       gui = Python.None
     }
