@@ -92,7 +92,7 @@ fileprivate let SwiftShell = PythonClass(
       
 //       // TODO: Make these lines 80 characters
       print("checkpoint 1")
-      let pt = Python.import("IPython.core.pylabtools")
+//       let pt = Python.import("IPython.core.pylabtools")
       print("checkpoint 1.5")
       var backend = Python.None
       print("checkpoint 2.1")
