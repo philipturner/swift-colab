@@ -16,7 +16,7 @@ extern "C" {
   }
 }
 
-// Not thread-safe with respect to the Swift-side `KernelContext.log`.
+// Not thread-safe with respect to the Swift-side `KernelContext.log(_:)`.
 // Must manually add the "\n" terminator to the message.
 void unsafe_log_message(const char *message_with_newline) {
   const char *mode = NULL;
