@@ -123,17 +123,14 @@ int execute(const char *code, char **description) {
     unowned_desc = error.GetCString();
     // `unowned_desc` should never be null here.
   }
-
-  ////////////////////////////////////////////////////////////////////////////////
   
   if (errorType == eErrorTypeInvalid && unowned_desc == NULL) {
     // The last code line created a `Task`. This has a null description, so return
     // as if it's a `SuccessWithoutValue`.
-    *description = NULL;
-    return 1;
+    errorType = eErrorTypeGeneric
   }
   
-  if (unowned_desc == NULL) {
+  if (errorType == eErrorTypeGeneric) {
     *description = NULL;
   } else {
     int desc_size = strlen(unowned_desc);
@@ -155,11 +152,6 @@ int execute(const char *code, char **description) {
   }
   
   if (errorType == eErrorTypeInvalid) {
-    if (is_value_without_desc) {
-      return 3;
-    } else {
-      return 0;
-    }
     return 0;
   } else if (errorType == eErrorTypeGeneric) {
     return 1;
