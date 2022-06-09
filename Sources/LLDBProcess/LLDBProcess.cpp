@@ -129,7 +129,8 @@ int execute(const char *code, char **description) {
   ////////////////////////////////////////////////////////////////////////////////
   
   if (errorType == eErrorTypeGeneric && unowned_desc == NULL) {
-     // The last code line created a `Task`.
+    // The last code line created a `Task`. This has a null description, so return
+    // as if it's a `SuccessWithoutValue`.
     *description = NULL;
     return 1;
   }
