@@ -110,13 +110,12 @@ int init_repl_process(const char **repl_env,
 // Caller must deallocate `description`.
 int execute(const char *code, char **description) {
   unsafe_log_message("hello world 1\n");
-  printf("hello world 1");
   auto result = target.EvaluateExpression(code, expr_opts);
-  printf("hello world 2");
+  unsafe_log_message("hello world 2\n");
   auto error = result.GetError();
-  printf("hello world 3");
+  unsafe_log_message("hello world 3\n");
   auto errorType = error.GetType();
-  printf("hello world 4");
+  unsafe_log_message("hello world 4\n");
   
   if (errorType == eErrorTypeGeneric) {
     *description = NULL;
@@ -146,7 +145,7 @@ int execute(const char *code, char **description) {
     *description = owned_desc;
   }
   
-  printf("hello world 5");
+  unsafe_log_message("hello world 5\n");
   if (errorType == eErrorTypeInvalid) {
     return 0;
   } else if (errorType == eErrorTypeGeneric) {
