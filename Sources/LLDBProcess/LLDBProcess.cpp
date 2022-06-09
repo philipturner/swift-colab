@@ -114,18 +114,25 @@ int execute(const char *code, char **description) {
   auto errorType = error.GetType();
   
   const char *unowned_desc = NULL;
+  bool is_value_without_desc = false;
   
-  if (errorType == eErrorTypeGeneric) {
-//     *description = NULL;
-    // pass
-  } else {
+  if (errorType != eErrorTypeGeneric) {
     const char *unowned_desc;
     if (errorType == eErrorTypeInvalid) {
       unowned_desc = result.GetObjectDescription();
     } else {
       unowned_desc = error.GetCString();
     }
+    if (unowned_desc == NULL) {
+      is_value_without_desc = true;
+    }
       
+    
+  }
+  
+  if (unowned_desc == NULL) {
+    *description = NULL;
+  } else {
     int desc_size = strlen(unowned_desc);
     bool replace_last = false;
     if (errorType != eErrorTypeInvalid && desc_size > 0) {
