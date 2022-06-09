@@ -107,6 +107,11 @@ These tests ensure that Swift-Colab runs on recent Swift toolchains. Some of the
 
 <!-- Emoji shortcuts for reference: ✅ ❌ -->
 
+<!-- 
+TODO: Test Concurrency 
+
+-->
+
 | Test | Passing | Date of Last Test Run | Swift Version |
 | ---- | ------- | --------------------- | ------------- |
 | [kernel_tests.py](https://colab.research.google.com/drive/1vooU1XVHSpolOSmVUKM4Wj6opEJBt7zs?usp=sharing) (outdated) | ✅ | March 2022 | 5.5.3 Release |
@@ -114,5 +119,10 @@ These tests ensure that Swift-Colab runs on recent Swift toolchains. Some of the
 | [simple_notebook_tests.py](https://colab.research.google.com/drive/18316eFVMw-NIlA9OandB7djvp0J4jI0-?usp=sharing) (outdated) | ✅ | March 2022 | 5.5.3 Release |
 | [SwiftPlot](https://colab.research.google.com/drive/1Rxs7OfuKIJ_hAm2gUQT2gWSuIcyaeZfz?usp=sharing) | ✅ | June 2022 | 5.6.1 Release
 | [S4TF with TF 2.4](https://colab.research.google.com/drive/1v3ZhraaHdAS2TGj03hE0cK-KRFzsqxO1?usp=sharing)* | ❌ | June 2022 | November 12, 2021 Development Snapshot |
+
+<!-- 
+TODO: Test Concurrency 
+
+-->
 
 \*https://github.com/philipturner/swift-colab/issues/15 tracks this failure.
