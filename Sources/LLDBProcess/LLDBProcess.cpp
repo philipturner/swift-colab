@@ -7,17 +7,18 @@
 bool log_initialized = false;
 
 extern "C" {
+  int get_log_initialized() {
+    return int(log_initialized);
+  }
 
-int get_log_initialized() {
-  return int(log_initialized);
-}
-
-void set_log_initialized(int new_value) {
-  log_initialized = bool(new_value);
+  void set_log_initialized(int new_value) {
+    log_initialized = bool(new_value);
+  }
 }
 
 // Not thread-safe with respect to the Swift-side `Kernel.log`.
-void unsafe_log_message(const char *message) {
+// Must manually add the "\n" terminator to the message.
+void unsafe_log_message(const char *message_with_newline) {
   const char *mode = NULL;
   if (log_initialized) {
     mode = "a";
@@ -27,9 +28,9 @@ void unsafe_log_message(const char *message) {
   }
   
   auto file_pointer = fopen("/opt/swift/log", mode);
-  auto written_message = 
-}
-
+  auto count = strlen(message_with_newline);
+  fwrite(message_with_newline, 1, count, file_pointer);
+  fclose(file_pointer);
 }
 
 // MARK: - LLDB Functions
