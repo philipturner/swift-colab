@@ -28,7 +28,7 @@ struct KernelContext {
           logInitialized = true
         } else {
           precondition(cppLogInitialized == false)
-          set_log_initialized(true);
+          set_log_initialized(1);
         }
       }
       
