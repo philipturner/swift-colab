@@ -72,6 +72,7 @@ fileprivate func initKernelCommunicator() throws {
 }
 
 fileprivate func initConcurrency() throws {
+  // If this is a pre-concurrency Swift version, the import is a no-op.
   let result = execute(code: """
     import _Concurrency
     """)
