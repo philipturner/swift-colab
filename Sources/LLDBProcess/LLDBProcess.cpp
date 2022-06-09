@@ -109,6 +109,7 @@ int init_repl_process(const char **repl_env,
 
 // Caller must deallocate `description`.
 int execute(const char *code, char **description) {
+  unsafe_log_message("hello world 1\n");
   printf("hello world 1");
   auto result = target.EvaluateExpression(code, expr_opts);
   printf("hello world 2");
