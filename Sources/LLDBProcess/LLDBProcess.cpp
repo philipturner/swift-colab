@@ -113,22 +113,20 @@ int execute(const char *code, char **description) {
   auto error = result.GetError();
   auto errorType = error.GetType();
   
-  const char *unowned_desc = NULL;
-  if (errorType != eErrorTypeGeneric) {
-    if (errorType == eErrorTypeInvalid) {
-      unowned_desc = result.GetObjectDescription();
-      if (unowned_desc == NULL) {
-
-       
-      }
-    } else {
-      unowned_desc = error.GetCString();
-    }
+  const char *unowned_desc;
+  if (errorType == eErrorTypeInvalid) {
+    unowned_desc = result.GetObjectDescription();
+    // `unowned_desc` may be null here.
+  } else if (errorType == eErrorTypeGeneric) {
+    unowned_desc = NULL;
+  } else {
+    unowned_desc = error.GetCString();
+    // `unowned_desc` should never be null here.
   }
-  
+
   ////////////////////////////////////////////////////////////////////////////////
   
-  if (errorType == eErrorTypeGeneric && unowned_desc == NULL) {
+  if (errorType == eErrorTypeInvalid && unowned_desc == NULL) {
     // The last code line created a `Task`. This has a null description, so return
     // as if it's a `SuccessWithoutValue`.
     *description = NULL;
