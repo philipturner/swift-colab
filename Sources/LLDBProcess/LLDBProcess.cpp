@@ -18,7 +18,16 @@ void set_log_initialized(int new_value) {
 
 // Not thread-safe with respect to the Swift-side `Kernel.log`.
 void unsafe_log_message(const char *message) {
+  const char *mode = NULL;
+  if (log_initialized) {
+    mode = "a";
+  } else {
+    mode = "w";
+    log_initialized = true;
+  }
   
+  auto file_pointer = fopen("/opt/swift/log", mode);
+  auto written_message = 
 }
 
 }
