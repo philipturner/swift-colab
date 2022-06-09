@@ -15,8 +15,23 @@ struct KernelContext {
   private static let logQueue = DispatchQueue(
     label: "com.philipturner.swift-colab.KernelContext.logQueue")
   
+  private static let get_log_initialized: @convention(c) () -> Int32 = 
+    LLDBProcessLibrary.loadSymbol(name: "get_log_initialized")
+  private static let set_log_initialized: @convention(c) (Int32) -> Void = 
+    LLDBProcessLibrary.loadSymbol(name: "set_log_initialized")
+  
   static func log(_ message: String) {
     logQueue.sync {
+      let cppLogInitialized: Bool = get_log_initialized() != 0
+      if cppLogInitialized != logInitialized {
+        if logInitialized == false {
+          logInitialized = true
+        } else {
+          precondition(cppLogInitialized == false)
+          set_log_initialized(true);
+        }
+      }
+      
       var mode: String
       if logInitialized {
         mode = "a"
