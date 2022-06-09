@@ -22,7 +22,11 @@ func preprocessAndExecute(
     let emptyResult = execute(code: """
       _ = 0
       """)
-    // Assert it's a SuccessWithoutValue
+    if !(emptyResult is SuccessWithoutValue) {
+      throw Exception("""
+        Encountered unexpected result from `_ = 0`: \(emptyResult)
+        """)
+    }
   }
   return executionResult!
 }
