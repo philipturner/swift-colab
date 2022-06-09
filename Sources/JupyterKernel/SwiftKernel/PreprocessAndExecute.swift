@@ -19,7 +19,9 @@ func preprocessAndExecute(
   }
   if isCell, executionResult is ExecutionResultSuccess {
     // Workaround to prevent a crash when using concurrency.
-    let emptyResult = execute(code: "_ = 0")
+    let emptyResult = execute(code: """
+      _ = 0
+      """)
     // Assert it's a SuccessWithoutValue
   }
   return executionResult!
