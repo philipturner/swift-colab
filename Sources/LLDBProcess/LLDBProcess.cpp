@@ -149,15 +149,16 @@ int execute(const char *code, char **description) {
   }
   
   if (errorType == eErrorTypeInvalid) {
+    if (is_value_without_desc) {
+      return 3;
+    } else {
+      return 0;
+    }
     return 0;
   } else if (errorType == eErrorTypeGeneric) {
     return 1;
   } else {
-    if (is_value_without_desc) {
-      return 3;
-    } else {
-      return 2;
-    }
+    return 2;
   }
 }
 
