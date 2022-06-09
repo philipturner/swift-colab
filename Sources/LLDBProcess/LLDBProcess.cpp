@@ -117,7 +117,6 @@ int execute(const char *code, char **description) {
   bool is_value_without_desc = false;
   
   if (errorType != eErrorTypeGeneric) {
-    const char *unowned_desc;
     if (errorType == eErrorTypeInvalid) {
       unowned_desc = result.GetObjectDescription();
     } else {
