@@ -129,19 +129,29 @@ int execute(const char *code, char **description) {
     
     int desc_size = strlen(unowned_desc);
     bool replace_last = false;
+    unsafe_log_message("hello world 0.4\n");
     if (errorType != eErrorTypeInvalid && desc_size > 0) {
+      unsafe_log_message("hello world 0.5\n");
       char last_char = unowned_desc[desc_size - 1];
+      unsafe_log_message("hello world 0.6\n");
       if (last_char == '\n' || last_char == '\r') {
+        unsafe_log_message("hello world 0.7\n");
         desc_size -= 1;
         replace_last = true;
       }
+      unsafe_log_message("hello world 0.8\n");
     }
     
+    unsafe_log_message("hello world 0.9\n");
     char *owned_desc = (char*)malloc(desc_size + 1);
+    unsafe_log_message("hello world 0.10\n");
     memcpy(owned_desc, unowned_desc, desc_size + 1);
+    unsafe_log_message("hello world 0.11\n");
     if (replace_last) {
+      unsafe_log_message("hello world 0.12\n");
       owned_desc[desc_size] = 0;
     }
+    unsafe_log_message("hello world 0.13\n");
     *description = owned_desc;
     unsafe_log_message("hello world 1\n");
   }
