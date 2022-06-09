@@ -2,6 +2,8 @@
 #include <string.h>
 #include <LLDB/LLDB.h>
 
+// MARK: - Logging Functions
+
 bool log_initialized = false;
 
 extern "C" {
@@ -14,7 +16,14 @@ void set_log_initialized(int new_value) {
   log_initialized = bool(new_value);
 }
 
+// Not thread-safe with respect to the Swift-side `Kernel.log`.
+void unsafe_log_message(const char *message) {
+  
 }
+
+}
+
+// MARK: - LLDB Functions
 
 using namespace lldb;
 SBDebugger debugger;
