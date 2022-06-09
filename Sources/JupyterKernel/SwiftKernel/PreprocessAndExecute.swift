@@ -6,7 +6,6 @@ func preprocessAndExecute(
   code: String, isCell: Bool = false
 ) throws -> ExecutionResult {
   let preprocessed = try preprocess(code: code)
-  KernelContext.log("checkpoint 1")
   var executionResult: ExecutionResult?
   DispatchQueue.global().async {
     executionResult = execute(
@@ -18,21 +17,6 @@ func preprocessAndExecute(
     // GIL.
     time.sleep(0.05)
   }
-  KernelContext.log("checkpoint 2")
-  if isCell, executionResult is ExecutionResultSuccess {
-    KernelContext.log("checkpoint 3")
-    // Workaround to prevent a crash when using concurrency.
-    let emptyResult = execute(code: """
-      _ = 0
-      """)
-    if !(emptyResult is SuccessWithoutValue) {
-      KernelContext.log("checkpoint 4")
-      throw Exception("""
-        Encountered unexpected result from `_ = 0`: \(emptyResult)
-        """)
-    }
-  }
-  KernelContext.log("checkpoint 5")
   return executionResult!
 }
 
