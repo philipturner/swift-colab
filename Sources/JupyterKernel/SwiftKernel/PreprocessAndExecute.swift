@@ -49,7 +49,12 @@ func execute(
   } else if error == 1 {
     return SuccessWithoutValue()
   } else {
-    return SwiftError(description: description!)
+    if error == 3 {
+      KernelContext.log("Received value without description")
+      return SuccessWithoutValue()
+    } else {
+      return SwiftError(description: description!)
+    }
   }
 }
 
