@@ -125,8 +125,8 @@ int execute(const char *code, char **description) {
   }
   
   if (errorType == eErrorTypeInvalid && unowned_desc == NULL) {
-    // The last code line created a `Task`. This has a null description, so return
-    // as if it's a `SuccessWithoutValue`.
+    // The last line of code created a `Task`. This has a null description, so
+    // act as if it's a `SuccessWithoutValue`.
     errorType = eErrorTypeGeneric
   }
   
