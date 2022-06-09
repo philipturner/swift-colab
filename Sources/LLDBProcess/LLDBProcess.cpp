@@ -2,6 +2,20 @@
 #include <string.h>
 #include <LLDB/LLDB.h>
 
+bool log_initialized = false;
+
+extern "C" {
+
+int get_log_initialized() {
+  return int(log_initialized);
+}
+
+void set_log_initialized(int new_value) {
+  log_initialized = bool(new_value);
+}
+
+}
+
 using namespace lldb;
 SBDebugger debugger;
 SBTarget target;
@@ -9,7 +23,6 @@ SBBreakpoint main_bp;
 SBProcess process;
 SBExpressionOptions expr_opts;
 SBThread main_thread;
-
 
 int read_byte_array(SBValue sbvalue, 
                     uint64_t *output_size, 
