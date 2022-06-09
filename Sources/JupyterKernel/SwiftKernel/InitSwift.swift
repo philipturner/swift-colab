@@ -31,6 +31,8 @@ func initSwift() throws {
   KernelContext.log("finished initReplProcess")
   try initKernelCommunicator()
   KernelContext.log("finished initKernelCommunicator")
+  try initConcurrency()
+  KernelContext.log("finished initConcurrency")
   
   sigintHandler = SIGINTHandler()
   sigintHandler.start()
@@ -69,5 +71,14 @@ fileprivate func initKernelCommunicator() throws {
     """)
   if result is ExecutionResultError {
     throw Exception("Error declaring JupyterKernel: \(result)")
+  }
+}
+
+fileprivate func initConcurrency() throws {
+  let result = execute(code: """
+    import _Concurrency
+    """)
+  if result is ExecutionResultError {
+    throw Exception("Error importing _Concurrency: \(result)")
   }
 }
