@@ -127,6 +127,12 @@ int execute(const char *code, char **description) {
     }
     unsafe_log_message("hello world 0.3\n");
     
+    if (unowned_desc == NULL) {
+      unsafe_log_message("hello world 0.3.1\n");
+    } else {
+      unsafe_log_message("hello world 0.3.2\n");
+    }
+      
     int desc_size = strlen(unowned_desc);
     bool replace_last = false;
     unsafe_log_message("hello world 0.4\n");
