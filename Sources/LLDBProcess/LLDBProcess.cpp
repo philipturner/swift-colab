@@ -109,23 +109,23 @@ int init_repl_process(const char **repl_env,
 
 // Caller must deallocate `description`.
 int execute(const char *code, char **description) {
-  unsafe_log_message("hello world 1\n");
   auto result = target.EvaluateExpression(code, expr_opts);
-  unsafe_log_message("hello world 2\n");
   auto error = result.GetError();
-  unsafe_log_message("hello world 3\n");
   auto errorType = error.GetType();
-  unsafe_log_message("hello world 4\n");
   
   if (errorType == eErrorTypeGeneric) {
     *description = NULL;
   } else {
+    unsafe_log_message("hello world 0\n");
     const char *unowned_desc;
     if (errorType == eErrorTypeInvalid) {
+      unsafe_log_message("hello world 0.1\n");
       unowned_desc = result.GetObjectDescription();
     } else {
+      unsafe_log_message("hello world 0.2\n");
       unowned_desc = error.GetCString();
     }
+    unsafe_log_message("hello world 0.3\n");
     
     int desc_size = strlen(unowned_desc);
     bool replace_last = false;
@@ -143,9 +143,9 @@ int execute(const char *code, char **description) {
       owned_desc[desc_size] = 0;
     }
     *description = owned_desc;
+    unsafe_log_message("hello world 1\n");
   }
   
-  unsafe_log_message("hello world 5\n");
   if (errorType == eErrorTypeInvalid) {
     return 0;
   } else if (errorType == eErrorTypeGeneric) {
