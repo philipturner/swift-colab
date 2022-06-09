@@ -126,8 +126,6 @@ int execute(const char *code, char **description) {
     if (unowned_desc == NULL) {
       is_value_without_desc = true;
     }
-      
-    
   }
   
   if (unowned_desc == NULL) {
@@ -156,7 +154,11 @@ int execute(const char *code, char **description) {
   } else if (errorType == eErrorTypeGeneric) {
     return 1;
   } else {
-    return 2;
+    if (is_value_without_desc) {
+      return 3;
+    } else {
+      return 2;
+    }
   }
 }
 
