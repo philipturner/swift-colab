@@ -114,17 +114,24 @@ int execute(const char *code, char **description) {
   auto errorType = error.GetType();
   
   const char *unowned_desc = NULL;
-  bool is_value_without_desc = false;
-  
   if (errorType != eErrorTypeGeneric) {
     if (errorType == eErrorTypeInvalid) {
       unowned_desc = result.GetObjectDescription();
+      if (unowned_desc == NULL) {
+
+       
+      }
     } else {
       unowned_desc = error.GetCString();
     }
-    if (unowned_desc == NULL) {
-      is_value_without_desc = true;
-    }
+  }
+  
+  ////////////////////////////////////////////////////////////////////////////////
+  
+  if (errorType == eErrorTypeGeneric && unowned_desc == NULL) {
+     // The last code line created a `Task`.
+    *description = NULL;
+    return 1;
   }
   
   if (unowned_desc == NULL) {
