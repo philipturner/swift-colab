@@ -19,7 +19,7 @@ Colab notebooks created directly from Google Drive are tailored for Python progr
 
 ```swift
 !curl "https://raw.githubusercontent.com/philipturner/swift-colab/release/latest/install_swift.sh" --output "install_swift.sh"
-!bash "install_swift.sh" "5.6.1" #// Replace 5.6.1 with newest Swift version.
+!bash "install_swift.sh" "5.6.2" #// Replace 5.6.2 with newest Swift version.
 #// After this cell finishes, go to Runtime > Restart runtime.
 ```
 
