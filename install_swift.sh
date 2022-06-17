@@ -1,5 +1,4 @@
 #!/bin/bash
-
 if [[ ! -d /opt/swift ]]; then
   mkdir /opt/swift
   mkdir /opt/swift/include
@@ -7,20 +6,45 @@ if [[ ! -d /opt/swift ]]; then
   mkdir /opt/swift/lib
   mkdir /opt/swift/packages
   mkdir /opt/swift/progress
-  echo "swift" > /opt/swift/runtime
   mkdir /opt/swift/toolchains
   touch /opt/swift/toolchains/index
+  echo "swift" > /opt/swift/runtime
 fi
 
 # Process command-line arguments
 
-# Check whether the first argument contains "https://". This permits protocols
-# besides HTTPS, such as HTTP and "file://".
+# Check whether the first argument contains "https://", "http://", "file://", or 
+# another protocol.
 if [[ "$1" == *"://"* ]]; then
   # TODO: Implement support for downloading a Swift toolchain from a custom URL.
   toolchain_type="url"
+  location=-1
   
   # Store URLs in an index because "/" can't be in file names.
+  while read line; do
+    if [[ $line == $1 ]]; then
+      if [[ $location != -1 ]]; then
+        echo "Cached toolchain URL index contained duplicates."
+        exit -1
+      fi
+      location=${#index_lines[*]}
+    fi
+    index_lines=( "${index_lines[@]}" "$line" )
+  done < /opt/swift/toolchains/index
+  
+  if [[ $location == -1 ]]; then
+    location=${#index_lines[*]}
+    if [[ $location == 0 ]]; then
+      index_contents="$1"
+    else
+      NEWLINE=$'\n'
+      index_contents=`cat /opt/swift/toolchains/index`
+      index_contents="${index_contents}${NEWLINE}${1}"
+    fi
+    echo "$index_contents" > /opt/swift/toolchains/index
+  fi
+  
+  version="url-${location}"
 else
   old_IFS=$IFS
   IFS='.'
@@ -100,10 +124,16 @@ fi
 
 # Download Swift toolchain
 
-if [[ $using_cached_swift == true ]]; then
-  echo "Using cached Swift $version"
+if [[ $toolchain_type == "url" ]]; then
+  swift_desc="from URL: ${1}"
 else
-  echo "Downloading Swift $version"
+  swift_desc=$version
+fi
+
+if [[ $using_cached_swift == true ]]; then
+  echo "Using cached Swift $swift_desc"
+else
+  echo "Downloading Swift $swift_desc"
   
   if [[ $toolchain_type == "release" ]]; then
     branch="swift-$version-release"
