@@ -1,7 +1,10 @@
 #!/bin/bash
 # Process command-line arguments
 
+# Check whether the first argument contains "https://". This permits protocols
+# besides HTTPS, such as HTTP and "file://".
 if [[ "$1" == *"://"* ]]; then
+  # TODO: Implement support for downloading a Swift toolchain from a custom URL.
   toolchain_type="url"
 else
   old_IFS=$IFS
