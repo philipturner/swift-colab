@@ -136,6 +136,11 @@ else
   echo "Downloading Swift $swift_desc"
   
   if [[ $toolchain_type == "url" ]]; then
+    mkdir /opt/swift/download
+    cd /opt/swift/download
+    
+    cd /opt/swift
+    rm -r /opt/swift/download
     :
   else
     if [[ $toolchain_type == "release" ]]; then
@@ -229,7 +234,7 @@ Removing existing JupyterKernel build products."
   cp -r "swift-colab/Sources/JupyterKernel" $jupyterkernel_path
   
   cd $jupyterkernel_path
-  source_files=$(find $(pwd) -name '*.swift' -print)
+  source_files=$(find $(pwd) -name '*.swift')
   
   mkdir build && cd build
   swiftc -Onone $source_files \
