@@ -135,19 +135,23 @@ if [[ $using_cached_swift == true ]]; then
 else
   echo "Downloading Swift $swift_desc"
   
-  if [[ $toolchain_type == "release" ]]; then
-    branch="swift-$version-release"
-    release="swift-$version-RELEASE"
-  elif [[ $toolchain_type == "snapshot" ]]; then
-    branch="development"
-    release="swift-DEVELOPMENT-SNAPSHOT-$version-a"
+  if [[ $toolchain_type == "url" ]]; then
+    :
+  else
+    if [[ $toolchain_type == "release" ]]; then
+      branch="swift-$version-release"
+      release="swift-$version-RELEASE"
+    elif [[ $toolchain_type == "snapshot" ]]; then
+      branch="development"
+      release="swift-DEVELOPMENT-SNAPSHOT-$version-a"
+    fi
+    
+    tar_file="$release-ubuntu18.04.tar.gz"
+    url="https://download.swift.org/$branch/ubuntu1804/$release/$tar_file"
+    
+    curl $url | tar -xz
+    mv "$release-ubuntu18.04" "toolchain"
   fi
-  
-  tar_file="$release-ubuntu18.04.tar.gz"
-  url="https://download.swift.org/$branch/ubuntu1804/$release/$tar_file"
-  
-  curl $url | tar -xz
-  mv "$release-ubuntu18.04" "toolchain"
   
   echo $version > "progress/swift-version"
 fi
