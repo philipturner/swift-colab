@@ -363,11 +363,11 @@ fileprivate func processInstall(
   let binDirSrc = String(showBinPathResult.stdout.decode("utf8").strip())!
   let binDirLines = binDirSrc.split(
     separator: "\n", omittingEmptySubsequences: false)
-  guard let binDir = binDirLines.last else {
-    throw PackageInstallException(lineIndex: lineIndex, message: """
-      Could not extract `binDir` from "swift build --show-bin-path".
-      """)
-  }
+  
+  // `binDirLines` will always have at least one element. If `binDirSrc` is
+  // blank, `binDirLines` is [""] because the call to `String.split` permits
+  // empty subsequences.
+  let binDir = binDirLines.last!
   let libPath = "\(binDir)/lib\(packageName).so"
   
   // Copy .swiftmodule and modulemap files to Swift module search path.
