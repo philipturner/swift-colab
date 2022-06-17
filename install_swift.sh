@@ -139,9 +139,12 @@ else
     mkdir /opt/swift/download
     cd /opt/swift/download
     
+    curl $1 | tar -xz
+    src_filename="$(ls)"
+    mv $src_filename "/opt/swift/toolchain"
+    
     cd /opt/swift
     rm -r /opt/swift/download
-    :
   else
     if [[ $toolchain_type == "release" ]]; then
       branch="swift-$version-release"
