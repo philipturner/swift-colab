@@ -1,7 +1,5 @@
 # Magic Commands
 
-> TODO: Each should have an example of usage in its description.
-
 The Swift kernel has various built-in commands for downloading dependencies and interacting with the operating system. These command start with `%` and behave like the IPython [magic commands](http://ipython.org/ipython-doc/dev/interactive/magics.html). They take the role of inline Shell commands in Python notebooks, which start with `!`.
 
 - [`%include`](#include)
@@ -42,6 +40,12 @@ Produces (replacing newlines with spaces):
 A B C D A B C D
 ```
 
+> Everything below this point is not fully documented.
+
+---
+
+> TODO: Each command should have an example of usage in its description.
+
 ## `%include`
 ```
 %include FILEPATH
@@ -63,14 +67,14 @@ A B C D A B C D
 
 ## `%install-extra-include-command`
 ```
-%install-extra-include-command
+%install-extra-include-command EXECUTABLE [ARGUMENT ...]
 ```
 
 - Link to forum thread that initiated this
 
 ## `%install-location`
 ```
-%install-location
+%install-location DIRECTORY
 ```
 
 - Link to PR that initiated this
@@ -83,6 +87,7 @@ A B C D A B C D
 
 - Appends the arguments to a growing list of flags every time you execute
 - The `$clear` flag, was added to allow emptying SwiftPM flags. If you have `$clear` before other flags, it resets then adds the flags to the right of it.
+- Explain workaround for `-Xcc -I/...` flags, but for now just hyperlink: [problem 4 in this comment](https://github.com/philipturner/swift-colab/issues/14#issuecomment-1158237894).
 
 ## `%system`
 ```
