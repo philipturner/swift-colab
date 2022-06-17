@@ -1,31 +1,35 @@
 #!/bin/bash
 # Process command-line arguments
 
-old_IFS=$IFS
-IFS='.'
-read -a strarr <<< "$1"
-component_count=${#strarr[*]}
-
-if [[ $component_count -ge 2 ]]; then
-  # First argument is two components separated by a period like "5.6" or three
-  # components like "5.5.3".
-  toolchain_type="release"
+if [[ "$1" == *"://"* ]]; then
+  toolchain_type="url"
 else
-  IFS='-'
+  old_IFS=$IFS
+  IFS='.'
   read -a strarr <<< "$1"
   component_count=${#strarr[*]}
   
-  if [[ $component_count == 3 ]]; then
-    # First argument is three components in the format "YYYY-MM-DD".
-    toolchain_type="snapshot"
+  if [[ $component_count -ge 2 ]]; then
+    # First argument is two components separated by a period like "5.6" or three
+    # components like "5.5.3".
+    toolchain_type="release"
   else
-    # First argument is absent or improperly formatted.
-    toolchain_type="invalid"
+    IFS='-'
+    read -a strarr <<< "$1"
+    component_count=${#strarr[*]}
+    
+    if [[ $component_count == 3 ]]; then
+      # First argument is three components in the format "YYYY-MM-DD".
+      toolchain_type="snapshot"
+    else
+      # First argument is absent or improperly formatted.
+      toolchain_type="invalid"
+    fi
   fi
+  
+  version=$1
+  IFS=$old_IFS
 fi
-
-version=$1
-IFS=$old_IFS
 
 if [[ $# == 1 ]]; then
   # Release mode - fine-tuned for the fastest user experience.
