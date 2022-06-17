@@ -7,10 +7,9 @@ if [[ ! -d /opt/swift ]]; then
   mkdir /opt/swift/lib
   mkdir /opt/swift/packages
   mkdir /opt/swift/progress
-  mkdir /opt/swift/toolchains
-  
   echo "swift" > /opt/swift/runtime
-  echo "" > /opt/swift/toolchains/index
+  mkdir /opt/swift/toolchains
+  touch /opt/swift/toolchains/index
 fi
 
 # Process command-line arguments
