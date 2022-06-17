@@ -57,11 +57,13 @@ fi
 if [[ ! -d /opt/swift ]]; then
   mkdir /opt/swift
   mkdir /opt/swift/include
-  mkdir /opt/swift/lib
   mkdir /opt/swift/internal-modules
+  mkdir /opt/swift/lib
   mkdir /opt/swift/packages
   mkdir /opt/swift/progress
   echo "swift" > /opt/swift/runtime
+  mkdir /opt/swift/toolchains
+  echo "" > /opt/swift/toolchains/index
 fi
 
 cd /opt/swift
@@ -74,14 +76,14 @@ if [[ -e "progress/swift-version" ]]; then
   
   if [[ $version == $old_version ]]; then
     using_cached_swift=true
-  elif [[ -d "toolchain-$version" ]]; then
+  elif [[ -d "toolchains/$version" ]]; then
     using_cached_swift=true
-    mv "toolchain" "toolchain-$old_version"
-    mv "toolchain-$version" "toolchain"
+    mv "toolchain" "toolchains/$old_version"
+    mv "toolchains/$version" "toolchain"
     echo $version > "progress/swift-version"  
   else
     using_cached_swift=false
-    mv "toolchain" "toolchain-$old_version"
+    mv "toolchain" "toolchains/$old_version"
   fi
 else
   using_cached_swift=false
