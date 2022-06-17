@@ -1,4 +1,18 @@
 #!/bin/bash
+
+if [[ ! -d /opt/swift ]]; then
+  mkdir /opt/swift
+  mkdir /opt/swift/include
+  mkdir /opt/swift/internal-modules
+  mkdir /opt/swift/lib
+  mkdir /opt/swift/packages
+  mkdir /opt/swift/progress
+  mkdir /opt/swift/toolchains
+  
+  echo "swift" > /opt/swift/runtime
+  echo "" > /opt/swift/toolchains/index
+fi
+
 # Process command-line arguments
 
 # Check whether the first argument contains "https://". This permits protocols
@@ -50,20 +64,6 @@ fi
 if [[ $toolchain_type == "invalid" || $mode == "invalid" ]]; then
   echo "Usage: install_swift.sh {MAJOR.MINOR.PATCH | YYYY-MM-DD} [--swift-colab-dev]"
   exit -1
-fi
-
-# Move to /opt/swift
-
-if [[ ! -d /opt/swift ]]; then
-  mkdir /opt/swift
-  mkdir /opt/swift/include
-  mkdir /opt/swift/internal-modules
-  mkdir /opt/swift/lib
-  mkdir /opt/swift/packages
-  mkdir /opt/swift/progress
-  echo "swift" > /opt/swift/runtime
-  mkdir /opt/swift/toolchains
-  echo "" > /opt/swift/toolchains/index
 fi
 
 cd /opt/swift
