@@ -82,8 +82,6 @@ func doExecute(code: String) throws -> PythonObject? {
       message += try prettyPrintStackTrace(errorSource: errorSource)
       sendIOPubErrorMessage(message)
     } else {
-      KernelContext.log("Had compiler error")
-      KernelContext.log(result.description)
       // There is no stdout, so it must be a compile error. Simply return the 
       // error without trying to get a stack trace.
       message = formatCompilerError(result.description)
