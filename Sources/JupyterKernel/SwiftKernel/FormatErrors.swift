@@ -219,22 +219,14 @@ func formatCompilerError(_ input: String) -> [String] {
     return [label + "no error message available"]
   }
   
-  // In Swift 5.6, the following line was added to the error.
-  let parseFailureMessage = "expression failed to parse:"
-  if lines[0] == parseFailureMessage {
-    lines[0] = label + lines[0]
+  // In Swift 5.6, the following line was prepended to parse errors.
+  // "expression failed to parse:"
+  if lines[0].hasPrefix("error: ") {
+    lines = [label] + lines
   } else {
-    lines = [label + parseFailureMessage] + lines
+    // The error starts with a message such as "expression failed to parse:".
+    lines[0] = label + lines[0]
   }
-  
-  // Preserving the old way of handling unknown errors in case problems arise in
-  // the future.
-  //
-  // let errorIsRecognized = lines[0] == "expression failed to parse:"
-  // lines[0] = label + lines[0]
-  // guard errorIsRecognized else {
-  //   return lines
-  // }
   
   enum LineType {
     case errorMessage
