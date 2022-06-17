@@ -356,13 +356,20 @@ fileprivate func processInstall(
   }
   
   let showBinPathResult = subprocess.run(
-    [swiftBuildPath, "--show-bin-path"],
+    [swiftBuildPath, "--show-bin-path"] + swiftPMFlags,
     stdout: subprocess.PIPE,
     stderr: subprocess.PIPE,
     cwd: packagePath)
-  let binDir = String(showBinPathResult.stdout.decode("utf8").strip())!
+  let binDirSrc = String(showBinPathResult.stdout.decode("utf8").strip())!
+  let binDirLines = binDirSrc.split(
+    separator: "\n", omittingEmptySubsequences: false)
+  guard let binDir = binDirLines.last else {
+    throw PackageInstallException(lineIndex: lineIndex, message: """
+      Could not extract `binDir` from "swift build --show-bin-path".
+      """)
+  }
   let libPath = "\(binDir)/lib\(packageName).so"
-
+  
   KernelContext.log("binDir \(binDir)")
   
   // Copy .swiftmodule and modulemap files to Swift module search path.
@@ -376,7 +383,7 @@ fileprivate func processInstall(
   let buildDBPath = "\(binDir)/../build.db"
   guard fm.fileExists(atPath: buildDBPath) else {
     throw PackageInstallException(lineIndex: lineIndex, message: 
-      "build.db is missing")
+      "build.db is missing.")
   }
   
   // Execute swift-package show-dependencies to get all dependencies' paths.
