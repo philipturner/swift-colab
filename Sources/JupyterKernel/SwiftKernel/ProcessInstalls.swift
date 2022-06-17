@@ -356,7 +356,7 @@ fileprivate func processInstall(
   }
   
   let showBinPathResult = subprocess.run(
-    [swiftBuildPath, "--show-bin-path"] + swiftPMFlags,
+    [swiftBuildPath, "--show-bin-path"],
     stdout: subprocess.PIPE,
     stderr: subprocess.PIPE,
     cwd: packagePath)
