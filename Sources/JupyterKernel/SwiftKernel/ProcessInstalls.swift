@@ -370,7 +370,7 @@ fileprivate func processInstall(
   }
   let libPath = "\(binDir)/lib\(packageName).so"
   
-  KernelContext.log("binDir \(binDir)")
+  KernelContext.log("binDir2 \(binDir)")
   
   // Copy .swiftmodule and modulemap files to Swift module search path.
   let moduleSearchPath = "\(KernelContext.installLocation)/modules"
