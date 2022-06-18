@@ -95,7 +95,9 @@ A B C D A B C D
 ```
 
 - Executes a command-line command, executes before the code in the cell
-- Does not forward print output (yet (or does it?)), so better to use bash in Python mode right now
+- Forwards stdout just like Python bash commands, but not stdin (tracked by https://github.com/philipturner/swift-colab/issues/17)
+- Works in Python mode because it’s a Jupyter magic command. The Python mode version prints the output like a comma-separated list instead of actual stdout.
+
 ```swift
 %system cd "sample_data" && touch "$(uname -m).sh"
 ```
