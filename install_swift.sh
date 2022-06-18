@@ -85,7 +85,7 @@ else
 fi
 
 if [[ $toolchain_type == "invalid" || $mode == "invalid" ]]; then
-  echo "Usage: install_swift.sh {MAJOR.MINOR.PATCH | YYYY-MM-DD} [--swift-colab-dev]"
+  echo "Usage: install_swift.sh {MAJOR.MINOR.PATCH | YYYY-MM-DD | URL} [--swift-colab-dev]"
   exit -1
 fi
 
