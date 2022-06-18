@@ -16,7 +16,6 @@ fi
 # Check whether the first argument contains "https://", "http://", "file://", or 
 # another protocol.
 if [[ "$1" == *"://"* ]]; then
-  # TODO: Implement support for downloading a Swift toolchain from a custom URL.
   toolchain_type="url"
   location=-1
   
