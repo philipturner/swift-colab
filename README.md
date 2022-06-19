@@ -103,7 +103,7 @@ For tutorials on using the SwiftPlot API, check out [KarthikRIyer/swiftplot](htt
 
 ## Testing
 
-> Tests are being updated for the v2.2 release. The table below may provide incorrect data.
+> Tests are being updated for the v2.2 release. The table below may provide incorrect data at the moment.
 
 These tests ensure that Swift-Colab runs on recent Swift toolchains. TSome of them originate from [unit tests](https://github.com/google/swift-jupyter/tree/main/test/tests) in swift-jupyter, while others cover fixed bugs and third-party libraries. If any notebook fails or you have a suggestion for a new test, please [open an issue](https://github.com/philipturner/swift-colab/issues).
 
