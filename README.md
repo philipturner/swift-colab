@@ -107,9 +107,7 @@ For tutorials on using the SwiftPlot API, check out [KarthikRIyer/swiftplot](htt
 
 These tests ensure that Swift-Colab runs on recent Swift toolchains. Some of them originate from [unit tests](https://github.com/google/swift-jupyter/tree/main/test/tests) in swift-jupyter, while others cover fixed bugs and third-party libraries. If any notebook fails or you have a suggestion for a new test, please [open an issue](https://github.com/philipturner/swift-colab/issues).
 
-To run a test, replace `"5.6.2"` in the first code cell with the newest Swift version. Run the installation commands, then go to `Runtime > Restart runtime`. Click on the second code cell and instruct Colab to execute every cell in the notebook (`Runtime > Run after`). Compare each cell's expected output with its actual output.
-
-> Warning: Notebooks may provide additional instructions in a cell beginning with "Instructions for this test suite only:". Read these instructions before executing the test.
+To run a test, replace `"5.6.2"` in the first code cell with the newest Swift version. Run the installation commands, then go to `Runtime > Restart runtime`. Click on the second code cell and instruct Colab to execute every cell in the notebook (`Runtime > Run after`). Compare each cell's expected output with its actual output. If a notebook provides additional instructions, read them before running the test.
 
 <!-- Emoji shortcuts for reference: ✅ ❌ -->
 
