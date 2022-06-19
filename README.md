@@ -123,6 +123,7 @@ TODO: Test Concurrency
 | [simple_notebook_tests.py](https://colab.research.google.com/drive/18316eFVMw-NIlA9OandB7djvp0J4jI0-?usp=sharing) (outdated) | ✅ | March 2022 | 5.5.3 Release |
 | [SwiftPlot](https://colab.research.google.com/drive/1Rxs7OfuKIJ_hAm2gUQT2gWSuIcyaeZfz?usp=sharing) | ✅ | June 2022 | 5.6.2 Release
 | [Swift for TensorFlow](https://colab.research.google.com/drive/1v3ZhraaHdAS2TGj03hE0cK-KRFzsqxO1?usp=sharing) | ✅ | June 2022 | June 13, 2022 v5.7 Development Snapshot |
+| Concurrency |
 
 <!-- 
 TODO: Test Concurrency 
