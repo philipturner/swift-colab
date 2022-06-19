@@ -117,7 +117,7 @@ TODO: Test Concurrency
 | [kernel_tests.py](https://colab.research.google.com/drive/1vooU1XVHSpolOSmVUKM4Wj6opEJBt7zs?usp=sharing) (outdated) | ✅ | March 2022 | 5.5.3 Release |
 | [own_kernel_tests.py](https://colab.research.google.com/drive/1nHitEZm9QZNheM-ALajARyRZY2xpZr00?usp=sharing) (outdated) | ✅ | March 2022 | 5.5.3 Release |
 | [simple_notebook_tests.py](https://colab.research.google.com/drive/18316eFVMw-NIlA9OandB7djvp0J4jI0-?usp=sharing) (outdated) | ✅ | March 2022 | 5.5.3 Release |
-| [SwiftPlot](https://colab.research.google.com/drive/1Rxs7OfuKIJ_hAm2gUQT2gWSuIcyaeZfz?usp=sharing) | ✅ | June 2022 | 5.6.1 Release
+| [SwiftPlot](https://colab.research.google.com/drive/1Rxs7OfuKIJ_hAm2gUQT2gWSuIcyaeZfz?usp=sharing) | ✅ | June 2022 | 5.6.2 Release
 | [S4TF with TF 2.4](https://colab.research.google.com/drive/1v3ZhraaHdAS2TGj03hE0cK-KRFzsqxO1?usp=sharing)* | ❌ | June 2022 | November 12, 2021 Development Snapshot |
 
 <!-- 
