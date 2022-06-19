@@ -109,7 +109,7 @@ These tests ensure that Swift-Colab runs on recent Swift toolchains. Some of the
 
 To run a test, replace `"5.6.2"` in the first code cell with the newest Swift version. Run the installation commands, then go to `Runtime > Restart runtime`. Click on the second code cell and instruct Colab to execute every cell in the notebook (`Runtime > Run after`). Compare each cell's expected output with its actual output.
 
-> Test notebooks may provide additional instructions in a cell beginning with "Instructions for this test suite only:". Read those before executing the test.
+> Warning: Notebooks may provide additional instructions in a cell beginning with "Instructions for this test suite only:". Read these instructions before executing the test.
 
 <!-- Emoji shortcuts for reference: ✅ ❌ -->
 
