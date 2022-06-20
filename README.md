@@ -160,7 +160,7 @@ Multiple tutorial notebooks depend on Swift for TensorFlow. <s>You must recompil
 import _Differentiation // If using a development toolchain.
 
 // If using a release toolchain.
-// %install '.package(url: "https://github.com/philipturner/differentiation", .branch("master"))' _Differentiation
+// %install '.package(url: "https://github.com/philipturner/differentiation", .branch("main"))' _Differentiation
 // import Differentiation
 ```
 
@@ -171,6 +171,8 @@ When following a tutorial for the first time, run its cells one by one. To run a
 In the table below, "Compatible Swift Versions" lists whether each notebook runs under the latest release or development toolchain.
 - Release = 5.6.2 Release
 - Development = June 13, 2022 v5.7 Development Snapshot
+
+<!-- Dependency shortcuts for reference: AutoDiff PythonKit S4TF SwiftAI SwiftModels -->
 
 | Tutorial | Dependencies | Compatible Swift Versions |
 | -------- | ------------ | ------------------------- |
