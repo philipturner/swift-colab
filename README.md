@@ -122,10 +122,12 @@ Execute the installation script and go to `Runtime > Restart runtime`. The next 
 %system cp -r "/content/Library/tensorflow-2.4.0/usr/include/tensorflow" "/usr/include/tensorflow"
 ```
 
+The X10 binary was made from TensorFlow 2.4, and it was the last binary that Google created before S4TF went dormant. I have updated the Swift code to be [compatible with TF 2.9](https://gist.github.com/philipturner/7aa063af04277d463c14168275878511), and using the wrong TF version brings some drawbacks. https://github.com/s4tf/s4tf/pull/16 provides a complete explanation, but as a rule of thumb, avoid the `_Raw` namespace.
+
 These aren't the full build instructions! I will finish them tomorrow. In the meantime, check out https://github.com/s4tf/s4tf/pull/16 and https://github.com/philipturner/swift-colab/issues/15.
 
 <!--
-TF 2.4, S4TF PR listing the caveats
+TF 2.4, S4TF PR listing the caveats, link the Gist build script
 
 https://github.com/philipturner/swift-colab/issues/15. - can't use -c release -Xswiftc -Onone
 
