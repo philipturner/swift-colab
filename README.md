@@ -73,12 +73,21 @@ Upon restarting the runtime, remember to rerun the `%install` command for each p
 
 ## Swift for TensorFlow Integration
 
-Coming in the future! Initial support may come from an old branch of S4TF, not the head branch. This task is tracked by https://github.com/philipturner/swift-colab/issues/15.
+The build setup for S4TF is a bit complex. The easiest way to use it is to copy the [Swift for TensorFlow test notebook](https://colab.research.google.com/drive/1v3ZhraaHdAS2TGj03hE0cK-KRFzsqxO1?usp=sharing). To configure it manually, read the instructions below.
+
+TODO
 
 <!--
 For in the future, when S4TF works in Colab. Either I fix the build system, or I hard-code some way to install the X10 binary.
 
 `%install-x10 TF_VERSION` command? If I change my mind, it's source-breaking.
+
+TF 2.4, S4TF PR listing the caveats
+
+https://github.com/philipturner/swift-colab/issues/15. - can't use -c release -Xswiftc -Onone
+
+Specific development toolchains
+
 -->
 
 ## SwiftPlot Integration
