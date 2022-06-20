@@ -131,7 +131,7 @@ Now, the real action begins. The `TensorFlow` Swift package takes 3 minutes to c
 
 > To access your closed notebook, first open a new notebook. `Runtime > Manage sessions` shows a list of recent Colab instances. Click on the old one, and its notebook opens in a new browser tab.
 
-Go to `Insert > Code cell` and paste the following commands. You will see `-c release -Xswiftc -Onone` commented out. This reduces build time by 33%, but requires [restarting the runtime twice](https://github.com/philipturner/swift-colab/issues/15) because of a [compiler bug](https://github.com/apple/swift/issues/59569). Consider using these flags if compile time becomes a serious bottleneck to your workflow.
+Go to `Insert > Code cell` and paste the following commands. The SwiftPM flags `-c release -Xswiftc -Onone` are commented out. They shorten build time to 2 minutes, but require [restarting the runtime twice](https://github.com/philipturner/swift-colab/issues/15) because of a [compiler bug](https://github.com/apple/swift/issues/59569). Consider using these flags if compile time becomes a serious bottleneck to your workflow.
 
 ```swift
 %install-swiftpm-flags $clear
@@ -152,7 +152,7 @@ import TensorFlow
 
 These notebooks do not include commands for installing Swift-Colab; you must add them as described in [Getting Started](#getting-started). They also depend on packages such as PythonKit and TensorFlow, which you must download as described in [Installing Packages](#installing-packages) and [Swift for TensorFlow Integration](#swift-for-tensorflow-integration). For tutorials that involve automatic differentiation, either use [Differentiation](https://github.com/philipturner/differentiation) or download a development toolchain.
 
-> I'm testing an idea of reusing the same session across multiple notebooks, avoiding the 2 minutes of recompiling S4TF. Solution: delete all the cells in one notebook, then copy/paste all cells from another notebook.
+> I'm testing an idea of reusing the same session across multiple notebooks, avoiding the 2 minutes of recompiling S4TF. Solution: delete all the cells in one notebook, then copy/paste all cells from another notebook. (show how to select all the cells in menu bar)
 
 Tutorial | Compatible Swift Version |
 -------- | ------------ |
