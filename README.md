@@ -148,7 +148,7 @@ import TensorFlow
 
 ## Swift Tutorials
 
-These notebooks do not include commands for installing Swift-Colab; you must add them as described in [Getting Started](#getting-started). They also depend on packages such as PythonKit and TensorFlow, which you must download as described in [Installing Packages](#installing-packages) and [Swift for TensorFlow Integration](#swift-for-tensorflow-integration). For tutorials that require AutoDiff, either use [Differentiation](https://github.com/philipturner/differentiation) or download a development toolchain.
+These notebooks do not include commands for installing Swift-Colab; you must add them as described in [Getting Started](#getting-started). They also depend on packages such as PythonKit and TensorFlow, which you must download as described in [Installing Packages](#installing-packages) and [Swift for TensorFlow Integration](#swift-for-tensorflow-integration). For tutorials that involve automatic differentiation, either use [Differentiation](https://github.com/philipturner/differentiation) or download a development toolchain.
 
 > I'm testing an idea of reusing the same session across multiple notebooks, avoiding the 2 minutes of recompiling S4TF.
 
