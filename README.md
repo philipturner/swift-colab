@@ -96,9 +96,9 @@ For tutorials on using the SwiftPlot API, check out [KarthikRIyer/swiftplot](htt
 
 ## Swift for TensorFlow Integration
 
-The build setup for S4TF is a bit complex. The easiest way to use it is to copy the [Swift for TensorFlow test notebook](https://colab.research.google.com/drive/1v3ZhraaHdAS2TGj03hE0cK-KRFzsqxO1?usp=sharing). To configure it manually, read the instructions below.
+S4TF has a quite complex build setup. The easiest way to use it is copying the [Swift for TensorFlow test notebook](https://colab.research.google.com/drive/1v3ZhraaHdAS2TGj03hE0cK-KRFzsqxO1?usp=sharing) into your Google Drive. To configure it manually, read the instructions below.
 
-Swift for TensorFlow does not compile on release toolchains, so choose a Swift development toolchain. A bug in the main branch of Swift's GitHub repository [prevents S4TF from compiling](https://github.com/apple/swift/issues/59467), but luckily a few snapshots were released before the bug was exposed. Also, every snapshot created from the `release/5.7` branch works. Some of the snapshots you can choose are:
+Swift for TensorFlow does not compile on release toolchains, so download a Swift development toolchain. A bug in the latest trunk snapshot [prevents S4TF from compiling](https://github.com/apple/swift/issues/59467), but a few trunk snapshots were released before the bug appeared. Also, every toolchain created from the `release/5.7` branch works. Some of your options are:
 
 - May 4, 2022 Trunk Development Snapshot
 - May 11, 2022 Trunk Development Snapshot
