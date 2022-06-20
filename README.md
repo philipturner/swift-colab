@@ -180,13 +180,15 @@ Tutorial | Compatible Swift Versions |
 [Sharp Edges in Differentiability](https://colab.research.google.com/github/tensorflow/swift/blob/main/docs/site/tutorials/Swift_autodiff_sharp_edges.ipynb)<sup>[2][3]</sup> | Development
 [Model Training Walkthrough](https://colab.research.google.com/github/tensorflow/swift/blob/main/docs/site/tutorials/model_training_walkthrough.ipynb) | Development
 [Raw TensorFlow Operators](https://colab.research.google.com/github/tensorflow/swift/blob/main/docs/site/tutorials/raw_tensorflow_operators.ipynb) | Development
-[Introducing X10, an XLA-Based Backend](https://colab.research.google.com/github/tensorflow/swift/blob/main/docs/site/tutorials/introducing_x10.ipynb) | ???
+[Introducing X10, an XLA-Based Backend](https://colab.research.google.com/github/tensorflow/swift/blob/main/docs/site/tutorials/introducing_x10.ipynb)<sup>[4]</sup> | n/a
 
 > <sup>1</sup>One cell fails because of ambiguous overloads for `PythonObject.==` and `PythonObject.<`. Work around this by explicitly casting the comparison result with `as Bool` before printing.
 
 > <sup>2</sup>Several cells fail because `gradient(at:in)` was renamed to `gradient(at:of:)`. Fix the second argument label and rerun the failed cells.
 
 > <sup>3</sup>One cell fails because of the ambiguous line `gradient(at: 2, 2, of: pow)`. Fix this by replacing each `2` with `Double(2)`.
+
+> <sup>4</sup>This notebook depends on [tensorflow/swift-models](https://github.com/tensorflow/swift-models), which you will need to change to [s4tf/models](https://github.com/s4tf/models) in the future anyway. The repository is not updated for recent Swift toolchains, and I need to decide how to link the `TensorFlow` Swift module into it.
 
 ## Testing
 
