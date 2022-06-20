@@ -102,7 +102,7 @@ Execute the installation script and go to `Runtime > Restart runtime`. The next 
 %system cp -r "/content/Library/tensorflow-2.4.0/usr/include/tensorflow" "/usr/include/tensorflow"
 ```
 
-> Note: These aren't the full build instructions! I'll finish them tomorrow. In the meantime, check out https://github.com/s4tf/s4tf/pull/16 and https://github.com/philipturner/swift-colab/issues/15.
+These aren't the full build instructions! I'll finish them tomorrow. In the meantime, check out https://github.com/s4tf/s4tf/pull/16 and https://github.com/philipturner/swift-colab/issues/15.
 
 <!--
 TF 2.4, S4TF PR listing the caveats
