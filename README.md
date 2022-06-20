@@ -159,9 +159,15 @@ Multiple tutorial notebooks depend on Swift for TensorFlow. <s>You must recompil
 %install '.package(url: "https://github.com/pvieito/PythonKit", .branch("master"))' PythonKit
 ```
 
+In another browser tab, open one of the tutorials...
+
 > I'm testing an idea of reusing the same session across multiple notebooks, avoiding the 2 minutes of recompiling S4TF. Solution: delete all the cells in one notebook, then copy/paste all cells from another notebook. (show how to select all the cells in menu bar) - `Edit > Select all cells` -> Cmd/Ctrl + C -> `Edit > Select all cells` -> Cmd/Ctrl + V
 
-Tutorial | Compatible Swift Version |
+In the table below, "Compatible Swift Versions" lists whether each notebook runs under the latest release or development toolchain.
+- Release = 5.6.2 Release
+- Development = June 13, 2022 v5.7 Development Snapshot
+
+Tutorial | Compatible Swift Versions |
 -------- | ------------ |
 [A Swift Tour](https://colab.research.google.com/github/tensorflow/swift/blob/main/docs/site/tutorials/a_swift_tour.ipynb) | ???
 [Protocol-Oriented Programming & Generics](https://colab.research.google.com/github/tensorflow/swift/blob/main/docs/site/tutorials/protocol_oriented_generics.ipynb) | ???
