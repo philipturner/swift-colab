@@ -125,7 +125,7 @@ Execute the installation script and go to `Runtime > Restart runtime`. Next, dow
 %system cp -r "/content/Library/tensorflow-2.4.0/usr/include/tensorflow" "/usr/include/tensorflow"
 ```
 
-Top-of-tree S4TF is currently tested against TensorFlow 2.9, as shown in the [S4TF build script](https://gist.github.com/philipturner/7aa063af04277d463c14168275878511). Because the script does not yet run on every platform, I cannot host modern X10 binaries online. The previous command downloaded the last X10 binary that Google created, which uses TF 2.4. Using an outdated binary [brings some caveats](https://github.com/s4tf/s4tf/pull/16), as the raw TensorFlow bindings were recently [updated for v2.9](https://github.com/s4tf/s4tf/pull/10). As a rule of thumb, avoid the `_Raw` namespace.
+Top-of-tree S4TF is currently tested against TensorFlow 2.9, as shown in the [S4TF build script](https://gist.github.com/philipturner/7aa063af04277d463c14168275878511).The script does not yet run on every platform and a major [XLA bug](https://github.com/s4tf/s4tf/issues/14) exists, so I cannot host modern X10 binaries online. The previous command downloaded the last X10 binary that Google created, which uses TF 2.4. Using an outdated binary [brings some caveats](https://github.com/s4tf/s4tf/pull/16), as the raw TensorFlow bindings were recently [updated for v2.9](https://github.com/s4tf/s4tf/pull/10). As a rule of thumb, avoid the `_Raw` namespace.
 
 Now, the real action begins. The `TensorFlow` Swift package takes 3 minutes to compile on Google Colab, which sounds worse than it is.  Swift-Colab 2.0 made this a one-time cost, so the package rebuilds instantaneously after restarting the runtime. Grab a cup of coffee or read a Medium article while it compiles, and that's the only waiting you ever need to do. If you accidentally close the browser tab with S4TF loaded, salvage it with `Runtime > Manage sessions`.
 
@@ -159,7 +159,7 @@ Multiple tutorial notebooks depend on Swift for TensorFlow. <s>You must recompil
 %install '.package(url: "https://github.com/pvieito/PythonKit", .branch("master"))' PythonKit
 ```
 
-In another browser tab, open one of the tutorials...
+In another browser tab, open one of the tutorials. 
 
 > I'm testing an idea of reusing the same session across multiple notebooks, avoiding the 2 minutes of recompiling S4TF. Solution: delete all the cells in one notebook, then copy/paste all cells from another notebook. (show how to select all the cells in menu bar) - `Edit > Select all cells` -> Cmd/Ctrl + C -> `Edit > Select all cells` -> Cmd/Ctrl + V
 
