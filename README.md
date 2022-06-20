@@ -1,107 +1,121 @@
 # Swift-Colab
 
-In March 2021, Google [ended](./Documentation/ColabSupportHistory.md) built-in Swift support on Colaboratory as part of their *attempt* to end [Swift for TensorFlow (S4TF)](https://github.com/tensorflow/swift). Now that new contributors are working on S4TF, Colab support is essential for ensuring that TPU acceleration still works. This repository is the successor to [google/swift-jupyter](https://github.com/google/swift-jupyter), rewritten entirely in Swift.
+In March 2021, Google [ended](./Documentation/ColabSupportHistory.md) built-in Swift support on Colaboratory as part of their <s>evil plot</s> attempt to archive [Swift for TensorFlow (S4TF)](https://github.com/tensorflow/swift). Now that new contributors are working on S4TF, Colab support is essential for ensuring that TPU acceleration still works. This repository is the successor to [google/swift-jupyter](https://github.com/google/swift-jupyter), rewritten entirely in Swift.
 
-Swift-Colab is an accessible way to do programming with Swift. It runs in a browser, taking only 30 seconds to start up. It is perfect for programming on Chromebooks and tablets, which do not have the full functionality of a desktop. You can access a free NVIDIA GPU for machine learning, using the real C bindings for OpenCL and CUDA instead of Python wrappers. In the near future, you will be able to experiment with the [new S4TF](https://github.com/s4tf/s4tf) as well.
+Swift-Colab is an accessible way to do programming with Swift. It runs in a browser, taking only 30 seconds to start up. It is perfect for programming on Chromebooks and tablets, which do not have the full functionality of a desktop. You can access a free NVIDIA GPU for machine learning, using the real C bindings for OpenCL and CUDA instead of Python wrappers. Soon, you will be able to experiment with the [new S4TF](https://github.com/s4tf/s4tf) as well.
 
 For an in-depth look at how and why this repository was created, check out the [summary of its history](./Documentation/ColabSupportHistory.md).
 
-> Parts of this README from here on out are extremely out of date. This includes all test notebooks except SwiftPlot. They mirror how to use Swift-Colab 1.0, but this repository is on version 2.1. Furthermore, Swift-Colab is now recognized as the successor to google/swift-jupyter. In the future, there will no longer be a notice to look at the old repository for any instructions.
+- [Getting Started](#getting-started)
+- [Using Swift-Colab](#using-swift-colab)
+- [Installing Packages](#installing-packages)
+- [Swift for TensorFlow Integration](#swift-for-tensorflow-integration)
+- [SwiftPlot Integration](#swiftplot-integration)
+- [Testing](#testing)
 
-## How to run Swift on Google Colaboratory
+## Getting Started
 
-Copy [this template](https://colab.research.google.com/drive/1EACIWrk9IWloUckRm3wu973bKUBXQDKR?usp=sharing) of a Swift Colab notebook. Do not create one directly from Google Drive, as notebooks are configured for Python by default. Copy the following commands into the first code cell and run it:
+Colab notebooks created directly from Google Drive are tailored for Python programming. When making a Swift notebook, copy the [official template](https://colab.research.google.com/drive/1EACIWrk9IWloUckRm3wu973bKUBXQDKR?usp=sharing) instead. It contains the commands listed below, which download and compile the Jupyter kernel. Run the first code cell and follow the instructions for restarting the runtime.
 
 ```swift
-!curl "https://raw.githubusercontent.com/philipturner/swift-colab/release/latest/install_swift.sh" -o "install_swift.sh"
-!bash "install_swift.sh" "5.6" #// Replace 5.6 with newest Swift version.
-#// After this command finishes, go to Runtime > Restart runtime.
+!curl "https://raw.githubusercontent.com/philipturner/swift-colab/release/latest/install_swift.sh" --output "install_swift.sh"
+!bash "install_swift.sh" "5.6.2" #// Replace 5.6.2 with newest Swift version.
+#// After this cell finishes, go to Runtime > Restart runtime.
 ```
 
-In the output stream, you will see:
+> Tip: If you exceed the time limit of Colab's free tier, it restarts in Python mode. That means Swift code executes as if it's Python code. In that situation, repeat the process outlined above to return to Swift mode.
 
-```
-=== Downloading Swift ===
-...
-=== Swift successfully downloaded ===
-...
-=== Swift successfully installed ===
-```
+When Google sponsored S4TF from 2018 - 2021, the Swift community created several Jupyter notebooks. To run those notebooks now, slightly modify them. Create a new cell at the top of each notebook, including the commands shown above*. No further changes are necessary because of Swift-Colab's backward-compatibility. If you experience a problem, please [file an issue](https://github.com/philipturner/swift-colab/issues).
 
-You will be instructed to restart the runtime. This is necessary because it shuts down the Python kernel and starts the Swift kernel.
+\*For a more future-proof solution, fill that cell with only a comment directing the user to Swift-Colab's repository. Whoever runs the notebook will likely not update the Swift version passed into `install_swift.sh`. I recommend this approach for the [fastai/swiftai](https://github.com/fastai/swiftai) notebooks and anything else that must be maintained indefinitely.
 
-> Tip: If you exceed the time limit or disconnect and delete the runtime, Colab will restart in Python mode. Just re-run the first code cell to return to Swift mode.
+## Using Swift-Colab
 
-Type the following code into the second code cell:
+Google Colab is like the Swift REPL, but it submits several lines of code at once. Fill the second code cell with the first example below. Run it, and `64` will show. No matter how many lines a cell has, only the last one's return value appears. To get around this restriction, use `print(...)` to display values.
 
 ```swift
 Int.bitWidth
+// Output: (you can include this comment in the cell; it doesn't count as the "last line")
+// 64
 ```
-
-After running it, the following output appears:
-
-```
-64
-```
-
-For further guidance on how to use Swift on Google Colab, check out the [usage instructions](https://github.com/google/swift-jupyter#usage-instructions) on [google/swift-jupyter](https://github.com/google/swift-jupyter). You must use Swift on Google Colab in a slightly different way than described on google/swift-jupyter. The differences are explained in the rest of this document.
-
-## Installing packages
-
-To use Python interop or automatic differentiation, you must explicitly import their packages in first cell executed in Swift mode. Also, you cannot include `EnableJupyterDisplay.swift` (include `EnableIPythonDisplay.swift` instead).
 
 ```swift
-%install '.package(url: "https://github.com/pvieito/PythonKit.git", .branch("master"))' PythonKit
-%install '.package(url: "https://github.com/philipturner/differentiation", .branch("main"))' _Differentiation
+Int.bitWidth
+Int.bitWidth
+// Output:
+// 64
+```
+
+```swift
+print(Int.bitWidth)
+Int.bitWidth
+// Output:
+// 64
+// 64
+```
+
+Swift-Colab has several powerful features, including [magic commands](./Documentation/MagicCommands.md) and [Google Drive integration](./Documentation/GoogleDriveIntegration.md). Unfortunately, they are not fully documented yet. The old swift-jupyter's [usage instructions](https://github.com/google/swift-jupyter#usage-instructions) may be useful in the meantime.
+
+## Installing Packages
+
+To install a Swift package, type `%install` followed by a Swift 4.2-style package declaration. The declaration should appear between two single quotes. After that, type the modules you want to compile. Before importing any module via a Swift `import` statement, execute its `%install` command. You can install packages in any cell, even after other Swift code has executed.
+
+```swift
+%install '.package(url: "https://github.com/pvieito/PythonKit", .branch("master"))' PythonKit
+```
+
+Upon restarting the runtime, remember to rerun the `%install` command for each package. This command tells the Swift interpreter that the package is ready to be imported. It runs much more quickly than the first time through, because Swift-Colab utilizes cached build products from the previous Jupyter session. Try testing this mechanism by redundantly importing the same package. Make sure both commands match character-for-character!
+
+```swift
+%install '.package(url: "https://github.com/pvieito/PythonKit", .branch("master"))' PythonKit
+%install '.package(url: "https://github.com/pvieito/PythonKit", .branch("master"))' PythonKit
+```
+
+## Swift for TensorFlow Integration
+
+Coming in the future! Initial support may come from an old branch of S4TF, not the head branch. This task is tracked by https://github.com/philipturner/swift-colab/issues/15.
+
+<!--
+For in the future, when S4TF works in Colab. Either I fix the build system, or I hard-code some way to install the X10 binary.
+
+`%install-x10 TF_VERSION` command? If I change my mind, it's source-breaking.
+-->
+
+## SwiftPlot Integration
+
+To use IPython graphs or SwiftPlot plots, enter the magic commands shown below. [`EnableIPythonDisplay.swift`](https://github.com/philipturner/swift-colab/blob/main/Sources/include/EnableIPythonDisplay.swift) depends on the PythonKit and SwiftPlot libraries. SwiftPlot takes 23 seconds to compile, so you may skip its install command unless you intend to use it. However, you must restart the runtime if you change your mind.
+
+```swift
+%install '.package(url: "https://github.com/pvieito/PythonKit", .branch("master"))' PythonKit
+%install '.package(url: "https://github.com/KarthikRIyer/swiftplot", .branch("master"))' SwiftPlot AGGRenderer
 %include "EnableIPythonDisplay.swift"
-import PythonKit
-import Differentiation
 ```
 
-## Sample code
-
-The code on the README of google/swift-jupyter about SwiftPlot will not compile. Replace it with the following:
+Include `EnableIPythonDisplay.swift` after (rather than before) installing the Swift packages, or else plots will not show. The file injects the following code into the interpreter, gated under multiple import guards. The code samples here do not explicitly import these libraries, as doing so would be redundant. If you do not include `EnableIPythonDisplay.swift`, explicitly import them before running other Swift code.
 
 ```swift
-import Foundation
+import PythonKit
 import SwiftPlot
 import AGGRenderer
-
-func function(_ x: Float) -> Float {
-    return 1.0 / x
-}
-
-var aggRenderer = AGGRenderer()
-var lineGraph = LineGraph<Float, Float>()
-lineGraph.addFunction(
-    function,
-    minX: -5.0,
-    maxX: 5.0,
-    numberOfSamples: 400,
-    clampY: -50...50,
-    label: "1/x",
-    color: .orange)
-lineGraph.plotTitle.title = "FUNCTION"
-lineGraph.drawGraph(renderer: aggRenderer)
-display(base64EncodedPNG: aggRenderer.base64Png())
 ```
 
-And add these statements to the bottom of the code cell that imports PythonKit and Differentiation:
-
-```swift
-%install-swiftpm-flags -Xcc -isystem/usr/include/freetype2 -Xswiftc -lfreetype
-%install '.package(url: "https://github.com/KarthikRIyer/swiftplot", .branch("master"))' SwiftPlot AGGRenderer
-```
+For tutorials on using the SwiftPlot API, check out [KarthikRIyer/swiftplot](https://github.com/KarthikRIyer/swiftplot).
 
 ## Testing
 
-To test Swift-Colab against recent Swift toolchains and ensure support is never dropped from Colab again, you can run the following tests. These Colab notebooks originated from Python [unit tests](https://github.com/google/swift-jupyter/tree/main/test/tests) in google/swift-jupyter:
+> Tests are being updated for the v2.2 release. The table below may provide incorrect data at the moment.
+
+These tests ensure that Swift-Colab runs on recent Swift toolchains. Some of them originate from [unit tests](https://github.com/google/swift-jupyter/tree/main/test/tests) in swift-jupyter, while others cover fixed bugs and third-party libraries. If any notebook fails or you have a suggestion for a new test, please [open an issue](https://github.com/philipturner/swift-colab/issues).
+
+To run a test, replace `"5.6.2"` in the first code cell with the newest Swift version. Run the installation commands, then go to `Runtime > Restart runtime`. Click on the second code cell and instruct Colab to execute every cell in the notebook (`Runtime > Run after`). Compare each cell's expected output with its actual output. If additional instructions appear at the top of the notebook, read them before running the test.
 
 <!-- Emoji shortcuts for reference: ✅ ❌ -->
 
-| Test | Passing | Last Tested |
-| ---- | --------------- | ----------- |
-| [kernel tests](https://colab.research.google.com/drive/1vooU1XVHSpolOSmVUKM4Wj6opEJBt7zs?usp=sharing) | ✅ | Swift 5.5.3 (March 2022) |
-| [own kernel tests](https://colab.research.google.com/drive/1nHitEZm9QZNheM-ALajARyRZY2xpZr00?usp=sharing) | ✅ | Swift 5.5.3 (March 2022) |
-| [simple notebook tests](https://colab.research.google.com/drive/18316eFVMw-NIlA9OandB7djvp0J4jI0-?usp=sharing) | ✅ | Swift 5.5.3 (March 2022) |
-| [SwiftPlot](https://colab.research.google.com/drive/1Rxs7OfuKIJ_hAm2gUQT2gWSuIcyaeZfz?usp=sharing) | ✅ | Swift 5.6 (April 2022) |
+| Test | Passing | Date of Last Test Run | Swift Version |
+| ---- | ------- | --------------------- | ------------- |
+| [Swift Kernel Tests](https://colab.research.google.com/drive/1vooU1XVHSpolOSmVUKM4Wj6opEJBt7zs?usp=sharing) | ✅ | June 2022 | 5.6.2 Release |
+| [Own Kernel Tests](https://colab.research.google.com/drive/1nHitEZm9QZNheM-ALajARyRZY2xpZr00?usp=sharing) | ✅ | June 2022 | 5.6.2 Release |
+| [Simple Notebook Tests](https://colab.research.google.com/drive/18316eFVMw-NIlA9OandB7djvp0J4jI0-?usp=sharing) | ✅ | June 2022 | 5.6.2 Release |
+| [SwiftPlot](https://colab.research.google.com/drive/1Rxs7OfuKIJ_hAm2gUQT2gWSuIcyaeZfz?usp=sharing) | ✅ | June 2022 | 5.6.2 Release
+| [Swift for TensorFlow](https://colab.research.google.com/drive/1v3ZhraaHdAS2TGj03hE0cK-KRFzsqxO1?usp=sharing) | ✅ | June 2022 | June 13, 2022 v5.7 Development Snapshot |
+| [Concurrency](https://colab.research.google.com/drive/1du6YzWL9L_lbjoLl8qvrgPvyZ_8R7MCq?usp=sharing) | ✅ | June 2022 | 5.6.2 Release |

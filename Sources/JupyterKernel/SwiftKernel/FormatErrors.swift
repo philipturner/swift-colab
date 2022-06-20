@@ -219,10 +219,13 @@ func formatCompilerError(_ input: String) -> [String] {
     return [label + "no error message available"]
   }
   
-  let errorIsRecognized = lines[0] == "expression failed to parse:"
-  lines[0] = label + lines[0]
-  guard errorIsRecognized else {
-    return lines
+  // In Swift 5.6, the following line was prepended to parse errors.
+  // "expression failed to parse:"
+  if lines[0].hasPrefix("error: ") {
+    lines = [label] + lines
+  } else {
+    // The error starts with a message such as "expression failed to parse:".
+    lines[0] = label + lines[0]
   }
   
   enum LineType {
@@ -232,7 +235,6 @@ func formatCompilerError(_ input: String) -> [String] {
     case suggestion
   }
   var lineType: LineType = .errorMessage
-  var handledErrorLine = false
   
   for i in lines[1...].indices {
     let line = lines[i]
@@ -241,7 +243,6 @@ func formatCompilerError(_ input: String) -> [String] {
       if line != "" {
         lines[i] = formatCompileErrorLine(line)
         lineType = .sourceCode
-        handledErrorLine = true
       }
     case .sourceCode:
       lineType = .pointer
@@ -255,9 +256,6 @@ func formatCompilerError(_ input: String) -> [String] {
         lineType = .errorMessage
       }
     }
-  }
-  if handledErrorLine {
-    lines.removeFirst()
   }
   return lines
 }

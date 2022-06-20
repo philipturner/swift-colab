@@ -1,8 +1,6 @@
 # Magic Commands
 
-> TODO: Each should have an example of usage in its description.
-
-The Swift kernel has various built-in commands for downloading dependencies and interacting with the operating system. These command start with `%` and behave like the IPython [magic commands](http://ipython.org/ipython-doc/dev/interactive/magics.html). They take the role of inline Shell commands in Python notebooks, which start with `!`.
+The Swift kernel has various built-in commands for downloading dependencies and interacting with the operating system. These commands start with `%` and behave like the IPython [magic commands](http://ipython.org/ipython-doc/dev/interactive/magics.html). They take the role of inline Shell commands in Python notebooks, which start with `!`.
 
 - [`%include`](#include)
 - [`%install`](#install)
@@ -15,7 +13,7 @@ Magic commands are implemented in [PreprocessAndExecute.swift](https://github.co
 
 ## Execution Behavior
 
-Before executing a code block, the kernel extracts all magic commands and executes them in the order they appear. They are oblivious to the surrounding Swift code. In contrast, a Python notebook executes Shell commands according to the control flow of their surrounding code. For example, this code in a Swift notebook:
+Before executing a code block, the kernel extracts all magic commands and executes them in the order they appear. The commands are oblivious to the surrounding Swift code. In contrast, a Python notebook executes Shell commands according to the control flow of their surrounding code. For example, this code in a Swift notebook:
 ```swift
 for _ in 0..<2 {
 %system echo "A"
@@ -42,6 +40,12 @@ Produces (replacing newlines with spaces):
 A B C D A B C D
 ```
 
+> Everything below this point is not fully documented.
+
+---
+
+> TODO: Each command should have an example of usage in its description.
+
 ## `%include`
 ```
 %include FILEPATH
@@ -63,14 +67,14 @@ A B C D A B C D
 
 ## `%install-extra-include-command`
 ```
-%install-extra-include-command
+%install-extra-include-command EXECUTABLE [ARGUMENT ...]
 ```
 
 - Link to forum thread that initiated this
 
 ## `%install-location`
 ```
-%install-location
+%install-location DIRECTORY
 ```
 
 - Link to PR that initiated this
@@ -83,6 +87,7 @@ A B C D A B C D
 
 - Appends the arguments to a growing list of flags every time you execute
 - The `$clear` flag, was added to allow emptying SwiftPM flags. If you have `$clear` before other flags, it resets then adds the flags to the right of it.
+- Explain workaround for `-Xcc -I/...` flags, but for now just hyperlink: [problem 4 in this comment](https://github.com/philipturner/swift-colab/issues/14#issuecomment-1158237894).
 
 ## `%system`
 ```
@@ -90,7 +95,9 @@ A B C D A B C D
 ```
 
 - Executes a command-line command, executes before the code in the cell
-- Does not forward print output (yet), so better to use bash in Python mode right now
+- Forwards stdout just like Python bash commands, but not stdin (tracked by https://github.com/philipturner/swift-colab/issues/17)
+- Works in Python mode because it’s a Jupyter magic command. The Python mode version prints the output like a comma-separated list instead of actual stdout.
+
 ```swift
 %system cd "sample_data" && touch "$(uname -m).sh"
 ```

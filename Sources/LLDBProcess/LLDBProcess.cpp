@@ -2,6 +2,39 @@
 #include <string.h>
 #include <LLDB/LLDB.h>
 
+// MARK: - Logging Functions
+
+bool log_initialized = false;
+
+extern "C" {
+  int get_log_initialized() {
+    return int(log_initialized);
+  }
+
+  void set_log_initialized(int new_value) {
+    log_initialized = bool(new_value);
+  }
+}
+
+// Not thread-safe with respect to the Swift-side `KernelContext.log(_:)`.
+// Must manually add the "\n" terminator to the message.
+void unsafe_log_message(const char *message_with_newline) {
+  const char *mode = NULL;
+  if (log_initialized) {
+    mode = "a";
+  } else {
+    mode = "w";
+    log_initialized = true;
+  }
+  
+  auto file_pointer = fopen("/opt/swift/log", mode);
+  auto count = strlen(message_with_newline);
+  fwrite(message_with_newline, 1, count, file_pointer);
+  fclose(file_pointer);
+}
+
+// MARK: - LLDB Functions
+
 using namespace lldb;
 SBDebugger debugger;
 SBTarget target;
@@ -9,7 +42,6 @@ SBBreakpoint main_bp;
 SBProcess process;
 SBExpressionOptions expr_opts;
 SBThread main_thread;
-
 
 int read_byte_array(SBValue sbvalue, 
                     uint64_t *output_size, 
@@ -81,16 +113,26 @@ int execute(const char *code, char **description) {
   auto error = result.GetError();
   auto errorType = error.GetType();
   
+  const char *unowned_desc;
+  if (errorType == eErrorTypeInvalid) {
+    unowned_desc = result.GetObjectDescription();
+    // `unowned_desc` may be null here.
+  } else if (errorType == eErrorTypeGeneric) {
+    unowned_desc = NULL;
+  } else {
+    unowned_desc = error.GetCString();
+    // `unowned_desc` should never be null here.
+  }
+  
+  if (errorType == eErrorTypeInvalid && unowned_desc == NULL) {
+    // The last line of code created a `Task`. This has a null description, so
+    // act as if it's a `SuccessWithoutValue`.
+    errorType = eErrorTypeGeneric;
+  }
+  
   if (errorType == eErrorTypeGeneric) {
     *description = NULL;
   } else {
-    const char *unowned_desc;
-    if (errorType == eErrorTypeInvalid) {
-      unowned_desc = result.GetObjectDescription();
-    } else {
-      unowned_desc = error.GetCString();
-    }
-    
     int desc_size = strlen(unowned_desc);
     bool replace_last = false;
     if (errorType != eErrorTypeInvalid && desc_size > 0) {

@@ -240,8 +240,19 @@ fileprivate func processInstall(
   // Expand template before writing to file.
   let spec = try substituteCwd(template: parsed[0], lineIndex: lineIndex)
   let products = Array(parsed[1...])
-  
+
+  // Ensure install location exists
   let fm = FileManager.default
+  do {
+    try fm.createDirectory(
+      atPath: KernelContext.installLocation, withIntermediateDirectories: true)
+  } catch {
+    throw PackageInstallException(lineIndex: lineIndex, message: """
+      Could not create directory "\(KernelContext.installLocation)". \
+      Encountered error: \(error.localizedDescription)
+      """)
+  }
+  
   let linkPath = "/opt/swift/install-location"
   try? fm.removeItem(atPath: linkPath)
   try fm.createSymbolicLink(
@@ -275,8 +286,7 @@ fileprivate func processInstall(
   let packageName = "jupyterInstalledPackages\(packageID + 1)"
   let packageNameQuoted = "\"\(packageName)\""
   
-  let /*communist*/ manifest/*o*/ = 
-    """
+  let /*communist*/ manifest/*o*/ = """
     // swift-tools-version:4.2
     import PackageDescription
     let package = Package(
@@ -361,7 +371,14 @@ fileprivate func processInstall(
     stdout: subprocess.PIPE,
     stderr: subprocess.PIPE,
     cwd: packagePath)
-  let binDir = String(showBinPathResult.stdout.decode("utf8").strip())!
+  let binDirSrc = String(showBinPathResult.stdout.decode("utf8").strip())!
+  let binDirLines = binDirSrc.split(
+    separator: "\n", omittingEmptySubsequences: false)
+  
+  // `binDirLines` will always have at least one element. If `binDirSrc` is
+  // blank, `binDirLines` is [""] because the call to `String.split` permits
+  // empty subsequences.
+  let binDir = binDirLines.last!
   let libPath = "\(binDir)/lib\(packageName).so"
   
   // Copy .swiftmodule and modulemap files to Swift module search path.
@@ -375,7 +392,7 @@ fileprivate func processInstall(
   let buildDBPath = "\(binDir)/../build.db"
   guard fm.fileExists(atPath: buildDBPath) else {
     throw PackageInstallException(lineIndex: lineIndex, message: 
-      "build.db is missing")
+      "build.db is missing.")
   }
   
   // Execute swift-package show-dependencies to get all dependencies' paths.

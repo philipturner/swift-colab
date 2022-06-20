@@ -10,6 +10,29 @@ fileprivate let Session = session.Session
 fileprivate let Instance = traitlets.Instance
 fileprivate let ZMQInteractiveShell = zmqshell.ZMQInteractiveShell
 
+// PythonKit sometimes hangs indefinitely when you import NumPy. In turn, this
+// causes matplotlib and other Python libraries depending on NumPy to hang. The
+// culprit is some Python code that executes automatically when you import the
+// module. I cannot reproduce the hang/freeze while running Colab in Python
+// mode. Although, I have observed it while running Python code via
+// `PyRun_SimpleString` from within PythonKit (while Colab is in Swift mode).
+//
+// In `numpy.core._add_newdocs_scalars`, it tries generating documentation for
+// some scalar types at runtime. While generating the documentation, it calls
+// `platform.system()` and `platform.machine()` from the built-in `platform`
+// library. It sometimes freezes while calling those functions. However, it
+// doesn't freeze if you call one of those functions long before loading NumPy.
+//
+// The workaround requires calling `system()` or `machine()` from the same
+// process that imports NumPy. The Jupyter kernel loads and executes this
+// symbol from within `KernelCommunicator.swift`, which runs inside the Swift
+// interpreter.
+@_cdecl("prevent_numpy_import_hang")
+public func prevent_numpy_import_hang() {
+  let platform = Python.import("platform")
+  _ = platform.system()
+}
+
 // Caller side: use `ctypes` to convert return value, which is the address of a
 // Python object, into an actual Python object. This Swift file stores a
 // reference to the return value's object so that it doesn't deallocate.
@@ -77,15 +100,15 @@ fileprivate let SwiftShell = PythonClass(
     },
     
     // Enable matplotlib integration for the kernel.
-    "enable_matplotlib": PythonInstanceMethod { args in
+    "enable_matplotlib": PythonInstanceMethod { 
+      args in
       let `self` = args[0]
       var gui = args[1]
       if gui == Python.None {
         gui = args[0].kernel.gui
       }
-      try ZMQInteractiveShell.enable_matplotlib.throwing
+      return try ZMQInteractiveShell.enable_matplotlib.throwing
         .dynamicallyCall(withArguments: [`self`, gui])
-      return Python.None
     },
     
     // Enable pylab support at runtime.
@@ -95,9 +118,8 @@ fileprivate let SwiftShell = PythonClass(
       if gui == Python.None {
         gui = `self`.kernel.gui
       }
-      try ZMQInteractiveShell.enable_pylab.throwing
-        .dynamicallyCall(withArguments: [`self`, gui])
-      return Python.None
+      return try ZMQInteractiveShell.enable_pylab.throwing
+        .dynamicallyCall(withArguments: `self`, gui)
     }
   ]
 ).pythonObject

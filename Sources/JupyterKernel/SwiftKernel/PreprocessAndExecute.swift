@@ -48,8 +48,10 @@ func execute(
     return SuccessWithValue(description: description!)
   } else if error == 1 {
     return SuccessWithoutValue()
-  } else {
+  } else if error == 2 {
     return SwiftError(description: description!)
+  } else {
+    fatalError("C++ `execute` function produced unexpected return code.")
   }
 }
 

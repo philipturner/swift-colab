@@ -12,15 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Since these imports are independent of PythonKit, it makes sense to insert
-// them into the code regardless of whether the user %include'd this file
-// properly.
-import func Glibc.dlopen
-import func Glibc.dlsym
-import var Glibc.RTLD_LAZY
-
 #if canImport(PythonKit)
 import PythonKit
+
+// These symbols disappear from the Swift interpreter after the file finishes
+// executing. Why?
+import func Glibc.dlopen
+import func Glibc.dlsym
 
 /// Hooks IPython to the KernelCommunicator, so that it can send display
 /// messages to Jupyter.
@@ -56,7 +54,8 @@ extension IPythonDisplay {
       print("Warning: IPython display already enabled.")
       return
     }
-
+    
+    let /*Glibc.*/RTLD_LAZY = Int32(1)
     let libAddress = dlopen("/opt/swift/lib/libJupyterKernel.so", RTLD_LAZY)
     let funcAddress = dlsym(libAddress, "create_shell")
     let create_shell = unsafeBitCast(funcAddress, to: (@convention(c) (

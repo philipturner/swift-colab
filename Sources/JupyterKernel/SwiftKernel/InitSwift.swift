@@ -28,9 +28,8 @@ fileprivate var sigintHandler: PythonObject!
 
 func initSwift() throws {
   try initReplProcess()
-  KernelContext.log("finished initReplProcess")
   try initKernelCommunicator()
-  KernelContext.log("finished initKernelCommunicator")
+  try initConcurrency()
   
   sigintHandler = SIGINTHandler()
   sigintHandler.start()
@@ -69,5 +68,15 @@ fileprivate func initKernelCommunicator() throws {
     """)
   if result is ExecutionResultError {
     throw Exception("Error declaring JupyterKernel: \(result)")
+  }
+}
+
+fileprivate func initConcurrency() throws {
+  // If this is a pre-concurrency Swift version, the import is a no-op.
+  let result = execute(code: """
+    import _Concurrency
+    """)
+  if result is ExecutionResultError {
+    throw Exception("Error importing _Concurrency: \(result)")
   }
 }
