@@ -94,16 +94,18 @@ Colab lets you easily download trunk snapshots by typing their date. But for v5.
 !bash "install_swift.sh" "https://download.swift.org/swift-5.7-branch/ubuntu1804/swift-5.7-DEVELOPMENT-SNAPSHOT-2022-06-13-a/swift-5.7-DEVELOPMENT-SNAPSHOT-2022-06-13-a-ubuntu18.04.tar.gz" #// Replace 5.6.2 with newest Swift version.
 ```
 
+Execute the installation script and go to `Runtime > Restart runtime`. The next cell will download the CTensorFlow/X10 binary, created from [tensorflow/tensorflow](https://github.com/tensorflow/tensorflow) and the C++ code in [s4tf/s4tf](https://github.com/s4tf/s4tf). Keep the next set of commands in a unique code cell, which you only run once. Do not add anything else to this code cell, unless you enjoy [I/O deadlocks](https://github.com/philipturner/swift-colab/issues/17).
+
+```swift
+%system curl "https://storage.googleapis.com/swift-tensorflow-artifacts/oneoff-builds/tensorflow-ubuntu1804-x86.zip" --output "x10-binary.zip"
+%system unzip "x10-binary.zip"
+%system cp -r "/content/Library/tensorflow-2.4.0/usr/include/tensorflow" "/usr/include/tensorflow"
+```
+
 <!--
-For in the future, when S4TF works in Colab. Either I fix the build system, or I hard-code some way to install the X10 binary.
-
-`%install-x10 TF_VERSION` command? If I change my mind, it's source-breaking.
-
 TF 2.4, S4TF PR listing the caveats
 
 https://github.com/philipturner/swift-colab/issues/15. - can't use -c release -Xswiftc -Onone
-
-Specific development toolchains
 
 -->
 
