@@ -240,8 +240,19 @@ fileprivate func processInstall(
   // Expand template before writing to file.
   let spec = try substituteCwd(template: parsed[0], lineIndex: lineIndex)
   let products = Array(parsed[1...])
-  
+
+  // Ensure install location exists
   let fm = FileManager.default
+  do {
+    try fm.createDirectory(
+      atPath: KernelContext.installLocation, withIntermediateDirectories: true)
+  } catch {
+    throw PackageInstallException(lineIndex: lineIndex, message: """
+      Could not create directory "\(KernelContext.installLocation)". \
+      Encountered error: \(error.localizedDescription)
+      """)
+  }
+  
   let linkPath = "/opt/swift/install-location"
   try? fm.removeItem(atPath: linkPath)
   try fm.createSymbolicLink(
