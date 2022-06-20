@@ -185,9 +185,9 @@ In the table below, "Compatible Swift Versions" lists whether each notebook runs
 | [Introducing X10, an XLA-Based Backend](https://colab.research.google.com/github/tensorflow/swift/blob/main/docs/site/tutorials/introducing_x10.ipynb)<sup>[5]</sup> | S4TF, SwiftModels | n/a |
 
 > <sup>1</sup>One cell fails because of ambiguous overloads for `PythonObject.==` and `PythonObject.<`. Work around this by explicitly casting the comparison result to `Bool` before printing.
-
+>
 > <sup>2</sup>When using release toolchains, skip the cell that uses `Tensor`.
-
+>
 > <sup>3</sup>Several cells fail because `gradient(at:in)` was renamed to `gradient(at:of:)`. Fix the second argument label and rerun the failed cells.
 
 > <sup>4</sup>One cell fails because of the ambiguous line `gradient(at: 2, 2, of: pow)`. Fix this by replacing either `2` with `Double(2)`.
