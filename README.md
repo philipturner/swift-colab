@@ -111,7 +111,7 @@ Modify the installation command at the very top of your Colab notebook. The seco
 !bash "install_swift.sh" "2022-05-11" #// Replace 5.6.2 with newest Swift version.
 ```
 
-You can easily download trunk snapshots by entering their date in YYYY-MM-DD format. For v5.7 snapshots, the entire URL must be present. Go to [swift.org/download](https://www.swift.org/download) and scroll to "Swift 5.7 Development". Right-click the large "x86_64" link for Ubuntu 18.04, click "Copy", and paste it into the notebook.
+You can easily download trunk snapshots by entering their date in YYYY-MM-DD format. For v5.7 snapshots, the entire URL must be present. Go to [swift.org/download](https://www.swift.org/download) and scroll to "Swift 5.7 Development". Right-click the large "x86_64" link for Ubuntu 18.04, copy the address, and paste it into the notebook.
 
 ```swift
 !bash "install_swift.sh" "https://download.swift.org/swift-5.7-branch/ubuntu1804/swift-5.7-DEVELOPMENT-SNAPSHOT-2022-06-13-a/swift-5.7-DEVELOPMENT-SNAPSHOT-2022-06-13-a-ubuntu18.04.tar.gz" #// Replace 5.6.2 with newest Swift version.
