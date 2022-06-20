@@ -96,7 +96,7 @@ For tutorials on using the SwiftPlot API, check out [KarthikRIyer/swiftplot](htt
 
 ## Swift for TensorFlow Integration
 
-S4TF has a quite complex build setup. The easiest way to use it is copying the [Swift for TensorFlow test notebook](https://colab.research.google.com/drive/1v3ZhraaHdAS2TGj03hE0cK-KRFzsqxO1?usp=sharing) into your Google Drive. To configure it manually, read the instructions below.
+S4TF has a quite complex build setup. The easiest way to use it is copying the [S4TF test notebook](https://colab.research.google.com/drive/1v3ZhraaHdAS2TGj03hE0cK-KRFzsqxO1?usp=sharing) into your Google Drive. To configure it manually, read the instructions below.
 
 Swift for TensorFlow does not compile on release toolchains, so download a Swift development toolchain. A bug in the latest trunk snapshot [prevents S4TF from compiling](https://github.com/apple/swift/issues/59467), but a few trunk snapshots were released before the bug appeared. Also, every toolchain created from the `release/5.7` branch works. Some of your options are:
 
@@ -129,7 +129,7 @@ Top-of-tree S4TF is currently tested against TensorFlow 2.9, as shown in the [S4
 
 Now, the real action begins. The `TensorFlow` Swift package takes 3 minutes to compile on Google Colab, which sounds worse than it is.  Swift-Colab 2.0 made this a one-time cost, so the package rebuilds instantaneously after restarting the runtime. Grab a cup of coffee or read a Medium article while it compiles, and that's the only waiting you ever need to do. If you accidentally close the browser tab with S4TF loaded, salvage it with `Runtime > Manage sessions`.
 
-> To access your closed notebook, first open a new notebook. `Runtime > Manage sessions` shows a list of recent Colab instances. Click on the old one, and its notebook opens in a new browser tab.
+> To access your closed notebook, first open a new notebook. `Runtime > Manage sessions` shows a list of active Colab sessions. Click on the closed notebook's name, and it opens in a new browser tab.
 
 Go to `Insert > Code cell` and paste the following commands. The SwiftPM flags `-c release -Xswiftc -Onone` are commented out. They shorten build time to 2 minutes, but require [restarting the runtime twice](https://github.com/philipturner/swift-colab/issues/15) because of a [compiler bug](https://github.com/apple/swift/issues/59569). Consider using these flags if compile time becomes a serious bottleneck in your workflow.
 
