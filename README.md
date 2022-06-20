@@ -102,7 +102,7 @@ Swift for TensorFlow does not compile on release toolchains, so choose a Swift d
 - May 15, 2022 v5.7 Development Snapshot
 - June 13, 2022 v5.7 Development Snapshot
 
-Modify the install command at the very top of your Colab notebook. In the second line of the first code cell, it says "Replace 5.6.2 with newest Swift version." Delete `"5.6.2"` and replace it with your chosen snapshot. If you chose the May 11, 2022 snapshot, you should have:
+Modify the install command at the very top of your Colab notebook. The second line of the first code cell says "Replace 5.6.2 with newest Swift version." Delete `"5.6.2"` and replace it with your chosen snapshot. If you chose the May 11, 2022 snapshot, you should have:
 
 ```swift
 !bash "install_swift.sh" "2022-05-11" #// Replace 5.6.2 with newest Swift version.
@@ -122,7 +122,7 @@ Execute the installation script and go to `Runtime > Restart runtime`. The next 
 %system cp -r "/content/Library/tensorflow-2.4.0/usr/include/tensorflow" "/usr/include/tensorflow"
 ```
 
-These aren't the full build instructions! I'll finish them tomorrow. In the meantime, check out https://github.com/s4tf/s4tf/pull/16 and https://github.com/philipturner/swift-colab/issues/15.
+These aren't the full build instructions! I will finish them tomorrow. In the meantime, check out https://github.com/s4tf/s4tf/pull/16 and https://github.com/philipturner/swift-colab/issues/15.
 
 <!--
 TF 2.4, S4TF PR listing the caveats
