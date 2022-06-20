@@ -117,7 +117,7 @@ You can easily download trunk snapshots by entering their date in YYYY-MM-DD for
 !bash "install_swift.sh" "https://download.swift.org/swift-5.7-branch/ubuntu1804/swift-5.7-DEVELOPMENT-SNAPSHOT-2022-06-13-a/swift-5.7-DEVELOPMENT-SNAPSHOT-2022-06-13-a-ubuntu18.04.tar.gz" #// Replace 5.6.2 with newest Swift version.
 ```
 
-Execute the installation script and go to `Runtime > Restart runtime`. The next cell will download the CTensorFlow/X10 binary, created from [tensorflow/tensorflow](https://github.com/tensorflow/tensorflow) and the C++ code in [s4tf/s4tf](https://github.com/s4tf/s4tf). Keep the next set of commands in a unique code cell, which you only run once. Do not add anything else to this code cell, unless you enjoy [I/O deadlocks](https://github.com/philipturner/swift-colab/issues/17).
+Execute the installation script and go to `Runtime > Restart runtime`. The next cell downloads the X10 binary created from [tensorflow/tensorflow](https://github.com/tensorflow/tensorflow) and the C++ code in [s4tf/s4tf](https://github.com/s4tf/s4tf). Paste the commands below into a unique code cell, which you only run once. Do not add anything else to this cell, unless you enjoy [I/O deadlocks](https://github.com/philipturner/swift-colab/issues/17).
 
 ```swift
 %system curl "https://storage.googleapis.com/swift-tensorflow-artifacts/oneoff-builds/tensorflow-ubuntu1804-x86.zip" --output "x10-binary.zip"
