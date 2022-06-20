@@ -75,7 +75,7 @@ Upon restarting the runtime, remember to rerun the `%install` command for each p
 
 The build setup for S4TF is a bit complex. The easiest way to use it is to copy the [Swift for TensorFlow test notebook](https://colab.research.google.com/drive/1v3ZhraaHdAS2TGj03hE0cK-KRFzsqxO1?usp=sharing). To configure it manually, read the instructions below.
 
-Swift for TensorFlow does not compile on release toolchains, so choose a Swift development toolchain. A bug in the main branch of Swift's GitHub repository [prevents S4TF from compiling](https://github.com/apple/swift/issues/59467), but luckily a few snapshots were released before the bug was exposed. Also, every snapshot created from the `release/5.7` branch works. The following are just some of the snapshots you can choose:
+Swift for TensorFlow does not compile on release toolchains, so choose a Swift development toolchain. A bug in the main branch of Swift's GitHub repository [prevents S4TF from compiling](https://github.com/apple/swift/issues/59467), but luckily a few snapshots were released before the bug was exposed. Also, every snapshot created from the `release/5.7` branch works. Some of the snapshots you can choose are:
 
 - May 4, 2022 Trunk Development Snapshot
 - May 11, 2022 Trunk Development Snapshot
@@ -101,6 +101,8 @@ Execute the installation script and go to `Runtime > Restart runtime`. The next 
 %system unzip "x10-binary.zip"
 %system cp -r "/content/Library/tensorflow-2.4.0/usr/include/tensorflow" "/usr/include/tensorflow"
 ```
+
+> Note: These aren't the full build instructions! I'll finish them tomorrow. In the meantime, check out https://github.com/s4tf/s4tf/pull/16 and https://github.com/philipturner/swift-colab/issues/15.
 
 <!--
 TF 2.4, S4TF PR listing the caveats
