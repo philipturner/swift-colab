@@ -161,9 +161,9 @@ Multiple tutorial notebooks depend on Swift for TensorFlow. <s>You must recompil
 
 In another browser tab, open one of the tutorials. Click `Edit > Select all cells` in the menu bar. Every cell should turn blue. Press `Ctrl + C` (Chrome OS, Windows) or `Cmd + C` (macOS, iPadOS) to copy the cells. Switch back to the original Colab notebook. Click the last cell, then press `Cmd/Ctrl + V`. Every cell from the tutorial should appear in the notebook that is compiling S4TF.
 
-When experiencing the tutorial for the first time, run each cell one-by-one. To run all of them at once, click the first code cell of the tutorial. Then, go to `Runtime > Run after`.
+When experiencing the tutorial for the first time, run each cell one-by-one. To run all of them at once, click the first code cell of the tutorial. Then, go to `Runtime > Run after`. If you are lucky, the cells can be deleted with `Edit > Undo insert X cells`. Otherwise, select all cells and press Backspace or Delete to start over from scratch. Then, copy the contents of the S4TF test notebook.
 
-> I'm testing an idea of reusing the same session across multiple notebooks, avoiding the 2 minutes of recompiling S4TF. Solution: delete all the cells in one notebook, then copy/paste all cells from another notebook. (show how to select all the cells in menu bar) - `Edit > Select all cells` -> Cmd/Ctrl + C -> `Edit > Select all cells` -> Cmd/Ctrl + V
+Finally, go to `Runtime > Restart runtime`. Rerun the cell that installs TensorFlow and PythonKit, which should take 2 seconds to execute. Repeat the process outlined above and proceed with the second tutorial.
 
 In the table below, "Compatible Swift Versions" lists whether each notebook runs under the latest release or development toolchain.
 - Release = 5.6.2 Release
