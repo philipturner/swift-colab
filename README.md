@@ -34,7 +34,7 @@ This repository contains a [growing list of tutorials](#swift-tutorials) sourced
 
 ## Using Swift-Colab
 
-Google Colab is like the Swift REPL, but it submits several lines of code at once. Fill the second code cell with the first example below. Run it, and `64` will show. No matter how many lines a cell has, only the last one's return value appears. To get around this restriction, use `print(...)` to display values.
+Google Colab is like the Swift REPL, but it submits several lines of code at once. Create a new cell with `Insert > Code cell` and fill it with the first example below. Run it, and `64` appears in the output. No matter how many lines a cell has, only the last one's return value appears. To get around this restriction, use `print(...)` to display values.
 
 ```swift
 Int.bitWidth
