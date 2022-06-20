@@ -57,11 +57,11 @@ Int.bitWidth
 // 64
 ```
 
-The Swift kernel has several powerful features, including [magic commands](./Documentation/MagicCommands.md) and [Google Drive integration](./Documentation/GoogleDriveIntegration.md). Unfortunately, they are not fully documented yet. The old swift-jupyter's [usage instructions](https://github.com/google/swift-jupyter#usage-instructions) may be useful in the meantime.
+The Swift kernel has several powerful features, including [magic commands](./Documentation/MagicCommands.md) and [Google Drive integration](./Documentation/GoogleDriveIntegration.md). Unfortunately, they are not fully documented yet. The old swift-jupyter's [usage instructions](https://github.com/google/swift-jupyter#usage-instructions) may be helpful in the meantime.
 
 ## Installing Packages
 
-To install a Swift package, type `%install` followed by a Swift 4.2-style package declaration. The declaration should appear between two single quotes. After that, type the modules you want to compile. Before importing any module via a Swift `import` statement, execute its `%install` command. You can install packages in any cell, even after other Swift code has executed.
+To install a Swift package, type `%install` and a Swift 4.2-style package declaration. The declaration should appear between two single quotes. After that, enter the modules you want to compile. Before importing any module with a Swift `import` statement, execute its `%install` command. You can install packages in any cell, even after other Swift code has executed.
 
 ```swift
 %install '.package(url: "https://github.com/pvieito/PythonKit", .branch("master"))' PythonKit
