@@ -122,7 +122,7 @@ Execute the installation script and go to `Runtime > Restart runtime`. The next 
 %system cp -r "/content/Library/tensorflow-2.4.0/usr/include/tensorflow" "/usr/include/tensorflow"
 ```
 
-Top-of-tree S4TF is currently being built against TF 2.9, which you can reproduce by running the [S4TF build script](https://gist.github.com/philipturner/7aa063af04277d463c14168275878511). Because the script does not yet run on every platform, I cannot yet host up-to-date X10 binaries online. The X10 binary you downloaded was made from TensorFlow 2.4, and it was the last binary that Google created before S4TF went dormant. I have updated the Swift code to be [compatible with TF 2.9](https://github.com/s4tf/s4tf/pull/10), and using the wrong TF version brings some drawbacks. https://github.com/s4tf/s4tf/pull/16 provides a complete explanation, but as a rule of thumb, avoid the `_Raw` namespace.
+Top-of-tree S4TF is currently being built against TensorFlow 2.9, as shown in the [S4TF build script](https://gist.github.com/philipturner/7aa063af04277d463c14168275878511). Because the script does not yet run on every platform, I cannot host up-to-date X10 binaries online. The X10 binary you downloaded was was last binary that Google created before S4TF went dormant, and it uses TF 2.4. I have updated the Swift code to be [compatible with TF 2.9](https://github.com/s4tf/s4tf/pull/10), and using an outdated TF version [brings some drawbacks](https://github.com/s4tf/s4tf/pull/16). As a rule of thumb, avoid the `_Raw` namespace.
 
 These aren't the full build instructions! I will finish them tomorrow. In the meantime, check out https://github.com/s4tf/s4tf/pull/16 and https://github.com/philipturner/swift-colab/issues/15.
 
