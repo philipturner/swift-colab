@@ -76,7 +76,7 @@ Upon restarting the runtime, remember to rerun the `%install` command for each p
 
 ## SwiftPlot Integration
 
-To use IPython graphs or SwiftPlot plots, enter the magic commands shown below. [`EnableIPythonDisplay.swift`](https://github.com/philipturner/swift-colab/blob/main/Sources/include/EnableIPythonDisplay.swift) depends on the PythonKit and SwiftPlot libraries. SwiftPlot takes 23 seconds to compile, so you may skip its install command unless you intend to use it. However, you must restart the runtime if you change your mind.
+To use IPython graphs or SwiftPlot plots, enter the magic commands shown below. Include [`EnableIPythonDisplay.swift`](https://github.com/philipturner/swift-colab/blob/main/Sources/include/EnableIPythonDisplay.swift) after installing the Swift packages, because the file depends on both of them. SwiftPlot takes 23 seconds to compile, so you may skip its install command unless you intend to use it. However, you must restart the runtime if you change your mind.
 
 ```swift
 %install '.package(url: "https://github.com/pvieito/PythonKit", .branch("master"))' PythonKit
@@ -84,7 +84,7 @@ To use IPython graphs or SwiftPlot plots, enter the magic commands shown below. 
 %include "EnableIPythonDisplay.swift"
 ```
 
-Include `EnableIPythonDisplay.swift` after (rather than before) installing the Swift packages, or else plots will not show. The file injects the following code into the interpreter, gated under multiple import guards. The code samples here do not explicitly import these libraries, as doing so would be redundant. If you do not include `EnableIPythonDisplay.swift`, explicitly import them before running other Swift code.
+`EnableIPythonDisplay.swift` injects the following code into the interpreter, gated under multiple import guards. The code samples here do not explicitly import these libraries, as doing so would be redundant. If you do not include `EnableIPythonDisplay.swift`, explicitly import them before running other Swift code.
 
 ```swift
 import PythonKit
