@@ -157,11 +157,16 @@ Multiple tutorial notebooks depend on Swift for TensorFlow. <s>You must recompil
 ```swift
 %install-swiftpm-flags $clear
 %install '.package(url: "https://github.com/pvieito/PythonKit", .branch("master"))' PythonKit
+import _Differentiation // If using a development toolchain.
+
+// If using a release toolchain.
+// %install '.package(url: "https://github.com/philipturner/differentiation", .branch("master"))' _Differentiation
+// import Differentiation
 ```
 
 In another browser tab, open one of the tutorials. Click `Edit > Select all cells` in the menu bar. Every cell should turn blue. Press `Ctrl + C` (Chrome OS, Windows) or `Cmd + C` (macOS, iPadOS) to copy the cells. Switch back to the original Colab notebook. Click the last cell, then press `Cmd/Ctrl + V`. Every cell from the tutorial should appear in the notebook that is compiling S4TF.
 
-When experiencing the tutorial for the first time, run each cell one-by-one. To run all of them at once, click the first code cell of the tutorial. Then, go to `Runtime > Run after`. If you are lucky, the cells can be deleted with `Edit > Undo insert X cells`. Otherwise, select all cells, delete them, and copy the contents of the S4TF test notebook. After resetting the notebok, go to `Runtime > Restart runtime`. Rerun the cell that installs TensorFlow and PythonKit, which should take 2 seconds to execute. Proceed with the second tutorial.
+When experiencing the tutorial for the first time, run each cell one-by-one. To run all of them at once, click the first code cell of the tutorial. Then, go to `Runtime > Run after`. If you are lucky, the cells can be deleted with `Edit > Undo insert X cells`. Otherwise, select all cells, delete them, and copy the contents of the S4TF test notebook. After resetting the notebook, go to `Runtime > Restart runtime`. Rerun the cell that installs TensorFlow and PythonKit, which should take 2 seconds to execute. Proceed with the second tutorial.
 
 In the table below, "Compatible Swift Versions" lists whether each notebook runs under the latest release or development toolchain.
 - Release = 5.6.2 Release
