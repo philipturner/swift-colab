@@ -127,7 +127,6 @@ Top-of-tree S4TF is currently being built against TensorFlow 2.9, as shown in th
 These aren't the full build instructions! I will finish them tomorrow. In the meantime, check out https://github.com/s4tf/s4tf/pull/16 and https://github.com/philipturner/swift-colab/issues/15.
 
 <!--
-TF 2.4, S4TF PR listing the caveats, link the Gist build script
 
 https://github.com/philipturner/swift-colab/issues/15. - can't use -c release -Xswiftc -Onone
 
