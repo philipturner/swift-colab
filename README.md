@@ -149,3 +149,9 @@ To run a test, replace `"5.6.2"` in the first code cell with the newest Swift ve
 | [SwiftPlot](https://colab.research.google.com/drive/1Rxs7OfuKIJ_hAm2gUQT2gWSuIcyaeZfz?usp=sharing) | ✅ | June 2022 | 5.6.2 Release
 | [Swift for TensorFlow](https://colab.research.google.com/drive/1v3ZhraaHdAS2TGj03hE0cK-KRFzsqxO1?usp=sharing) | ✅ | June 2022 | June 13, 2022 v5.7 Development Snapshot |
 | [Concurrency](https://colab.research.google.com/drive/1du6YzWL9L_lbjoLl8qvrgPvyZ_8R7MCq?usp=sharing) | ✅ | June 2022 | 5.6.2 Release |
+
+<!--
+
+S4TF notebooks made by Google, make them tests now
+
+-->
