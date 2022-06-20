@@ -124,16 +124,26 @@ Execute the installation script and go to `Runtime > Restart runtime`. The next 
 
 Top-of-tree S4TF is currently being built against TensorFlow 2.9, as shown in the [S4TF build script](https://gist.github.com/philipturner/7aa063af04277d463c14168275878511). Because the script does not yet run on every platform, I cannot host up-to-date X10 binaries online. The X10 binary you downloaded was was last binary that Google created before S4TF went dormant, and it uses TF 2.4. I have updated the Swift code to be [compatible with TF 2.9](https://github.com/s4tf/s4tf/pull/10), and using an outdated TF version [brings some drawbacks](https://github.com/s4tf/s4tf/pull/16). As a rule of thumb, avoid the `_Raw` namespace.
 
-Now, the real action begins. The `TensorFlow` Swift package takes 3 minutes to compile on Google Colab, which sounds worse than it is. This is a one-time cost because of Swift-Colab 2.0, and it will build instantaneously the next time you do `Runtime > Restart runtime`. Grab a cup of coffee or read a Medium article while it compiles, and that's the only waiting you ever need to do. If you accidentally close the browser tab with S4TF loaded, try salvaging it with `Runtime > Manage sessions`.
+Now, the real action begins. The `TensorFlow` Swift package takes 3 minutes to compile on Google Colab, which sounds worse than it is. This is a one-time cost because of Swift-Colab 2.0, and it rebuilds instantaneously if you restart the runtime. Grab a cup of coffee or read a Medium article while it compiles, and that's the only waiting you ever need to do. If you accidentally close the browser tab with S4TF loaded, try salvaging it with `Runtime > Manage sessions`.
 
-Go to `Insert > Code cell` and paste the following commands. You will see `-c release -Xswiftc -Onone` commented out. This makes it compile in 2 minutes instead of 3, but currently requires [restarting the runtime twice](https://github.com/philipturner/swift-colab/issues/15) because of a [compiler bug](https://github.com/apple/swift/issues/59569). Consider using these flags if S4TF's long compile time becomes a serious bottleneck to your workflow.
+Go to `Insert > Code cell` and paste the following commands. You will see `-c release -Xswiftc -Onone` commented out. This reduces build time by 33%, but requires [restarting the runtime twice](https://github.com/philipturner/swift-colab/issues/15) because of a [compiler bug](https://github.com/apple/swift/issues/59569). Consider using these flags if compile time becomes a serious bottleneck to your workflow.
 
+```swift
+%install-swiftpm-flags $clear
+// %install-swiftpm-flags -c release -Xswiftc -Onone
+%install-swiftpm-flags -Xswiftc -DTENSORFLOW_USE_STANDARD_TOOLCHAIN
+%install-swiftpm-flags -Xlinker "-L/content/Library/tensorflow-2.4.0/usr/lib"
+%install-swiftpm-flags -Xlinker "-rpath=/content/Library/tensorflow-2.4.0/usr/lib"
+%install '.package(url: "https://github.com/s4tf/s4tf", .branch("main"))' TensorFlow
+```
 
-These aren't the full build instructions! I will finish them tomorrow. In the meantime, check out https://github.com/s4tf/s4tf/pull/16 and https://github.com/philipturner/swift-colab/issues/15.
+Finally, import Swift for TensorFlow into the interpreter.
+
+```swift
+import TensorFlow
+```
 
 <!--
-
-https://github.com/philipturner/swift-colab/issues/15. - can't use -c release -Xswiftc -Onone
 
 Comment on issue 15
 
