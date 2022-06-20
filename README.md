@@ -127,7 +127,7 @@ Execute the installation script and go to `Runtime > Restart runtime`. Next, dow
 
 Top-of-tree S4TF is currently tested against TensorFlow 2.9, as shown in the [S4TF build script](https://gist.github.com/philipturner/7aa063af04277d463c14168275878511). Because the script does not yet run on every platform, I cannot host modern X10 binaries online. The previous command downloaded the last X10 binary that Google created, which uses TF 2.4. Using an outdated binary [brings some caveats](https://github.com/s4tf/s4tf/pull/16), as the raw TensorFlow bindings were recently [updated for v2.9](https://github.com/s4tf/s4tf/pull/10). As a rule of thumb, avoid the `_Raw` namespace.
 
-Now, the real action begins. The `TensorFlow` Swift package takes 3 minutes to compile on Google Colab, which sounds worse than it is. This is a one-time cost because of Swift-Colab 2.0, and it rebuilds instantaneously if you restart the runtime. Grab a cup of coffee or read a Medium article while it compiles, and that's the only waiting you ever need to do. If you accidentally close the browser tab with S4TF loaded, try salvaging it with `Runtime > Manage sessions`.
+Now, the real action begins. The `TensorFlow` Swift package takes 3 minutes to compile on Google Colab, which sounds worse than it is.  Swift-Colab 2.0 made this a one-time cost, and it rebuilds instantaneously after restarting the runtime. Grab a cup of coffee or read a Medium article while it compiles, and that's the only waiting you ever need to do. If you accidentally close the browser tab with S4TF loaded, try salvaging it with `Runtime > Manage sessions`.
 
 Go to `Insert > Code cell` and paste the following commands. You will see `-c release -Xswiftc -Onone` commented out. This reduces build time by 33%, but requires [restarting the runtime twice](https://github.com/philipturner/swift-colab/issues/15) because of a [compiler bug](https://github.com/apple/swift/issues/59569). Consider using these flags if compile time becomes a serious bottleneck to your workflow.
 
@@ -150,7 +150,7 @@ import TensorFlow
 
 These notebooks do not include commands for installing Swift-Colab; you must add them as described in [Getting Started](#getting-started). They also depend on packages such as PythonKit and TensorFlow, which you must download as described in [Installing Packages](#installing-packages) and [Swift for TensorFlow Integration](#swift-for-tensorflow-integration). For tutorials that involve automatic differentiation, either use [Differentiation](https://github.com/philipturner/differentiation) or download a development toolchain.
 
-> I'm testing an idea of reusing the same session across multiple notebooks, avoiding the 2 minutes of recompiling S4TF.
+> I'm testing an idea of reusing the same session across multiple notebooks, avoiding the 2 minutes of recompiling S4TF. Solution: delete all the cells in one notebook, then copy/paste all cells from another notebook.
 
 Tutorial | Compatible Swift Version |
 -------- | ------------ |
