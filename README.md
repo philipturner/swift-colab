@@ -26,11 +26,11 @@ Colab notebooks created directly from Google Drive are tailored for Python progr
 
 > Tip: Colab measures how long you keep a notebook open without interacting with it. If you exceed the time limit of Colab's free tier, it may restart in Python mode. That means Swift code executes as if it's Python code. In that situation, repeat the process outlined above to return to Swift mode.
 
-When Google sponsored S4TF from 2018 - 2021, the Swift community created several Jupyter notebooks. To run those notebooks now, slightly modify them. Create a new cell at the top of each notebook, including the commands shown above*. No further changes are necessary because of Swift-Colab's backward-compatibility. If you experience a problem, please [file an issue](https://github.com/philipturner/swift-colab/issues).
+When Google sponsored S4TF from 2018 - 2021, the Swift community created several Jupyter notebooks. To run these notebooks now, slightly modify them. Create a new cell at the top of each notebook, including the commands shown above*. No further changes are necessary because of Swift-Colab's backward-compatibility. If you experience a problem, please [file an issue](https://github.com/philipturner/swift-colab/issues).
 
 > \*For a more future-proof solution, fill that cell with only a comment directing the user to Swift-Colab's repository. Whoever runs the notebook will likely not update the Swift version passed into `install_swift.sh`. I recommend this approach for the [fastai/swiftai](https://github.com/fastai/swiftai) notebooks and anything else that must be maintained indefinitely.
 
-This repository contains a [growing list of tutorial notebooks](#swift-tutorials) sourced from [s4tf/s4tf-docs](https://github.com/s4tf/s4tf-docs) (formerly tensorflow/swift) and [fastai/swiftai](https://github.com/fastai/swiftai). Before using them, read through this README and familiarize yourself with the peculiarities of Swift-Colab.
+This repository contains a [growing list of tutorials](#swift-tutorials) sourced from [s4tf/s4tf-docs](https://github.com/s4tf/s4tf-docs) (formerly tensorflow/swift) and [fastai/swiftai](https://github.com/fastai/swiftai). Before following them, read through this README and familiarize yourself with the peculiarities of Swift-Colab.
 
 ## Using Swift-Colab
 
