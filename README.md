@@ -148,6 +148,10 @@ import TensorFlow
 
 ## Swift Tutorials
 
+These notebooks do not include commands for installing Swift-Colab; you must add them as described in [Getting Started](#getting-started). They also depend on packages such as PythonKit and TensorFlow, which you must download as described in [Installing Packages](#installing-packages) and [Swift for TensorFlow Integration](#swift-for-tensorflow-integration).
+
+> I'm testing an idea of reusing the same session across multiple notebooks, avoiding the 2 minutes of recompiling S4TF.
+
 Tutorial | Compatible Swift Version |
 -------- | ------------ |
 [A Swift Tour](https://colab.research.google.com/github/tensorflow/swift/blob/main/docs/site/tutorials/a_swift_tour.ipynb) | ???
