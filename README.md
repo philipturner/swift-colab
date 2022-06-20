@@ -79,8 +79,20 @@ Swift for TensorFlow does not compile on release toolchains, so choose a Swift d
 
 - May 4, 2022 Trunk Development Snapshot
 - May 11, 2022 Trunk Development Snapshot
+- May 15, 2022 v5.7 Development Snapshot
+- June 13, 2022 v5.7 Development Snapshot
 
-TODO: Ubuntu 18.04 warning for manual links
+Modify the install command at the very top of your Colab notebook. In the second line of the first code cell, it says "Replace 5.6.2 with newest Swift version." Delete `5.6.2` and replace it with your chosen snapshot. If you chose the May 11, 2022 snapshot, you shold have:
+
+```swift
+!bash "install_swift.sh" "2022-05-11" #// Replace 5.6.2 with newest Swift version.
+```
+
+Colab lets you easily download trunk snapshots by typing their date. But for v5.7 snapshots, you must enter the entire URL. Go to [swift.org/download](https://www.swift.org/download) and scroll to "Swift 5.7 Development". Right-click the "x86_64" link for Ubuntu 18.04 and paste it into the notebook.
+
+```swift
+!bash "install_swift.sh" "https://download.swift.org/swift-5.7-branch/ubuntu1804/swift-5.7-DEVELOPMENT-SNAPSHOT-2022-06-13-a/swift-5.7-DEVELOPMENT-SNAPSHOT-2022-06-13-a-ubuntu18.04.tar.gz" #// Replace 5.6.2 with newest Swift version.
+```
 
 <!--
 For in the future, when S4TF works in Colab. Either I fix the build system, or I hard-code some way to install the X10 binary.
