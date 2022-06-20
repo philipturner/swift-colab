@@ -178,7 +178,7 @@ In the table below, "Compatible Swift Versions" lists whether each notebook runs
 | [Protocol-Oriented Programming & Generics](https://colab.research.google.com/github/tensorflow/swift/blob/main/docs/site/tutorials/protocol_oriented_generics.ipynb) | | Release, Development |
 | [Python Interoperability](https://colab.research.google.com/github/tensorflow/swift/blob/main/docs/site/tutorials/python_interoperability.ipynb)<sup>[1]</sup> | PythonKit, S4TF | Development |
 | [Sharp Edges in Differentiability](https://colab.research.google.com/github/tensorflow/swift/blob/main/docs/site/tutorials/Swift_autodiff_sharp_edges.ipynb)<sup>[2][3]</sup> | AutoDiff | Development |
-| [Model Training Walkthrough](https://colab.research.google.com/github/tensorflow/swift/blob/main/docs/site/tutorials/model_training_walkthrough.ipynb) | AutoDiff, S4TF | Development |
+| [Model Training Walkthrough](https://colab.research.google.com/github/tensorflow/swift/blob/main/docs/site/tutorials/model_training_walkthrough.ipynb) | AutoDiff, PythonKit, S4TF | Development |
 | [Raw TensorFlow Operators](https://colab.research.google.com/github/tensorflow/swift/blob/main/docs/site/tutorials/raw_tensorflow_operators.ipynb) | AutoDiff, S4TF | Development |
 | [Introducing X10, an XLA-Based Backend](https://colab.research.google.com/github/tensorflow/swift/blob/main/docs/site/tutorials/introducing_x10.ipynb)<sup>[4]</sup> | S4TF, SwiftModels | n/a |
 
