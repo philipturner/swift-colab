@@ -182,7 +182,7 @@ Tutorial | Compatible Swift Versions |
 [Raw TensorFlow Operators](https://colab.research.google.com/github/tensorflow/swift/blob/main/docs/site/tutorials/raw_tensorflow_operators.ipynb) | ???
 [Introducing X10, an XLA-Based Backend](https://colab.research.google.com/github/tensorflow/swift/blob/main/docs/site/tutorials/introducing_x10.ipynb) | ???
 
-> 1. One cell fails because of ambiguous overloads for `PythonObject.==` and `PythonObject.<`. Work around this by explicitly casting the comparison result with `as Bool` before printing.
+> <sup>1</sup>One cell fails because of ambiguous overloads for `PythonObject.==` and `PythonObject.<`. Work around this by explicitly casting the comparison result with `as Bool` before printing.
 
 > <sup>2</sup>Several cells fail because `gradient(at:in)` was renamed to `gradient(at:of:)`. Work around this by fixing the second argument label and re-running the failed cells.
 
