@@ -9,8 +9,8 @@ For an in-depth look at how and why this repository was created, check out the [
 - [Getting Started](#getting-started)
 - [Using Swift-Colab](#using-swift-colab)
 - [Installing Packages](#installing-packages)
-- [Swift for TensorFlow Integration](#swift-for-tensorflow-integration)
 - [SwiftPlot Integration](#swiftplot-integration)
+- [Swift for TensorFlow Integration](#swift-for-tensorflow-integration)
 - [Testing](#testing)
 
 ## Getting Started
@@ -71,6 +71,26 @@ Upon restarting the runtime, remember to rerun the `%install` command for each p
 %install '.package(url: "https://github.com/pvieito/PythonKit", .branch("master"))' PythonKit
 ```
 
+## SwiftPlot Integration
+
+To use IPython graphs or SwiftPlot plots, enter the magic commands shown below. [`EnableIPythonDisplay.swift`](https://github.com/philipturner/swift-colab/blob/main/Sources/include/EnableIPythonDisplay.swift) depends on the PythonKit and SwiftPlot libraries. SwiftPlot takes 23 seconds to compile, so you may skip its install command unless you intend to use it. However, you must restart the runtime if you change your mind.
+
+```swift
+%install '.package(url: "https://github.com/pvieito/PythonKit", .branch("master"))' PythonKit
+%install '.package(url: "https://github.com/KarthikRIyer/swiftplot", .branch("master"))' SwiftPlot AGGRenderer
+%include "EnableIPythonDisplay.swift"
+```
+
+Include `EnableIPythonDisplay.swift` after (rather than before) installing the Swift packages, or else plots will not show. The file injects the following code into the interpreter, gated under multiple import guards. The code samples here do not explicitly import these libraries, as doing so would be redundant. If you do not include `EnableIPythonDisplay.swift`, explicitly import them before running other Swift code.
+
+```swift
+import PythonKit
+import SwiftPlot
+import AGGRenderer
+```
+
+For tutorials on using the SwiftPlot API, check out [KarthikRIyer/swiftplot](https://github.com/KarthikRIyer/swiftplot).
+
 ## Swift for TensorFlow Integration
 
 The build setup for S4TF is a bit complex. The easiest way to use it is to copy the [Swift for TensorFlow test notebook](https://colab.research.google.com/drive/1v3ZhraaHdAS2TGj03hE0cK-KRFzsqxO1?usp=sharing). To configure it manually, read the instructions below.
@@ -111,29 +131,7 @@ https://github.com/philipturner/swift-colab/issues/15. - can't use -c release -X
 
 -->
 
-## SwiftPlot Integration
-
-To use IPython graphs or SwiftPlot plots, enter the magic commands shown below. [`EnableIPythonDisplay.swift`](https://github.com/philipturner/swift-colab/blob/main/Sources/include/EnableIPythonDisplay.swift) depends on the PythonKit and SwiftPlot libraries. SwiftPlot takes 23 seconds to compile, so you may skip its install command unless you intend to use it. However, you must restart the runtime if you change your mind.
-
-```swift
-%install '.package(url: "https://github.com/pvieito/PythonKit", .branch("master"))' PythonKit
-%install '.package(url: "https://github.com/KarthikRIyer/swiftplot", .branch("master"))' SwiftPlot AGGRenderer
-%include "EnableIPythonDisplay.swift"
-```
-
-Include `EnableIPythonDisplay.swift` after (rather than before) installing the Swift packages, or else plots will not show. The file injects the following code into the interpreter, gated under multiple import guards. The code samples here do not explicitly import these libraries, as doing so would be redundant. If you do not include `EnableIPythonDisplay.swift`, explicitly import them before running other Swift code.
-
-```swift
-import PythonKit
-import SwiftPlot
-import AGGRenderer
-```
-
-For tutorials on using the SwiftPlot API, check out [KarthikRIyer/swiftplot](https://github.com/KarthikRIyer/swiftplot).
-
 ## Testing
-
-> Tests are being updated for the v2.2 release. The table below may provide incorrect data at the moment.
 
 These tests ensure that Swift-Colab runs on recent Swift toolchains. Some of them originate from [unit tests](https://github.com/google/swift-jupyter/tree/main/test/tests) in swift-jupyter, while others cover fixed bugs and third-party libraries. If any notebook fails or you have a suggestion for a new test, please [open an issue](https://github.com/philipturner/swift-colab/issues).
 
