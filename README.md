@@ -75,14 +75,14 @@ Upon restarting the runtime, remember to rerun the `%install` command for each p
 
 The build setup for S4TF is a bit complex. The easiest way to use it is to copy the [Swift for TensorFlow test notebook](https://colab.research.google.com/drive/1v3ZhraaHdAS2TGj03hE0cK-KRFzsqxO1?usp=sharing). To configure it manually, read the instructions below.
 
-Swift for TensorFlow does not compile on release toolchains, so choose a Swift development toolchain. A bug in the main branch of Swift's GitHub repository [prevent S4TF from compiling](https://github.com/apple/swift/issues/59467), but luckily a few snapshots were released before the bug was exposed. Also, every snapshot that comes from the `release/5.7` branch works. The following are just some of the snapshots you can choose:
+Swift for TensorFlow does not compile on release toolchains, so choose a Swift development toolchain. A bug in the main branch of Swift's GitHub repository [prevents S4TF from compiling](https://github.com/apple/swift/issues/59467), but luckily a few snapshots were released before the bug was exposed. Also, every snapshot created from the `release/5.7` branch works. The following are just some of the snapshots you can choose:
 
 - May 4, 2022 Trunk Development Snapshot
 - May 11, 2022 Trunk Development Snapshot
 - May 15, 2022 v5.7 Development Snapshot
 - June 13, 2022 v5.7 Development Snapshot
 
-Modify the install command at the very top of your Colab notebook. In the second line of the first code cell, it says "Replace 5.6.2 with newest Swift version." Delete `5.6.2` and replace it with your chosen snapshot. If you chose the May 11, 2022 snapshot, you shold have:
+Modify the install command at the very top of your Colab notebook. In the second line of the first code cell, it says "Replace 5.6.2 with newest Swift version." Delete `"5.6.2"` and replace it with your chosen snapshot. If you chose the May 11, 2022 snapshot, you should have:
 
 ```swift
 !bash "install_swift.sh" "2022-05-11" #// Replace 5.6.2 with newest Swift version.
