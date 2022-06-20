@@ -143,12 +143,6 @@ Finally, import Swift for TensorFlow into the interpreter.
 import TensorFlow
 ```
 
-<!--
-
-Comment on issue 15
-
--->
-
 ## Testing
 
 These tests ensure that Swift-Colab runs on recent Swift toolchains. Some of them originate from [unit tests](https://github.com/google/swift-jupyter/tree/main/test/tests) in swift-jupyter, while others cover fixed bugs and third-party libraries. If any notebook fails or you have a suggestion for a new test, please [open an issue](https://github.com/philipturner/swift-colab/issues).
