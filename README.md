@@ -105,7 +105,7 @@ Swift for TensorFlow does not compile on release toolchains, so download a Swift
 - May 15, 2022 v5.7 Development Snapshot
 - June 13, 2022 v5.7 Development Snapshot
 
-Modify the install command at the very top of your Colab notebook. The second line of the first code cell says "Replace 5.6.2 with newest Swift version." Delete `"5.6.2"` and replace it with your chosen snapshot. If you chose the May 11, 2022 snapshot, you should have:
+Modify the installation command at the very top of your Colab notebook. The second line of the first code cell says "Replace 5.6.2 with newest Swift version." Delete the `"5.6.2"` after `"install_swift.sh"` and enter your chosen snapshot. If you chose the May 11, 2022 trunk snapshot, you should have:
 
 ```swift
 !bash "install_swift.sh" "2022-05-11" #// Replace 5.6.2 with newest Swift version.
