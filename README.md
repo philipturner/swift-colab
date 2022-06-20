@@ -188,7 +188,7 @@ Tutorial | Compatible Swift Versions |
 
 > <sup>3</sup>One cell fails because of the ambiguous line `gradient(at: 2, 2, of: pow)`. Fix this by replacing each `2` with `Double(2)`.
 
-> <sup>4</sup>This notebook depends on [tensorflow/swift-models](https://github.com/tensorflow/swift-models), which you will need to change to [s4tf/models](https://github.com/s4tf/models) in the future anyway. The repository is not updated for recent Swift toolchains, and I need to decide how to link the `TensorFlow` Swift module into it.
+> <sup>4</sup>This notebook depends on [tensorflow/swift-models](https://github.com/tensorflow/swift-models), which you need to change to [s4tf/models](https://github.com/s4tf/models) anyway. The repository is not updated for recent Swift toolchains, and I need to decide how to link the `TensorFlow` Swift module into it.
 
 ## Testing
 
@@ -206,10 +206,3 @@ To run a test, replace `"5.6.2"` in the first code cell with the newest Swift ve
 | [SwiftPlot](https://colab.research.google.com/drive/1Rxs7OfuKIJ_hAm2gUQT2gWSuIcyaeZfz?usp=sharing) | ✅ | June 2022 | 5.6.2 Release
 | [Swift for TensorFlow](https://colab.research.google.com/drive/1v3ZhraaHdAS2TGj03hE0cK-KRFzsqxO1?usp=sharing) | ✅ | June 2022 | June 13, 2022 v5.7 Development Snapshot |
 | [Concurrency](https://colab.research.google.com/drive/1du6YzWL9L_lbjoLl8qvrgPvyZ_8R7MCq?usp=sharing) | ✅ | June 2022 | 5.6.2 Release |
-
-<!--
-
-S4TF notebooks made by Google, make them tests now
-
--->
-
