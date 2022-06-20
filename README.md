@@ -129,6 +129,8 @@ TF 2.4, S4TF PR listing the caveats
 
 https://github.com/philipturner/swift-colab/issues/15. - can't use -c release -Xswiftc -Onone
 
+Comment on issue 15
+
 -->
 
 ## Testing
