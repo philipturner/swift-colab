@@ -155,13 +155,13 @@ These notebooks do not include commands for installing Swift-Colab; you must add
 Multiple tutorial notebooks depend on Swift for TensorFlow. <s>You must recompile the Swift package in each notebook, waiting 3 minutes each time.</s> Save time by compiling S4TF in one Colab instance, then reusing it for multiple tutorials. To start, open up the [Swift for TensorFlow test notebook](https://colab.research.google.com/drive/1v3ZhraaHdAS2TGj03hE0cK-KRFzsqxO1?usp=sharing). Append the commands below to the cell that compiles S4TF. While the two packages are building, read the rest of these instructions.
 
 ```swift
-%install-swift-pm-flags $clear
+%install-swiftpm-flags $clear
 %install '.package(url: "https://github.com/pvieito/PythonKit", .branch("master"))' PythonKit
 ```
 
 In another browser tab, open one of the tutorials. Click `Edit > Select all cells` in the menu bar. Every cell should turn blue. Press `Ctrl + C` (Chrome OS, Windows) or `Cmd + C` (macOS, iPadOS) to copy the cells. Switch back to the original Colab notebook. Click the last cell, then press `Cmd/Ctrl + V`. Every cell from the tutorial should appear in the notebook that is compiling S4TF.
 
-
+When experiencing the tutorial for the first time, run each cell one-by-one. To run all of them at once, click the first code cell of the tutorial. Then, go to `Runtime > Run after`.
 
 > I'm testing an idea of reusing the same session across multiple notebooks, avoiding the 2 minutes of recompiling S4TF. Solution: delete all the cells in one notebook, then copy/paste all cells from another notebook. (show how to select all the cells in menu bar) - `Edit > Select all cells` -> Cmd/Ctrl + C -> `Edit > Select all cells` -> Cmd/Ctrl + V
 
