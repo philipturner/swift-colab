@@ -30,6 +30,8 @@ When Google sponsored S4TF from 2018 - 2021, the Swift community created several
 
 > \*For a more future-proof solution, fill that cell with only a comment directing the user to Swift-Colab's repository. Whoever runs the notebook will likely not update the Swift version passed into `install_swift.sh`. I recommend this approach for the [fastai/swiftai](https://github.com/fastai/swiftai) notebooks and anything else that must be maintained indefinitely.
 
+This repository contains a [growing list of tutorial notebooks](#swift-tutorials) sourced from [s4tf/s4tf-docs](https://github.com/s4tf/s4tf-docs) (formerly tensorflow/swift) and [fastai/swiftai](https://github.com/fastai/swiftai). Before using them, read through this README and familiarize yourself with the peculiarities of Swift-Colab.
+
 ## Using Swift-Colab
 
 Google Colab is like the Swift REPL, but it submits several lines of code at once. Fill the second code cell with the first example below. Run it, and `64` will show. No matter how many lines a cell has, only the last one's return value appears. To get around this restriction, use `print(...)` to display values.
