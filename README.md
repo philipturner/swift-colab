@@ -152,14 +152,12 @@ import TensorFlow
 
 These notebooks do not include commands for installing Swift-Colab; you must add the commands described in [Getting Started](#getting-started). They also depend on packages such as PythonKit and TensorFlow, which were previously included in the custom S4TF toolchains. Now, you must download as described in [Installing Packages](#installing-packages) and [Swift for TensorFlow Integration](#swift-for-tensorflow-integration). For tutorials that involve automatic differentiation, either use [Differentiation](https://github.com/philipturner/differentiation) or download a development toolchain.
 
-Multiple tutorial notebooks depend on S4TF. <s>You must recompile the Swift package in each notebook, waiting 3 minutes each time.</s> You can save time by compiling S4TF in one Colab instance, then reusing it for multiple tutorials. To start, open up the [Swift for TensorFlow test notebook](https://colab.research.google.com/drive/1v3ZhraaHdAS2TGj03hE0cK-KRFzsqxO1?usp=sharing). Append the commands below to the cell that compiles S4TF. While the two packages are building, read the rest of these instructions.
+Multiple tutorial notebooks depend on Swift for TensorFlow. <s>You must recompile the Swift package in each notebook, waiting 3 minutes each time.</s> Save time by compiling S4TF in one Colab instance, then reusing it for multiple tutorials. To start, open up the [Swift for TensorFlow test notebook](https://colab.research.google.com/drive/1v3ZhraaHdAS2TGj03hE0cK-KRFzsqxO1?usp=sharing). Append the commands below to the cell that compiles S4TF. While the two packages are building, read the rest of these instructions.
 
 ```swift
 %install-swift-pm-flags $clear
 %install '.package(url: "https://github.com/pvieito/PythonKit", .branch("master"))' PythonKit
 ```
-
-
 
 > I'm testing an idea of reusing the same session across multiple notebooks, avoiding the 2 minutes of recompiling S4TF. Solution: delete all the cells in one notebook, then copy/paste all cells from another notebook. (show how to select all the cells in menu bar) - `Edit > Select all cells` -> Cmd/Ctrl + C -> `Edit > Select all cells` -> Cmd/Ctrl + V
 
