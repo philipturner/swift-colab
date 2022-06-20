@@ -184,7 +184,7 @@ Tutorial | Compatible Swift Versions |
 
 > <sup>1</sup>One cell fails because of ambiguous overloads for `PythonObject.==` and `PythonObject.<`. Work around this by explicitly casting the comparison result with `as Bool` before printing.
 
-> <sup>2</sup>Several cells fail because `gradient(at:in)` was renamed to `gradient(at:of:)`. Work around this by fixing the second argument label and re-running the failed cells.
+> <sup>2</sup>Several cells fail because `gradient(at:in)` was renamed to `gradient(at:of:)`. Fix the second argument label and rerun the failed cells.
 
 > <sup>3</sup>One cell fails because of the ambiguous line `gradient(at: 2, 2, of: pow)`. Fix this by replacing each `2` with `Double(2)`.
 
