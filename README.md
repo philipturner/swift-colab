@@ -186,7 +186,7 @@ In the table below, "Compatible Swift Versions" lists whether each notebook runs
 
 > <sup>1</sup>One cell fails because of ambiguous overloads for `PythonObject.==` and `PythonObject.<`. Work around this by explicitly casting the comparison result to `Bool` before printing.
 >
-> <sup>2</sup>When using release toolchains, skip the cell that references `Tensor`.
+> <sup>2</sup>When using release toolchains, skip the cell that contains `Tensor<Float>`.
 >
 > <sup>3</sup>Several cells fail because `gradient(at:in)` was renamed to `gradient(at:of:)`. Fix the second argument label and rerun the failed cells.
 >
