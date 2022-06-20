@@ -178,19 +178,21 @@ In the table below, "Compatible Swift Versions" lists whether each notebook runs
 | -------- | ------------ | ------------------------- |
 | [A Swift Tour](https://colab.research.google.com/github/tensorflow/swift/blob/main/docs/site/tutorials/a_swift_tour.ipynb) | | Release, Development |
 | [Protocol-Oriented Programming & Generics](https://colab.research.google.com/github/tensorflow/swift/blob/main/docs/site/tutorials/protocol_oriented_generics.ipynb) | | Release, Development |
-| [Python Interoperability](https://colab.research.google.com/github/tensorflow/swift/blob/main/docs/site/tutorials/python_interoperability.ipynb)<sup>[1]</sup> | PythonKit, S4TF | Development |
-| [Sharp Edges in Differentiability](https://colab.research.google.com/github/tensorflow/swift/blob/main/docs/site/tutorials/Swift_autodiff_sharp_edges.ipynb)<sup>[2][3]</sup> | AutoDiff | Release, Development |
+| [Python Interoperability](https://colab.research.google.com/github/tensorflow/swift/blob/main/docs/site/tutorials/python_interoperability.ipynb)<sup>[1]</sup> | PythonKit, S4TF<sup>[2]</sup> | Release, Development |
+| [Sharp Edges in Differentiability](https://colab.research.google.com/github/tensorflow/swift/blob/main/docs/site/tutorials/Swift_autodiff_sharp_edges.ipynb)<sup>[3][4]</sup> | AutoDiff | Release, Development |
 | [Model Training Walkthrough](https://colab.research.google.com/github/tensorflow/swift/blob/main/docs/site/tutorials/model_training_walkthrough.ipynb) | AutoDiff, PythonKit, S4TF | Development |
 | [Raw TensorFlow Operators](https://colab.research.google.com/github/tensorflow/swift/blob/main/docs/site/tutorials/raw_tensorflow_operators.ipynb) | AutoDiff, S4TF | Development |
-| [Introducing X10, an XLA-Based Backend](https://colab.research.google.com/github/tensorflow/swift/blob/main/docs/site/tutorials/introducing_x10.ipynb)<sup>[4]</sup> | S4TF, SwiftModels | n/a |
+| [Introducing X10, an XLA-Based Backend](https://colab.research.google.com/github/tensorflow/swift/blob/main/docs/site/tutorials/introducing_x10.ipynb)<sup>[5]</sup> | S4TF, SwiftModels | n/a |
 
 > <sup>1</sup>One cell fails because of ambiguous overloads for `PythonObject.==` and `PythonObject.<`. Work around this by explicitly casting the comparison result to `Bool` before printing.
 
-> <sup>2</sup>Several cells fail because `gradient(at:in)` was renamed to `gradient(at:of:)`. Fix the second argument label and rerun the failed cells.
+> <sup>2</sup>When using release toolchains, skip the cell that uses `Tensor`.
 
-> <sup>3</sup>One cell fails because of the ambiguous line `gradient(at: 2, 2, of: pow)`. Fix this by replacing either `2` with `Double(2)`.
+> <sup>3</sup>Several cells fail because `gradient(at:in)` was renamed to `gradient(at:of:)`. Fix the second argument label and rerun the failed cells.
 
-> <sup>4</sup>This notebook depends on [tensorflow/swift-models](https://github.com/tensorflow/swift-models), which you need to change to [s4tf/models](https://github.com/s4tf/models) anyway. The repository is not updated for recent Swift toolchains, and I need to decide how to link the `TensorFlow` Swift module into it.
+> <sup>4</sup>One cell fails because of the ambiguous line `gradient(at: 2, 2, of: pow)`. Fix this by replacing either `2` with `Double(2)`.
+
+> <sup>5</sup>This notebook depends on [tensorflow/swift-models](https://github.com/tensorflow/swift-models), which you need to change to [s4tf/models](https://github.com/s4tf/models) anyway. The repository is not updated for recent Swift toolchains, and I need to decide how to link the `TensorFlow` Swift module into it.
 
 ## Testing
 
