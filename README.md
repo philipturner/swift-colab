@@ -75,7 +75,12 @@ Upon restarting the runtime, remember to rerun the `%install` command for each p
 
 The build setup for S4TF is a bit complex. The easiest way to use it is to copy the [Swift for TensorFlow test notebook](https://colab.research.google.com/drive/1v3ZhraaHdAS2TGj03hE0cK-KRFzsqxO1?usp=sharing). To configure it manually, read the instructions below.
 
-TODO
+Swift for TensorFlow does not compile on release toolchains, so choose a Swift development toolchain. A bug in the main branch of Swift's GitHub repository [prevent S4TF from compiling](https://github.com/apple/swift/issues/59467), but luckily a few snapshots were released before the bug was exposed. Also, every snapshot that comes from the `release/5.7` branch works. The following are just some of the snapshots you can choose:
+
+- May 4, 2022 Trunk Development Snapshot
+- May 11, 2022 Trunk Development Snapshot
+
+TODO: Ubuntu 18.04 warning for manual links
 
 <!--
 For in the future, when S4TF works in Colab. Either I fix the build system, or I hard-code some way to install the X10 binary.
