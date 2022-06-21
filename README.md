@@ -192,7 +192,7 @@ In the table below, "Compatible Swift Versions" lists whether each notebook runs
 >
 > <sup>4</sup>One cell fails because of the ambiguous line `gradient(at: 2, 2, of: pow)`. Fix this by replacing either `2` with `Double(2)`.
 >
-> <sup>5</sup>This notebook depends on [tensorflow/swift-models](https://github.com/tensorflow/swift-models), which you need to change to [s4tf/models](https://github.com/s4tf/models) anyway. The repository is not updated for recent Swift toolchains, and I need to decide how to link the `TensorFlow` Swift module into it.
+> <sup>5</sup>This notebook depends on [tensorflow/swift-models](https://github.com/tensorflow/swift-models), which you must change to [s4tf/models](https://github.com/s4tf/models). The repository is not updated for recent Swift toolchains, and I need to decide how to link the `TensorFlow` Swift module into it.
 
 ## Testing
 
