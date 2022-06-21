@@ -1,6 +1,6 @@
 # Hardware Acceleration
 
-TODO: Connecting to accelerators does not actually erase the runtime - look at `Runtime > Manage sessions`.
+Connecting to accelerators does not actually erase the runtime - look at `Runtime > Manage sessions`.
 
 S4TF SwiftPM test suite in Python mode notebook:
 - CPU: 19 seconds
