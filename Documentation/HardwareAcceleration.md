@@ -1,6 +1,6 @@
 # Hardware Acceleration
 
-TODO: Connecting to accelerators erases the runtime (document) - look at `Runtime > Manage sessions`.
+TODO: Connecting to accelerators does not actually erase the runtime - look at `Runtime > Manage sessions`.
 
 TODO: Copy the XLA tests into a special Colab notebook for TPU
 
