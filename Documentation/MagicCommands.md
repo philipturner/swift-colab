@@ -40,7 +40,7 @@ Produces (replacing newlines with spaces):
 A B C D A B C D
 ```
 
-> Everything below this point is not fully documented.
+> Everything below this point is a work in progress.
 
 ---
 
