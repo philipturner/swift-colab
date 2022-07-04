@@ -2,6 +2,8 @@
 
 > This documentation page is a work in progress.
 
+Best explanation I currently have: https://forums.fast.ai/t/python-textfield-output-not-working/51000/14
+
 Why there needs to be a language mode. Ergonomics when building Swift-Colab, not getting self kicked off of Colab, being able to cache the toolchain and not disconnect and delete the runtime.
 
 Switch modes when restart runtime, but saves the files
@@ -19,8 +21,6 @@ After you execute `install_swift.sh` in the Swift-Colab installation command, it
 `/opt/swift/runtime` accepts:
 
 Needed for Google Drive integration (link to doc file), overcoming a possible bug with Pandas DataFrame presentation (link to doc file about inline graphs)
-
-Explain this link: https://forums.fast.ai/t/python-textfield-output-not-working/51000/14
 
 Include content from this: https://github.com/philipturner/swift-colab/pull/19#issuecomment-1173280812
 
