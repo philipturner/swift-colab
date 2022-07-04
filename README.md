@@ -21,7 +21,14 @@ Colab notebooks created directly from Google Drive are tailored for Python progr
 ```swift
 !curl "https://raw.githubusercontent.com/philipturner/swift-colab/release/latest/install_swift.sh" --output "install_swift.sh"
 !bash "install_swift.sh" "5.6.2" #// Replace 5.6.2 with newest Swift version.
-#// After this cell finishes, go to Runtime > Restart runtime.
+#// Restart runtime.
+import os
+os.kill(os.getpid(), 9)
+#// Expected warnings:
+#// "Unrecognized runtime 'swift'; defaulting to 'python3'".
+#// "Your session crashed. Automatically restarting".
+#// "Your session restarted after a crash. Diagnosing..."
+#// "Your session crashed for an unknown reason.""
 ```
 
 > Tip: Colab measures how long you keep a notebook open without interacting with it. If you exceed the time limit of Colab's free tier, it may restart in Python mode. That means Swift code executes as if it's Python code. In that situation, repeat the process outlined above to return to Swift mode.
