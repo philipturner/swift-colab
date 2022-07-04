@@ -1,5 +1,7 @@
 # Inline Images
 
+> This documentation page is a work in progress.
+
 History of this, once had `JupyterDisplay.swift`, why it doesn't now
 
 How it works, using IPython to marshal data
