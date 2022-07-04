@@ -1,5 +1,7 @@
 # Syntax Coloring
 
+> This documentation page is a work in progress.
+
 Swift-Colab works with any Jupyter notebook, but Swift ones are better. All code samples in docs aim to use Swift syntax coloring, even if in another language, because it mirrors what you will see in the notebook.
 
 ## Swift
