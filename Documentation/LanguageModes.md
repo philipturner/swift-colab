@@ -17,3 +17,5 @@ After you execute `install_swift.sh` in the Swift-Colab installation command, it
 `/opt/swift/runtime` accepts:
 
 Needed for Google Drive integration (link to doc file), overcoming a possible bug with Pandas DataFrame presentation (link to doc file about inline graphs)
+
+Explain this link: https://forums.fast.ai/t/python-textfield-output-not-working/51000/14
