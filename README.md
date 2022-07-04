@@ -24,13 +24,13 @@ Colab notebooks created directly from Google Drive are tailored for Python progr
 #// After this cell finishes, go to Runtime > Restart runtime.
 ```
 
+> Tip: Colab measures how long you keep a notebook open without interacting with it. If you exceed the time limit of Colab's free tier, it may restart in Python mode. That means Swift code executes as if it's Python code. In that situation, repeat the process outlined above to return to Swift mode.
+
 To automatically crash and restart the runtime, you can add the following to the code cell. This is [not strictly necessary](https://github.com/philipturner/swift-colab/pull/19), and absent from the official template notebook.
 
 ```swift
 import os; import sys; sys.stdout.flush(); os.kill(os.getpid(), 9)
 ```
-
-> Tip: Colab measures how long you keep a notebook open without interacting with it. If you exceed the time limit of Colab's free tier, it may restart in Python mode. That means Swift code executes as if it's Python code. In that situation, repeat the process outlined above to return to Swift mode.
 
 When Google sponsored S4TF from 2018 - 2021, the Swift community created several Jupyter notebooks. To run these notebooks now, slightly modify them. Create a new cell at the top of each notebook, including the commands shown above*. No further changes are necessary because of Swift-Colab's backward-compatibility. If you experience a problem, please [file an issue](https://github.com/philipturner/swift-colab/issues).
 
