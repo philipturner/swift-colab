@@ -1,5 +1,7 @@
 # Hardware Acceleration
 
+> This documentation page is a work in progress.
+
 Connecting to accelerators does not actually erase the runtime - look at `Runtime > Manage sessions`.
 
 S4TF SwiftPM test suite in Python mode notebook:
