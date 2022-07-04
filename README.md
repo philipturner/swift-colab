@@ -24,7 +24,7 @@ Colab notebooks created directly from Google Drive are tailored for Python progr
 #// After this cell finishes, go to Runtime > Restart runtime.
 ```
 
-To automatically crash and restart the runtime, [you can add](https://github.com/philipturner/swift-colab/pull/19) the following to the code cell. This is not strictly necessary, and absent from the official template notebook.
+To automatically crash and restart the runtime, you can add the following to the code cell. This is [not strictly necessary](https://github.com/philipturner/swift-colab/pull/19), and absent from the official template notebook.
 
 ```swift
 import os; import sys; sys.stdout.flush(); os.kill(os.getpid(), 9)
