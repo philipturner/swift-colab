@@ -19,3 +19,7 @@ After you execute `install_swift.sh` in the Swift-Colab installation command, it
 Needed for Google Drive integration (link to doc file), overcoming a possible bug with Pandas DataFrame presentation (link to doc file about inline graphs)
 
 Explain this link: https://forums.fast.ai/t/python-textfield-output-not-working/51000/14
+
+Include content from this: https://github.com/philipturner/swift-colab/pull/19#issuecomment-1173280812
+
+Change the words saying "Python mode" in the explanation of Colab's free tier, making it a hyperlink to this page.
