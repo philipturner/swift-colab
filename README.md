@@ -26,7 +26,7 @@ Colab notebooks created directly from Google Drive are tailored for Python progr
 
 > Tip: Colab measures how long you keep a notebook open without interacting with it. If you exceed the time limit of Colab's free tier, it may restart in Python mode. That means Swift code executes as if it's Python code. In that situation, repeat the process outlined above to return to Swift mode.
 
-To automatically crash and restart the runtime, you can add the following to the code cell. This is [not strictly necessary](https://github.com/philipturner/swift-colab/pull/19), and absent from the official template notebook.
+To automatically crash and restart the runtime, you can add the following to the code cell. This is [not strictly necessary](https://github.com/philipturner/swift-colab/pull/19), and absent from the official template notebook. The `Cmd/Ctrl + M + .` shortcut provides an ergonomic alternative without executing Python code.
 
 ```swift
 import os; import sys; sys.stdout.flush(); os.kill(os.getpid(), 9)
