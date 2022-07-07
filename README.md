@@ -109,18 +109,18 @@ Swift for TensorFlow does not compile on release toolchains, so download a Swift
 - May 4, 2022 Trunk Development Snapshot
 - May 11, 2022 Trunk Development Snapshot
 - May 15, 2022 v5.7 Development Snapshot
-- June 13, 2022 v5.7 Development Snapshot
+- July 5, 2022 v5.7 Development Snapshot
 
 Modify the installation command at the very top of your Colab notebook. The second line of the first code cell says "Replace 5.6.2 with newest Swift version." Delete the `"5.6.2"` after `"install_swift.sh"` and enter your chosen snapshot. If you chose the May 11, 2022 trunk snapshot, you should have:
 
 ```swift
-!bash "install_swift.sh" "2022-05-11" #// Replace 5.6.2 with newest Swift version.
+!bash "install_swift.sh" "2022-07-06" #// Replace 5.6.2 with newest Swift version.
 ```
 
 You can easily download trunk snapshots by entering their date in YYYY-MM-DD format. For v5.7 snapshots, the entire URL must be present. Go to [swift.org/download](https://www.swift.org/download) and scroll to "Swift 5.7 Development". Right-click the large "x86_64" link for Ubuntu 18.04, copy the address, and paste it into the notebook.
 
 ```swift
-!bash "install_swift.sh" "https://download.swift.org/swift-5.7-branch/ubuntu1804/swift-5.7-DEVELOPMENT-SNAPSHOT-2022-06-13-a/swift-5.7-DEVELOPMENT-SNAPSHOT-2022-06-13-a-ubuntu18.04.tar.gz" #// Replace 5.6.2 with newest Swift version.
+!bash "install_swift.sh" "https://download.swift.org/swift-5.7-branch/ubuntu1804/swift-5.7-DEVELOPMENT-SNAPSHOT-2022-07-05-a/swift-5.7-DEVELOPMENT-SNAPSHOT-2022-07-05-a-ubuntu18.04.tar.gz" #// Replace 5.6.2 with newest Swift version.
 ```
 
 Execute the installation script and go to `Runtime > Restart runtime`. Next, download the X10 binary created from [tensorflow/tensorflow](https://github.com/tensorflow/tensorflow) and the C++ code in [s4tf/s4tf](https://github.com/s4tf/s4tf). Paste the commands below into a unique code cell, which you only run once. Do not add anything else to this cell, unless you enjoy [I/O deadlocks](https://github.com/philipturner/swift-colab/issues/17).
@@ -133,7 +133,7 @@ Execute the installation script and go to `Runtime > Restart runtime`. Next, dow
 
 Top-of-tree S4TF is currently tested against TensorFlow 2.9, as shown in the [S4TF build script](https://gist.github.com/philipturner/7aa063af04277d463c14168275878511). The script does not yet run on every platform and a major [XLA bug](https://github.com/s4tf/s4tf/issues/14) exists, so I cannot host modern X10 binaries online. The previous command downloaded the last X10 binary that Google created, which uses TF 2.4. Using an outdated binary [brings some caveats](https://github.com/s4tf/s4tf/pull/16), as the raw TensorFlow bindings were recently [updated for v2.9](https://github.com/s4tf/s4tf/pull/10). As a rule of thumb, avoid the `_Raw` namespace.
 
-Now, the real action begins. [s4tf/s4tf](https://github.com/s4tf/s4tf) takes 3 minutes to compile on Google Colab, which sounds worse than it is.  Swift-Colab 2.0 made this a one-time cost, so the package rebuilds instantaneously after restarting the runtime. Grab a cup of coffee or read a Medium article while it compiles, and that's the only waiting you ever need to do. If you accidentally close the browser tab with S4TF loaded, salvage it with `Runtime > Manage sessions`.
+Now, the real action begins. [s4tf/s4tf](https://github.com/s4tf/s4tf) takes 3 minutes to compile on Google Colab, which sounds worse than it is. Swift-Colab 2.0 made this a one-time cost, so the package rebuilds instantaneously after restarting the runtime. Grab a cup of coffee or read a Medium article while it compiles, and that's the only waiting you ever need to do. If you accidentally close the browser tab with S4TF loaded, salvage it with `Runtime > Manage sessions`.
 
 > To access your closed notebook, first open a new notebook. `Runtime > Manage sessions` shows a list of active Colab sessions. Click on the closed notebook's name, and it opens in a new browser tab.
 
@@ -142,7 +142,6 @@ Go to `Insert > Code cell` and paste the following commands. The SwiftPM flags `
 ```swift
 %install-swiftpm-flags $clear
 // %install-swiftpm-flags -c release -Xswiftc -Onone
-%install-swiftpm-flags -Xswiftc -DTENSORFLOW_USE_STANDARD_TOOLCHAIN
 %install-swiftpm-flags -Xlinker "-L/content/Library/tensorflow-2.4.0/usr/lib"
 %install-swiftpm-flags -Xlinker "-rpath=/content/Library/tensorflow-2.4.0/usr/lib"
 %install '.package(url: "https://github.com/s4tf/s4tf", .branch("main"))' TensorFlow
@@ -215,6 +214,6 @@ To run a test, replace `"5.6.2"` in the first code cell with the newest Swift ve
 | [Own Kernel Tests](https://colab.research.google.com/drive/1nHitEZm9QZNheM-ALajARyRZY2xpZr00?usp=sharing) | ✅ | June 2022 | 5.6.2 Release |
 | [Simple Notebook Tests](https://colab.research.google.com/drive/18316eFVMw-NIlA9OandB7djvp0J4jI0-?usp=sharing) | ✅ | June 2022 | 5.6.2 Release |
 | [SwiftPlot](https://colab.research.google.com/drive/1Rxs7OfuKIJ_hAm2gUQT2gWSuIcyaeZfz?usp=sharing) | ✅ | June 2022 | 5.6.2 Release
-| [Swift for TensorFlow](https://colab.research.google.com/drive/1v3ZhraaHdAS2TGj03hE0cK-KRFzsqxO1?usp=sharing) | ✅ | June 2022 | July 5, 2022 v5.7 Development Snapshot |
+| [Swift for TensorFlow](https://colab.research.google.com/drive/1v3ZhraaHdAS2TGj03hE0cK-KRFzsqxO1?usp=sharing) | ✅ | July 2022 | July 5, 2022 v5.7 Development Snapshot |
 | [Concurrency](https://colab.research.google.com/drive/1du6YzWL9L_lbjoLl8qvrgPvyZ_8R7MCq?usp=sharing) | ✅ | June 2022 | 5.6.2 Release |
-| [TPU Tests](https://colab.research.google.com/drive/1DfkbU_JQnSw1_xLAlDyDvDT3S1G45i6d?usp=sharing) | ✅ | June 2022 | June 13, 2022 v5.7 Development Snapshot |
+| [TPU Tests](https://colab.research.google.com/drive/1DfkbU_JQnSw1_xLAlDyDvDT3S1G45i6d?usp=sharing) | ✅ | July 2022 | July 5, 2022 v5.7 Development Snapshot |
