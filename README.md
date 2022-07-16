@@ -188,7 +188,6 @@ In the table below, "Compatible Swift Versions" lists whether each notebook runs
 | [Model Training Walkthrough](https://colab.research.google.com/github/tensorflow/swift/blob/main/docs/site/tutorials/model_training_walkthrough.ipynb) | AutoDiff, PythonKit, S4TF | Development |
 | [Raw TensorFlow Operators](https://colab.research.google.com/github/tensorflow/swift/blob/main/docs/site/tutorials/raw_tensorflow_operators.ipynb) | AutoDiff, S4TF | Development |
 | [Introducing X10, an XLA-Based Backend](https://colab.research.google.com/github/tensorflow/swift/blob/main/docs/site/tutorials/introducing_x10.ipynb)<sup>[5]</sup> | S4TF, SwiftModels | n/a |
-| General-Purpose GPU with OpenCL (New) | [SwiftOpenCL](https://github.com/philipturner/swift-opencl) | Tutorial Not Yet Created |
 
 > <sup>1</sup>One cell fails because of ambiguous overloads for `PythonObject.==` and `PythonObject.<`. Work around this by explicitly casting the comparison result to `Bool` before printing.
 >
@@ -199,6 +198,12 @@ In the table below, "Compatible Swift Versions" lists whether each notebook runs
 > <sup>4</sup>One cell fails because of the ambiguous line `gradient(at: 2, 2, of: pow)`. Fix this by replacing either `2` with `Double(2)`.
 >
 > <sup>5</sup>This notebook depends on [tensorflow/swift-models](https://github.com/tensorflow/swift-models), which you must change to [s4tf/models](https://github.com/s4tf/models). The repository is not updated for recent Swift toolchains, and I need to decide how to link the `TensorFlow` Swift module into it.
+
+More tutorials are in development. Upon completion, they will appear in the table above. The notation `(New)` distinguishes them from tutorials created by Google.
+
+| Planned Tutorial | Dependencies | Compatible Swift Versions |
+| ---------------- | ------------ | ------------------------- |
+| General-Purpose GPU with OpenCL (New) | [SwiftOpenCL](https://github.com/philipturner/swift-opencl) | Release, Development |
 
 ## Testing
 
