@@ -187,7 +187,7 @@ In the table below, "Compatible Swift Versions" lists whether each notebook runs
 | [Sharp Edges in Differentiability](https://colab.research.google.com/github/tensorflow/swift/blob/main/docs/site/tutorials/Swift_autodiff_sharp_edges.ipynb)<sup>[3][4]</sup> | AutoDiff | Release, Development |
 | [Model Training Walkthrough](https://colab.research.google.com/github/tensorflow/swift/blob/main/docs/site/tutorials/model_training_walkthrough.ipynb) | AutoDiff, PythonKit, S4TF | Development |
 | [Raw TensorFlow Operators](https://colab.research.google.com/github/tensorflow/swift/blob/main/docs/site/tutorials/raw_tensorflow_operators.ipynb) | AutoDiff, S4TF | Development |
-| [Introducing X10, an XLA-Based Backend](https://colab.research.google.com/github/tensorflow/swift/blob/main/docs/site/tutorials/introducing_x10.ipynb)<sup>[5]</sup> | S4TF, SwiftModels | n/a |
+| [Introducing X10, an XLA-Based Backend](https://colab.research.google.com/github/tensorflow/swift/blob/main/docs/site/tutorials/introducing_x10.ipynb)<sup>[5]</sup> | S4TF, S4TF Models | n/a |
 
 > <sup>1</sup>One cell fails because of ambiguous overloads for `PythonObject.==` and `PythonObject.<`. Work around this by explicitly casting the comparison result to `Bool` before printing.
 >
