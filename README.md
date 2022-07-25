@@ -104,20 +104,16 @@ For tutorials on using the SwiftPlot API, check out [KarthikRIyer/swiftplot](htt
 
 S4TF has a quite complex build setup. The easiest way to use it is copying the [S4TF test notebook](https://colab.research.google.com/drive/1v3ZhraaHdAS2TGj03hE0cK-KRFzsqxO1?usp=sharing) into your Google Drive. To configure it manually, read the instructions below.
 
-Swift for TensorFlow does not compile on release toolchains, so download a Swift development toolchain. A bug in the latest trunk snapshot [prevents S4TF from compiling](https://github.com/apple/swift/issues/59467), but a few trunk snapshots were released before the bug appeared. Also, every toolchain created from the `release/5.7` branch works. Some of your options are:
+Swift for TensorFlow does not compile on Linux release toolchains, so download a Swift development toolchain. Visit [swift.org/download](https://www.swift.org/download) and scroll to "Trunk Development (main)". Find the date next to "Ubuntu 18.04" - at the time of writing, July 20, 2022.
 
-- May 4, 2022 Trunk Development Snapshot
-- May 11, 2022 Trunk Development Snapshot
-- May 15, 2022 v5.7 Development Snapshot
-- July 5, 2022 v5.7 Development Snapshot
 
-Modify the installation command at the very top of your Colab notebook. The second line of the first code cell says "Replace 5.6.2 with newest Swift version." Delete the `"5.6.2"` after `"install_swift.sh"` and enter your chosen snapshot. If you chose the May 11, 2022 trunk snapshot, you should have:
+Modify the installation command at the very top of your Colab notebook. The second line of the first code cell says "Replace 5.6.2 with newest Swift version." Delete the `"5.6.2"` after `"install_swift.sh"` and enter your snapshot's date in YYYY-MM-DD format.
 
 ```swift
-!bash "install_swift.sh" "2022-07-06" #// Replace 5.6.2 with newest Swift version.
+!bash "install_swift.sh" "2022-07-20" #// Replace 5.6.2 with newest Swift version.
 ```
 
-You can easily download trunk snapshots by entering their date in YYYY-MM-DD format. For v5.7 snapshots, the entire URL must be present. Go to [swift.org/download](https://www.swift.org/download) and scroll to "Swift 5.7 Development". Right-click the large "x86_64" link for Ubuntu 18.04, copy the address, and paste it into the notebook.
+You can easily download trunk snapshots by pasting their date. For other toolchains, the entire URL must be present. The code below downloads the July 5, 2022 snapshot from Swift's `release/5.7` branch. Do not enter it into the notebook; it is only here for reference.
 
 ```swift
 !bash "install_swift.sh" "https://download.swift.org/swift-5.7-branch/ubuntu1804/swift-5.7-DEVELOPMENT-SNAPSHOT-2022-07-05-a/swift-5.7-DEVELOPMENT-SNAPSHOT-2022-07-05-a-ubuntu18.04.tar.gz" #// Replace 5.6.2 with newest Swift version.
@@ -175,7 +171,7 @@ When following a tutorial for the first time, run its cells one by one. To run a
 
 In the table below, "Compatible Swift Versions" lists whether each notebook runs under the latest release or development toolchain.
 - Release = 5.6.2 Release
-- Development = June 13, 2022 v5.7 Development Snapshot
+- Development = July 20, 2022 Development Snapshot
 
 <!-- Dependency shortcuts for reference: AutoDiff PythonKit S4TF SwiftAI SwiftModels -->
 
@@ -219,6 +215,6 @@ To run a test, replace `"5.6.2"` in the first code cell with the newest Swift ve
 | [Own Kernel Tests](https://colab.research.google.com/drive/1nHitEZm9QZNheM-ALajARyRZY2xpZr00?usp=sharing) | ✅ | June 2022 | 5.6.2 Release |
 | [Simple Notebook Tests](https://colab.research.google.com/drive/18316eFVMw-NIlA9OandB7djvp0J4jI0-?usp=sharing) | ✅ | June 2022 | 5.6.2 Release |
 | [SwiftPlot](https://colab.research.google.com/drive/1Rxs7OfuKIJ_hAm2gUQT2gWSuIcyaeZfz?usp=sharing) | ✅ | June 2022 | 5.6.2 Release
-| [Swift for TensorFlow](https://colab.research.google.com/drive/1v3ZhraaHdAS2TGj03hE0cK-KRFzsqxO1?usp=sharing) | ✅ | July 2022 | July 5, 2022 v5.7 Development Snapshot |
+| [Swift for TensorFlow](https://colab.research.google.com/drive/1v3ZhraaHdAS2TGj03hE0cK-KRFzsqxO1?usp=sharing) | ✅ | July 2022 | July 20, 2022 Development Snapshot |
 | [Concurrency](https://colab.research.google.com/drive/1du6YzWL9L_lbjoLl8qvrgPvyZ_8R7MCq?usp=sharing) | ✅ | June 2022 | 5.6.2 Release |
 | [TPU Tests](https://colab.research.google.com/drive/1DfkbU_JQnSw1_xLAlDyDvDT3S1G45i6d?usp=sharing) | ✅ | July 2022 | July 5, 2022 v5.7 Development Snapshot |
