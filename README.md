@@ -104,10 +104,7 @@ For tutorials on using the SwiftPlot API, check out [KarthikRIyer/swiftplot](htt
 
 S4TF has a quite complex build setup. The easiest way to use it is copying the [S4TF test notebook](https://colab.research.google.com/drive/1v3ZhraaHdAS2TGj03hE0cK-KRFzsqxO1?usp=sharing) into your Google Drive. To configure it manually, read the instructions below.
 
-Swift for TensorFlow does not compile on Linux release toolchains, so download a Swift development toolchain. Visit [swift.org/download](https://www.swift.org/download) and scroll to "Trunk Development (main)". Find the date next to "Ubuntu 18.04" - at the time of writing, July 20, 2022.
-
-
-Modify the installation command at the very top of your Colab notebook. The second line of the first code cell says "Replace 5.6.2 with newest Swift version." Delete the `"5.6.2"` after `"install_swift.sh"` and enter your snapshot's date in YYYY-MM-DD format.
+Swift for TensorFlow does not compile on Linux release toolchains, so select a Swift development toolchain. Visit [swift.org/download](https://www.swift.org/download) and scroll to "Trunk Development (main)". Note the date next to "Ubuntu 18.04" - at the time of writing, July 20, 2022. At the top of your Colab notebook, the first code cell says "Replace 5.6.2 with newest Swift version." Delete the `"5.6.2"` after `"install_swift.sh"` and enter the snapshot's date in YYYY-MM-DD format.
 
 ```swift
 !bash "install_swift.sh" "2022-07-20" #// Replace 5.6.2 with newest Swift version.
