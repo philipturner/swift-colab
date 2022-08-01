@@ -27,7 +27,7 @@ Since [swift-jupyter](https://github.com/google/swift-jupyter) went unmaintained
 
 > \*This presents a security risk: virtual machines encapsulate their code and stop it from harming the user's computer. When running vanilla JupyterLab, an ill-formed notebook could delete important files - in absence of proper security measures. Swift-Colab will harness any available mechanisms for limiting a process's access to the file system, and clearly document how it uses them.
 >
-> Docker does not provide access to the user's GPU, unless they have an NVIDIA GPU. The maintainer wishes to provide all users with a reasonably similar set of capabilities, not favoring a specific proprietary API (ahem, CUDA) over all others.
+> Docker does not provide access to the user's GPU, unless they have an NVIDIA GPU ([nvidia-docker](https://github.com/NVIDIA/nvidia-docker)). The maintainer wishes to provide all users with a reasonably similar set of capabilities, not favoring a specific proprietary API (ahem, CUDA) over all others.
 
 Local environments have faster CPUs than virtual machines, compiling Swift packages more quickly than Google Colaboratory. They can store data persistently, bypassing the bottleneck of Swift for TensorFlow's excessively long build time. Furthermore, they permit using your personal computer's GPU for machine learning (<s>only with NVIDIA/CUDA</s> an upcoming S4TF backend will support any Metal or OpenCL-capable GPU).
 
