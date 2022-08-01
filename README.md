@@ -2,7 +2,7 @@
 
 In March 2021, Google [ended](./Documentation/ColabSupportHistory.md) built-in Swift support on Colaboratory as part of their <s>evil plot</s> attempt to archive [Swift for TensorFlow (S4TF)](https://github.com/tensorflow/swift). Now that new contributors are working on S4TF, a Swift Colab kernel is essential for ensuring that TPU acceleration still works. This repository is the successor to [google/swift-jupyter](https://github.com/google/swift-jupyter), rewritten entirely in Swift.
 
-Swift-Colab is an accessible way to do programming with Swift. It runs in a browser, taking only 30 seconds to start up. It is perfect for programming on Chromebooks and tablets, which do not have the full functionality of a desktop. You can access a free NVIDIA GPU for machine learning, and use the real C bindings for OpenCL and CUDA instead of Python wrappers. Most importantly, the [new S4TF](https://github.com/s4tf/s4tf) finally runs on Colab.
+Swift-Colab is an accessible way to do programming with Swift. It runs in a browser, taking only 30 seconds to start up. It is perfect for programming on Chromebooks and tablets, which do not have the full functionality of a desktop. You can access a free NVIDIA GPU for machine learning and use the real C bindings for OpenCL - instead of Python wrappers. Most importantly, the [new S4TF](https://github.com/s4tf/s4tf) finally runs on Colab.
 
 For an in-depth look at how and why this repository was created, check out the [summary of its history](./Documentation/ColabSupportHistory.md).
 
@@ -13,6 +13,20 @@ For an in-depth look at how and why this repository was created, check out the [
 - [Swift for TensorFlow Integration](#swift-for-tensorflow-integration)
 - [Swift Tutorials](#swift-tutorials)
 - [Testing](#testing)
+
+This repository does not currently run local Jupyter notebooks, but the v3.0 release will support [JupyterLab](https://jupyterlab.readthedocs.io/en/stable/) (ETA: late 2022). In the meantime, [liuliu/swift-jupyter](https://github.com/liuliu/swift-jupyter) provides an actively maintained local notebook experience.
+
+<details>
+<summary>Why use Swift-*Colab* for experiences outside of Colab?</summary>
+
+Since [swift-jupyter](https://github.com/google/swift-jupyter) went unmaintained, Swift-Colab became the dominant "source of truth" for Jupyter notebook support. It's well-maintained and receives a high volume of internet traffic. Some users have tried running `install_swift.sh` on personal computers, with limited success. People will probably continue doing this despite the existence of [liuliu/swift-jupyter](https://github.com/liuliu/swift-jupyter). Furthermore, the repo's maintainer has motive for supporting [JupyterLab](https://jupyterlab.readthedocs.io/en/stable/) (but not for supporting Docker\*).
+
+> \*This presents a security risk: virtual machines encapsulate their code and stop it from harming the user's computer. When running vanilla JupyterLab, an ill-formed notebook could delete important files - in absence of proper security measures. Swift-Colab will harness any available mechanisms for limiting a process's access to the file system, and clearly document how it uses them.
+
+Local environments have faster CPUs than virtual machines, compiling Swift packages more quickly than Google Colaboratory. They can store data persistently, bypassing the bottleneck of Swift for TensorFlow's excessively long build time. Furthermore, they permit using your personal computer's GPU for machine learning (<s>only with NVIDIA/CUDA</s> an upcoming S4TF backend will support any Metal or OpenCL-capable GPU).
+
+</details>
+
 
 ## Getting Started
 
