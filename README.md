@@ -29,7 +29,7 @@ Local environments have faster CPUs than virtual machines, compiling Swift packa
 
 > \*This presents a security risk: virtual machines encapsulate their code and stop it from harming the user's computer. When running vanilla JupyterLab, an ill-formed notebook could delete important files - in absence of proper security measures. Swift-Colab will harness any available mechanisms for limiting a process's access to the file system, and clearly document how it uses them.
 >
-> Docker does not provide access to the user's GPU, unless they have an NVIDIA GPU ([nvidia-docker](https://github.com/NVIDIA/nvidia-docker)). The maintainer wishes to make GPU acceleration accessible to all users, not favoring one specific platform over all others. If OpenCL ran in Docker, it would be viable and preferred to JupyterLab.
+> Docker does not provide access to the user's GPU, unless they have an NVIDIA GPU ([nvidia-docker](https://github.com/NVIDIA/nvidia-docker)). The maintainer wishes to make GPU acceleration accessible to all users, not favoring one specific platform over all others. If Docker could utilize non-NVIDIA GPUs, it would be viable and preferred to JupyterLab.
 
 </details>
 
