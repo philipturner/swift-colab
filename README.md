@@ -23,7 +23,7 @@ This repository does not currently run local Jupyter notebooks, but the v3.0 rel
 
 ---
 
-Since [swift-jupyter](https://github.com/google/swift-jupyter) went unmaintained, Swift-Colab became the dominant "source of truth" for Jupyter notebook support. It's well-maintained and receives a high volume of internet traffic. Some users have tried running `install_swift.sh` on personal computers, with limited success. People will probably continue doing this despite the existence of [liuliu/swift-jupyter](https://github.com/liuliu/swift-jupyter). Furthermore, the repo's maintainer has motive for supporting [JupyterLab](https://jupyterlab.readthedocs.io/en/stable/) (but not for supporting Docker\*).
+Since [swift-jupyter](https://github.com/google/swift-jupyter) went unmaintained, Swift-Colab became the dominant "source of truth" for Jupyter notebook support. It's well-maintained and receives a high volume of internet traffic. Some users have tried running `install_swift.sh` on personal computers, with limited success. People will probably continue doing this despite the existence of [liuliu/swift-jupyter](https://github.com/liuliu/swift-jupyter). Furthermore, the repo's maintainer has a motive for supporting [JupyterLab](https://jupyterlab.readthedocs.io/en/stable/) (but not for supporting Docker\*).
 
 > \*This presents a security risk: virtual machines encapsulate their code and stop it from harming the user's computer. When running vanilla JupyterLab, an ill-formed notebook could delete important files - in absence of proper security measures. Swift-Colab will harness any available mechanisms for limiting a process's access to the file system, and clearly document how it uses them.
 
