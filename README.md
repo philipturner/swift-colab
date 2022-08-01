@@ -17,7 +17,7 @@ For an in-depth look at how and why this repository was created, check out the [
 This repository does not currently run local Jupyter notebooks, but the v3.0 release will support [JupyterLab](https://jupyterlab.readthedocs.io/en/stable/) (ETA: late 2022). In the meantime, [liuliu/swift-jupyter](https://github.com/liuliu/swift-jupyter) provides an actively maintained local notebook experience.
 
 <details>
-<summary>Why use Swift-'Colab' for experiences outside of Colab?</summary>
+<summary>Why use Swift-'Colab' for experiences outside of Colaboratory?</summary>
 
 Since [swift-jupyter](https://github.com/google/swift-jupyter) went unmaintained, Swift-Colab became the dominant "source of truth" for Jupyter notebook support. It's well-maintained and receives a high volume of internet traffic. Some users have tried running `install_swift.sh` on personal computers, with limited success. People will probably continue doing this despite the existence of [liuliu/swift-jupyter](https://github.com/liuliu/swift-jupyter). Furthermore, the repo's maintainer has motive for supporting [JupyterLab](https://jupyterlab.readthedocs.io/en/stable/) (but not for supporting Docker\*).
 
