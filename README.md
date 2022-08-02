@@ -23,7 +23,7 @@ This repository does not currently run local Jupyter notebooks, but the v3.0 rel
 
 ---
 
-Since [swift-jupyter](https://github.com/google/swift-jupyter) went unmaintained, Swift-Colab became the dominant "source of truth" for Jupyter notebook support. It's well-maintained and receives a high volume of internet traffic. Some users have tried running `install_swift.sh` on personal computers, with limited success. People will probably continue doing this despite the existence of [liuliu/swift-jupyter](https://github.com/liuliu/swift-jupyter). Furthermore, the repo's maintainer has a motive for supporting [JupyterLab](https://jupyterlab.readthedocs.io/en/stable/) (but not for supporting Docker\*).
+Since [swift-jupyter](https://github.com/google/swift-jupyter) went unmaintained, Swift-Colab became the dominant "source of truth" for Jupyter notebook support. It's well-maintained and receives a high volume of internet traffic. Some users have tried running `install_swift.sh` on personal computers, with limited success. People will probably continue doing this despite the existence of [liuliu/swift-jupyter](https://github.com/liuliu/swift-jupyter). Furthermore, Swift-Colab's maintainer has a motive for supporting [JupyterLab](https://jupyterlab.readthedocs.io/en/stable/) (but not for supporting Docker\*).
 
 Local environments have faster CPUs than virtual machines, compiling Swift packages more quickly than Google Colaboratory. They can store data persistently, bypassing the bottleneck of Swift for TensorFlow's excessively long build time. Furthermore, they permit using your personal computer's GPU for machine learning (<s>only with NVIDIA/CUDA</s> an upcoming S4TF backend will support any Metal or OpenCL-capable GPU).
 
