@@ -277,7 +277,7 @@ fileprivate func send_request(
   _ parent: PythonObject = Python.None,
   _ expect_reply: PythonObject = true
 ) -> PythonObject {
-  var request_id = PythonObject.None
+  var request_id = Python.None
   var metadata = [
     "colab_request_type": request_type
   ].pythonObject
@@ -306,6 +306,7 @@ fileprivate func send_request(
     }
   }
   
+  let kernel = KernelContext.kernel
   let msg = kernel.session.msg(
     "colab_request", content: content, metadata: metadata, parent: parent)
   kernel.session.send(kernel.iopub_socket, msg)
