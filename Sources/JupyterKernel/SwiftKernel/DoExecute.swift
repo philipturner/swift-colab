@@ -4,19 +4,17 @@ fileprivate let getpass = Python.import("getpass")
 fileprivate let json = Python.import("json")
 fileprivate let jsonutil = Python.import("jupyter_client").jsonutil
 
-func doExecute(code: String) throws -> PythonObject? {
+func doExecute(code: String, allowStdin: Bool) throws -> PythonObject? {
   KernelContext.isInterrupted = false
   KernelContext.pollingStdout = true
   KernelContext.cellID = Int(KernelContext.kernel.execution_count)!
+  forwardInput(allowStdin: allowStdin)
   
   // Flush stderr
   _ = getStderr(readData: false)
   
   let handler = StdoutHandler()
   handler.start()
-
-  // Can this run before `getStderr` and initializing `handler`?
-  forwardInput()
   
   // Execute the cell, handle unexpected exceptions, and make sure to always 
   // clean up the stdout handler.
@@ -107,9 +105,9 @@ func doExecute(code: String) throws -> PythonObject? {
 }
 
 // Forward raw_input and getpass to the current front via input_request.
-fileprivate func forwardInput() {
+fileprivate func forwardInput(allowStdin: Bool) {
   let kernel = KernelContext.kernel
-  kernel._allow_stdin = true
+  kernel._allow_stdin = allowStdin
   
   kernel._sys_raw_input = builtins.input
   builtins.input = kernel.raw_input
@@ -117,7 +115,7 @@ fileprivate func forwardInput() {
   kernel._save_getpass = getpass.getpass
   getpass.getpass = kernel.getpass
 
-  KernelContext.log("Forwarded input 2")
+  KernelContext.log("Forwarded input 3")
 }
 
 // Restore raw_input, getpass
@@ -125,7 +123,6 @@ fileprivate func restoreInput() {
   let kernel = KernelContext.kernel
   builtins.input = kernel._sys_raw_input
   getpass.getpass = kernel._save_getpass
-  KernelContext.log("Restored input 2")
 }
 
 fileprivate func executeCell(code: String) throws -> ExecutionResult {
