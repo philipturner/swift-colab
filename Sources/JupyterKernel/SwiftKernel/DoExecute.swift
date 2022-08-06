@@ -1,4 +1,6 @@
 import Foundation
+fileprivate let builtins = Python.import("builtins")
+fileprivate let getpass = Python.import("getpass")
 fileprivate let json = Python.import("json")
 fileprivate let jsonutil = Python.import("jupyter_client").jsonutil
 
@@ -12,12 +14,16 @@ func doExecute(code: String) throws -> PythonObject? {
   
   let handler = StdoutHandler()
   handler.start()
+
+  // Can this run before `getStderr` and initializing `handler`?
+  forwardInput()
   
   // Execute the cell, handle unexpected exceptions, and make sure to always 
   // clean up the stdout handler.
   var result: ExecutionResult
   do {
     defer {
+      restoreInput()
       KernelContext.pollingStdout = false
       handler.join()
     }
@@ -98,6 +104,27 @@ func doExecute(code: String) throws -> PythonObject? {
   } else {
     fatalError("This should never happen.")
   }
+}
+
+// Forward raw_input and getpass to the current front via input_request.
+fileprivate func forwardInput() {
+  let kernel = KernelContext.kernel
+  // kernel._allow_stdin = true
+
+  kernel._sys_raw_input = builtins.input
+  builtins.input = kernel.raw_input
+
+  kernel._save_getpass = getpass.getpass
+  getpass.getpass = kernel.getpass
+
+  KernelContext.log("Forwarded input")
+}
+
+// Restore raw_input, getpass
+fileprivate func restoreInput() {
+  let kernel = KernelContext.kernel
+  builtins.input = kernel._sys_raw_input
+  getpass.getpass = kernel._save_getpass
 }
 
 fileprivate func executeCell(code: String) throws -> ExecutionResult {
