@@ -141,6 +141,9 @@ func getStderr(readData: Bool) -> String? {
 // Also pulls source code from this file to allow stdin:
 // https://github.com/googlecolab/colabtools/blob/main/google/colab/_system_commands.py
 func runTerminalProcess(args: [String], cwd: String? = nil) throws -> Int {
+  _ = _display_stdin_widget.__enter__()
+  defer { _display_stdin_widget.__exit__() }
+  
   let joinedArgs = args.joined(separator: " ")
   let process = pexpect.spawn("/bin/sh", args: ["-c", joinedArgs], cwd: cwd)
   let flush = sys.stdout.flush
@@ -274,11 +277,11 @@ fileprivate var _msg_id: PythonObject = 0
 fileprivate func send_request(
   _ request_type: PythonObject,
   _ request_body: PythonObject,
-  _ parent: PythonObject = Python.None,
-  _ expect_reply: PythonObject = true
+  parent: PythonObject = Python.None,
+  expect_reply: PythonObject = true
 ) -> PythonObject {
   var request_id = Python.None
-  var metadata = [
+  let metadata = [
     "colab_request_type": request_type
   ].pythonObject
   if Bool(expect_reply)! {
@@ -286,7 +289,7 @@ fileprivate func send_request(
     request_id = _msg_id
     metadata["colab_msg_id"] = request_id
   }
-  var content = [
+  let content = [
     "request": request_body
   ].pythonObject
 
@@ -311,4 +314,34 @@ fileprivate func send_request(
     "colab_request", content: content, metadata: metadata, parent: parent)
   kernel.session.send(kernel.iopub_socket, msg)
   return request_id
+}
+
+// Context manager that displays a stdin UI widget and hides it upon exit.
+struct _display_stdin_widget {
+  static func __enter__(delay_millis: PythonObject = 0) -> PythonObject {
+    let kernel = KernelContext.kernel
+    send_request(
+      "cell_display_stdin", ["delayMillis": delay_millis],
+      parent: kernel._parent_header, expect_reply: false)
+    
+    let echo_updater = PythonFunction { args in
+      let new_echo_status = args[0]
+      // Note: Updating the echo status uses colab_request / colab_reply on the
+      // stdin socket. Input provided by the user also sends messages on this
+      // socket. If user input is provided while the blocking_request call is 
+      // still waiting for a colab_reply, the input will be dropped per
+      // https://github.com/googlecolab/colabtools/blob/56e4dbec7c4fa09fad51b60feb5c786c69d688c6/google/colab/_message.py#L100.
+      send_request(
+        "cell_update_stdin", ["echo": new_echo_status], 
+        parent: kernel._parent_header, expect_reply: false)
+    }.pythonObject
+    return echo_updater
+  }
+
+  static func __exit__() {
+    let kernel = KernelContext.kernel
+    send_request(
+      "cell_remove_stdin", PythonObject([:]), parent: kernel._parent_header, 
+      expect_reply: false)
+  }
 }
