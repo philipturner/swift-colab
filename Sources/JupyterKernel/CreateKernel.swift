@@ -51,6 +51,7 @@ public func JupyterKernel_constructSwiftKernelClass(_ classObj: OpaquePointer) {
   ]
   
   SwiftKernel.do_execute = PythonInstanceMethod { args in
+    KernelContext.log("args: \(args)")
     if !KernelContext.debuggerInitialized {
       KernelContext.kernel = args[0]
       try initSwift()
@@ -58,7 +59,6 @@ public func JupyterKernel_constructSwiftKernelClass(_ classObj: OpaquePointer) {
       KernelContext.log("finished initSwift")
     }
     
-    KernelContext.log("args: \(args)")
     let response = try doExecute(code: String(args[1])!)
     return response ?? [
       "status": "ok",
