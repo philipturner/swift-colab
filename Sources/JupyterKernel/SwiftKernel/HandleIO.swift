@@ -5,6 +5,7 @@ fileprivate let signal = Python.import("signal")
 fileprivate let sys = Python.import("sys")
 fileprivate let threading = Python.import("threading")
 fileprivate let time = Python.import("time")
+fileprivate let zmq = Python.import("zmq")
 
 // Not possible to use Swift GCD in place of Python single-threaded threading 
 // here.
@@ -196,5 +197,71 @@ func runTerminalProcess(args: [String], cwd: String? = nil) throws -> Int {
     return -signalstatus
   } else {
     return 0
+  }
+}
+
+//===----------------------------------------------------------------------===//
+// ColabTools Python code translations
+//===----------------------------------------------------------------------===//
+
+fileprivate let _NOT_READY = Python.object()
+
+// Reads the next message from stdin_socket.
+fileprivate func _read_next_input_message() -> PythonObject {
+  let kernel = KernelContext.kernel
+  let stdin_socket = kernel.stdin_socket
+  var reply = Python.None
+
+  do {
+    reply = try kernel.session.recv.throwing.dynamicallyCall(
+      withArguments: stdin_socket, zmq.NOBLOCK)
+  } catch {
+    // We treat invalid messages as empty replies.
+  }
+  if reply == Python.None {
+    return _NOT_READY
+  }
+
+  // We want to return '' even if reply is malformed.
+  return reply.get("content", [:]).get("value", "")
+}
+
+// Reads a stdin message.
+fileprivate func _read_stdin_message() -> PythonObject {
+  while true {
+    let value = _read_next_input_message()
+    if Bool(value == _NOT_READY)! {
+      return Python.None
+    }
+
+    // Skip any colab responses.
+    if Bool(Python.isinstance(value, Python.dict))!,
+       value.get("type") == "colab_reply" {
+      continue
+    }
+    return value
+  }
+}
+
+// Reads a reply to the message from the stdin channel.
+fileprivate func read_reply_from_input(
+  _ message_id: PythonObject,
+  _ timeout_sec: PythonObject = Python.None
+) -> PythonObject {
+  var deadline = Python.None
+  if timeout_sec != Python.None {
+    deadline = time.time() + timeout_sec
+  }
+  while deadline == Python.None || time.time() < deadline {
+    let reply = _read_next_input_message()
+    if reply == _NOT_READY || !Bool(Python.isinstance(reply, Python.dict))! {
+      time.sleep(0.025)
+      continue
+    }
+    if reply.get("type") == "colab_reply",
+       reply.get("colab_msg_id") == message_id {
+      // TODO: Throw an error if `reply` contains 'error'.
+      return reply.get("data", Python.None)
+    }
   }
 }
