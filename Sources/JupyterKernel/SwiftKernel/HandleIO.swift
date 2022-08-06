@@ -234,7 +234,8 @@ fileprivate func _read_next_input_message() -> PythonObject {
   }
   
   // We want to return '' even if reply is malformed.
-  return reply.get("content", PythonObject([:])).get("value", "")
+  let content = reply.checking["content"] ?? PythonObject([:])
+  return content.checking["value"] ?? ""
 }
 
 // Reads a stdin message.
@@ -247,7 +248,7 @@ fileprivate func _read_stdin_message() -> PythonObject {
     
     // Skip any colab responses.
     if Bool(Python.isinstance(value, Python.dict))!,
-       value.get("type") == "colab_reply" {
+       value["type"] == "colab_reply" {
       continue
     }
     return value
@@ -269,8 +270,8 @@ fileprivate func read_reply_from_input(
       time.sleep(0.025)
       continue
     }
-    if reply.get("type") == "colab_reply",
-       reply.get("colab_msg_id") == message_id {
+    if reply["type"] == "colab_reply",
+       reply["colab_msg_id"] == message_id {
       // TODO: Throw an error if `reply` contains 'error'.
       return reply.get("data", Python.None)
     }
