@@ -186,6 +186,7 @@ func runTerminalProcess(args: [String], cwd: String? = nil) throws -> Int {
     } else if Int(resIdx)! == 1 {
       break
     }
+    processInput(process)
   }
   sendStdout("\u{1b}[0m")
   
@@ -206,6 +207,13 @@ func runTerminalProcess(args: [String], cwd: String? = nil) throws -> Int {
 //===----------------------------------------------------------------------===//
 // ColabTools Python code translations
 //===----------------------------------------------------------------------===//
+
+func processInput(_ process: PythonObject) {
+  let input_line = _read_stdin_message()
+  if input_line != Python.None {
+    pexpect.send(input_line)
+  }
+}
 
 fileprivate let _NOT_READY = Python.object()
 
