@@ -217,6 +217,7 @@ More tutorials are in development. Upon completion, they will appear in the tabl
 | Planned Tutorial | Dependencies | Compatible Swift Versions |
 | ---------------- | ------------ | ------------------------- |
 | General-Purpose GPU with OpenCL (New) | [SwiftOpenCL](https://github.com/philipturner/swift-opencl) | Release, Development |
+| ??? (Tentative) (New) | [MuJoCo](https://github.com/deepmind/mujoco) | n/a |
 
 ## Testing
 
