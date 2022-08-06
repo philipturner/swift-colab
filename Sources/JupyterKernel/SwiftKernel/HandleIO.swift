@@ -214,7 +214,7 @@ fileprivate func _read_next_input_message() -> PythonObject {
   let kernel = KernelContext.kernel
   let stdin_socket = kernel.stdin_socket
   var reply = Python.None
-
+  
   do {
     reply = try kernel.session.recv.throwing.dynamicallyCall(
       withArguments: stdin_socket, zmq.NOBLOCK)
@@ -224,7 +224,7 @@ fileprivate func _read_next_input_message() -> PythonObject {
   if reply == Python.None {
     return _NOT_READY
   }
-
+  
   // We want to return '' even if reply is malformed.
   return reply.get("content", PythonObject([:])).get("value", "")
 }
@@ -236,7 +236,7 @@ fileprivate func _read_stdin_message() -> PythonObject {
     if Bool(value == _NOT_READY)! {
       return Python.None
     }
-
+    
     // Skip any colab responses.
     if Bool(Python.isinstance(value, Python.dict))!,
        value.get("type") == "colab_reply" {
@@ -292,7 +292,7 @@ fileprivate func send_request(
   let content = [
     "request": request_body
   ].pythonObject
-
+  
   // If there's no parent message, add in the session header to route to the
   // appropriate frontend.
   var parent_copy = parent
@@ -338,7 +338,7 @@ struct _display_stdin_widget {
     }.pythonObject
     return echo_updater
   }
-
+  
   static func __exit__() {
     let kernel = KernelContext.kernel
     _ = send_request(
