@@ -48,12 +48,12 @@ A B C D A B C D
 
 ## `%include`
 ```swift
-%include FILEPATH [--force]
+%include PATH [--force]
 ```
 
 Inject code from a source file into the interpreter. The code executes at the top of the current cell, even if the `%include` command appears below other Swift code.
 
-- `FILEPATH` - File path relative to the current working directory (`/content`), omitting the first forward flash. If the file does not exist there, it looks inside `/opt/swift/include`.
+- `PATH` - File path relative to the current working directory (`/content`), omitting the first forward flash. If the file does not exist there, it looks inside `/opt/swift/include`.
 - `--force`\* - The command silently fails if you already included it during the current Jupyter session. This protective mechanism prevents duplication of type objects. Use `--force` to override the mechanism and include the file multiple times.
 
 > \*This feature does not currently exist. It will be enabled in Swift-Colab v2.3.
@@ -88,7 +88,7 @@ To build packages stored on the local computer, pass `$cwd` into `.package(path:
 
 ## `%install-location`
 ```swift
-%install-location DIRECTORY
+%install-location PATH
 ```
 
 - Link to PR that initiated this
