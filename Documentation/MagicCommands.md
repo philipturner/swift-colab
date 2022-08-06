@@ -48,22 +48,27 @@ A B C D A B C D
 
 ## `%include`
 ```
-%include FILEPATH
+%include FILEPATH [--force]
 ```
 
-- Doesn't include a file twice, clarify what that means with an example, it does that for exclusivity of type objects. LLDB allows re-declaring of symbols, which is fine for local variables but not for type objects which get overwritten.
-- Does it inject code in the middle of a Swift source file? I don't think so because they are parsed beforehand.
-- Does this use `$cwd`?
+Inject code from a source file into the interpreter. The code executes at the top of the current cell, even if the `%include` command appears below other Swift code.
+
+- `FILEPATH` - File path relative to the current working directory (`/content`), omitting the first forward flash. If the file does not exist there, it looks inside `/opt/swift/include`.
+- `--force`\* - The command silently fails if you already included it during the current Jupyter session. This protective mechanism prevents duplication of type objects. Use `--force` to override the mechanism and include the file multiple times.
+
+> \*This feature does not currently exist. It will be enabled in Swift-Colab v2.3.
 
 ## `%install`
 ```swift
 %install SPEC PRODUCT [PRODUCT ...]
 ```
 
-Build a Swift package for use inside a notebook. If a previous Jupyter session executed this command, import the cached build products. To avoid recompilation, the SwiftPM flags should match those present the last time the `%install` command executed.
+Build a Swift package for use inside a notebook. If a previous Jupyter session executed this command, import the cached build products. To avoid recompilation, the SwiftPM flags should match those present when the `%install` command last executed.
 
-- `SPEC` - Specification to insert into a package manifest. Use SwiftPM version 4.2 syntax, such as `.package(url: "", .branch(""))`. Do not use version 5.0 syntax, such as `.package(url: "", branch: "")`. Place the specification between single quotes to avoid colliding with string literals, which use double quotes.
+- `SPEC` - Specification to insert into a package manifest. Use SwiftPM version 4.2\* syntax, such as `.package(url: "", .branch(""))`. Place the specification between single quotes to avoid colliding with string literals, which use double quotes.
 - `PRODUCT` - Any Swift module the debugger should compile and import.
+
+> *Do not use version 5.0 syntax, such as `.package(url: "", branch: "")`. This syntax will be permitted in Swift-Colab v2.3.
 
 Although this utilizes cached build products, LLDB does not automatically detect those products. `%install` tells the Jupyter kernel to locate and optionally recompile each `PRODUCT`. Always run the command before using external dependencies in a notebook.
 
