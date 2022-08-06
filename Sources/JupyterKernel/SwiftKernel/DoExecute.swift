@@ -107,7 +107,7 @@ func doExecute(code: String, allowStdin: Bool) throws -> PythonObject? {
 // Forward raw_input and getpass to the current front via input_request.
 fileprivate func forwardInput(allowStdin: Bool) {
   let kernel = KernelContext.kernel
-  kernel._allow_stdin = allowStdin
+  kernel._allow_stdin = PythonObject(allowStdin)
   
   kernel._sys_raw_input = builtins.input
   builtins.input = kernel.raw_input
