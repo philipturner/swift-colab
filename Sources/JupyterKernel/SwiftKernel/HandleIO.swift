@@ -266,3 +266,48 @@ fileprivate func read_reply_from_input(
   }
   return Python.None
 }
+
+// Global counter for message id.
+fileprivate var _msg_id: PythonObject = 0
+
+// Sends the given message to the frontend without waiting for a reply.
+fileprivate func send_request(
+  _ request_type: PythonObject,
+  _ request_body: PythonObject,
+  _ parent: PythonObject = Python.None,
+  _ expect_reply: PythonObject = true
+) -> PythonObject {
+  var request_id = PythonObject.None
+  var metadata = [
+    "colab_request_type": request_type
+  ].pythonObject
+  if Bool(expect_reply)! {
+    _msg_id += 1
+    request_id = _msg_id
+    metadata["colab_msg_id"] = request_id
+  }
+  var content = [
+    "request": request_body
+  ].pythonObject
+
+  // If there's no parent message, add in the session header to route to the
+  // appropriate frontend.
+  var parent_copy = parent
+  if parent_copy == Python.None {
+    // TODO: Is this the same as `kernel.shell.parent_header`?
+    let parent_header = KernelContext.kernel._parent_header
+    if parent_header != Python.None {
+      parent_copy = [
+        "header": [
+          // Only specifying the session if it is not a cell-related message.
+          "session": parent_header["header"]["session"]
+        ].pythonObject
+      ].pythonObject
+    }
+  }
+  
+  let msg = kernel.session.msg(
+    "colab_request", content: content, metadata: metadata, parent: parent)
+  kernel.session.send(kernel.iopub_socket, msg)
+  return request_id
+}
