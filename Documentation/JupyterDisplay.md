@@ -1,4 +1,4 @@
-# Inline Images
+# Jupyter Display
 
 > This documentation page is a work in progress.
 
