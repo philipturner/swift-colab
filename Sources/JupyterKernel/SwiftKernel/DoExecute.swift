@@ -109,15 +109,15 @@ func doExecute(code: String) throws -> PythonObject? {
 // Forward raw_input and getpass to the current front via input_request.
 fileprivate func forwardInput() {
   let kernel = KernelContext.kernel
-  // kernel._allow_stdin = true
-
+  kernel._allow_stdin = true
+  
   kernel._sys_raw_input = builtins.input
   builtins.input = kernel.raw_input
 
   kernel._save_getpass = getpass.getpass
   getpass.getpass = kernel.getpass
 
-  KernelContext.log("Forwarded input")
+  KernelContext.log("Forwarded input 2")
 }
 
 // Restore raw_input, getpass
@@ -125,6 +125,7 @@ fileprivate func restoreInput() {
   let kernel = KernelContext.kernel
   builtins.input = kernel._sys_raw_input
   getpass.getpass = kernel._save_getpass
+  KernelContext.log("Restored input 2")
 }
 
 fileprivate func executeCell(code: String) throws -> ExecutionResult {
