@@ -114,8 +114,6 @@ fileprivate func forwardInput(allowStdin: Bool) {
 
   kernel._save_getpass = getpass.getpass
   getpass.getpass = kernel.getpass
-
-  KernelContext.log("Forwarded input 3")
 }
 
 // Restore raw_input, getpass

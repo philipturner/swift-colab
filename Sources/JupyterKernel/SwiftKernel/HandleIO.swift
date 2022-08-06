@@ -1,4 +1,5 @@
 import Foundation
+fileprivate let colab = Python.import("google.colab")
 fileprivate let pexpect = Python.import("pexpect")
 fileprivate let signal = Python.import("signal")
 fileprivate let sys = Python.import("sys")
@@ -135,6 +136,9 @@ func getStderr(readData: Bool) -> String? {
 // This attempts to replicate the code located at:
 // https://github.com/ipython/ipython/blob/master/IPython/utils/_process_posix.py,
 //   def system(self, cmd):
+//
+// Also pulls source code from this file to allow stdin:
+// https://github.com/googlecolab/colabtools/blob/main/google/colab/_system_commands.py
 func runTerminalProcess(args: [String], cwd: String? = nil) throws -> Int {
   let joinedArgs = args.joined(separator: " ")
   let process = pexpect.spawn("/bin/sh", args: ["-c", joinedArgs], cwd: cwd)
