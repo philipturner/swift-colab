@@ -60,9 +60,9 @@ A B C D A B C D
 %install SPEC PRODUCT [PRODUCT ...]
 ```
 
-Build a Swift package for use inside a notebook. If a previous Jupyter session executed this command, import the cached build products. To avoid recompilation, ensure the SwiftPM flags match those originally used to build the package.
+Build a Swift package for use inside a notebook. If a previous Jupyter session executed this command, import the cached build products. To avoid recompilation, the SwiftPM flags should match those present the last time the `%install` command executed.
 
-- `SPEC` - Specification to be inserted into a package manifest. Use SwiftPM version 4.2 syntax, such as `.package(url: "", .branch(""))`. Do not use version 5.0 syntax (`.package(url: "", branch: "")`). Place the specification between single quotes to avoid colliding with string literals, which use double quotes.
+- `SPEC` - Specification to insert into a package manifest. Use SwiftPM version 4.2 syntax, such as `.package(url: "", .branch(""))`. Do not use version 5.0 syntax, such as `.package(url: "", branch: "")`. Place the specification between single quotes to avoid colliding with string literals, which use double quotes.
 - `PRODUCT` - Any Swift module the debugger should compile and import.
 
 Although this utilizes cached build products, LLDB does not automatically detect those products. `%install` tells the Jupyter kernel to locate and optionally recompile each `PRODUCT`. Always run the command before using external dependencies in a notebook.
