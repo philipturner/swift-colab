@@ -47,7 +47,7 @@ A B C D A B C D
 > TODO: Each command should have an example of usage in its description.
 
 ## `%include`
-```
+```swift
 %include FILEPATH [--force]
 ```
 
@@ -66,11 +66,11 @@ Inject code from a source file into the interpreter. The code executes at the to
 Build a Swift package for use inside a notebook. If a previous Jupyter session executed this command, import the cached build products. To avoid recompilation, the SwiftPM flags should match those present when the `%install` command last executed.
 
 - `SPEC` - Specification to insert into a package manifest. Use SwiftPM version 4.2\* syntax, such as `.package(url: "", .branch(""))`. Place the specification between single quotes to avoid colliding with string literals, which use double quotes.
-- `PRODUCT` - Any Swift module the debugger should compile and import.
+- `PRODUCT` - Each exported Swift module the debugger should build and import.
 
 > *Do not use version 5.0 syntax, such as `.package(url: "", branch: "")`. This syntax will be permitted in Swift-Colab v2.3.
 
-Although this utilizes cached build products, LLDB does not automatically detect those products. `%install` tells the Jupyter kernel to locate and optionally recompile each `PRODUCT`. Always run the command before using external dependencies in a notebook.
+Although the SwiftPM engine utilizes cached build products, LLDB does not automatically detect those products. `%install` tells the Jupyter kernel to locate and optionally recompile each `PRODUCT`. Always run the command before using external dependencies in a notebook.
 
 To build packages stored on the local computer, pass `$cwd` into `.package(path: "")`. This keyword substitutes with the current working directory, which is always `/content`. The example below demonstrates directory substitution.
 
@@ -80,14 +80,14 @@ To build packages stored on the local computer, pass `$cwd` into `.package(path:
 ```
 
 ## `%install-extra-include-command`
-```
+```swift
 %install-extra-include-command EXECUTABLE [ARGUMENT ...]
 ```
 
 - Link to forum thread that initiated this
 
 ## `%install-location`
-```
+```swift
 %install-location DIRECTORY
 ```
 
@@ -95,7 +95,7 @@ To build packages stored on the local computer, pass `$cwd` into `.package(path:
 - Has `$cwd` substitution (describe).
 
 ## `%install-swiftpm-flags`
-```
+```swift
 %install-swiftpm-flags [FLAG ...]
 ```
 
@@ -104,7 +104,7 @@ To build packages stored on the local computer, pass `$cwd` into `.package(path:
 - Explain workaround for `-Xcc -I/...` flags, but for now just hyperlink: [problem 4 in this comment](https://github.com/philipturner/swift-colab/issues/14#issuecomment-1158237894).
 
 ## `%system`
-```
+```swift
 %system EXECUTABLE [ARGUMENT ...]
 ```
 
