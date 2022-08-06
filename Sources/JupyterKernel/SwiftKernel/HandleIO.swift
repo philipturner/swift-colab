@@ -264,4 +264,5 @@ fileprivate func read_reply_from_input(
       return reply.get("data", Python.None)
     }
   }
+  return Python.None
 }
