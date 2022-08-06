@@ -53,17 +53,26 @@ A B C D A B C D
 
 - Doesn't include a file twice, clarify what that means with an example, it does that for exclusivity of type objects. LLDB allows re-declaring of symbols, which is fine for local variables but not for type objects which get overwritten.
 - Does it inject code in the middle of a Swift source file? I don't think so because they are parsed beforehand.
+- Does this use `$cwd`?
 
 ## `%install`
-```
+```swift
 %install SPEC PRODUCT [PRODUCT ...]
 ```
 
-- The command that downloads Swift packages.
-- Swift 4.2-style package initializer for ergonomics and backward compatibility.
-- Has `$cwd` substitution (describe).
-- How to prevent a package from recompiling (same toolchain, same SwiftPM flags)
-- This is also the command that loads a package into LLDB, so must run before calling `import XXX`
+Build a Swift package for use inside a notebook. If a previous Jupyter session executed this command, import the cached build products. To avoid recompilation, ensure the SwiftPM flags match those originally used to build the package.
+
+- `SPEC` - Specification to be inserted into a package manifest. Use SwiftPM version 4.2 syntax, such as `.package(url: "", .branch(""))`. Do not use version 5.0 syntax (`.package(url: "", branch: "")`). Place the specification between single quotes to avoid colliding with string literals, which use double quotes.
+- `PRODUCT` - Any Swift module the debugger should compile and import.
+
+Although this utilizes cached build products, LLDB does not automatically detect those products. `%install` tells the Jupyter kernel to locate and optionally recompile each `PRODUCT`. Always run the command before using external dependencies in a notebook.
+
+To build packages stored on the local computer, pass `$cwd` into `.package(path: "")`. This keyword substitutes with the current working directory, which is always `/content`. The example below demonstrates directory substitution.
+
+```swift
+// Install the SimplePackage package that's in the kernel's working directory.
+%install '.package(path: "$cwd/SimplePackage")' SimplePackage
+```
 
 ## `%install-extra-include-command`
 ```
