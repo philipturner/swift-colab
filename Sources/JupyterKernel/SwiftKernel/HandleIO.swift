@@ -223,7 +223,7 @@ fileprivate func _read_next_input_message() -> PythonObject {
   }
 
   // We want to return '' even if reply is malformed.
-  return reply.get("content", [:]).get("value", "")
+  return reply.get("content", PythonObject([:])).get("value", "")
 }
 
 // Reads a stdin message.
