@@ -136,10 +136,12 @@ struct KernelPipe {
     pipe(&pipes)
     pipe1 = pipes[0]
     pipe2 = pipes[1]
+    fcntl(pipe1!, F_SETFL, O_NONBLOCK)
     
     pipe(&pipes)
     pipe3 = pipes[0]
     pipe4 = pipes[1]
+    fcntl(pipe3!, F_SETFL, O_NONBLOCK)
     
     // Write pipes to file.
     let filePointer = fopen("/opt/swift/pipes", "wb")
