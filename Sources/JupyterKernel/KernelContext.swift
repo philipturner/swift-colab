@@ -326,3 +326,37 @@ struct KernelPipe {
     return output
   }
 }
+
+//===----------------------------------------------------------------------===//
+// Translation of https://stackoverflow.com/a/2358843
+//===----------------------------------------------------------------------===//
+
+// Found the C macros at:
+// https://opensource.apple.com/source/xnu/xnu-201/bsd/sys/socket.h.auto.html
+
+func CMSG_ALIGN(_ n: Int) -> Int {
+  (n + 3) & ~3
+}
+
+func CMSG_SPACE(_ l: Int) -> Int {
+  CMSG_ALIGN(MemoryLayout<cmsghdr>.stride + CMSG_ALIGN(l))
+}
+
+func CMSG_FIRSTHDR(
+  _ mhdr: UnsafeMutablePointer<msghdr>
+) -> UnsafeMutablePointer<cmsghdr> {
+  fatalError()
+}
+
+func write_fd(
+  _ fd: Int32,
+  _ ptr: UnsafeMutableRawPointer?,
+  _ nbytes: Int,
+  _ sendfd: Int32
+) -> Int {
+  var msg = msghdr()
+  withUnsafeTemporaryAllocation(of: iovec, capacity: 1) { iov in
+    
+  }
+}
+
