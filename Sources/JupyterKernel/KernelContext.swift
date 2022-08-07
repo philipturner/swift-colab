@@ -149,10 +149,7 @@ struct KernelPipe {
       if bytesRead == 0 {
         break
       }
-
-      let baseAddress = scratchBuffer.baseAddress!
-      let casted = UnsafePointer<UInt8>(OpaquePointer(baseAddress))
-      output.append(casted, count: bytesRead)
+      output.append(UnsafePointer(scratchBuffer), count: bytesRead)
     }
     return output
   }
