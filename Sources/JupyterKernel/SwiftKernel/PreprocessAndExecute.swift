@@ -5,23 +5,19 @@ fileprivate let time = Python.import("time")
 func preprocessAndExecute(
   code: String, isCell: Bool = false
 ) throws -> ExecutionResult {
-  KernelContext.log("1.4.1")
   let preprocessed = try preprocess(code: code)
-  KernelContext.log("1.4.2")
   var executionResult: ExecutionResult?
   DispatchQueue.global().async {
     executionResult = execute(
       code: preprocessed, lineIndex: isCell ? 0 : nil, isCell: isCell)
   }
-  KernelContext.log("1.4.3")
-  let shouldPoll = isCell && (code != "")
   
   while executionResult == nil {
     // Using Python's `time` module instead of Foundation.usleep releases the
     // GIL.
     time.sleep(0.05)
     
-    if shouldPoll {
+    if isCell {
       let messages = KernelPipe.read(.jupyterKernel)
       if messages.count > 0 {
         for message in messages {
