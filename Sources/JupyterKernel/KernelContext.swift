@@ -97,7 +97,7 @@ fileprivate struct LLDBProcessLibrary {
 
 struct KernelPipe {
   static func reset() {
-    let filePointer = fopen("/opt/swift/pipe", "wb")!
+    let filePointer = fopen("/opt/swift/pipe", "wb+")!
     fclose(filePointer)
   }
   
@@ -112,7 +112,7 @@ struct KernelPipe {
     }
     data.copyBytes(to: buffer, count: data.count)
 
-    let filePointer = fopen("/opt/swift/pipe", "ab")!
+    let filePointer = fopen("/opt/swift/pipe", "ab+")!
     defer { 
       fclose(filePointer) 
     }
@@ -126,9 +126,9 @@ struct KernelPipe {
     fwrite(&header, 8, 1, filePointer)
     fwrite(buffer, 1, data.count, filePointer)
   }
-
+  
   static let scratchBufferSize = 1024
-
+  
   // Still need to perform a postprocessing pass, which parses headers to
   // separate each message into its own `Data`.
   static func read_raw() -> Data {
@@ -139,7 +139,7 @@ struct KernelPipe {
     }
     var output = Data()
     
-    let filePointer = fopen("/opt/swift/pipe", "rb")!
+    let filePointer = fopen("/opt/swift/pipe", "rb+")!
     defer { 
       fclose(filePointer) 
     }
@@ -156,6 +156,7 @@ struct KernelPipe {
       }
       output.append(UnsafePointer(scratchBuffer), count: bytesRead)
     }
+    fflush(filePointer)
     return output
   }
 
