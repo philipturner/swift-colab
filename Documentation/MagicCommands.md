@@ -94,6 +94,17 @@ To build packages stored on the local computer, pass `$cwd` into `.package(path:
 - Link to PR that initiated this
 - Has `$cwd` substitution (describe).
 
+## `%install-swiftpm-environment`
+```swift
+%install-swiftpm-environment EXECUTABLE [ARGUMENT ...]
+%install-swiftpm-environment export KEY=VALUE
+```
+
+Adds a line of Bash code to execute before building the package.
+
+> Coming in Swift-Colab v2.3.
+
+
 ## `%install-swiftpm-flags`
 ```swift
 %install-swiftpm-flags [FLAG ...]
@@ -102,6 +113,29 @@ To build packages stored on the local computer, pass `$cwd` into `.package(path:
 - Appends the arguments to a growing list of flags every time you execute
 - The `$clear` flag, was added to allow emptying SwiftPM flags. If you have `$clear` before other flags, it resets then adds the flags to the right of it.
 - Explain workaround for `-Xcc -I/...` flags, but for now just hyperlink: [problem 4 in this comment](https://github.com/philipturner/swift-colab/issues/14#issuecomment-1158237894).
+
+## `%install-swiftpm-import`
+```swift
+%install-swiftpm-import MODULE
+```
+
+Treats a pre-compiled module like a system library. This lets Swift package's source code import the module without declaring a dependency in `Package.swift`.
+
+- `MODULE` - The Swift module to automatically link. Execute the `%include` command that exports this module before running the `%install-swiftpm-import` command.
+
+> Coming in Swift-Colab v2.3.
+
+This command's underlying mechanism is used to inject `JupyterDisplay` into Swift packages. This module lets external packages seamlessly communicate with the notebook's Jupyter display. Use the convention below to conditionally import `MODULE` inside a Swift package.
+
+```swift
+#if canImport(JupyterDisplay)
+import JupyterDisplay
+#endif
+
+#if canImport(JupyterDisplay)
+// Use symbols defined in the 'JupyterDisplay' module.
+#endif
+```
 
 ## `%system`
 ```swift
