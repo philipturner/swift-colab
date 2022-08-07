@@ -240,8 +240,9 @@ fileprivate func _read_next_input_message() -> PythonObject {
   var reply = Python.None
   
   do {
-    reply = try kernel.session.recv.throwing.dynamicallyCall(
+    let tuple = try kernel.session.recv.throwing.dynamicallyCall(
       withArguments: stdin_socket, zmq.NOBLOCK)
+    (_, reply) = tuple.tuple2
   } catch {
     // We treat invalid messages as empty replies.
     KernelContext.log("GOT INVALID MESSAGE")
