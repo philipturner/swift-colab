@@ -176,7 +176,8 @@ struct KernelPipe {
       
       // Create and bind socket.
       let fd = precondition(
-        socket(AF_UNIX, Int32(SOCK_DGRAM), 0) != -1, "socket failed: \(errno)")
+        socket(AF_UNIX, Int32(SOCK_DGRAM.rawValue), 0) != -1, 
+        "socket failed: \(errno)")
       func withPointer2(_ ptr: UnsafeRawPointer) {
         let stride = MemoryLayout<sockaddr_un>.stride
         precondition(
