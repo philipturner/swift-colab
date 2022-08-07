@@ -27,7 +27,9 @@ fileprivate struct CEnvironment {
 fileprivate var sigintHandler: PythonObject!
 
 func initSwift() throws {
+  KernelContext.log("hello world 1")
   KernelPipe.createPipes()
+  KernelContext.log("hello world 2")
   try initReplProcess()
   try initKernelCommunicator()
   try initConcurrency()
