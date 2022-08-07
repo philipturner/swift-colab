@@ -162,11 +162,26 @@ struct KernelPipe {
     
     func sendMessage(id: Int, pipe: Int32) {
       KernelContext.log("Starting to send \(id)")
-      let socketPointer = fopen("/opt/swift/socket\(id)", "wb")!
-      defer { fclose(socketPointer) }
-      let fd = fileno(socketPointer)
+      let path = "/opt/swift/socket\(id)"
+      let socketFile = fopen(path, "wb")!
+      fclose(socketPointer)
+      
+      var namesock = sockaddr_un()
+      namesock.sun_family = AF_UNIX
+      strncpy(namesock.sun_path, path, path.count)
+      namesock.sun_path[path.count] = 0 // null terminator
+      
+      let fd = precondition(
+        socket(AF_UNIX, SOCK_DGRAM, 0) != -1, "socket failed: \(errno)")
+      func withPointer(_ ptr: UnsafeRawPointer) {
+        precondition(
+          bind(fd, .init(ptr), MemoryLayout<sockaddr_un>.stride) != -1,
+          "bind failed: \(errno)")
+      }
+      withPointer(&namesock)
       precondition(
         write_fd(fd, nil, 0, pipe) > 0, "write_fd failed: \(errno)")
+      precondition(close(fd) == 0, "Could not close fd \(fd)")
     }
     sendMessage(id: 1, pipe: pipe1!)
     sendMessage(id: 2, pipe: pipe2!)
@@ -390,7 +405,7 @@ func write_fd(
       of: Int8.self, capacity: control_size
     ) { control in
       msg.msg_control = UnsafeMutableRawPointer(control.baseAddress!)
-      msg.msg_controllen = Int.bitWidth
+      msg.msg_controllen = control_size
       
       let cmptr: UnsafeMutablePointer<cmsghdr> = CMSG_FIRSTHDR(&msg)!
       cmptr.pointee.cmsg_len = CMSG_LEN(4)
@@ -433,7 +448,7 @@ func read_fd(
       of: Int8.self, capacity: control_size
     ) { control in
       msg.msg_control = UnsafeMutableRawPointer(control.baseAddress!)
-      msg.msg_controllen = Int.bitWidth
+      msg.msg_controllen = control_size
       
       msg.msg_name = nil
       msg.msg_namelen = 0
