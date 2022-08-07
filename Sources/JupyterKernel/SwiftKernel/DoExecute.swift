@@ -5,7 +5,6 @@ fileprivate let json = Python.import("json")
 fileprivate let jsonutil = Python.import("jupyter_client").jsonutil
 
 func doExecute(code: String, allowStdin: Bool) throws -> PythonObject? {
-  KernelPipe.reset()
   KernelContext.isInterrupted = false
   KernelContext.pollingStdout = true
   KernelContext.cellID = Int(KernelContext.kernel.execution_count)!
