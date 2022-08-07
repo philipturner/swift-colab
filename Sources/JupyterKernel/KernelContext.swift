@@ -181,7 +181,7 @@ struct KernelPipe {
         let stride = MemoryLayout<sockaddr_un>.stride
         precondition(
           bind(fd, .init(OpaquePointer(ptr)), socklen_t(stride)) != -1,
-          "bind failed2: \(strerror(errno))")
+          "bind failed2: \(String(cString: strerror(errno))!)")
       }
       withPointer2(&namesock)
 
