@@ -202,11 +202,11 @@ struct KernelPipe {
     precondition(pipe == pipe4!)
     var header = Int64(data.count)
     precondition(
-      Foundation.write(pipe, &header, 8) == 0, 
-      "Could not write to file.")
+      Foundation.write(pipe, &header, 8) >= 0, 
+      "Could not write to file1. \(Foundation.write(pipe, &header, 8))")
     precondition(
-      Foundation.write(pipe, buffer, data.count) == 0, 
-      "Could not write to file.")
+      Foundation.write(pipe, buffer, data.count) >= 0, 
+      "Could not write to file2. \(Foundation.write(pipe, buffer, data.count))")
     
     // withLock {
       // let filePointer = fopen("/opt/swift/pipes/\(process.writePipe)", "ab")!
