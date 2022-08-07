@@ -159,6 +159,8 @@ struct KernelPipe {
     var buffer: [Int32] = [pipe1!, pipe2!, pipe3!, pipe4!, pid]
     fwrite(&buffer, 4, 5, filePointer)
     KernelContext.log("sPipe IDs: \(buffer)")
+
+    // Use /opt/swift/socket to pass the Unix messages.
   }
   
   static func fetchPipes() {
@@ -361,6 +363,8 @@ func CMSG_LEN(_ l: Int) -> Int {
 }
 
 // Code to pass the file descriptor.
+// - fd: Either a file descriptor or unix socket; stores the message.
+// - ptr: Maybe random data, just to validate that the message was correct.
 func write_fd(
   _ fd: Int32,
   _ ptr: UnsafeMutableRawPointer?,
@@ -402,3 +406,60 @@ func write_fd(
 }
 
 // Code to receive the file descriptor.
+// - fd: Either a file descriptor or unix socket; stores the message.
+// - ptr: Maybe random data, just to validate that the message was correct.
+func read_fd(
+  _ fd: Int32,
+  _ ptr: UnsafeMutableRawPointer?,
+  _ nbytes: Int,
+  _ recvfd: UnsafeMutablePointer<Int32>
+) -> Int {
+  var msg = msghdr()
+  var output: Int = 0
+  withUnsafeTemporaryAllocation(of: iovec.self, capacity: 1) { iov in
+    let control_size = CMSG_SPACE(4)
+    withUnsafeTemporaryAllocation(
+      of: Int8.self, capacity: control_size
+    ) { control in
+      msg.msg_control = UnsafeMutableRawPointer(control.baseAddress!)
+      msg.msg_controllen = Int.bitWidth
+      
+      let cmptr: UnsafeMutablePointer<cmsghdr> = CMSG_FIRSTHDR(&msg)
+      cmptr.pointee.cmsg_len = CMSG_LEN(4)
+      cmptr.pointee.cmsg_level = SOL_SOCKET
+      cmptr.pointee.cmsg_type = Int32(SCM_RIGHTS)
+      
+      let cmsg_data1 = CMSG_DATA(cmptr)
+      let cmsg_data2 = OpaquePointer(cmsg_data1)
+      let cmsg_data3 = UnsafeMutablePointer<Int32>(cmsg_data2)
+      cmsg_data3.pointee = sendfd
+      
+      msg.msg_name = nil
+      msg.msg_namelen = 0
+      
+      iov[0].iov_base = ptr
+      iov[0].iov_len = nbytes
+      msg.msg_iov = iov.baseAddress!
+      msg.msg_iovlen = 1
+
+      let n = recvmsg(fd, &msg, 0)
+      if let cmptr = CMSG_FIRSTHDR(&msg),
+         cmptr.pointee.cmsg_len == CMSG_LEN(4) {
+        if cmptr.pointee.cmsg_level != SOL_SOCKET {
+          fatalError("control level != SOL_SOCKET")
+        }
+        if cmptr.pointee.cmsg_type != SCM_RIGHTS {
+          fatalError("control type != SCM_RIGHTS")
+        }
+
+        let cmsg_data1 = CMSG_DATA(cmptr)
+        let cmsg_data2 = OpaquePointer(cmsg_data1)
+        let cmsg_data3 = UnsafeMutablePointer<Int32>(cmsg_data2)
+        recvfd.pointee = cmsg_data3.pointee
+      } else {
+        recvfd.pointee = -1
+      }
+    }
+  }
+  return output
+}
