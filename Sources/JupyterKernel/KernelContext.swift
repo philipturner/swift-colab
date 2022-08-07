@@ -101,11 +101,17 @@ struct KernelPipe {
     fclose(filePointer)
   }
   
-  static func append(_ bytes: UnsafeRawBufferPointer) {
-    guard let baseAddress = bytes.baseAddress else {
-      // Entered empty bytes.
+  static func append(_ data: Data) {
+    guard data.count > 0 else {
+      // Buffer pointer might initialize with null base address and zero count.
       return
     }
+    let buffer: UnsafeMutablePointer<UInt8> = .allocate(capacity: data.count)
+    defer {
+      buffer.deallocate()
+    }
+    data.copyBytes(to: buffer, count: data.count)
+    
     let filePointer = fopen("/opt/swift/pipe", "ab")!
     defer { 
       fclose(filePointer) 
@@ -118,7 +124,7 @@ struct KernelPipe {
     
     var header = Int64(bytes.count)
     fwrite(&header, 8, 1, filePointer)
-    fwrite(baseAddress, 1, bytes.count, filePointer)
+    fwrite(buffer, 1, bytes.count, filePointer)
   }
 
   static let scratchBufferSize = 1024
@@ -166,6 +172,7 @@ struct KernelPipe {
     defer {
       buffer.deallocate()
     }
+    raw_data.copyBytes(to: UnsafeMutablePointer(buffer), count: raw_data.count)
 
     var stream = buffer
     var streamProgress = 0

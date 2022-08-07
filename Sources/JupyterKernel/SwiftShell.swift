@@ -57,6 +57,9 @@ public func get_kernel() -> Int32 {
       }
       _message.blocking_request = PythonFunction { args, kwargs in
         while true {
+          // let string = "HELLO WORLD BLOCKING REQUEST"
+          // let stringData = string.data
+
           print("HELLO WORLD BLOCKING REQUEST")
           usleep(500_000)
         }
