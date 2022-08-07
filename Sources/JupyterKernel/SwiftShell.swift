@@ -140,8 +140,7 @@ fileprivate let SwiftShell = PythonClass(
     },
     
     // Enable matplotlib integration for the kernel.
-    "enable_matplotlib": PythonInstanceMethod { 
-      args in
+    "enable_matplotlib": PythonInstanceMethod { args in
       let `self` = args[0]
       var gui = args[1]
       if gui == Python.None {
