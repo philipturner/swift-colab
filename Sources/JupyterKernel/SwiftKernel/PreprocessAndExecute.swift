@@ -14,6 +14,7 @@ func preprocessAndExecute(
       code: preprocessed, lineIndex: isCell ? 0 : nil, isCell: isCell)
   }
   KernelContext.log("1.4.3")
+  let shouldPoll = isCell && (code != "")
   
   while executionResult == nil {
     // Using Python's `time` module instead of Foundation.usleep releases the
@@ -21,7 +22,7 @@ func preprocessAndExecute(
     time.sleep(0.05)
     KernelContext.log("1.4.4")
 
-    if isCell {
+    if shouldPoll {
       KernelContext.log("1.4.4.1")
       let messages = KernelPipe.read(.jupyterKernel)
       if messages.count > 0 {
