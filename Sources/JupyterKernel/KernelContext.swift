@@ -179,9 +179,14 @@ struct KernelPipe {
 
     // From https://stackoverflow.com/a/42217485:
     func map_fd(_ source_pid: Int32, _ source_fd: Int32) -> Int32 {
-      var fd_path: [Int8] = Array(repeating: 0, count: 64)
-      snprintf(&fd_path, Int.bitWidth, "/proc/%d/fd/%d", source_pid, source_fd)
-      return open(fd_path, O_RDWR)
+      let fd_path = "/proc/\(source_pid)/fd/\(source_fd)"
+      // var fd_path: [Int8] = Array(repeating: 0, count: 64)
+      // snprintf(&fd_path, Int.bitWidth, "/proc/%d/fd/%d", source_pid, source_fd)
+      var new_fd = open(fd_path, O_RDWR)
+      if new_fd < 0 {
+        new_fd = -100_000 - errno
+      }
+      return new_fd
     }
     pipe1 = map_fd(_src_pid, _src_pipe1)
     pipe2 = map_fd(_src_pid, _src_pipe2)
@@ -226,10 +231,10 @@ struct KernelPipe {
     var header = Int64(data.count)
     precondition(
       Foundation.write(pipe, &header, 8) >= 0, 
-      "Could not write to file3. \(errno)")
+      "Could not write to file3 \(pipe). \(errno)")
     precondition(
       Foundation.write(pipe, buffer, data.count) >= 0, 
-      "Could not write to file4. \(errno)")
+      "Could not write to file4 \(pipe). \(errno)")
     
     // withLock {
       // let filePointer = fopen("/opt/swift/pipes/\(process.writePipe)", "ab")!
