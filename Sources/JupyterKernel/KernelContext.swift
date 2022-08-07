@@ -144,8 +144,7 @@ struct KernelPipe {
     }
     
     while true {
-      let bytesRead = fread(
-        scratchBuffer.baseAddress, 1, scratchBufferSize, filePointer)
+      let bytesRead = fread(scratchBuffer, 1, scratchBufferSize, filePointer)
       if bytesRead == 0 {
         break
       }
