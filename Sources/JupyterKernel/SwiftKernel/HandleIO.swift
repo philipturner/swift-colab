@@ -244,6 +244,7 @@ fileprivate func _read_next_input_message() -> PythonObject {
       withArguments: stdin_socket, zmq.NOBLOCK)
   } catch {
     // We treat invalid messages as empty replies.
+    Kernel.log("GOT INVALID MESSAGE")
   }
   if reply == Python.None {
     return _NOT_READY
@@ -251,22 +252,29 @@ fileprivate func _read_next_input_message() -> PythonObject {
   
   // We want to return '' even if reply is malformed.
   let content = reply.checking["content"] ?? PythonObject([:])
-  return content.checking["value"] ?? ""
+  if let value = content.checking["value"] {
+    return value
+  } else {
+    KernelContex.log("REPLY IS MALFORMED")
+    return ""
+  }
 }
 
 // Reads a stdin message.
 fileprivate func _read_stdin_message() -> PythonObject {
   while true {
     let value = _read_next_input_message()
-    if Bool(value == _NOT_READY)! {
+    if value == _NOT_READY {
       return Python.None
     }
     
     // Skip any colab responses.
     if Bool(Python.isinstance(value, Python.dict))!,
        value["type"] == "colab_reply" {
+      Kernel.log("GOT COLAB RESPONSE")
       continue
     }
+    KernelContext.log("RETURNED A VALUE")
     return value
   }
 }
@@ -532,7 +540,6 @@ fileprivate func _run_command(
     parent_pty, 
     select.EPOLLIN | select.EPOLLOUT | select.EPOLLHUP | select.EPOLLERR)
   
-  let stdin = parent_pty//child_pty
   defer {
     epoll.close()
     os.close(parent_pty)
@@ -547,7 +554,7 @@ fileprivate func _run_command(
       cwd: cwd,
       executable: "/bin/bash",
       stdout: child_pty,
-      stdin: stdin,
+      stdin: child_pty,
       stderr: child_pty,
       close_fds: false)
     os.close(child_pty)
