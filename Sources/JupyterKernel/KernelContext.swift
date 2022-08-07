@@ -139,7 +139,7 @@ struct KernelPipe {
     precondition(
       fcntl(pipe1!, F_SETFL, O_NONBLOCK) == 0, "Failed to set 'O_NONBLOCK'.")
     // Child reads from this.
-    precondition(close(pipe1!) == 0, "Could not close pipe 1.")
+    // precondition(close(pipe1!) == 0, "Could not close pipe 1.")
     
     precondition(pipe(&pipes) == 0, "Failed to create pipes.")
     pipe3 = pipes[0]
@@ -147,7 +147,7 @@ struct KernelPipe {
     precondition(
       fcntl(pipe3!, F_SETFL, O_NONBLOCK) == 0, "Failed to set 'O_NONBLOCK'.")
     // Child writes into this.
-    precondition(close(pipe4!) == 0, "Could not close pipe 4.")
+    // precondition(close(pipe4!) == 0, "Could not close pipe 4.")
     
     // Write pipes to file.
     let filePointer = fopen("/opt/swift/pipes", "wb")!
@@ -158,9 +158,19 @@ struct KernelPipe {
     let pid: Int32 = getpid()
     var buffer: [Int32] = [pipe1!, pipe2!, pipe3!, pipe4!, pid]
     fwrite(&buffer, 4, 5, filePointer)
-    KernelContext.log("sPipe IDs: \(buffer)")
-
-    // Use /opt/swift/socket to pass the Unix messages.
+    KernelContext.log("Pipe IDs: \(buffer)")
+    
+    func sendMessage(id: Int, pipe: Int32) {
+      KernelContext.log("Starting to send \(id)")
+      let socketPointer = fopen("/opt/swift/socket\(id)", "wb")!
+      defer { fclose(socketPointer) }
+      let fd = fileno(socketPointer)
+      write_fd(fd, nil, 0, pipe)
+    }
+    sendMessage(id: 1, pipe: pipe1)
+    sendMessage(id: 2, pipe: pipe2)
+    sendMessage(id: 3, pipe: pipe3)
+    sendMessage(id: 4, pipe: pipe4)
   }
   
   static func fetchPipes() {
