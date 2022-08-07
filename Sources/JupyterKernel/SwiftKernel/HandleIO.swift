@@ -1,5 +1,7 @@
 import Foundation
 fileprivate let codecs = Python.import("codecs")
+fileprivate let io = Python.import("io")
+fileprivate let locale = Python.import("locale")
 fileprivate let os = Python.import("os")
 fileprivate let pexpect = Python.import("pexpect")
 fileprivate let select = Python.import("select")
@@ -189,7 +191,7 @@ func runTerminalProcess(args: [String], cwd: String? = nil) throws -> Int {
     } else if Int(resIdx)! == 1 {
       break
     }
-    processInput(process)
+    // processInput(process)
   }
   sendStdout("\u{1b}[0m")
   
@@ -206,6 +208,8 @@ func runTerminalProcess(args: [String], cwd: String? = nil) throws -> Int {
     return 0
   }
 }
+
+// TODO: func runTerminalProcess2
 
 //===----------------------------------------------------------------------===//
 // ColabTools _message.py translation
@@ -277,6 +281,9 @@ fileprivate func read_reply_from_input(
     if reply["type"] == "colab_reply",
        reply["colab_msg_id"] == message_id {
       // TODO: Throw an error if `reply` contains 'error'.
+      if reply.checking["error"] != nil {
+        fatalError("Did not implement error handling for bad input.")
+      }
       return reply.get("data", Python.None)
     }
   }
@@ -335,24 +342,24 @@ fileprivate func send_request(
 
 // Context manager that displays a stdin UI widget and hides it upon exit.
 struct _display_stdin_widget {
-  static func __enter__(delay_millis: PythonObject = 0) -> PythonObject {
+  static func __enter__(
+    delay_millis: PythonObject = 0
+  ) -> (PythonObject) -> Void {
     let kernel = KernelContext.kernel
     _ = send_request(
       "cell_display_stdin", ["delayMillis": delay_millis],
       parent: kernel._parent_header, expect_reply: false)
     
-    let echo_updater = PythonFunction { args in
-      let new_echo_status = args[0]
+    let echo_updater: (Bool) -> Void = { new_echo_status in
       // Note: Updating the echo status uses colab_request / colab_reply on the
       // stdin socket. Input provided by the user also sends messages on this
       // socket. If user input is provided while the blocking_request call is 
       // still waiting for a colab_reply, the input will be dropped per
       // https://github.com/googlecolab/colabtools/blob/56e4dbec7c4fa09fad51b60feb5c786c69d688c6/google/colab/_message.py#L100.
       _ = send_request(
-        "cell_update_stdin", ["echo": new_echo_status], 
+        "cell_update_stdin", ["echo": new_echo_status].pythonObject, 
         parent: kernel._parent_header, expect_reply: false)
-      return Python.None
-    }.pythonObject
+    }
     return echo_updater
   }
   
@@ -388,7 +395,7 @@ func _poll_process(
   _ p: PythonObject,
   _ cmd: PythonObject,
   _ decoder: PythonObject,
-  _ state: PythonObject
+  _ state: inout _MonitorProcessState
 ) -> ShellResult? {
   let terminated: Bool = p.poll() != Python.None
   if terminated {
@@ -430,9 +437,7 @@ func _poll_process(
     }
   }
   
-  if terminated,
-     !Bool(state.is_pty_still_connected)!,
-     !output_available {
+  if terminated, !state.is_pty_still_connected, !output_available {
     sys.stdout.flush()
     let command_output = state.process_output.getvalue()
     return ShellResult(cmd, p.returncode, command_output)
@@ -444,3 +449,47 @@ func _poll_process(
   return nil
 }
 
+struct _MonitorProcessState {
+  var process_output: PythonObject = io.StringIO()
+  var is_pty_still_connected: Bool = true
+}
+
+// Monitors the given subprocess until it terminates.
+fileprivate func _monitor_process(
+  _ parent_pty: PythonObject,
+  _ epoll: PythonObject,
+  _ p: PythonObject,
+  _ cmd: PythonObject,
+  _ update_stdin_widget: (Bool) -> Void
+) -> ShellResult? {
+  var state = _MonitorProcessState()
+  let decoder = codecs.getincrementaldecoder("UTF-8")(errors: "replace") 
+  var echo_status: Bool?
+  while true {
+    let result = _poll_process(parent_pty, epoll, p, cmd, decoder, state)
+    if result != Python.None {
+      return result
+    }
+
+    let term_settings = termios.tcgetattr(parent_pty)
+    let new_echo_status = Bool(term_settings[3] & termios.ECHO)!
+    if echo_status != new_echo_status {
+      update_stdin_widget(new_echo_status)
+      echo_status = new_echo_status
+    }
+
+    if KernelContext.isInterrupted {
+      p.send_signal(signal.SIGINT)
+      time.sleep(0.5)
+      if p.poll() != Python.None {
+        p.send_signal(signal.SIGKILL)
+      }
+    }
+  }
+}
+
+fileprivate func _run_command(_ cmd: PythonObject) -> ShellResult? {
+  let locale_encoding = locale.getpreferredencoding()
+  // TODO: Finish
+  return nil
+}
