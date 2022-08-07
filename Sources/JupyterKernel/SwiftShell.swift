@@ -60,7 +60,7 @@ public func get_kernel() -> Int32 {
           // let 
           let string = "pipe - HELLO WORLD BLOCKING REQUEST"
           let stringData = string.data(using: .utf8)!
-          KernelPipe.append(stringData, .jupyterKernel)
+          KernelPipe.append(stringData, .lldb)
           
           usleep(500_000)
         }

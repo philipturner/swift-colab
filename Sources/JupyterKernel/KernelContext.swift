@@ -97,43 +97,89 @@ fileprivate struct LLDBProcessLibrary {
 
 struct KernelPipe {
   enum CurrentProcess {
-    case jupyterKernel
-    case lldb
+    case jupyterKernel // parent
+    case lldb // child
     
-    var readPipe: Int {
+    var readPipe: Int32 {
+      // Fetches pipes from file if not already fetched, and current process
+      // is LLDB. (do explicitly in caller, not here)
       switch self {
-        case .jupyterKernel: return 1
-        case .lldb: return 2
+        case .jupyterKernel: return pipe3!
+        case .lldb: return pipe1!
       }
     }
     
     var writePipe: Int {
+      // Fetches pipes from file if not already fetched, and current process
+      // is LLDB. (do explicitly in caller, not here)
       switch self {
-        case .jupyterKernel: return 2
-        case .lldb: return 1
+        case .jupyterKernel: return pipe2!
+        case .lldb: return pipe4!
       }
     }
   }
   
-  // TODO: The last cell may have been interrupted while holding a lock to
-  // `/opt/swift/pipes/lock`. This creates an eternal deadlock. Also, the
-  // process could be interrupted without closing a file handle. Switch to pipes
-  // after validating that the existing mechanism works.
-  static func reset() {
-    fclose(fopen("/opt/swift/pipes/1", "wb")!)
-    fclose(fopen("/opt/swift/pipes/2", "wb")!)
-    fclose(fopen("/opt/swift/pipes/lock", "wb")!)
+  // File descriptor IDs for each pipe.
+  
+  // parent -> child (read)
+  static var pipe1: Int32? 
+  // parent -> child (write)
+  static var pipe2: Int32? 
+  // child -> parent (read)
+  static var pipe3: Int32? 
+  // child -> parent (write)
+  static var pipe4: Int32?
+  
+  static func createPipes() {
+    // Generate pipes.
+    var pipes = [Int32](repeating: 0, count: 2)
+    pipe(&pipes)
+    pipe1 = pipes[0]
+    pipe2 = pipes[1]
+    
+    pipe(&pipes)
+    pipe3 = pipes[0]
+    pipe4 = pipes[1]
+    
+    // Write pipes to file.
+    let filePointer = fopen("/opt/swift/pipes", "wb")
+    defer {
+      fclose(filePointer)
+    }
+
+    var buffer: [Int32] = [pipe1!, pipe2!, pipe3!, pipe4!]
+    fwrite(&buffer, 4, 4, filePointer)
+  }
+
+  static func fetchPipes() {
+    // Read pipes from file.
+    let filePointer = fopen("/opt/swift/pipes", "rb")
+    defer {
+      fclose(filePointer)
+    }
+    var buffer = [Int32](repeating: 0, count: 4)
+    fread(&buffer, 4, 4, filePointer)
+    
+    // Set pipes.
+    pipe1 = buffer[0]
+    pipe2 = buffer[1]
+    pipe3 = buffer[2]
+    pipe4 = buffer[3]
   }
   
-  static func withLock<Result>(_ body: () throws -> Result) rethrows -> Result {
-    let lockPointer = fopen("/opt/swift/pipes/lock", "rb")!
-    let fd = fileno(lockPointer)
-    flock(fd, LOCK_EX)
-    let output = try body()
-    flock(fd, LOCK_UN)
-    fclose(lockPointer)
-    return output
+  static func flushPipes() {
+    // TODO: Implement and find a good call site.
   }
+  
+  // static func withLock<Result>(_ body: () throws -> Result) rethrows -> Result {
+  //   let lockPointer = fopen("/opt/swift/pipes/lock", "rb")!
+  //   let fd = fileno(lockPointer)
+  //   flock(fd, LOCK_EX)
+  //   let output = try body()
+  //   flock(fd, LOCK_UN)
+  //   fclose(lockPointer)
+  //   return output
+  // }
   
   static func append(_ data: Data, _ process: CurrentProcess) {
     guard data.count > 0 else {
@@ -146,16 +192,21 @@ struct KernelPipe {
     }
     data.copyBytes(to: buffer, count: data.count)
     
-    withLock {
-      let filePointer = fopen("/opt/swift/pipes/\(process.writePipe)", "ab")!
-      defer { 
-        fclose(filePointer) 
-      }
+    let pipe = process.writePipe
+    var header = Int64(data.count)
+    write(pipe, &header, 8)
+    write(buffer, data.count)
+    
+    // withLock {
+      // let filePointer = fopen("/opt/swift/pipes/\(process.writePipe)", "ab")!
+      // defer { 
+      //   fclose(filePointer) 
+      // }
       
-      var header = Int64(data.count)
-      fwrite(&header, 8, 1, filePointer)
-      fwrite(buffer, 1, data.count, filePointer)
-    }
+      // var header = Int64(data.count)
+      // fwrite(&header, 8, 1, filePointer)
+      // fwrite(buffer, 1, data.count, filePointer)
+    // }
   }
   
   static let scratchBufferSize = 1024
@@ -169,25 +220,35 @@ struct KernelPipe {
       scratchBuffer.deallocate()
     }
     var output = Data()
-    
-    return withLock {
-      var filePointer = fopen("/opt/swift/pipes/\(process.readPipe)", "rb")!
-      while true {
-        let bytesRead = fread(scratchBuffer, 1, scratchBufferSize, filePointer)
-        if bytesRead == 0 {
-          break
-        }
-        output.append(UnsafePointer(scratchBuffer), count: bytesRead)
+
+    let pipe = process.readPipe
+    while true {
+      let bytesRead = read(pipe, scratchBuffer, scratchBufferSize)
+      if bytesRead == 0 {
+        break
       }
-      fclose(filePointer) 
-      
-      if output.count > 0 {
-        // Erase the file's contents.
-        filePointer = fopen("/opt/swift/pipes/\(process.readPipe)", "wb")!
-        fclose(filePointer)
-      }
-      return output
+      output.append(UnsafePointer(scratchBuffer), count: bytesRead)
     }
+    return output
+    
+    // return withLock {
+    //   var filePointer = fopen("/opt/swift/pipes/\(process.readPipe)", "rb")!
+    //   while true {
+    //     let bytesRead = fread(scratchBuffer, 1, scratchBufferSize, filePointer)
+    //     if bytesRead == 0 {
+    //       break
+    //     }
+    //     output.append(UnsafePointer(scratchBuffer), count: bytesRead)
+    //   }
+    //   fclose(filePointer) 
+      
+    //   if output.count > 0 {
+    //     // Erase the file's contents.
+    //     filePointer = fopen("/opt/swift/pipes/\(process.readPipe)", "wb")!
+    //     fclose(filePointer)
+    //   }
+    //   return output
+    // }
   }
   
   static func read(_ process: CurrentProcess) -> [Data] {
