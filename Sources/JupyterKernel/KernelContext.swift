@@ -163,19 +163,19 @@ struct KernelPipe {
     func sendMessage(id: Int, pipe: Int32) {
       KernelContext.log("Starting to send \(id)")
       let path = "/opt/swift/socket\(id)"
-      let socketFile = fopen(path, "wb")!
-      fclose(socketPointer)
+      fclose(fopen(path, "wb")!)
       
       var namesock = sockaddr_un()
-      namesock.sun_family = AF_UNIX
-      strncpy(namesock.sun_path, path, path.count)
-      namesock.sun_path[path.count] = 0 // null terminator
+      namesock.sun_family = sa_family_t(AF_UNIX)
+      // +1 for null terminator
+      strncpy(&namesock.sun_path, path, path.count + 1)
       
       let fd = precondition(
-        socket(AF_UNIX, SOCK_DGRAM, 0) != -1, "socket failed: \(errno)")
+        socket(AF_UNIX, Int32(SOCK_DGRAM), 0) != -1, "socket failed: \(errno)")
       func withPointer(_ ptr: UnsafeRawPointer) {
+        let stride = MemoryLayout<sockaddr_un>.stride
         precondition(
-          bind(fd, .init(ptr), MemoryLayout<sockaddr_un>.stride) != -1,
+          bind(fd, .init(OpaquePointer(ptr)), socklen_t(stride)) != -1,
           "bind failed: \(errno)")
       }
       withPointer(&namesock)
