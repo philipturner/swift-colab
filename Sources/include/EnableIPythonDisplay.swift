@@ -114,3 +114,13 @@ extension Plot {
 
 IPythonDisplay.enable()
 #endif
+
+do {
+  print("Before fetching kernel")
+  let /*Glibc.*/RTLD_LAZY = Int32(1)
+  let libAddress = dlopen("/opt/swift/lib/libJupyterKernel.so", RTLD_LAZY)
+  let funcAddress = dlsym(libAddress, "get_kernel")
+  let get_kernel = unsafeBitCast(
+    funcAddress, to: (@convention(c) () -> Int32).self)
+  print("Get kernel return code: \(get_kernel())")
+}

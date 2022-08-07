@@ -33,6 +33,16 @@ public func prevent_numpy_import_hang() {
   _ = platform.system()
 }
 
+@_cdecl("get_kernel")
+public func get_kernel() -> Int32 {
+  let kernel = KernelContext.kernel
+  if kernel == Python.None {
+    return -1
+  } else {
+    return 0
+  }
+}
+
 // Caller side: use `ctypes` to convert return value, which is the address of a
 // Python object, into an actual Python object. This Swift file stores a
 // reference to the return value's object so that it doesn't deallocate.
