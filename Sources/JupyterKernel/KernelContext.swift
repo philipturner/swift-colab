@@ -103,7 +103,7 @@ struct KernelPipe {
     fclose(lockPointer)
   }
   
-  static func withLock<Result>(_ body: () throws -> Result) rethrows {
+  static func withLock<Result>(_ body: () throws -> Result) rethrows -> Result {
     let lockPointer = fopen("/opt/swift/lock", "rb")!
     let fd = fileno(lockPointer)
     flock(fd, LOCK_EX)
