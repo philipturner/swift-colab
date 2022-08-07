@@ -17,7 +17,7 @@ func preprocessAndExecute(
     // GIL.
     time.sleep(0.05)
 
-    let messages = KernelPipe.read()
+    let messages = KernelPipe.read(.jupyterKernel)
     if messages.count > 0 {
       for message in messages {
         let string = String(data: message, encoding: .utf8)!

@@ -57,11 +57,11 @@ public func get_kernel() -> Int32 {
       }
       _message.blocking_request = PythonFunction { args, kwargs in
         while true {
+          // let 
           let string = "pipe - HELLO WORLD BLOCKING REQUEST"
           let stringData = string.data(using: .utf8)!
-          KernelPipe.append(stringData)
+          KernelPipe.append(stringData, .jupyterKernel)
           
-          print("stdout - HELLO WORLD BLOCKING REQUEST")
           usleep(500_000)
         }
       }.pythonObject

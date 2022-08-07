@@ -96,15 +96,37 @@ fileprivate struct LLDBProcessLibrary {
 }
 
 struct KernelPipe {
+  enum CurrentProcess {
+    case jupyterKernel
+    case lldb
+    
+    var readPipe: Int {
+      switch self {
+        case .jupyterKernel: return 1
+        case .lldb: return 2
+      }
+    }
+    
+    var writePipe: Int {
+      switch self {
+        case .jupyterKernel: return 2
+        case .lldb: return 1
+      }
+    }
+  }
+  
+  // TODO: The last cell may have been interrupted while holding a lock to
+  // `/opt/swift/pipes/lock`. This creates an eternal deadlock. Also, the
+  // process could be interrupted without closing a file handle. Switch to pipes
+  // after validating that the existing mechanism works.
   static func reset() {
-    let filePointer = fopen("/opt/swift/pipe", "wb")!
-    fclose(filePointer)
-    let lockPointer = fopen("/opt/swift/lock", "wb")!
-    fclose(lockPointer)
+    fclose(fopen("/opt/swift/pipes/1", "wb")!)
+    fclose(fopen("/opt/swift/pipes/2", "wb")!)
+    fclose(fopen("/opt/swift/pipes/lock", "wb")!)
   }
   
   static func withLock<Result>(_ body: () throws -> Result) rethrows -> Result {
-    let lockPointer = fopen("/opt/swift/lock", "rb")!
+    let lockPointer = fopen("/opt/swift/pipes/lock", "rb")!
     let fd = fileno(lockPointer)
     flock(fd, LOCK_EX)
     let output = try body()
@@ -113,7 +135,7 @@ struct KernelPipe {
     return output
   }
   
-  static func append(_ data: Data) {
+  static func append(_ data: Data, _ process: CurrentProcess) {
     guard data.count > 0 else {
       // Buffer pointer might initialize with null base address and zero count.
       return
@@ -125,7 +147,7 @@ struct KernelPipe {
     data.copyBytes(to: buffer, count: data.count)
     
     withLock {
-      let filePointer = fopen("/opt/swift/pipe", "ab")!
+      let filePointer = fopen("/opt/swift/pipes/\(process.writePipe)", "ab")!
       defer { 
         fclose(filePointer) 
       }
@@ -140,7 +162,7 @@ struct KernelPipe {
   
   // Still need to perform a postprocessing pass, which parses headers to
   // separate each message into its own `Data`.
-  static func read_raw() -> Data {
+  static func read_raw(_ process: CurrentProcess) -> Data {
     let scratchBuffer: UnsafeMutablePointer<UInt8> = 
       .allocate(capacity: scratchBufferSize)
     defer {
@@ -149,7 +171,7 @@ struct KernelPipe {
     var output = Data()
     
     return withLock {
-      var filePointer = fopen("/opt/swift/pipe", "rb")!
+      var filePointer = fopen("/opt/swift/pipes/\(process.readPipe)", "rb")!
       while true {
         let bytesRead = fread(scratchBuffer, 1, scratchBufferSize, filePointer)
         if bytesRead == 0 {
@@ -159,15 +181,17 @@ struct KernelPipe {
       }
       fclose(filePointer) 
       
-      // Erase the file's contents.
-      filePointer = fopen("/opt/swift/pipe", "wb")!
-      fclose(filePointer)
+      if data.count > 0 {
+        // Erase the file's contents.
+        filePointer = fopen("/opt/swift/pipes/\(process.readPipe)", "wb")!
+        fclose(filePointer)
+      }
       return output
     }
   }
   
-  static func read() -> [Data] {
-    let raw_data = read_raw()
+  static func read(_ process: CurrentProcess) -> [Data] {
+    let raw_data = read_raw(process)
     guard raw_data.count > 0 else {
       return []
     }
