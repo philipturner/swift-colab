@@ -17,12 +17,14 @@ func preprocessAndExecute(
     // GIL.
     time.sleep(0.05)
 
-    let messages = KernelPipe.read(.jupyterKernel)
-    if messages.count > 0 {
-      for message in messages {
-        let string = String(data: message, encoding: .utf8)!
-        let cellID = KernelContext.cellID
-        KernelContext.log("Message at <Cell \(cellID)>: START~~~\(string)~~~END")
+    if isCell {
+      let messages = KernelPipe.read(.jupyterKernel)
+      if messages.count > 0 {
+        for message in messages {
+          let string = String(data: message, encoding: .utf8)!
+          let cellID = KernelContext.cellID
+          KernelContext.log("Message at <Cell \(cellID)>: START~~~\(string)~~~END")
+        }
       }
     }
   }
