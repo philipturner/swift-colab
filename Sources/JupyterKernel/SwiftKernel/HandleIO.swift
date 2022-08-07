@@ -211,6 +211,7 @@ func runTerminalProcess(args: [String], cwd: String? = nil) throws -> Int {
 func processInput(_ process: PythonObject) {
   let input_line = _read_stdin_message()
   if input_line != Python.None {
+    KernelContext.log("input: \(input_line)")
     process.send(input_line)
   }
 }
