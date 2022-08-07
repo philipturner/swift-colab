@@ -422,7 +422,7 @@ func _poll_process(
     }
   }
   
-  for event in input_events {
+  for _ in input_events {
     let input_line = _read_stdin_message()
     if input_line != Python.None {
       let input_bytes = Python.bytes(input_line.encode("UTF-8"))
@@ -441,5 +441,6 @@ func _poll_process(
   if !output_available {
     time.sleep(0.1)
   }
+  return nil
 }
 
