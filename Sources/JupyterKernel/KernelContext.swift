@@ -349,7 +349,7 @@ func CMSG_FIRSTHDR(
   _ mhdr: UnsafeMutablePointer<msghdr>
 ) -> UnsafeMutablePointer<cmsghdr> {
   let msg_control = mhdr.pointee.msg_control
-  return msg_control.assumingMemoryBound(to: cmsghdr.self)
+  return msg_control!.assumingMemoryBound(to: cmsghdr.self)
 }
 
 func CMSG_SPACE(_ l: Int) -> Int {
@@ -374,7 +374,7 @@ func write_fd(
     withUnsafeTemporaryAllocation(
       of: Int8.self, capacity: control_size
     ) { control in
-      msg.msg_control = control.baseAddress!
+      msg.msg_control = UnsafeMutableRawPointer(control.baseAddress!)
       msg.msg_controllen = Int.bitWidth
       
       let cmptr: UnsafeMutablePointer<cmsghdr> = CMSG_FIRSTHDR(&msg)
