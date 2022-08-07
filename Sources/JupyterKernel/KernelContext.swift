@@ -133,18 +133,20 @@ struct KernelPipe {
   static func createPipes() {
     // Generate pipes.
     var pipes = [Int32](repeating: 0, count: 2)
-    pipe(&pipes)
+    precondition(pipe(&pipes) == 0, "Failed to create pipes.")
     pipe1 = pipes[0]
     pipe2 = pipes[1]
-    fcntl(pipe1!, F_SETFL, O_NONBLOCK)
+    precondition(
+      fcntl(pipe1!, F_SETFL, O_NONBLOCK) == 0, "Failed to set 'O_NONBLOCK'.")
     
-    pipe(&pipes)
+    precondition(pipe(&pipes) == 0, "Failed to create pipes.")
     pipe3 = pipes[0]
     pipe4 = pipes[1]
-    fcntl(pipe3!, F_SETFL, O_NONBLOCK)
+    precondition(
+      fcntl(pipe3!, F_SETFL, O_NONBLOCK) == 0, "Failed to set 'O_NONBLOCK'.")
     
     // Write pipes to file.
-    let filePointer = fopen("/opt/swift/pipes", "wb")
+    let filePointer = fopen("/opt/swift/pipes", "wb")!
     defer {
       fclose(filePointer)
     }
@@ -156,7 +158,7 @@ struct KernelPipe {
   
   static func fetchPipes() {
     // Read pipes from file.
-    let filePointer = fopen("/opt/swift/pipes", "rb")
+    let filePointer = fopen("/opt/swift/pipes", "rb")!
     defer {
       fclose(filePointer)
     }
@@ -199,8 +201,10 @@ struct KernelPipe {
     let pipe = process.writePipe
     precondition(pipe == pipe4!)
     var header = Int64(data.count)
-    Foundation.write(pipe, &header, 8)
-    Foundation.write(pipe, buffer, data.count)
+    prrecondition(
+      Foundation.write(pipe, &header, 8) == 0, "Could not write to file.")
+    precondition(
+      Foundation.write(pipe, buffer, data.count), "Could not write to file.")
     
     // withLock {
       // let filePointer = fopen("/opt/swift/pipes/\(process.writePipe)", "ab")!
@@ -230,7 +234,7 @@ struct KernelPipe {
     precondition(pipe == pipe3!)
     while true {
       let bytesRead = Foundation.read(pipe, scratchBuffer, scratchBufferSize)
-      print("BYTES READ \(bytesRead)")
+      print("BYTES READ: \(bytesRead)")
       if bytesRead <= 0 {
         break
       }
