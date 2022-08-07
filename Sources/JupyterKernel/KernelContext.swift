@@ -227,12 +227,16 @@ struct KernelPipe {
 
     let pipe = process.readPipe
     while true {
+      KernelContext.log("BEFORE CALL")
       let bytesRead = Foundation.read(pipe, scratchBuffer, scratchBufferSize)
+      KernelContext.log("AFTER CALL")
       if bytesRead <= 0 {
         if bytesRead < 0 {
           KernelContext.log("ERROR \(bytesRead)")
         }
         break
+      } else {
+        KernelContext.log("NO ERROR")
       }
       output.append(UnsafePointer(scratchBuffer), count: bytesRead)
     }
