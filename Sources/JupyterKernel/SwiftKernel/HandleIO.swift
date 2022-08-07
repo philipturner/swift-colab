@@ -403,7 +403,7 @@ func _poll_process(
   var input_events: [PythonObject] = []
   for tuple in events {
     let (_, event) = tuple.tuple2
-    if event & select.EPOLLIN {
+    if Bool(event & select.EPOLLIN)! {
       output_available = true
       let raw_contents = os.read(parent_pty, 1 << 20)
       let decoded_contents = decoder.decode(raw_contents)
@@ -412,12 +412,12 @@ func _poll_process(
       state.process_output.write(decoded_contents)
     }
 
-    if event & select.EPOLLOUT {
+    if Bool(event & select.EPOLLOUT)! {
       input_events.append(event)
     }
 
-    if Bool(event & select.EPOLLHUP) ||
-       Bool(event & select.EPOLLERR) {
+    if Bool(event & select.EPOLLHUP)! ||
+       Bool(event & select.EPOLLERR)! {
       state.is_pty_still_connected = false
     }
   }
