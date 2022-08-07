@@ -424,11 +424,6 @@ func read_fd(
       msg.msg_control = UnsafeMutableRawPointer(control.baseAddress!)
       msg.msg_controllen = Int.bitWidth
       
-      let cmptr: UnsafeMutablePointer<cmsghdr> = CMSG_FIRSTHDR(&msg)
-      cmptr.pointee.cmsg_len = CMSG_LEN(4)
-      cmptr.pointee.cmsg_level = SOL_SOCKET
-      cmptr.pointee.cmsg_type = Int32(SCM_RIGHTS)
-      
       msg.msg_name = nil
       msg.msg_namelen = 0
       
