@@ -465,7 +465,7 @@ fileprivate func _monitor_process(
   var echo_status: Bool?
   while true {
     let result = _poll_process(parent_pty, epoll, p, cmd, decoder, &state)
-    if result != Python.None {
+    if result != nil {
       return result
     }
 
@@ -475,13 +475,14 @@ fileprivate func _monitor_process(
       update_stdin_widget(new_echo_status)
       echo_status = new_echo_status
     }
-
+    
     if KernelContext.isInterrupted {
       p.send_signal(signal.SIGINT)
       time.sleep(0.5)
       if p.poll() != Python.None {
         p.send_signal(signal.SIGKILL)
       }
+      return nil
     }
   }
 }
