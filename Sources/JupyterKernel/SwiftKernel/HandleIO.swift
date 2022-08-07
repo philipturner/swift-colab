@@ -513,9 +513,7 @@ fileprivate func _run_command(
     throw Exception("A UTF-8 locale is required. Got \(locale_encoding)")
   }
 
-  //let (parent_pty, child_pty) = pty.openpty().tuple2
-  let parent_pty = sys.stdout
-  let 
+  let (parent_pty, child_pty) = pty.openpty().tuple2
   _configure_term_settings(child_pty)
   
   let epoll = select.epoll()
