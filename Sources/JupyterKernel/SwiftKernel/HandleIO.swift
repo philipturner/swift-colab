@@ -398,7 +398,7 @@ func _poll_process(
   }
   
   var output_available = false
-
+  
   let events: [PythonObject] = Array(epoll.poll())
   var input_events: [PythonObject] = []
   for tuple in events {
@@ -411,17 +411,17 @@ func _poll_process(
       sys.stdout.write(decoded_contents)
       state.process_output.write(decoded_contents)
     }
-
+    
     if Bool(event & select.EPOLLOUT)! {
       input_events.append(event)
     }
-
+    
     if Bool(event & select.EPOLLHUP)! ||
        Bool(event & select.EPOLLERR)! {
       state.is_pty_still_connected = false
     }
   }
-
+  
   for event in input_events {
     let input_line = _read_stdin_message()
     if input_line != Python.None {
@@ -429,13 +429,13 @@ func _poll_process(
       os.write(parent_pty, input_bytes)
     }
   }
-
+  
   if terminated,
      !Bool(state.is_pty_still_connected)!,
      !output_available {
     sys.stdout.flush()
     let command_output = state.process_output.getvalue()
-    return ShellResult
+    return ShellResult(cmd, p.returncode, command_output)
   }
   
   if !output_available {
