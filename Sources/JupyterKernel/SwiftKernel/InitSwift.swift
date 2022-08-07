@@ -31,8 +31,11 @@ func initSwift() throws {
   KernelPipe.createPipes()
   KernelContext.log("hello world 2")
   try initReplProcess()
+  KernelContext.log("hello world 3")
   try initKernelCommunicator()
+  KernelContext.log("hello world 4")
   try initConcurrency()
+  KernelContext.log("hello world 5")
   
   sigintHandler = SIGINTHandler()
   sigintHandler.start()
