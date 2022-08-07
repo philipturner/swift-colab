@@ -173,7 +173,7 @@ struct KernelPipe {
       buffer.deallocate()
     }
     raw_data.copyBytes(
-      to: UnsafeMutablePointer<UInt8>(buffer), count: raw_data.count)
+      to: buffer.assumingMemoryBound(to: UInt8.self), count: raw_data.count)
 
     var stream = buffer
     var streamProgress = 0
