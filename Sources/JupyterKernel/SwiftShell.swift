@@ -58,7 +58,7 @@ public func get_kernel() -> Int32 {
       _message.blocking_request = PythonFunction { args, kwargs in
         while true {
           let string = "pipe - HELLO WORLD BLOCKING REQUEST"
-          let stringData = string.data(using: .utf8)
+          let stringData = string.data(using: .utf8)!
           KernelPipe.append(stringData)
           
           print("stdout - HELLO WORLD BLOCKING REQUEST")
