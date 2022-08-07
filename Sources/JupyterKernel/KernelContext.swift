@@ -158,7 +158,7 @@ struct KernelPipe {
     let pid: Int32 = getpid()
     var buffer: [Int32] = [pipe1!, pipe2!, pipe3!, pipe4!, pid]
     fwrite(&buffer, 4, 5, filePointer)
-    KernelContext.log("Pipe IDs: \(buffer)")
+    KernelContext.log("sPipe IDs: \(buffer)")
   }
   
   static func fetchPipes() {
