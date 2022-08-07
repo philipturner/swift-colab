@@ -348,7 +348,7 @@ func CMSG_ALIGN(_ n: Int) -> Int {
 func CMSG_FIRSTHDR(
   _ mhdr: UnsafeMutablePointer<msghdr>
 ) -> UnsafeMutablePointer<cmsghdr> {
-  let msg_control = mhdr.msg_control
+  let msg_control = mhdr.pointee.msg_control
   return msg_control.assumingMemoryBound(to: cmsghdr.self)
 }
 
@@ -374,13 +374,13 @@ func write_fd(
     withUnsafeTemporaryAllocation(
       of: Int8.self, capacity: control_size
     ) { control in
-      msg.msg_control = control
+      msg.msg_control = control.baseAddress!
       msg.msg_controllen = Int.bitWidth
       
       let cmptr: UnsafeMutablePointer<cmsghdr> = CMSG_FIRSTHDR(&msg)
       cmptr.pointee.cmsg_len = CMSG_LEN(4)
       cmptr.pointee.cmsg_level = SOL_SOCKET
-      cmptr.pointee.cmsg_type = SCM_RIGHTS
+      cmptr.pointee.cmsg_type = Int32(SCM_RIGHTS)
       
       let cmsg_data1 = CMSG_DATA(cmptr)
       let cmsg_data2 = OpaquePointer(cmsg_data1)
@@ -392,7 +392,7 @@ func write_fd(
       
       iov[0].iov_base = ptr
       iov[0].iov_len = nbytes
-      msg.msg_iov = iov
+      msg.msg_iov = iov.baseAddress!
       msg.msg_iovlen = 1
 
       output = sendmsg(fd, &msg, 0)
