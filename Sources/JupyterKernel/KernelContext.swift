@@ -334,20 +334,33 @@ struct KernelPipe {
 // Found the C macros at:
 // https://opensource.apple.com/source/xnu/xnu-201/bsd/sys/socket.h.auto.html
 
+func CMSG_DATA(
+  _ cmsg: UnsafeMutablePointer<cmsghdr>
+) -> UnsafeMutablePointer<UInt8> {
+  let raw_ptr = OpaquePointer(cmsg.advanced(by: 1))
+  return UnsafeMutablePointer(raw_ptr)
+}
+
 func CMSG_ALIGN(_ n: Int) -> Int {
   (n + 3) & ~3
+}
+
+func CMSG_FIRSTHDR(
+  _ mhdr: UnsafeMutablePointer<msghdr>
+) -> UnsafeMutablePointer<cmsghdr> {
+  let msg_control = mhdr.msg_control
+  return msg_control.assumingMemoryBound(to: cmsghdr.self)
 }
 
 func CMSG_SPACE(_ l: Int) -> Int {
   CMSG_ALIGN(MemoryLayout<cmsghdr>.stride + CMSG_ALIGN(l))
 }
 
-func CMSG_FIRSTHDR(
-  _ mhdr: UnsafeMutablePointer<msghdr>
-) -> UnsafeMutablePointer<cmsghdr> {
-  fatalError()
+func CMSG_LEN(_ l: Int) -> Int {
+  CMSG_ALIGN(MemoryLayout<cmsghdr>.stride + l)
 }
 
+// Code to pass the file descriptor.
 func write_fd(
   _ fd: Int32,
   _ ptr: UnsafeMutableRawPointer?,
@@ -355,8 +368,37 @@ func write_fd(
   _ sendfd: Int32
 ) -> Int {
   var msg = msghdr()
-  withUnsafeTemporaryAllocation(of: iovec, capacity: 1) { iov in
-    
+  var output: Int = 0
+  withUnsafeTemporaryAllocation(of: iovec.self, capacity: 1) { iov in
+    let control_size = CMSG_SPACE(4)
+    withUnsafeTemporaryAllocation(
+      of: Int8.self, capacity: control_size
+    ) { control in
+      msg.msg_control = control
+      msg.msg_controllen = Int.bitWidth
+      
+      let cmptr: UnsafeMutablePointer<cmsghdr> = CMSG_FIRSTHDR(&msg)
+      cmptr.pointee.cmsg_len = CMSG_LEN(4)
+      cmptr.pointee.cmsg_level = SOL_SOCKET
+      cmptr.pointee.cmsg_type = SCM_RIGHTS
+      
+      let cmsg_data1 = CMSG_DATA(cmptr)
+      let cmsg_data2 = OpaquePointer(cmsg_data1)
+      let cmsg_data3 = UnsafeMutablePointer<Int32>(cmsg_data2)
+      cmsg_data3.pointee = sendfd
+      
+      msg.msg_name = nil
+      msg.msg_namelen = 0
+      
+      iov[0].iov_base = ptr
+      iov[0].iov_len = nbytes
+      msg.msg_iov = iov
+      msg.msg_iovlen = 1
+
+      output = sendmsg(fd, &msg, 0)
+    }
   }
+  return output
 }
 
+// Code to receive the file descriptor.
