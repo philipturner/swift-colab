@@ -223,14 +223,20 @@ struct KernelPipe {
     }
     var output = Data()
 
+    KernelContext.log("7.9")
+
     let pipe = process.readPipe
     while true {
       let bytesRead = Foundation.read(pipe, scratchBuffer, scratchBufferSize)
-      if bytesRead == 0 {
+      if bytesRead <= 0 {
+        if bytesRead < 0 {
+          KernelContext.log("ERROR \(bytesRead)")
+        }
         break
       }
       output.append(UnsafePointer(scratchBuffer), count: bytesRead)
     }
+    KernelContext.log("7.10")
     return output
     
     // return withLock {
