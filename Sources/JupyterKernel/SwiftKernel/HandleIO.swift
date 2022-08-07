@@ -362,6 +362,7 @@ struct _display_stdin_widget {
       // socket. If user input is provided while the blocking_request call is 
       // still waiting for a colab_reply, the input will be dropped per
       // https://github.com/googlecolab/colabtools/blob/56e4dbec7c4fa09fad51b60feb5c786c69d688c6/google/colab/_message.py#L100.
+      KernelContext.log("changed echo status to \(new_echo_status)")
       _ = send_request(
         "cell_update_stdin", ["echo": new_echo_status].pythonObject, 
         parent: kernel._parent_header, expect_reply: false)
