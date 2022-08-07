@@ -504,7 +504,7 @@ fileprivate func _configure_term_settings(_ pty_fd: PythonObject) {
 
 fileprivate func _run_command(
   _ cmd: PythonObject, 
-  cwd: PythonObject = Python.None
+  _ cwd: PythonObject = Python.None
 ) throws -> ShellResult? {
   let locale_encoding = locale.getpreferredencoding()
   if locale_encoding != "UTF-8" {
