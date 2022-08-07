@@ -473,7 +473,7 @@ fileprivate func _monitor_process(
   var echo_status: Bool?
   while true {
     let result = _poll_process(parent_pty, epoll, p, cmd, decoder, &state)
-    if result != nil {
+    if let result = result {
       return result
     }
     
