@@ -115,6 +115,7 @@ Adds a line of Bash code to execute before building the package.
 - Appends the arguments to a growing list of flags every time you execute
 - The `$clear` flag, was added to allow emptying SwiftPM flags. If you have `$clear` before other flags, it resets then adds the flags to the right of it.
 - Explain workaround for `-Xcc -I/...` flags, but for now just hyperlink: [problem 4 in this comment](https://github.com/philipturner/swift-colab/issues/14#issuecomment-1158237894).
+- `$clear` also resets anything added by `%install-swiftpm-environment` or `%install-swiftpm-import`.
 
 ## `%install-swiftpm-import`
 ```
