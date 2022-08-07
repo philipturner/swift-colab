@@ -5,27 +5,34 @@ fileprivate let json = Python.import("json")
 fileprivate let jsonutil = Python.import("jupyter_client").jsonutil
 
 func doExecute(code: String, allowStdin: Bool) throws -> PythonObject? {
+  KernelContext.log("1.1")
   KernelContext.isInterrupted = false
   KernelContext.pollingStdout = true
   KernelContext.cellID = Int(KernelContext.kernel.execution_count)!
   forwardInput(allowStdin: allowStdin)
+  KernelContext.log("1.1")
   
   // Flush stderr
   _ = getStderr(readData: false)
   
   let handler = StdoutHandler()
   handler.start()
+  KernelContext.log("1.3")
   
   // Execute the cell, handle unexpected exceptions, and make sure to always 
   // clean up the stdout handler.
   var result: ExecutionResult
   do {
     defer {
+      KernelContext.log("1.6")
       restoreInput()
       KernelContext.pollingStdout = false
       handler.join()
+      KernelContext.log("1.7")
     }
+    KernelContext.log("1.4")
     result = try executeCell(code: code)
+    KernelContext.log("1.5")
   } catch _ as InterruptException {
     return nil
   } catch let error as PreprocessorError {
@@ -45,6 +52,10 @@ func doExecute(code: String, allowStdin: Bool) throws -> PythonObject? {
       "\(error.localizedDescription)"
     ])
     throw error
+  }
+  KernelContext.log("1.8")
+  defer {
+    KernelContext.log("1.9")
   }
   
   // Send values/errors and status to the client.
