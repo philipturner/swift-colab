@@ -244,7 +244,7 @@ fileprivate func _read_next_input_message() -> PythonObject {
       withArguments: stdin_socket, zmq.NOBLOCK)
   } catch {
     // We treat invalid messages as empty replies.
-    Kernel.log("GOT INVALID MESSAGE")
+    KernelContext.log("GOT INVALID MESSAGE")
   }
   if reply == Python.None {
     return _NOT_READY
@@ -255,7 +255,7 @@ fileprivate func _read_next_input_message() -> PythonObject {
   if let value = content.checking["value"] {
     return value
   } else {
-    KernelContex.log("REPLY IS MALFORMED")
+    KernelContext.log("REPLY IS MALFORMED")
     return ""
   }
 }
@@ -271,7 +271,7 @@ fileprivate func _read_stdin_message() -> PythonObject {
     // Skip any colab responses.
     if Bool(Python.isinstance(value, Python.dict))!,
        value["type"] == "colab_reply" {
-      Kernel.log("GOT COLAB RESPONSE")
+      KernelContext.log("GOT COLAB RESPONSE")
       continue
     }
     KernelContext.log("RETURNED A VALUE")
