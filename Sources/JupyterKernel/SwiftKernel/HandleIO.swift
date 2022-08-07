@@ -420,7 +420,7 @@ func _poll_process(
       output_available = true
       let raw_contents = os.read(parent_pty, 1 << 20)
       let decoded_contents = decoder.decode(raw_contents)
-
+      
       sys.stdout.write(decoded_contents)
       sendStdout(decoded_contents)
       state.process_output.write(decoded_contents)
