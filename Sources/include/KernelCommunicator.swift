@@ -112,9 +112,16 @@ import func Glibc.dlsym
 do {
   let /*Glibc.*/RTLD_LAZY = Int32(1)
   let libAddress = dlopen("/opt/swift/lib/libJupyterKernel.so", RTLD_LAZY)
-  let funcAddress = dlsym(libAddress, "prevent_numpy_import_hang")
-  let prevent_numpy_import_hang = unsafeBitCast(
-    funcAddress, to: (@convention(c) () -> Void).self)
-  
-  prevent_numpy_import_hang()
+  do {
+    let funcAddress = dlsym(libAddress, "fetch_pipes")
+    let fetch_pipes = unsafeBitCast(
+      funcAddress, to: (@convention(c) () -> Void).self)
+    fetch_pipes()
+  }
+  do {
+    let funcAddress = dlsym(libAddress, "prevent_numpy_import_hang")
+    let prevent_numpy_import_hang = unsafeBitCast(
+      funcAddress, to: (@convention(c) () -> Void).self)
+    prevent_numpy_import_hang()
+  }
 }

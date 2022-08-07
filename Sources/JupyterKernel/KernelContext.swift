@@ -149,8 +149,9 @@ struct KernelPipe {
 
     var buffer: [Int32] = [pipe1!, pipe2!, pipe3!, pipe4!]
     fwrite(&buffer, 4, 4, filePointer)
+    KernelContext.log("Pipe IDs: \(buffer)")
   }
-
+  
   static func fetchPipes() {
     // Read pipes from file.
     let filePointer = fopen("/opt/swift/pipes", "rb")
@@ -165,6 +166,7 @@ struct KernelPipe {
     pipe2 = buffer[1]
     pipe3 = buffer[2]
     pipe4 = buffer[3]
+    print("Pipe IDs: \(buffer)")
   }
   
   static func flushPipes() {

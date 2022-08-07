@@ -33,6 +33,11 @@ public func prevent_numpy_import_hang() {
   _ = platform.system()
 }
 
+@_cdecl("fetch_pipes")
+public func fetch_pipes() {
+  KernelPipe.fetchPipes()
+}
+
 @_cdecl("get_kernel")
 public func get_kernel() -> Int32 {
   let colab = Python.import("google.colab")
