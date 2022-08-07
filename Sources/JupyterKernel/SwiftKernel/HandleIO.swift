@@ -467,7 +467,7 @@ fileprivate func _monitor_process(
   _ p: PythonObject,
   _ cmd: PythonObject,
   _ update_stdin_widget: (Bool) -> Void
-) -> ShellResult? {
+) throws -> ShellResult {
   var state = _MonitorProcessState()
   let decoder = codecs.getincrementaldecoder("UTF-8")(errors: "replace") 
   var echo_status: Bool?
@@ -476,7 +476,7 @@ fileprivate func _monitor_process(
     if result != nil {
       return result
     }
-
+    
     let term_settings = termios.tcgetattr(parent_pty)
     let new_echo_status = Bool(term_settings[3] & termios.ECHO)!
     if echo_status != new_echo_status {
@@ -490,7 +490,8 @@ fileprivate func _monitor_process(
       if p.poll() != Python.None {
         p.send_signal(signal.SIGKILL)
       }
-      return nil
+      throw InterruptException(
+        "User interrupted execution during a `%system` command.")
     }
   }
 }
@@ -505,7 +506,7 @@ fileprivate func _configure_term_settings(_ pty_fd: PythonObject) {
 fileprivate func _run_command(
   _ cmd: PythonObject, 
   _ cwd: PythonObject = Python.None
-) throws -> ShellResult? {
+) throws -> ShellResult {
   let locale_encoding = locale.getpreferredencoding()
   if locale_encoding != "UTF-8" {
     throw Exception("A UTF-8 locale is required. Got \(locale_encoding)")
@@ -538,7 +539,7 @@ fileprivate func _run_command(
       stderr: child_pty,
       close_fds: false)
     os.close(child_pty)
-
-    return _monitor_process(parent_pty, epoll, p, cmd, update_stdin_widget)
+    
+    return try _monitor_process(parent_pty, epoll, p, cmd, update_stdin_widget)
   }
 }
