@@ -415,6 +415,7 @@ func _poll_process(
   let events: [PythonObject] = Array(epoll.poll())
   var input_events: [PythonObject] = []
   for tuple in events {
+    KernelContext.log("HELLO WORLD \(tuple)")
     let (_, event) = tuple.tuple2
     if Bool(event & select.EPOLLIN)! {
       output_available = true
