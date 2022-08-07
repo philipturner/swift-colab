@@ -33,9 +33,9 @@ public func prevent_numpy_import_hang() {
   _ = platform.system()
 }
 
-@_cdecl("fetch_pipes")
-public func fetch_pipes() {
-  KernelPipe.fetchPipes()
+@_cdecl("create_pipes")
+public func create_pipes() {
+  KernelPipe.createPipes()
 }
 
 @_cdecl("get_kernel")
