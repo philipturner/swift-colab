@@ -1,8 +1,11 @@
 import Foundation
-fileprivate let colab = Python.import("google.colab")
+fileprivate let codecs = Python.import("codecs")
+fileprivate let os = Python.import("os")
 fileprivate let pexpect = Python.import("pexpect")
+fileprivate let select = Python.import("select")
 fileprivate let signal = Python.import("signal")
 fileprivate let sys = Python.import("sys")
+fileprivate let termios = Python.import("termios")
 fileprivate let threading = Python.import("threading")
 fileprivate let time = Python.import("time")
 fileprivate let zmq = Python.import("zmq")
@@ -205,7 +208,7 @@ func runTerminalProcess(args: [String], cwd: String? = nil) throws -> Int {
 }
 
 //===----------------------------------------------------------------------===//
-// ColabTools Python code translations
+// ColabTools _message.py translation
 //===----------------------------------------------------------------------===//
 
 func processInput(_ process: PythonObject) {
@@ -326,6 +329,10 @@ fileprivate func send_request(
   return request_id
 }
 
+//===----------------------------------------------------------------------===//
+// ColabTools _system_commands.py translation
+//===----------------------------------------------------------------------===//
+
 // Context manager that displays a stdin UI widget and hides it upon exit.
 struct _display_stdin_widget {
   static func __enter__(delay_millis: PythonObject = 0) -> PythonObject {
@@ -356,3 +363,83 @@ struct _display_stdin_widget {
       expect_reply: false)
   }
 }
+
+// Result of an invocation of the shell magic.
+struct ShellResult {
+  var args: PythonObject
+  var returncode: PythonObject
+  var output: PythonObject
+
+  init(
+    _ args: PythonObject, 
+    _ returncode: PythonObject, 
+    _ output: PythonObject
+  ) {
+    self.args = args
+    self.returncode = returncode
+    self.output = output
+  }
+}
+
+// Polls the process and captures / forwards input and output.
+func _poll_process(
+  _ parent_pty: PythonObject,
+  _ epoll: PythonObject,
+  _ p: PythonObject,
+  _ cmd: PythonObject,
+  _ decoder: PythonObject,
+  _ state: PythonObject
+) -> ShellResult? {
+  let terminated: Bool = p.poll() != Python.None
+  if terminated {
+     termios.tcdrain(parent_pty)
+     epoll.modify(
+      parent_pty, select.EPOLLIN | select.EPOLLHUP | select.EPOLLERR)
+  }
+  
+  var output_available = false
+
+  let events: [PythonObject] = Array(epoll.poll())
+  var input_events: [PythonObject] = []
+  for tuple in events {
+    let (_, event) = tuple.tuple2
+    if event & select.EPOLLIN {
+      output_available = true
+      let raw_contents = os.read(parent_pty, 1 << 20)
+      let decoded_contents = decoder.decode(raw_contents)
+
+      sys.stdout.write(decoded_contents)
+      state.process_output.write(decoded_contents)
+    }
+
+    if event & select.EPOLLOUT {
+      input_events.append(event)
+    }
+
+    if Bool(event & select.EPOLLHUP) ||
+       Bool(event & select.EPOLLERR) {
+      state.is_pty_still_connected = false
+    }
+  }
+
+  for event in input_events {
+    let input_line = _read_stdin_message()
+    if input_line != Python.None {
+      let input_bytes = Python.bytes(input_line.encode("UTF-8"))
+      os.write(parent_pty, input_bytes)
+    }
+  }
+
+  if terminated,
+     !Bool(state.is_pty_still_connected)!,
+     !output_available {
+    sys.stdout.flush()
+    let command_output = state.process_output.getvalue()
+    return ShellResult
+  }
+  
+  if !output_available {
+    time.sleep(0.1)
+  }
+}
+
