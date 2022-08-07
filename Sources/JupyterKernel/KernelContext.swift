@@ -188,10 +188,10 @@ struct KernelPipe {
       }
       return new_fd
     }
-    pipe1 = map_fd(_src_pid, _src_pipe1)
-    pipe2 = map_fd(_src_pid, _src_pipe2)
-    pipe3 = map_fd(_src_pid, _src_pipe3)
-    pipe4 = map_fd(_src_pid, _src_pipe4)
+    // pipe1 = map_fd(_src_pid, _src_pipe1)
+    // pipe2 = map_fd(_src_pid, _src_pipe2)
+    // pipe3 = map_fd(_src_pid, _src_pipe3)
+    // pipe4 = map_fd(_src_pid, _src_pipe4)
     
     // Will these functions not crash, now that FD is correct?
     //
