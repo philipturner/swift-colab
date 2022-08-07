@@ -215,7 +215,7 @@ func runTerminalProcess2(args: [String], cwd: String? = nil) throws -> Int {
   }
   
   let joinedArgs = PythonObject(/*"-c " + */args.joined(separator: " "))
-  let state = try _run_command(joinedArgs, cwd)
+  let state = try _run_command(joinedArgs, cwd_pythonObject)
   return Int(state.returncode)!
 }
 
