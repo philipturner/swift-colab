@@ -166,7 +166,7 @@ struct KernelPipe {
     pipe2 = buffer[1]
     pipe3 = buffer[2]
     pipe4 = buffer[3]
-    print("Pipe IDs: \(buffer)")
+    // print("Pipe IDs: \(buffer)")
   }
   
   static func flushPipes() {
