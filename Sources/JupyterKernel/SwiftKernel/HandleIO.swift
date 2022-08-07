@@ -415,7 +415,7 @@ func _poll_process(
   let events: [PythonObject] = Array(epoll.poll())
   var input_events: [PythonObject] = []
   for tuple in events {
-    KernelContext.log("HELLO WORLD \(tuple)")
+    // KernelContext.log("HELLO WORLD \(tuple)")
     let (_, event) = tuple.tuple2
     if Int(event & select.EPOLLIN)! != 0 {
       KernelContext.log("EPOLLIN")
@@ -429,7 +429,6 @@ func _poll_process(
     }
     
     if Int(event & select.EPOLLOUT)! != 0 {
-      KernelContext.log("EPOLLOUT")
       input_events.append(event)
     }
     
@@ -443,6 +442,9 @@ func _poll_process(
   for _ in input_events {
     let input_line = _read_stdin_message()
     if input_line != Python.None {
+      if input_line != "" {
+        print("got input: \(input_line)")
+      }
       let input_bytes = Python.bytes(input_line.encode("UTF-8"))
       os.write(parent_pty, input_bytes)
     }
