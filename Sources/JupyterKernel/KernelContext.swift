@@ -349,9 +349,9 @@ func CMSG_ALIGN(_ n: Int) -> Int {
 
 func CMSG_FIRSTHDR(
   _ mhdr: UnsafeMutablePointer<msghdr>
-) -> UnsafeMutablePointer<cmsghdr> {
+) -> UnsafeMutablePointer<cmsghdr>? {
   let msg_control = mhdr.pointee.msg_control
-  return msg_control!.assumingMemoryBound(to: cmsghdr.self)
+  return msg_control?.assumingMemoryBound(to: cmsghdr.self)
 }
 
 func CMSG_SPACE(_ l: Int) -> Int {
@@ -437,7 +437,7 @@ func read_fd(
       msg.msg_iov = iov.baseAddress!
       msg.msg_iovlen = 1
 
-      let n = recvmsg(fd, &msg, 0)
+      output = recvmsg(fd, &msg, 0)
       if let cmptr = CMSG_FIRSTHDR(&msg),
          cmptr.pointee.cmsg_len == CMSG_LEN(4) {
         if cmptr.pointee.cmsg_level != SOL_SOCKET {
