@@ -424,8 +424,9 @@ func _poll_process(
       let raw_contents = os.read(parent_pty, 1 << 20)
       let decoded_contents = decoder.decode(raw_contents)
       
+      KernelContext.log("stdout: \(String(decoded_contents))")
       sys.stdout.write(decoded_contents)
-      // sendStdout(String(decoded_contents)!)
+      sendStdout(String(decoded_contents)!)
       state.process_output.write(decoded_contents)
     }
     
