@@ -24,8 +24,8 @@ fileprivate let ZMQInteractiveShell = zmqshell.ZMQInteractiveShell
 // doesn't freeze if you call one of those functions long before loading NumPy.
 //
 // The workaround requires calling `system()` or `machine()` from the same
-// process that imports NumPy. The Jupyter kernel loads and executes this
-// symbol from within `KernelCommunicator.swift`, which runs inside the Swift
+// process that imports NumPy. The Jupyter kernel loads and executes this symbol
+// from within `KernelCommunicator.swift`, which runs inside the Swift
 // interpreter.
 @_cdecl("prevent_numpy_import_hang")
 public func prevent_numpy_import_hang() {
