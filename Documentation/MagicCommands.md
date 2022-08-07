@@ -6,7 +6,9 @@ The Swift kernel has various built-in commands for downloading dependencies and 
 - [`%install`](#install)
 - [`%install-extra-include-command`](#install-extra-include-command)
 - [`%install-location`](#install-location)
+- [`%install-swiftpm-environment`](#install-swiftpm-environment)
 - [`%install-swiftpm-flags`](#install-swiftpm-flags)
+- [`%install-swiftpm-import`](#install-swiftpm-import)
 - [`%system`](#system)
 
 Magic commands are implemented in [PreprocessAndExecute.swift](https://github.com/philipturner/swift-colab/blob/main/Sources/JupyterKernel/SwiftKernel/PreprocessAndExecute.swift) and [ProcessInstalls.swift](https://github.com/philipturner/swift-colab/blob/main/Sources/JupyterKernel/SwiftKernel/ProcessInstalls.swift).
@@ -47,7 +49,7 @@ A B C D A B C D
 > TODO: Each command should have an example of usage in its description.
 
 ## `%include`
-```swift
+```
 %include PATH [--force]
 ```
 
@@ -59,7 +61,7 @@ Inject code from a source file into the interpreter. The code executes at the to
 > \*This feature does not currently exist. It will be enabled in Swift-Colab v2.3.
 
 ## `%install`
-```swift
+```
 %install SPEC PRODUCT [PRODUCT ...]
 ```
 
@@ -80,14 +82,14 @@ To build packages stored on the local computer, pass `$cwd` into `.package(path:
 ```
 
 ## `%install-extra-include-command`
-```swift
+```
 %install-extra-include-command EXECUTABLE [ARGUMENT ...]
 ```
 
 - Link to forum thread that initiated this
 
 ## `%install-location`
-```swift
+```
 %install-location PATH
 ```
 
@@ -95,18 +97,18 @@ To build packages stored on the local computer, pass `$cwd` into `.package(path:
 - Has `$cwd` substitution (describe).
 
 ## `%install-swiftpm-environment`
-```swift
+```
 %install-swiftpm-environment EXECUTABLE [ARGUMENT ...]
 %install-swiftpm-environment export KEY=VALUE
 ```
 
-Adds a line of Bash code to execute before building the package.
-
 > Coming in Swift-Colab v2.3.
+
+Adds a line of Bash code to execute before building the package.
 
 
 ## `%install-swiftpm-flags`
-```swift
+```
 %install-swiftpm-flags [FLAG ...]
 ```
 
@@ -115,15 +117,15 @@ Adds a line of Bash code to execute before building the package.
 - Explain workaround for `-Xcc -I/...` flags, but for now just hyperlink: [problem 4 in this comment](https://github.com/philipturner/swift-colab/issues/14#issuecomment-1158237894).
 
 ## `%install-swiftpm-import`
-```swift
+```
 %install-swiftpm-import MODULE
 ```
+
+> Coming in Swift-Colab v2.3.
 
 Treats a pre-compiled module like a system library. This lets Swift package's source code import the module without declaring a dependency in `Package.swift`.
 
 - `MODULE` - The Swift module to automatically link. Execute the `%include` command that exports this module before running the `%install-swiftpm-import` command.
-
-> Coming in Swift-Colab v2.3.
 
 This command's underlying mechanism is used to inject `JupyterDisplay` into Swift packages. This module lets external packages seamlessly communicate with the notebook's Jupyter display. Use the convention below to conditionally import `MODULE` inside a Swift package.
 
@@ -138,7 +140,7 @@ import JupyterDisplay
 ```
 
 ## `%system`
-```swift
+```
 %system EXECUTABLE [ARGUMENT ...]
 ```
 
