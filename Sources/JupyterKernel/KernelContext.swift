@@ -156,4 +156,36 @@ struct KernelPipe {
     }
     return output
   }
+
+  static func read() -> [Data] {
+    let raw_data = read_raw()
+    guard raw_data.count > 0 else {
+      return []
+    }
+    var output: [Data] = []
+    
+    // Align to `Int64`, which is 8 bytes.
+    let buffer: UnsafeMutableRawPointer = 
+      .allocate(byteCount: raw_data.count, alignment: 8)
+    defer {
+      buffer.deallocate()
+    }
+
+    var stream = buffer
+    var streamProgress = 0
+    let streamEnd = raw_data.count
+    while streamProgress < streamEnd {
+      let header = stream.assumingMemoryBound(to: Int64.self).pointee
+      stream += 8
+      streamProgress += 8
+      let newData = Data(bytes: UnsafeRawPointer(stream), count: Int(header))
+      output.append(newData)
+      stream += Int(header)
+      streamProgress += Int(header)
+    }
+    if streamProgress > streamEnd {
+      fatalError("Malformed pipe contents.")
+    }
+    return output
+  }
 }
