@@ -167,10 +167,10 @@ struct KernelPipe {
       let fd = fileno(socketPointer)
       write_fd(fd, nil, 0, pipe)
     }
-    sendMessage(id: 1, pipe: pipe1)
-    sendMessage(id: 2, pipe: pipe2)
-    sendMessage(id: 3, pipe: pipe3)
-    sendMessage(id: 4, pipe: pipe4)
+    sendMessage(id: 1, pipe: pipe1!)
+    sendMessage(id: 2, pipe: pipe2!)
+    sendMessage(id: 3, pipe: pipe3!)
+    sendMessage(id: 4, pipe: pipe4!)
   }
   
   static func fetchPipes() {
