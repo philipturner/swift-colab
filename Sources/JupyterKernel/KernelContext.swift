@@ -109,7 +109,7 @@ struct KernelPipe {
       }
     }
     
-    var writePipe: Int {
+    var writePipe: Int32 {
       // Fetches pipes from file if not already fetched, and current process
       // is LLDB. (do explicitly in caller, not here)
       switch self {
@@ -196,8 +196,8 @@ struct KernelPipe {
     
     let pipe = process.writePipe
     var header = Int64(data.count)
-    write(pipe, &header, 8)
-    write(buffer, data.count)
+    Foundation.write(pipe, &header, 8)
+    Foundation.write(pipe, buffer, data.count)
     
     // withLock {
       // let filePointer = fopen("/opt/swift/pipes/\(process.writePipe)", "ab")!
@@ -225,7 +225,7 @@ struct KernelPipe {
 
     let pipe = process.readPipe
     while true {
-      let bytesRead = read(pipe, scratchBuffer, scratchBufferSize)
+      let bytesRead = Foundation.read(pipe, scratchBuffer, scratchBufferSize)
       if bytesRead == 0 {
         break
       }

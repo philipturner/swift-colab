@@ -93,7 +93,7 @@ struct KernelCommunicator {
   struct ParentMessage {
     let json: String
   }
-
+  
   /// The data necessary to identify and sign outgoing jupyter messages.
   struct JupyterSession {
     let id: String
