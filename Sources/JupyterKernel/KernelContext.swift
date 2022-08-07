@@ -97,7 +97,7 @@ fileprivate struct LLDBProcessLibrary {
 
 struct KernelPipe {
   static func reset() {
-    let filePointer = fopen("/opt/swift/pipe", "wb+")!
+    let filePointer = fopen("/opt/swift/pipe", "wb")!
     fclose(filePointer)
   }
   
@@ -112,7 +112,7 @@ struct KernelPipe {
     }
     data.copyBytes(to: buffer, count: data.count)
 
-    let filePointer = fopen("/opt/swift/pipe", "ab+")!
+    let filePointer = fopen("/opt/swift/pipe", "ab")!
     defer { 
       fclose(filePointer) 
     }
@@ -139,7 +139,7 @@ struct KernelPipe {
     }
     var output = Data()
     
-    let filePointer = fopen("/opt/swift/pipe", "rb+")!
+    let filePointer = fopen("/opt/swift/pipe", "rb")!
     defer { 
       fclose(filePointer) 
     }
@@ -156,10 +156,10 @@ struct KernelPipe {
       }
       output.append(UnsafePointer(scratchBuffer), count: bytesRead)
     }
-    fflush(filePointer)
+    fseek(filePointer, 0, SEEK_END)
     return output
   }
-
+  
   static func read() -> [Data] {
     let raw_data = read_raw()
     guard raw_data.count > 0 else {
