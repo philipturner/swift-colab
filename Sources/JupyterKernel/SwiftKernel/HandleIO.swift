@@ -147,7 +147,7 @@ func getStderr(readData: Bool) -> String? {
 //
 // Also pulls source code from this file to allow stdin:
 // https://github.com/googlecolab/colabtools/blob/main/google/colab/_system_commands.py
-func runTerminalProcess(args: [String], cwd: String? = nil) throws -> Int {
+func runTerminalProcess2(args: [String], cwd: String? = nil) throws -> Int {
   let joinedArgs = args.joined(separator: " ")
   let process = pexpect.spawn("/bin/sh", args: ["-c", joinedArgs], cwd: cwd)
   let flush = sys.stdout.flush
@@ -208,7 +208,7 @@ func runTerminalProcess(args: [String], cwd: String? = nil) throws -> Int {
   }
 }
 
-func runTerminalProcess2(args: [String], cwd: String? = nil) throws -> Int {
+func runTerminalProcess(args: [String], cwd: String? = nil) throws -> Int {
   var cwd_pythonObject = Python.None
   if let cwd = cwd {
     cwd_pythonObject = PythonObject(cwd)
