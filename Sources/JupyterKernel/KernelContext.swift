@@ -165,7 +165,8 @@ struct KernelPipe {
       let socketPointer = fopen("/opt/swift/socket\(id)", "wb")!
       defer { fclose(socketPointer) }
       let fd = fileno(socketPointer)
-      write_fd(fd, nil, 0, pipe)
+      precondition(
+        write_fd(fd, nil, 0, pipe) > 0, "write_fd failed: \(errno)")
     }
     sendMessage(id: 1, pipe: pipe1!)
     sendMessage(id: 2, pipe: pipe2!)
