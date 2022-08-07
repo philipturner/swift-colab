@@ -154,9 +154,10 @@ struct KernelPipe {
     defer {
       fclose(filePointer)
     }
-
-    var buffer: [Int32] = [pipe1!, pipe2!, pipe3!, pipe4!]
-    fwrite(&buffer, 4, 4, filePointer)
+    
+    let pid: Int32 = getpid()
+    var buffer: [Int32] = [pipe1!, pipe2!, pipe3!, pipe4!, pid]
+    fwrite(&buffer, 4, 5, filePointer)
     KernelContext.log("Pipe IDs: \(buffer)")
   }
   
@@ -167,14 +168,28 @@ struct KernelPipe {
       fclose(filePointer)
     }
     var buffer = [Int32](repeating: 0, count: 4)
-    fread(&buffer, 4, 4, filePointer)
+    fread(&buffer, 4, 5, filePointer)
     
     // Set pipes.
-    pipe1 = buffer[0]
-    pipe2 = buffer[1]
-    pipe3 = buffer[2]
-    pipe4 = buffer[3]
+    let _src_pipe1 = buffer[0]
+    let _src_pipe2 = buffer[1]
+    let _src_pipe3 = buffer[2]
+    let _src_pipe4 = buffer[3]
+    let _src_pid = buffer[4]
+
+    // From https://stackoverflow.com/a/42217485:
+    func map_fd(_ source_pid: Int32, _ source_fd: Int32) -> Int32 {
+      var fd_path: [Int8] = Array(repeating: 0, count: 64)
+      snprintf(&fd_path, Int.bitWidth, "/proc/%d/fd/%d", source_pid, source_fd)
+      return open(fd_path, O_RDWR)
+    }
+    pipe1 = map_fd(_src_pid, _src_pipe1)
+    pipe2 = map_fd(_src_pid, _src_pipe2)
+    pipe3 = map_fd(_src_pid, _src_pipe3)
+    pipe4 = map_fd(_src_pid, _src_pipe4)
     
+    // Will these functions not crash, now that FD is correct?
+    //
     // Parent writes into this.
     // precondition(close(pipe2!) == 0, "Could not close pipe 2.")
     // Parent reads from this.
