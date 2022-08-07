@@ -181,7 +181,7 @@ struct KernelPipe {
       }
       fclose(filePointer) 
       
-      if data.count > 0 {
+      if output.count > 0 {
         // Erase the file's contents.
         filePointer = fopen("/opt/swift/pipes/\(process.readPipe)", "wb")!
         fclose(filePointer)
