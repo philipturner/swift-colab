@@ -123,9 +123,9 @@ Adds a line of Bash code to execute before building the package.
 
 > Coming in Swift-Colab v2.3.
 
-Treats a pre-compiled module like a system library. This lets Swift package's source code import the module without declaring a dependency in `Package.swift`.
+Treats a pre-compiled module like a system library. This lets a Swift package's source code import the module, without declaring a dependency in `Package.swift`.
 
-- `MODULE` - The Swift module to automatically link. Execute the `%include` command that exports this module before running the `%install-swiftpm-import` command.
+- `MODULE` - The Swift module to automatically link. Before running the `%install-swiftpm-import` command, execute the `%include` command that declares this module
 
 This command's underlying mechanism is used to inject `JupyterDisplay` into Swift packages. This module lets external packages seamlessly communicate with the notebook's Jupyter display. Use the convention below to conditionally import `MODULE` inside a Swift package.
 
