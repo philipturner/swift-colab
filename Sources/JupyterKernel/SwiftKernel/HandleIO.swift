@@ -532,7 +532,7 @@ fileprivate func _run_command(
     parent_pty, 
     select.EPOLLIN | select.EPOLLOUT | select.EPOLLHUP | select.EPOLLERR)
   
-  let stdin = child_pty
+  let stdin = parent_pty//child_pty
   defer {
     epoll.close()
     os.close(parent_pty)

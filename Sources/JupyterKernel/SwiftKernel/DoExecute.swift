@@ -8,7 +8,7 @@ func doExecute(code: String, allowStdin: Bool) throws -> PythonObject? {
   KernelContext.isInterrupted = false
   KernelContext.pollingStdout = true
   KernelContext.cellID = Int(KernelContext.kernel.execution_count)!
-  // forwardInput(allowStdin: allowStdin)
+  forwardInput(allowStdin: allowStdin)
   
   // Flush stderr
   _ = getStderr(readData: false)
@@ -21,7 +21,7 @@ func doExecute(code: String, allowStdin: Bool) throws -> PythonObject? {
   var result: ExecutionResult
   do {
     defer {
-      // restoreInput()
+      restoreInput()
       KernelContext.pollingStdout = false
       handler.join()
     }
