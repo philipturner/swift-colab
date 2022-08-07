@@ -422,6 +422,7 @@ func _poll_process(
       let decoded_contents = decoder.decode(raw_contents)
 
       sys.stdout.write(decoded_contents)
+      sendStdout(decoded_contents)
       state.process_output.write(decoded_contents)
     }
     
@@ -512,9 +513,11 @@ fileprivate func _run_command(
     throw Exception("A UTF-8 locale is required. Got \(locale_encoding)")
   }
 
-  let (parent_pty, child_pty) = pty.openpty().tuple2
+  //let (parent_pty, child_pty) = pty.openpty().tuple2
+  let parent_pty = sys.stdout
+  let 
   _configure_term_settings(child_pty)
-
+  
   let epoll = select.epoll()
   epoll.register(
     parent_pty, 
