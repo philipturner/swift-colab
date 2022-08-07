@@ -111,7 +111,7 @@ struct KernelPipe {
       buffer.deallocate()
     }
     data.copyBytes(to: buffer, count: data.count)
-    
+
     let filePointer = fopen("/opt/swift/pipe", "ab")!
     defer { 
       fclose(filePointer) 
@@ -122,9 +122,9 @@ struct KernelPipe {
       flock(fd, LOCK_UN) 
     }
     
-    var header = Int64(bytes.count)
+    var header = Int64(data.count)
     fwrite(&header, 8, 1, filePointer)
-    fwrite(buffer, 1, bytes.count, filePointer)
+    fwrite(buffer, 1, data.count, filePointer)
   }
 
   static let scratchBufferSize = 1024
@@ -172,7 +172,8 @@ struct KernelPipe {
     defer {
       buffer.deallocate()
     }
-    raw_data.copyBytes(to: UnsafeMutablePointer(buffer), count: raw_data.count)
+    raw_data.copyBytes(
+      to: UnsafeMutablePointer<UInt8>(buffer), count: raw_data.count)
 
     var stream = buffer
     var streamProgress = 0
