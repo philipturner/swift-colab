@@ -179,9 +179,9 @@ struct KernelPipe {
       precondition(fd != -1, "socket failed: \(errno)")
       func withPointer2(_ ptr: UnsafeRawPointer) {
         let stride = MemoryLayout<sockaddr_un>.stride
-        precondition(
-          bind(fd, .init(OpaquePointer(ptr)), socklen_t(stride)) != -1,
-          "bind failed2: \(String(cString: strerror(errno)!))")
+        // precondition(
+          bind(fd, .init(OpaquePointer(ptr)), socklen_t(stride))// != -1,
+          // "bind failed2: \(String(cString: strerror(errno)!))")
       }
       withPointer2(&namesock)
 
