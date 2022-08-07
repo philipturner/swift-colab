@@ -141,12 +141,12 @@ func getStderr(readData: Bool) -> String? {
     freeWhenDone: true)!
 }
 
-// This attempts to replicate the code located at:
-// https://github.com/ipython/ipython/blob/master/IPython/utils/_process_posix.py,
-//   def system(self, cmd):
+// //This attempts to replicate the code located at:
+// // https://github.com/ipython/ipython/blob/master/IPython/utils/_process_posix.py,
+// //   def system(self, cmd):
 //
-// Also pulls source code from this file to allow stdin:
-// https://github.com/googlecolab/colabtools/blob/main/google/colab/_system_commands.py
+// //Also pulls source code from this file to allow stdin:
+// //https://github.com/googlecolab/colabtools/blob/main/google/colab/_system_commands.py
 func runTerminalProcess2(args: [String], cwd: String? = nil) throws -> Int {
   let joinedArgs = args.joined(separator: " ")
   let process = pexpect.spawn("/bin/sh", args: ["-c", joinedArgs], cwd: cwd)
@@ -190,7 +190,6 @@ func runTerminalProcess2(args: [String], cwd: String? = nil) throws -> Int {
     } else if Int(resIdx)! == 1 {
       break
     }
-    // processInput(process)
   }
   sendStdout("\u{1b}[0m")
   
@@ -208,13 +207,15 @@ func runTerminalProcess2(args: [String], cwd: String? = nil) throws -> Int {
   }
 }
 
+// Replicates functionality found at:
+// https://github.com/googlecolab/colabtools/blob/main/google/colab/_system_commands.py
 func runTerminalProcess(args: [String], cwd: String? = nil) throws -> Int {
   var cwd_pythonObject = Python.None
   if let cwd = cwd {
     cwd_pythonObject = PythonObject(cwd)
   }
   
-  let joinedArgs = PythonObject(/*"-c " + */args.joined(separator: " "))
+  let joinedArgs = PythonObject(args.joined(separator: " "))
   let state = try _run_command(joinedArgs, cwd_pythonObject)
   return Int(state.returncode)!
 }
@@ -222,14 +223,6 @@ func runTerminalProcess(args: [String], cwd: String? = nil) throws -> Int {
 //===----------------------------------------------------------------------===//
 // ColabTools _message.py translation
 //===----------------------------------------------------------------------===//
-
-func processInput(_ process: PythonObject) {
-  let input_line = _read_stdin_message()
-  if input_line != Python.None {
-    KernelContext.log("input: \(input_line)")
-    process.send(input_line)
-  }
-}
 
 fileprivate let _NOT_READY = Python.object()
 
@@ -245,7 +238,6 @@ fileprivate func _read_next_input_message() -> PythonObject {
     (_, reply) = tuple.tuple2
   } catch {
     // We treat invalid messages as empty replies.
-    KernelContext.log("GOT INVALID MESSAGE")
   }
   if reply == Python.None {
     return _NOT_READY
@@ -253,12 +245,7 @@ fileprivate func _read_next_input_message() -> PythonObject {
   
   // We want to return '' even if reply is malformed.
   let content = reply.checking["content"] ?? PythonObject([:])
-  if let value = content.checking["value"] {
-    return value
-  } else {
-    KernelContext.log("REPLY IS MALFORMED")
-    return ""
-  }
+  return content.checking["value"] ?? ""
 }
 
 // Reads a stdin message.
@@ -272,39 +259,11 @@ fileprivate func _read_stdin_message() -> PythonObject {
     // Skip any colab responses.
     if Bool(Python.isinstance(value, Python.dict))!,
        value["type"] == "colab_reply" {
-      KernelContext.log("GOT COLAB RESPONSE")
       continue
     }
-    KernelContext.log("RETURNED A VALUE")
+
     return value
   }
-}
-
-// Reads a reply to the message from the stdin channel.
-fileprivate func read_reply_from_input(
-  _ message_id: PythonObject,
-  _ timeout_sec: PythonObject = Python.None
-) -> PythonObject {
-  var deadline = Python.None
-  if timeout_sec != Python.None {
-    deadline = time.time() + timeout_sec
-  }
-  while deadline == Python.None || time.time() < deadline {
-    let reply = _read_next_input_message()
-    if reply == _NOT_READY || !Bool(Python.isinstance(reply, Python.dict))! {
-      time.sleep(0.025)
-      continue
-    }
-    if reply["type"] == "colab_reply",
-       reply["colab_msg_id"] == message_id {
-      // TODO: Throw an error if `reply` contains 'error'.
-      if reply.checking["error"] != nil {
-        fatalError("Did not implement error handling for bad input.")
-      }
-      return reply.get("data", Python.None)
-    }
-  }
-  return Python.None
 }
 
 // Global counter for message id.
@@ -371,7 +330,6 @@ struct _display_stdin_widget {
       // socket. If user input is provided while the blocking_request call is 
       // still waiting for a colab_reply, the input will be dropped per
       // https://github.com/googlecolab/colabtools/blob/56e4dbec7c4fa09fad51b60feb5c786c69d688c6/google/colab/_message.py#L100.
-      KernelContext.log("changed echo status to \(new_echo_status)")
       _ = send_request(
         "cell_update_stdin", ["echo": new_echo_status].pythonObject, 
         parent: kernel._parent_header, expect_reply: false)
@@ -391,16 +349,10 @@ struct _display_stdin_widget {
 struct ShellResult {
   var args: PythonObject
   var returncode: PythonObject
-  var output: PythonObject
 
-  init(
-    _ args: PythonObject, 
-    _ returncode: PythonObject, 
-    _ output: PythonObject
-  ) {
+  init(_ args: PythonObject, _ returncode: PythonObject) {
     self.args = args
     self.returncode = returncode
-    self.output = output
   }
 }
 
@@ -425,18 +377,14 @@ func _poll_process(
   let events: [PythonObject] = Array(epoll.poll())
   var input_events: [PythonObject] = []
   for tuple in events {
-    // KernelContext.log("HELLO WORLD \(tuple)")
     let (_, event) = tuple.tuple2
     if Int(event & select.EPOLLIN)! != 0 {
-      KernelContext.log("EPOLLIN")
       output_available = true
       let raw_contents = os.read(parent_pty, 1 << 20)
       let decoded_contents = decoder.decode(raw_contents)
       
-      KernelContext.log("stdout: \(String(decoded_contents))")
       sys.stdout.write(decoded_contents)
       sendStdout(String(decoded_contents)!)
-      state.process_output.write(decoded_contents)
     }
     
     if Int(event & select.EPOLLOUT)! != 0 {
@@ -445,7 +393,6 @@ func _poll_process(
     
     if Int(event & select.EPOLLHUP)! != 0 ||
        Int(event & select.EPOLLERR)! != 0 {
-      KernelContext.log("EPOLLHUP EPOLLERR")
       state.is_pty_still_connected = false
     }
   }
@@ -453,9 +400,6 @@ func _poll_process(
   for _ in input_events {
     let input_line = _read_stdin_message()
     if input_line != Python.None {
-      if input_line != "" {
-        print("got input: \(input_line)")
-      }
       let input_bytes = Python.bytes(input_line.encode("UTF-8"))
       os.write(parent_pty, input_bytes)
     }
@@ -463,15 +407,11 @@ func _poll_process(
   
   if terminated, !state.is_pty_still_connected, !output_available {
     sys.stdout.flush()
-    let command_output = state.process_output.getvalue()
-    return ShellResult(cmd, p.returncode, command_output)
+    return ShellResult(cmd, p.returncode)
   }
   
   if !output_available {
-    // sys.stdout.flush()
     time.sleep(0.1)
-  } else {
-    // Why would I not flush sys.stdout here?
   }
   return nil
 }
