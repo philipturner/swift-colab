@@ -426,7 +426,7 @@ func _poll_process(
       sys.stdout.write(decoded_contents)
       sendStdout(String(decoded_contents)!)
       state.process_output.write(decoded_contents)
-    } else if Int(event)! & Int(select.EPOLLIN) != 0 {
+    } else if Int(event)! & Int(select.EPOLLIN)! != 0 {
       KernelContext.log("alt_2 EPOLLIN")
 
       if Int(event & select.EPOLLIN)! != 0 {
