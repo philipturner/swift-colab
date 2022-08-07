@@ -342,9 +342,7 @@ fileprivate func send_request(
 
 // Context manager that displays a stdin UI widget and hides it upon exit.
 struct _display_stdin_widget {
-  static func __enter__(
-    delay_millis: PythonObject = 0
-  ) -> (PythonObject) -> Void {
+  static func __enter__(delay_millis: PythonObject = 0) -> (Bool) -> Void {
     let kernel = KernelContext.kernel
     _ = send_request(
       "cell_display_stdin", ["delayMillis": delay_millis],
@@ -466,7 +464,7 @@ fileprivate func _monitor_process(
   let decoder = codecs.getincrementaldecoder("UTF-8")(errors: "replace") 
   var echo_status: Bool?
   while true {
-    let result = _poll_process(parent_pty, epoll, p, cmd, decoder, state)
+    let result = _poll_process(parent_pty, epoll, p, cmd, decoder, &state)
     if result != Python.None {
       return result
     }
