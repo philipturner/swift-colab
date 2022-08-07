@@ -35,6 +35,30 @@ public func prevent_numpy_import_hang() {
 
 @_cdecl("get_kernel")
 public func get_kernel() -> Int32 {
+  let colab = Python.import("google.colab")
+  var output: Int32 = 0
+  if colab != Python.None {
+    output += 1
+
+    var _message: PythonObject?
+    if let _obj = colab.checking._message {
+      output += 10
+      _message = _obj
+    }
+    if let _import = try? Python.attemptImport("google.colab._message") {
+      output += 100
+      _message = _import
+    }
+
+    if let _message = _message {
+      let blocking_request = _message.checking.blocking_request
+      if blocking_request != nil {
+        output += 1000
+      }
+    }
+  }
+  return output
+
   let kernel = KernelContext.kernel
   if kernel == Python.None {
     return -1

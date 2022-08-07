@@ -70,7 +70,6 @@ struct KernelCommunicator {
     private var bytes: ContiguousArray<CChar>
 
     init(_ bytes: UnsafeBufferPointer<CChar>) {
-      
       // Construct our own array and copy `bytes` into it, so that no one
       // else aliases the underlying memory.
       self.bytes = []
