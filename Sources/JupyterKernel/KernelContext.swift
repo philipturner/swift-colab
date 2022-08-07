@@ -94,3 +94,66 @@ fileprivate struct LLDBProcessLibrary {
     return unsafeBitCast(address, to: T.self)
   }
 }
+
+struct KernelPipe {
+  static func reset() {
+    let filePointer = fopen("/opt/swift/pipe", "wb")!
+    fclose(filePointer)
+  }
+  
+  static func append(_ bytes: UnsafeRawBufferPointer) {
+    guard let baseAddress = bytes.baseAddress else {
+      // Entered empty bytes.
+      return
+    }
+    let filePointer = fopen("/opt/swift/pipe", "ab")!
+    defer { 
+      fclose(filePointer) 
+    }
+    let fd = fileno(filePointer)
+    flock(fd, LOCK_EX)
+    defer { 
+      flock(fd, LOCK_UN) 
+    }
+    
+    var header = Int64(bytes.count)
+    fwrite(&header, 8, 1, filePointer)
+    fwrite(baseAddress, 1, bytes.count, filePointer)
+  }
+
+  static let scratchBufferSize = 1024
+
+  // Still need to perform a postprocessing pass, which parses headers to
+  // separate each message into its own `Data`.
+  static func read_raw() -> Data {
+    let scratchBuffer: UnsafeMutablePointer<UInt8> = 
+      .allocate(capacity: scratchBufferSize)
+    defer {
+      scratchBuffer.deallocate()
+    }
+    var output = Data()
+    
+    let filePointer = fopen("/opt/swift/pipe", "rb")!
+    defer { 
+      fclose(filePointer) 
+    }
+    let fd = fileno(filePointer)
+    flock(fd, LOCK_EX)
+    defer { 
+      flock(fd, LOCK_UN) 
+    }
+    
+    while true {
+      let bytesRead = fread(
+        scratchBuffer.baseAddress, 1, scratchBufferSize, filePointer)
+      if bytesRead == 0 {
+        break
+      }
+
+      let baseAddress = scratchBuffer.baseAddress!
+      let casted = UnsafePointer<UInt8>(OpaquePointer(baseAddress))
+      output.append(casted, count: bytesRead)
+    }
+    return output
+  }
+}

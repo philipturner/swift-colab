@@ -35,12 +35,12 @@ extension IPythonDisplay {
     let address = bytes.withUnsafeBytes { $0 }.bindMemory(to: CChar.self)
     return KernelCommunicator.BytesReference(address)
   }
-
+  
   private static func updateParentMessage(to parentMessage: KernelCommunicator.ParentMessage) {
     let json = Python.import("json")
     IPythonDisplay.shell.set_parent(json.loads(parentMessage.json))
   }
-    
+  
   private static func consumeDisplayMessages() -> [KernelCommunicator.JupyterDisplayMessage] {
     let displayMessages = IPythonDisplay.socket.messages.map {
       KernelCommunicator.JupyterDisplayMessage(parts: $0.map(bytes))
@@ -48,7 +48,7 @@ extension IPythonDisplay {
     IPythonDisplay.socket.messages = []
     return displayMessages
   }
-
+  
   static func enable() {
     if IPythonDisplay.shell != Python.None {
       print("Warning: IPython display already enabled.")
@@ -61,17 +61,17 @@ extension IPythonDisplay {
     let create_shell = unsafeBitCast(funcAddress, to: (@convention(c) (
       UnsafePointer<CChar>, UnsafePointer<CChar>, UnsafePointer<CChar>) -> Int64
     ).self)
-
+    
     let session = JupyterKernel.communicator.jupyterSession
     let socketAndShellID = create_shell(
       session.username, session.id, session.key
     )
-
+    
     let _ctypes = Python.import("_ctypes")
     let socketAndShell = _ctypes.PyObj_FromPtr(socketAndShellID)
     IPythonDisplay.socket = socketAndShell[0]
     IPythonDisplay.shell = socketAndShell[1]
-
+    
     JupyterKernel.communicator.parentMessageHandler = updateParentMessage
     JupyterKernel.communicator.afterSuccessfulExecutionHandler = 
       consumeDisplayMessages
@@ -116,6 +116,7 @@ IPythonDisplay.enable()
 #endif
 
 do {
+  // TODO: Execute this when initializing kernel communicator.
   print("Before fetching kernel")
   let /*Glibc.*/RTLD_LAZY = Int32(1)
   let libAddress = dlopen("/opt/swift/lib/libJupyterKernel.so", RTLD_LAZY)
