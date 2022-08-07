@@ -18,6 +18,7 @@ func preprocessAndExecute(
     time.sleep(0.05)
     
     if isCell {
+      KernelContext.log("am trying to read")
       let messages = KernelPipe.read(.jupyterKernel)
       if messages.count > 0 {
         for message in messages {

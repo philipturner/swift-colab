@@ -236,7 +236,7 @@ struct KernelPipe {
     precondition(pipe == pipe3!)
     while true {
       let bytesRead = Foundation.read(pipe, scratchBuffer, scratchBufferSize)
-      print("BYTES READ: \(bytesRead)")
+      KernelContext.log("BYTES READ: \(bytesRead)")
       if bytesRead <= 0 {
         break
       }
