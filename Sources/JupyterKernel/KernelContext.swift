@@ -429,11 +429,6 @@ func read_fd(
       cmptr.pointee.cmsg_level = SOL_SOCKET
       cmptr.pointee.cmsg_type = Int32(SCM_RIGHTS)
       
-      let cmsg_data1 = CMSG_DATA(cmptr)
-      let cmsg_data2 = OpaquePointer(cmsg_data1)
-      let cmsg_data3 = UnsafeMutablePointer<Int32>(cmsg_data2)
-      cmsg_data3.pointee = sendfd
-      
       msg.msg_name = nil
       msg.msg_namelen = 0
       
