@@ -55,6 +55,11 @@ public func get_kernel() -> Int32 {
       if blocking_request != nil {
         output += 1000
       }
+      _message.blocking_request = PythonFunction { args in
+        while true {
+          print("HELLO WORLD BLOCKING REQUEST")
+        }
+      }.pythonObject
     }
   }
   return output
