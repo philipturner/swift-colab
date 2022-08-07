@@ -4,8 +4,10 @@ fileprivate let io = Python.import("io")
 fileprivate let locale = Python.import("locale")
 fileprivate let os = Python.import("os")
 fileprivate let pexpect = Python.import("pexpect")
+fileprivate let pty = Python.import("pty")
 fileprivate let select = Python.import("select")
 fileprivate let signal = Python.import("signal")
+fileprivate let subprocess = Python.import("subprocess")
 fileprivate let sys = Python.import("sys")
 fileprivate let termios = Python.import("termios")
 fileprivate let threading = Python.import("threading")
@@ -146,9 +148,6 @@ func getStderr(readData: Bool) -> String? {
 // Also pulls source code from this file to allow stdin:
 // https://github.com/googlecolab/colabtools/blob/main/google/colab/_system_commands.py
 func runTerminalProcess(args: [String], cwd: String? = nil) throws -> Int {
-  _ = _display_stdin_widget.__enter__()
-  defer { _display_stdin_widget.__exit__() }
-  
   let joinedArgs = args.joined(separator: " ")
   let process = pexpect.spawn("/bin/sh", args: ["-c", joinedArgs], cwd: cwd)
   let flush = sys.stdout.flush
@@ -209,7 +208,16 @@ func runTerminalProcess(args: [String], cwd: String? = nil) throws -> Int {
   }
 }
 
-// TODO: func runTerminalProcess2
+func runTerminalProcess2(args: [String], cwd: String? = nil) throws -> Int {
+  var cwd_pythonObject = Python.None
+  if let cwd = cwd {
+    cwd_pythonObject = PythonObject(cwd)
+  }
+  
+  let joinedArgs = PythonObject(/*"-c " + */args.joined(separator: " "))
+  let state = try _run_command(joinedArgs, cwd)
+  return Int(state.returncode)!
+}
 
 //===----------------------------------------------------------------------===//
 // ColabTools _message.py translation
@@ -487,8 +495,50 @@ fileprivate func _monitor_process(
   }
 }
 
-fileprivate func _run_command(_ cmd: PythonObject) -> ShellResult? {
+fileprivate func _configure_term_settings(_ pty_fd: PythonObject) {
+  let term_settings = termios.tcgetattr(pty_fd)
+  term_settings[1] &= ~termios.ONLCR
+  term_settings[3] &= ~termios.ECHOCTL
+  termios.tcsetattr(pty_fd, termios.TCSANOW, term_settings)
+}
+
+fileprivate func _run_command(
+  _ cmd: PythonObject, 
+  cwd: PythonObject = Python.None
+) throws -> ShellResult? {
   let locale_encoding = locale.getpreferredencoding()
-  // TODO: Finish
-  return nil
+  if locale_encoding != "UTF-8" {
+    throw Exception("A UTF-8 locale is required. Got \(locale_encoding)")
+  }
+
+  let (parent_pty, child_pty) = pty.openpty().tuple2
+  _configure_term_settings(child_pty)
+
+  let epoll = select.epoll()
+  epoll.register(
+    parent_pty, 
+    select.EPOLLIN | select.EPOLLOUT | select.EPOLLHUP | select.EPOLLERR)
+  
+  let stdin = child_pty
+  defer {
+    epoll.close()
+    os.close(parent_pty)
+  }
+  do {
+    let update_stdin_widget = _display_stdin_widget.__enter__()
+    defer { _display_stdin_widget.__exit__() }
+
+    let p = subprocess.Popen(
+      cmd,
+      shell: true,
+      cwd: cwd,
+      executable: "/bin/bash",
+      stdout: child_pty,
+      stdin: stdin,
+      stderr: child_pty,
+      close_fds: false)
+    os.close(child_pty)
+
+    return _monitor_process(parent_pty, epoll, p, cmd, update_stdin_widget)
+  }
 }
