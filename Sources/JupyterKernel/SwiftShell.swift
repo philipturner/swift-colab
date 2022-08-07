@@ -54,7 +54,7 @@ public func get_kernel() -> Int32 {
       output += 100
       _message = _import
     }
-
+    
     if let _message = _message {
       let blocking_request = _message.checking.blocking_request
       if blocking_request != nil {
@@ -67,6 +67,7 @@ public func get_kernel() -> Int32 {
           let stringData = string.data(using: .utf8)!
           KernelPipe.append(stringData, .lldb)
           
+          print("stdout - HELLO WORLD BLOCKING REQUEST")
           usleep(500_000)
         }
       }.pythonObject

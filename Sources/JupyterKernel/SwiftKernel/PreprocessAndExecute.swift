@@ -20,10 +20,8 @@ func preprocessAndExecute(
     // Using Python's `time` module instead of Foundation.usleep releases the
     // GIL.
     time.sleep(0.05)
-    KernelContext.log("1.4.4")
-
+    
     if shouldPoll {
-      KernelContext.log("1.4.4.1")
       let messages = KernelPipe.read(.jupyterKernel)
       if messages.count > 0 {
         for message in messages {
@@ -34,7 +32,6 @@ func preprocessAndExecute(
       }
     }
   }
-  KernelContext.log("1.4.5")
   return executionResult!
 }
 

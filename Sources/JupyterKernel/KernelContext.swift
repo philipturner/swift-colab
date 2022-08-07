@@ -197,6 +197,7 @@ struct KernelPipe {
     data.copyBytes(to: buffer, count: data.count)
     
     let pipe = process.writePipe
+    precondition(pipe == pipe4!)
     var header = Int64(data.count)
     Foundation.write(pipe, &header, 8)
     Foundation.write(pipe, buffer, data.count)
@@ -224,25 +225,17 @@ struct KernelPipe {
       scratchBuffer.deallocate()
     }
     var output = Data()
-
-    KernelContext.log("7.9")
-
+    
     let pipe = process.readPipe
+    precondition(pipe == pipe3!)
     while true {
-      KernelContext.log("BEFORE CALL")
       let bytesRead = Foundation.read(pipe, scratchBuffer, scratchBufferSize)
-      KernelContext.log("AFTER CALL")
+      print("BYTES READ \(bytesRead)")
       if bytesRead <= 0 {
-        if bytesRead < 0 {
-          KernelContext.log("ERROR \(bytesRead)")
-        }
         break
-      } else {
-        KernelContext.log("NO ERROR")
       }
       output.append(UnsafePointer(scratchBuffer), count: bytesRead)
     }
-    KernelContext.log("7.10")
     return output
     
     // return withLock {
