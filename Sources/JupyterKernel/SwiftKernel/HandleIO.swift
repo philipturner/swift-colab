@@ -424,7 +424,7 @@ func _poll_process(
       let decoded_contents = decoder.decode(raw_contents)
       
       sys.stdout.write(decoded_contents)
-      sendStdout(String(decoded_contents)!)
+      // sendStdout(String(decoded_contents)!)
       state.process_output.write(decoded_contents)
     }
     
@@ -457,7 +457,7 @@ func _poll_process(
   }
   
   if !output_available {
-    sys.stdout.flush()
+    // sys.stdout.flush()
     time.sleep(0.1)
   } else {
     // Why would I not flush sys.stdout here?
