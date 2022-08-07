@@ -138,12 +138,16 @@ struct KernelPipe {
     pipe2 = pipes[1]
     precondition(
       fcntl(pipe1!, F_SETFL, O_NONBLOCK) == 0, "Failed to set 'O_NONBLOCK'.")
+    // Child reads from this.
+    precondition(close(pipe1!) == 0, "Could not close pipe 1.")
     
     precondition(pipe(&pipes) == 0, "Failed to create pipes.")
     pipe3 = pipes[0]
     pipe4 = pipes[1]
     precondition(
       fcntl(pipe3!, F_SETFL, O_NONBLOCK) == 0, "Failed to set 'O_NONBLOCK'.")
+    // Child writes into this.
+    precondition(close(pipe4!) == 0, "Could not close pipe 4.")
     
     // Write pipes to file.
     let filePointer = fopen("/opt/swift/pipes", "wb")!
@@ -170,7 +174,11 @@ struct KernelPipe {
     pipe2 = buffer[1]
     pipe3 = buffer[2]
     pipe4 = buffer[3]
-    // print("Pipe IDs: \(buffer)")
+    
+    // Parent writes into this.
+    precondition(close(pipe2!) == 0, "Could not close pipe 2.")
+    // Parent reads from this.
+    precondition(close(pipe3!) == 0, "Could not close pipe 3.")
   }
   
   static func flushPipes() {
