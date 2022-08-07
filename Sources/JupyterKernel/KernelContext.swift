@@ -99,6 +99,18 @@ struct KernelPipe {
   static func reset() {
     let filePointer = fopen("/opt/swift/pipe", "wb")!
     fclose(filePointer)
+    let lockPointer = fopen("/opt/swift/lock", "wb")!
+    fclose(lockPointer)
+  }
+  
+  static func withLock<Result>(_ body: () throws -> Result) rethrows {
+    let lockPointer = fopen("/opt/swift/lock", "rb")!
+    let fd = fileno(lockPointer)
+    flock(fd, LOCK_EX)
+    let output = try body()
+    flock(fd, LOCK_UN)
+    fclose(lockPointer)
+    return output
   }
   
   static func append(_ data: Data) {
@@ -111,20 +123,17 @@ struct KernelPipe {
       buffer.deallocate()
     }
     data.copyBytes(to: buffer, count: data.count)
-
-    let filePointer = fopen("/opt/swift/pipe", "ab")!
-    defer { 
-      fclose(filePointer) 
-    }
-    let fd = fileno(filePointer)
-    flock(fd, LOCK_EX)
-    defer { 
-      flock(fd, LOCK_UN) 
-    }
     
-    var header = Int64(data.count)
-    fwrite(&header, 8, 1, filePointer)
-    fwrite(buffer, 1, data.count, filePointer)
+    withLock {
+      let filePointer = fopen("/opt/swift/pipe", "ab")!
+      defer { 
+        fclose(filePointer) 
+      }
+      
+      var header = Int64(data.count)
+      fwrite(&header, 8, 1, filePointer)
+      fwrite(buffer, 1, data.count, filePointer)
+    }
   }
   
   static let scratchBufferSize = 1024
@@ -139,25 +148,22 @@ struct KernelPipe {
     }
     var output = Data()
     
-    let filePointer = fopen("/opt/swift/pipe", "rb")!
-    defer { 
-      fclose(filePointer) 
-    }
-    let fd = fileno(filePointer)
-    flock(fd, LOCK_EX)
-    defer { 
-      flock(fd, LOCK_UN) 
-    }
-    
-    while true {
-      let bytesRead = fread(scratchBuffer, 1, scratchBufferSize, filePointer)
-      if bytesRead == 0 {
-        break
+    return withLock {
+      var filePointer = fopen("/opt/swift/pipe", "rb")!
+      while true {
+        let bytesRead = fread(scratchBuffer, 1, scratchBufferSize, filePointer)
+        if bytesRead == 0 {
+          break
+        }
+        output.append(UnsafePointer(scratchBuffer), count: bytesRead)
       }
-      output.append(UnsafePointer(scratchBuffer), count: bytesRead)
+      fclose(filePointer) 
+      
+      // Erase the file's contents.
+      filePointer = fopen("/opt/swift/pipe", "wb")!
+      fclose(filePointer)
+      return output
     }
-    fseek(filePointer, 0, SEEK_END)
-    return output
   }
   
   static func read() -> [Data] {
