@@ -123,7 +123,7 @@ Adds a line of Bash code to execute before building the package.
 
 > Coming in Swift-Colab v2.3.
 
-Treats a pre-compiled module like a system library. This lets a Swift package's source code import the module, without declaring a dependency in `Package.swift`.
+Treats a previously compiled module like a library built into the Swift toolchain. This lets a Swift package's source code import the module, without declaring a dependency in `Package.swift`.
 
 - `MODULE` - The Swift module to automatically link. Before running the `%install-swiftpm-import` command, execute the `%include` command that declares this module
 
