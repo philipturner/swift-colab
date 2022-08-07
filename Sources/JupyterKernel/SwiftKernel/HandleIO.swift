@@ -415,9 +415,9 @@ func _poll_process(
   let events: [PythonObject] = Array(epoll.poll())
   var input_events: [PythonObject] = []
   for tuple in events {
-    KernelContext.log("m_HELLO WORLD \(tuple)")
+    KernelContext.log("HELLO WORLD \(tuple)")
     let (_, event) = tuple.tuple2
-    if Bool(event & select.EPOLLIN)! {
+    if Int(event & select.EPOLLIN)! != 0 {
       KernelContext.log("EPOLLIN")
       output_available = true
       let raw_contents = os.read(parent_pty, 1 << 20)
@@ -426,21 +426,15 @@ func _poll_process(
       sys.stdout.write(decoded_contents)
       sendStdout(String(decoded_contents)!)
       state.process_output.write(decoded_contents)
-    } else if Int(event)! & Int(select.EPOLLIN)! != 0 {
-      KernelContext.log("alt_2 EPOLLIN")
-
-      if Int(event & select.EPOLLIN)! != 0 {
-        KernelContext.log("alt_3 EPOLLIN")
-      }
     }
     
-    if Bool(event & select.EPOLLOUT)! {
+    if Int(event & select.EPOLLOUT)! != 0 {
       KernelContext.log("EPOLLOUT")
       input_events.append(event)
     }
     
-    if Bool(event & select.EPOLLHUP)! ||
-       Bool(event & select.EPOLLERR)! {
+    if Int(event & select.EPOLLHUP)! != 0 ||
+       Int(event & select.EPOLLERR)! != 0 {
       KernelContext.log("EPOLLHUP EPOLLERR")
       state.is_pty_still_connected = false
     }
