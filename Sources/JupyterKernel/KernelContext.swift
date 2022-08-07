@@ -176,9 +176,9 @@ struct KernelPipe {
     pipe4 = buffer[3]
     
     // Parent writes into this.
-    precondition(close(pipe2!) == 0, "Could not close pipe 2.")
+    // precondition(close(pipe2!) == 0, "Could not close pipe 2.")
     // Parent reads from this.
-    precondition(close(pipe3!) == 0, "Could not close pipe 3.")
+    // precondition(close(pipe3!) == 0, "Could not close pipe 3.")
   }
   
   static func flushPipes() {
