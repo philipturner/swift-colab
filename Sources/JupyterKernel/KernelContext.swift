@@ -165,20 +165,27 @@ struct KernelPipe {
       let path = "/opt/swift/socket\(id)"
       fclose(fopen(path, "wb")!)
       
+      // Initialize `namesock`.
       var namesock = sockaddr_un()
       namesock.sun_family = sa_family_t(AF_UNIX)
-      // +1 for null terminator
-      strncpy(&namesock.sun_path, path, path.count + 1)
+      func withPointer1(_ ptr: UnsafeMutableRawPointer) {
+        // +1 for null terminator
+        strncpy(.init(OpaquePointer(ptr)), path, path.count + 1)
+      }
+      withPointer1(&namesock.sun_path)
       
+      // Create and bind socket.
       let fd = precondition(
         socket(AF_UNIX, Int32(SOCK_DGRAM), 0) != -1, "socket failed: \(errno)")
-      func withPointer(_ ptr: UnsafeRawPointer) {
+      func withPointer2(_ ptr: UnsafeRawPointer) {
         let stride = MemoryLayout<sockaddr_un>.stride
         precondition(
           bind(fd, .init(OpaquePointer(ptr)), socklen_t(stride)) != -1,
           "bind failed: \(errno)")
       }
-      withPointer(&namesock)
+      withPointer2(&namesock)
+
+      // Call `write_fd`.
       precondition(
         write_fd(fd, nil, 0, pipe) > 0, "write_fd failed: \(errno)")
       precondition(close(fd) == 0, "Could not close fd \(fd)")
