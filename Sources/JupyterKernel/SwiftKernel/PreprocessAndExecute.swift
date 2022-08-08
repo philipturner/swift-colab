@@ -5,6 +5,8 @@ fileprivate let time = Python.import("time")
 func preprocessAndExecute(
   code: String, isCell: Bool = false
 ) throws -> ExecutionResult {
+  // TODO: Clear pipes here.
+
   let preprocessed = try preprocess(code: code)
   var executionResult: ExecutionResult?
   DispatchQueue.global().async {
@@ -39,8 +41,15 @@ func execute(
   code: String, lineIndex: Int? = nil, isCell: Bool = false
 ) -> ExecutionResult {
   // Send a header to stdout, letting the StdoutHandler know that it compiled 
-  // without errors and executed in LLDB.
-  var prefixCode = isCell ? "print(\"HEADER\")\n" : ""
+  // without errors and executed in LLDB. Also, reset the pipes for inter-
+  // process communication.
+  var prefixCode = (!isCell) ? "" : """
+    print(\"HEADER\")
+    do {
+      // TODO: KernelCommunicator.callSymbol("fetch_pipes")
+    }
+
+    """
   if let lineIndex = lineIndex {
     prefixCode += getLocationDirective(lineIndex: lineIndex)
   } else {

@@ -107,21 +107,21 @@ struct KernelCommunicator {
 import func Glibc.dlopen
 import func Glibc.dlsym
 
-// See Sources/JupyterKernel/SwiftShell.swift for an explanation of this 
-// workaround.
-do {
-  let /*Glibc.*/RTLD_LAZY = Int32(1)
-  let libAddress = dlopen("/opt/swift/lib/libJupyterKernel.so", RTLD_LAZY)
-  do {
-    let funcAddress = dlsym(libAddress, "fetch_pipes")
-    let fetch_pipes = unsafeBitCast(
-      funcAddress, to: (@convention(c) () -> Void).self)
-    fetch_pipes()
-  }
-  do {
-    let funcAddress = dlsym(libAddress, "prevent_numpy_import_hang")
-    let prevent_numpy_import_hang = unsafeBitCast(
-      funcAddress, to: (@convention(c) () -> Void).self)
-    prevent_numpy_import_hang()
+extension KernelCommunicator {
+  private static let /*Glibc.*/RTLD_LAZY = Int32(1)
+  private static let libJupyterKernel = dlopen(
+    "/opt/swift/lib/libJupyterKernel.so", RTLD_LAZY)!
+  
+  static func callSymbol(_ name: String) {
+    let address = dlsym(libJupyterKernel, name)!
+    let symbol = unsafeBitCast(address, to: (@convention(c) () -> Void).self)
+    symbol()
   }
 }
+
+// See Sources/JupyterKernel/SwiftShell.swift for an explanation of this 
+// workaround.
+KernelCommunicator.callSymbol("prevent_numpy_import_hang")
+
+// TODO: Only execute before each Jupyter cell.
+KernelCommunicator.callSymbol("fetch_pipes")
