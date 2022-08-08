@@ -47,9 +47,9 @@ public func redirect_stdin() {
       return kwargs[index].value
     }
     let request_type = args[0]
-    let request = fetchArgument("request")
-    let timeout_sec = fetchArgument("timeout_sec")
-    let parent = fetchArgument("parent")
+    let request = args[1]//fetchArgument("request")
+    let timeout_sec = args[2]//fetchArgument("timeout_sec")
+    let parent = args[3]//fetchArgument("parent")
     
     var shouldWait = false
     var loopID = 0
