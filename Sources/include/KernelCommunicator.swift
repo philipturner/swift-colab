@@ -22,15 +22,15 @@
 struct KernelCommunicator {
   private var afterSuccessfulExecutionHandler: (() -> [JupyterDisplayMessage])?
   private var parentMessageHandler: ((ParentMessage) -> ())?
-
+  
   let jupyterSession: JupyterSession
-
+  
   private var previousDisplayMessages: [JupyterDisplayMessage]?
-
+  
   init(jupyterSession: JupyterSession) {
     self.jupyterSession = jupyterSession
   }
-
+  
   /// The kernel calls this after successfully executing a cell of user code.
   /// Returns an array of messages, where each message is returned as an array
   /// of parts, where each part is returned as an address to the memory containing the part's
@@ -75,7 +75,7 @@ struct KernelCommunicator {
       self.bytes = []
       self.bytes.append(contentsOf: bytes)
     }
-
+    
     var unsafeBufferPointer: UnsafeBufferPointer<CChar> {
       // We have tried very hard to make the pointer stay valid outside the
       // closure:
@@ -86,7 +86,7 @@ struct KernelCommunicator {
       return bytes.withUnsafeBufferPointer { $0 }
     }
   }
-
+  
   /// ParentMessage identifies the request that causes things to happen.
   /// This lets Jupyter, for example, know which cell to display graphics
   /// messages in.
@@ -123,5 +123,9 @@ extension KernelCommunicator {
 // workaround.
 KernelCommunicator.callSymbol("prevent_numpy_import_hang")
 
-// TODO: Only execute before each Jupyter cell.
+// Clear pipes before executing any other Swift code for safe measure. This may
+// not be needed.
 KernelCommunicator.callSymbol("fetch_pipes")
+
+// Overwrite implementation of `google.colab._message.blocking_request`.
+KernelCommunicator.callSymbol("redirect_stdin")
