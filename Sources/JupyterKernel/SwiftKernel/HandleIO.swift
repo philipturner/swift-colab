@@ -294,7 +294,7 @@ func execute_blocking_request(_ input: Data) -> Data {
   let request_type = input_dict["request_type"]
   let request = input_dict["request"]
   let timeout_sec = input_dict["timeout_sec"]
-  let parent= input_dict["parent"]
+  let parent = input_dict["parent"]
   
   let output_obj = blocking_request(
     request_type, request: request, timeout_sec: timeout_sec, parent: parent)
