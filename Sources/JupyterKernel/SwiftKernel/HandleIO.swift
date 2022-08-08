@@ -273,8 +273,16 @@ fileprivate func send_request(
   return request_id
 }
 
-fileprivate func blocking_request() {
-  
+// Calls the front end with a request, and blocks until a reply is received.
+fileprivate func blocking_request(
+  _ request_type: PythonObject,
+  request: PythonObject,
+  timeout_sec: PythonObject,
+  parent: PythonObject
+) -> PythonObject {
+  let request_id = send_request(
+    request_type, request, parent: parent, expect_reply: true)
+  return read_reply_from_input(request_id, timeout_sec)
 }
 
 // Used in "PreprocessAndExecute.swift".
