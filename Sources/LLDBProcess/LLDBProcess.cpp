@@ -237,6 +237,7 @@ int get_pretty_stack_trace(void ***frames, int *size) {
   void **out = (void**)malloc(allocated_size * sizeof(char*));
   int filled_size = 0;
   
+  int num_finished_frames = 0;
   for (uint32_t i = 0; i < allocated_size; ++i) {
     auto frame = main_thread.GetFrameAtIndex(i);
     
@@ -256,11 +257,19 @@ int get_pretty_stack_trace(void ***frames, int *size) {
     }
     
     // auto function_name = frame.GetDisplayFunctionName();
-    
+    // auto function_name_len = strlen(function_name);
     auto file_name = file_spec.GetFilename();
     auto file_name_len = strlen(file_name);
-    auto function_name = frame.GetFunctionName();
+
+    char *function_name;
+    if (num_finished_frames == 1) {
+      function_name = frame.GetFunctionName();
+    } else {
+      function_name = frame.GetDisplayFunctionName();
+    }
     auto function_name_len = strlen(function_name);
+    num_finished_frames += 1;
+    
     
     const char *directory_name = NULL;
     size_t directory_name_len = 0;
