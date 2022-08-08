@@ -43,14 +43,16 @@ public func redirect_stdin() {
   let _message = Python.import("google.colab")._message
   _message.blocking_request = PythonFunction { args, kwargs in
     func fetchArgument(_ key: String) -> PythonObject {
-      let index = kwargs.firstIndex(where: { $0.key == key })!
-      return kwargs[index].value
+      if let index = kwargs.firstIndex(where: { $0.key == key }) {
+        return kwargs[index].value
+      } else {
+        return Python.None
+      }
     }
-    fatalError("args: \(args) kwargs: \(kwargs)")
     let request_type = args[0]
-    let request = args[1]//fetchArgument("request")
-    let timeout_sec = args[2]//fetchArgument("timeout_sec")
-    let parent = args[3]//fetchArgument("parent")
+    let request = fetchArgument("request")
+    let timeout_sec = fetchArgument("timeout_sec")
+    let parent = fetchArgument("parent")
     
     var shouldWait = false
     var loopID = 0
