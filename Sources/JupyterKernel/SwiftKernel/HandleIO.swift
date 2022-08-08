@@ -226,6 +226,7 @@ fileprivate func read_reply_from_input(
       return reply.checking["data"] ?? Python.None
     }
   }
+  return Python.None
 }
 
 // Global counter for message id.
