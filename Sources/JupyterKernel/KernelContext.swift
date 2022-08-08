@@ -98,9 +98,16 @@ fileprivate struct LLDBProcessLibrary {
 }
 
 struct KernelPipe {
-  enum TargetProcess {
+  enum ProcessType {
     case jupyterKernel
     case lldb
+
+    var other: ProcessType {
+      switch self {
+        case .jupyterKernel: return .lldb
+        case .lldb: return .jupyterKernel
+      }
+    }
     
     var recvPipe: Int32 {
       switch self {
@@ -123,7 +130,7 @@ struct KernelPipe {
   static var file2: UnsafeMutablePointer<FILE>?
   static var pipe1: Int32?
   static var pipe2: Int32?
-
+  
   // If the runtime crashed while LLDB was `while` looping to receive a message,
   // the LLDB thread's Python code keeps running endlessly. This could cause
   // data races, where the zombie thread consumes messages it doesn't own.
@@ -191,19 +198,21 @@ struct KernelPipe {
   }
   
   // Both parent and child processes call the same function.
-  static func fetchPipes(_ process: TargetProcess) {
+  static func fetchPipes(currentProcess: ProcessType) {
     closeHandles()
     globalCellID = loadCounter()
     
-    let mode1 = (process == .jupyterKernel) ? "rb" : "ab"
-    let mode2 = (process == .lldb) ? "rb" : "ab"
+    let mode1 = (currentProcess == .jupyterKernel) ? "rb" : "ab"
+    let mode2 = (currentProcess == .lldb) ? "rb" : "ab"
     file1 = fopen("/opt/swift/pipes/1-\(globalCellID!)", mode1)
     file2 = fopen("/opt/swift/pipes/2-\(globalCellID!)", mode2)
     pipe1 = fileno(file1)
     pipe2 = fileno(file2)
+
+    if process 
   }
   
-  static func send(_ data: Data, to process: TargetProcess) {
+  static func send(_ data: Data, to targetProcess: ProcessType) {
     validateCounter()
     guard data.count > 0 else {
       // Buffer pointer might initialize with null base address and zero count.
@@ -218,7 +227,7 @@ struct KernelPipe {
     headerPtr.pointee = UInt64(data.count)
     data.copyBytes(to: buffer + 8, count: data.count)
     
-    let pipe = process.sendPipe
+    let pipe = targetProcess.other.sendPipe
     precondition(
       Foundation.write(pipe, buffer, 8 + data.count) >= 0, 
       "Could not write to pipe \(pipe): \(errno)")
@@ -228,7 +237,7 @@ struct KernelPipe {
   
   // Still need to perform a postprocessing pass, which parses headers to
   // separate each message into its own `Data`.
-  static func recv_raw(from process: TargetProcess) -> Data {
+  static func recv_raw(from targetProcess: ProcessType) -> Data {
     validateCounter()
     let scratchBuffer: UnsafeMutablePointer<UInt8> = 
       .allocate(capacity: scratchBufferSize)
@@ -237,7 +246,7 @@ struct KernelPipe {
     }
     var output = Data()
     
-    let pipe = process.recvPipe
+    let pipe = targetProcess.other.recvPipe
     while true {
       let bytesRead = read(pipe, scratchBuffer, scratchBufferSize)
       KernelContext.log("BYTES READ: \(bytesRead) from: \(process)")
@@ -249,8 +258,8 @@ struct KernelPipe {
     return output
   }
   
-  static func recv(from process: TargetProcess) -> [Data] {
-    let raw_data = recv_raw(from: process)
+  static func recv(from targetProcess: ProcessType) -> [Data] {
+    let raw_data = recv_raw(from: targetProcess)
     guard raw_data.count > 0 else {
       return []
     }

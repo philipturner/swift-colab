@@ -35,7 +35,7 @@ public func prevent_numpy_import_hang() {
 
 @_cdecl("fetch_pipes")
 public func fetch_pipes() {
-  KernelPipe.fetchPipes(.lldb)
+  KernelPipe.fetchPipes(currentProcess: .lldb)
 }
 
 @_cdecl("redirect_stdin")
