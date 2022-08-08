@@ -11,6 +11,8 @@ The Swift kernel has various built-in commands for downloading dependencies and 
 - [`%install-swiftpm-import`](#install-swiftpm-import)
 - [`%system`](#system)
 
+> Some of this documentation is a work in progress.
+
 Magic commands are implemented in [PreprocessAndExecute.swift](https://github.com/philipturner/swift-colab/blob/main/Sources/JupyterKernel/SwiftKernel/PreprocessAndExecute.swift) and [ProcessInstalls.swift](https://github.com/philipturner/swift-colab/blob/main/Sources/JupyterKernel/SwiftKernel/ProcessInstalls.swift).
 
 ## Execution Behavior
@@ -42,23 +44,16 @@ Produces (replacing newlines with spaces):
 A B C D A B C D
 ```
 
-> Everything below this point is a work in progress.
-
----
-
-> TODO: Each command should have an example of usage in its description.
-
 ## `%include`
 ```
-%include PATH [--force]
+%include PATH 
 ```
 
 Inject code from a source file into the interpreter. The code executes at the top of the current cell, even if the `%include` command appears below other Swift code.
 
 - `PATH` - File path relative to the current working directory (`/content`), omitting the first forward flash. If the file does not exist there, it looks inside `/opt/swift/include`.
-- `--force`\* - The command silently fails if you already included it during the current Jupyter session. This protective mechanism prevents duplication of type objects. Use `--force` to override the mechanism and include the file multiple times.
 
-> \*This feature does not currently exist. It will be enabled in Swift-Colab v2.3.
+The command silently fails if you already included it during the current Jupyter session. This protective mechanism prevents duplication of the `SwiftShell` Python object. In Swift-Colab v2.3, an overhaul of `EnableIPythonDisplay.swift` will restore behavior in [swift-jupyter](https://github.com/google/swift-jupyter), where a file can be included multiple times.
 
 ## `%install`
 ```

@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// TODO: Encapsulate the Python interfacing to inside "libJupyterKernel.so",
+// drop requirement to import PythonKit before executing.
 #if canImport(PythonKit)
 import PythonKit
 
