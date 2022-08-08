@@ -132,7 +132,7 @@ struct KernelPipe {
   // creates unique file names across Jupyter sessions, and provides a way to
   // invalidate a zombie thread. If the current counter doesn't match the last
   // one cached by `fetchPipes`, it crashes.
-  static var globalCellID: UInt64 = -1
+  static var globalCellID: UInt64?
   
   // Close existing file handles.
   private static func closeHandles() {
@@ -172,7 +172,7 @@ struct KernelPipe {
 
   static func validateCounter() {
     let currentCounter = loadCounter()
-    guard globalCelID == currentCounter else {
+    guard globalCellID! == currentCounter else {
       fatalError("Zombie thread.")
     }
   }
@@ -197,8 +197,8 @@ struct KernelPipe {
     
     let mode1 = (process == .jupyterKernel) ? "rb" : "ab"
     let mode2 = (process == .lldb) ? "rb" : "ab"
-    file1 = fopen("/opt/swift/pipes/1-\(globalCellID)", mode1)
-    file2 = fopen("/opt/swift/pipes/2-\(globalCellID)", mode2)
+    file1 = fopen("/opt/swift/pipes/1-\(globalCellID!)", mode1)
+    file2 = fopen("/opt/swift/pipes/2-\(globalCellID!)", mode2)
     pipe1 = fileno(file1)
     pipe2 = fileno(file2)
   }
