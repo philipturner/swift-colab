@@ -126,12 +126,12 @@ struct KernelPipe {
   /*private */static func closeHandles() {
     if let file1 = file1 {
       fclose(file1)
-      file1 = nil
+      Self.file1 = nil
       pipe1 = nil
     }
     if let file2 = file2 {
       fclose(file2)
-      file2 = nil
+      Self.file2 = nil
       pipe2 = nil
     }
   }
