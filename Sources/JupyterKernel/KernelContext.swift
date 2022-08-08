@@ -142,20 +142,18 @@ struct KernelPipe {
       // Buffer pointer might initialize with null base address and zero count.
       return
     }
-    let buffer: UnsafeMutablePointer<UInt8> = .allocate(capacity: data.count)
+    let buffer: UnsafeMutablePointer<UInt8> = 
+      .allocate(capacity: 8 + data.count)
     defer {
       buffer.deallocate()
     }
-    data.copyBytes(to: buffer, count: data.count)
+    let headerPtr = UnsafeMutablePointer<UInt64>(OpaquePointer(buffer))
+    headerPtr.pointee = Int64(data.count)
+    data.copyBytes(to: buffer + 8, count: data.count)
     
-    precondition(process == .lldb)
     let pipe = process.writePipe
-    var header = Int64(data.count)
     precondition(
-      Foundation.write(pipe, &header, 8) >= 0, 
-      "Could not write to pipe \(pipe): \(errno)")
-    precondition(
-      Foundation.write(pipe, buffer, data.count) >= 0, 
+      Foundation.write(pipe, buffer, 8 + data.count) >= 0, 
       "Could not write to pipe \(pipe): \(errno)")
   }
   
@@ -171,7 +169,6 @@ struct KernelPipe {
     }
     var output = Data()
     
-    precondition(process == .jupyterKernel)
     let pipe = process.readPipe
     let read = Foundation.read
     while true {
