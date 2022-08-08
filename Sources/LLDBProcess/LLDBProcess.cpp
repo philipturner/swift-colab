@@ -256,10 +256,11 @@ int get_pretty_stack_trace(void ***frames, int *size) {
     }
     
     // auto function_name = frame.GetDisplayFunctionName();
-    auto function_name = frame.GetFunctionName();
-    auto function_name_len = strlen(function_name);
+    
     auto file_name = file_spec.GetFilename();
     auto file_name_len = strlen(file_name);
+    auto function_name = frame.GetFunctionName();
+    auto function_name_len = strlen(function_name);
     
     const char *directory_name = NULL;
     size_t directory_name_len = 0;
