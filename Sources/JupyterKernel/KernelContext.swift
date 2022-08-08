@@ -148,7 +148,7 @@ struct KernelPipe {
       buffer.deallocate()
     }
     let headerPtr = UnsafeMutablePointer<UInt64>(OpaquePointer(buffer))
-    headerPtr.pointee = Int64(data.count)
+    headerPtr.pointee = UInt64(data.count)
     data.copyBytes(to: buffer + 8, count: data.count)
     
     let pipe = process.writePipe
