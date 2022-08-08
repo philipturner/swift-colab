@@ -144,13 +144,17 @@ func prettyPrintStackTrace(
     if let folder = extractPackageFolder(fromPath: directory) {
       // File is in a package's build checkouts.
       path = folder + "/" + file
+      KernelContext.log("FOLDER")
     } else if directory.count > 0 {
       // File location not recognized.
       path = directory + "/" + file
+      KernelContext.log("DIRECTORY")
     } else {
       // File is a notebook cell.
       path = file
+      KernelContext.log("NOTEBOOK")
     }
+    KernelContext.log("\(function) ~ \(file) ~ \(directory) ~ \(path)")
     path = formatString(path, ansiOptions: [32])
     
     var frameID = String(i + 1) + " "
