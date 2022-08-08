@@ -255,8 +255,6 @@ int get_pretty_stack_trace(void ***frames, int *size) {
     if (strcmp(file_spec.GetFilename(), "<compiler-generated>") == 0) {
       continue;
     }
-
-    unsafe_log_message("frame start\n");
     
     // auto function_name = frame.GetDisplayFunctionName();
     // auto function_name_len = strlen(function_name);
@@ -264,8 +262,6 @@ int get_pretty_stack_trace(void ***frames, int *size) {
     auto file_name_len = strlen(file_name1);
     char *file_name = (char*)malloc(file_name_len + 1);
     memcpy(file_name, file_name1, file_name_len + 1);
-    unsafe_log_message(file_name);
-    unsafe_log_message("\n");
     
     const char *function_name;
     if (num_finished_frames == 1) {
@@ -275,14 +271,20 @@ int get_pretty_stack_trace(void ***frames, int *size) {
     }
     auto function_name_len = strlen(function_name);
     num_finished_frames += 1;
-    unsafe_log_message(function_name);
-    unsafe_log_message("\n");
     
     const char *directory_name = NULL;
     size_t directory_name_len = 0;
     if (file_spec.Exists()) {
       directory_name = file_spec.GetDirectory();
-      directory_name_len = strlen(directory_name);
+      directory_name_len = strlen(directory_name); 
+    }
+    
+    unsafe_log_message("frame start\n");
+    unsafe_log_message(file_name);
+    unsafe_log_message("\n");
+    unsafe_log_message(function_name);
+    unsafe_log_message("\n");
+    if (directory_name) {
       unsafe_log_message(directory_name);
       unsafe_log_message("\n");
     }
