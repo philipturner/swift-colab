@@ -46,6 +46,7 @@ public func redirect_stdin() {
       let index = kwargs.firstIndex(where: { $0.key == key })!
       return kwargs[index].value
     }
+    fatalError("args: \(args) kwargs: \(kwargs)")
     let request_type = args[0]
     let request = args[1]//fetchArgument("request")
     let timeout_sec = args[2]//fetchArgument("timeout_sec")
