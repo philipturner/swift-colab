@@ -10,7 +10,7 @@ extern "C" {
   int get_log_initialized() {
     return int(log_initialized);
   }
-
+  
   void set_log_initialized(int new_value) {
     log_initialized = bool(new_value);
   }

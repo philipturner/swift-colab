@@ -114,17 +114,25 @@ struct KernelPipe {
       }
     }
   }
-
+  
+  // TODO: Place everything related to pipes in its own directory.
   static var file1: UnsafeMutablePointer<FILE>?
   static var file2: UnsafeMutablePointer<FILE>?
   static var pipe1: Int32?
   static var pipe2: Int32?
   
+  // TODO: Flush files and assign new file descriptors before each cell.
+  static func resetPipes() {
+    fclose(fopen("/opt/swift/pipe1", "wb")!)
+    fclose(fopen("/opt/swift/pipe2", "wb")!)
+  }
+
   // Both parent and child processes call the same function.
-  // TODO: Flush files and create new file descriptors before each cell.
-  static func createPipes() {
-    file1 = fopen("/opt/swift/pipe1", "wb")
-    file2 = fopen("/opt/swift/pipe2", "wb")
+  static func fetchPipes(_ process: CurrentProcess) {
+    let mode1 = (process == .jupyterKernel) ? "rb" : "ab"
+    let mode2 = (process == .lldb) ? "rb" : "ab"
+    file1 = fopen("/opt/swift/pipe1", mode1)
+    file2 = fopen("/opt/swift/pipe2", mode2)
     pipe1 = fileno(file1)
     pipe2 = fileno(file2)
   }
