@@ -237,7 +237,6 @@ int get_pretty_stack_trace(void ***frames, int *size) {
   void **out = (void**)malloc(allocated_size * sizeof(char*));
   int filled_size = 0;
   
-  int num_finished_frames = 0;
   for (uint32_t i = 0; i < allocated_size; ++i) {
     auto frame = main_thread.GetFrameAtIndex(i);
     
@@ -256,21 +255,10 @@ int get_pretty_stack_trace(void ***frames, int *size) {
       continue;
     }
     
-    // auto function_name = frame.GetDisplayFunctionName();
-    // auto function_name_len = strlen(function_name);
-    auto file_name1 = file_spec.GetFilename();
-    auto file_name_len = strlen(file_name1);
-    char *file_name = (char*)malloc(file_name_len + 1);
-    memcpy(file_name, file_name1, file_name_len + 1);
-    
-    const char *function_name;
-    if (num_finished_frames == 1) {
-      function_name = frame.GetFunctionName();
-    } else {
-      function_name = frame.GetDisplayFunctionName();
-    }
+    auto function_name = frame.GetDisplayFunctionName();
     auto function_name_len = strlen(function_name);
-    num_finished_frames += 1;
+    auto file_name = file_spec.GetFilename();
+    auto file_name_len = strlen(file_name);
     
     const char *directory_name = NULL;
     size_t directory_name_len = 0;
@@ -288,7 +276,6 @@ int get_pretty_stack_trace(void ***frames, int *size) {
       unsafe_log_message(directory_name);
       unsafe_log_message("\n");
     }
-
     unsafe_log_message("frame end\n");
     
     // Let the Swift code format the line and column. Serialize them into an
@@ -328,8 +315,6 @@ int get_pretty_stack_trace(void ***frames, int *size) {
     // Store description pointer
     out[filled_size] = desc;
     filled_size += 1;
-
-    free(file_name);
   }
   *frames = out;
   *size = filled_size;
