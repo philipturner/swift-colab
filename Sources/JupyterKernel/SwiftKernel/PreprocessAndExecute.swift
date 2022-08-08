@@ -10,11 +10,11 @@ func preprocessAndExecute(
   
   // Accessing LLDB from multiple threads, so synchronize calls to `execute` for
   // safe measure.
-  let semaphore = DispatchSemaphore(value: 0)
+  // let semaphore = DispatchSemaphore(value: 0)
   DispatchQueue.global().async {
     executionResult = execute(
       code: preprocessed, lineIndex: isCell ? 0 : nil, isCell: isCell)
-    semaphore.signal()
+    // semaphore.signal()
   }
   
   var loopID = 0
@@ -37,7 +37,7 @@ func preprocessAndExecute(
     }
     loopID += 1
   }
-  semaphore.wait()
+  // semaphore.wait()
   return executionResult!
 }
 
