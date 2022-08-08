@@ -8,7 +8,7 @@ func doExecute(code: String, allowStdin: Bool) throws -> PythonObject? {
   // Reset the pipes here, where `SIGINTHandler` can't simultaneously send an
   // interrupt. Otherwise, the LLDB process might halt while exchanging file
   // handles.
-  configureCellPipes()
+  try configureCellPipes()
   
   KernelContext.isInterrupted = false
   KernelContext.pollingStdout = true
@@ -109,7 +109,7 @@ func doExecute(code: String, allowStdin: Bool) throws -> PythonObject? {
   }
 }
 
-fileprivate func configureCellPipes() {
+fileprivate func configureCellPipes() throws {
   KernelPipe.resetPipes()
   KernelPipe.fetchPipes(.jupyterKernel)
   do {
