@@ -64,7 +64,7 @@ public func redirect_stdin() {
         continue
       }
       
-      return = try decode_blocking_request(messages[0])
+      return try decode_blocking_request(messages[0])
     }
     
     // TODO: Profile first-round trip performance.
