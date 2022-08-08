@@ -12,6 +12,7 @@ func preprocessAndExecute(
       code: preprocessed, lineIndex: isCell ? 0 : nil, isCell: isCell)
   }
   
+  var loopID = 0
   while executionResult == nil {
     // Using Python's `time` module instead of Foundation.usleep releases the
     // GIL.
@@ -19,14 +20,17 @@ func preprocessAndExecute(
     
     if isCell {
       let messages = KernelPipe.read(.jupyterKernel)
-      if messages.count > 0 {
-        for message in messages {
-          let string = String(data: message, encoding: .utf8)!
-          let cellID = KernelContext.cellID
-          KernelContext.log("Message at <Cell \(cellID)>: START~~~\(string)~~~END")
-        }
+      for message in messages {
+        var string = String(data: message, encoding: .utf8)!
+        let cellID = KernelContext.cellID
+        KernelContext.log("Message at <Cell \(cellID)>: \(string)")
+        
+        string += "+\(loopID)"
+        let stringData = string.data(using: .utf8)!
+        KernelPipe.append(stringData, .jupyterKernel)
       }
     }
+    loopID += 1
   }
   return executionResult!
 }

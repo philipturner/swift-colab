@@ -44,7 +44,7 @@ public func get_kernel() -> Int32 {
   var output: Int32 = 0
   if colab != Python.None {
     output += 1
-
+    
     var _message: PythonObject?
     if let _obj = colab.checking._message {
       output += 10
@@ -61,14 +61,30 @@ public func get_kernel() -> Int32 {
         output += 1000
       }
       _message.blocking_request = PythonFunction { args, kwargs in
+        var shouldWait = false
+        var loopID = 0
         while true {
-          // let 
-          let string = "pipe - HELLO WORLD BLOCKING REQUEST"
-          let stringData = string.data(using: .utf8)!
-          KernelPipe.append(stringData, .lldb)
+          if shouldWait {
+            let messages = KernelPipe.read(.lldb)
+            for message in messages {
+              var string = String(data: message, encoding: .utf8)!
+              print(string)
+
+              string += "-\(loopID)"
+              let stringData = string.data(using: .utf8)!
+              KernelPipe.append(stringData, .lldb)
+            }
+          } else {
+            let string = "HELLO WORLD"
+            print(string)
+
+            let stringData = string.data(using: .utf8)!
+            KernelPipe.append(stringData, .lldb)
+          }
           
-          print("stdout - HELLO WORLD BLOCKING REQUEST")
+          shouldWait = true
           usleep(500_000)
+          loopID += 1
         }
       }.pythonObject
     }
