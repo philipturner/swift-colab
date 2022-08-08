@@ -5,6 +5,11 @@ fileprivate let json = Python.import("json")
 fileprivate let jsonutil = Python.import("jupyter_client").jsonutil
 
 func doExecute(code: String, allowStdin: Bool) throws -> PythonObject? {
+  // Reset the pipes here, where `SIGINTHandler` can't simultaneously send an
+  // interrupt. Otherwise, the LLDB process might halt while exchanging file
+  // handles.
+  configureCellPipes()
+  
   KernelContext.isInterrupted = false
   KernelContext.pollingStdout = true
   KernelContext.cellID = Int(KernelContext.kernel.execution_count)!
@@ -101,6 +106,19 @@ func doExecute(code: String, allowStdin: Bool) throws -> PythonObject? {
     return makeExecuteReplyErrorMessage(message)
   } else {
     fatalError("This should never happen.")
+  }
+}
+
+fileprivate func configureCellPipes() {
+  KernelPipe.resetPipes()
+  KernelPipe.fetchPipes(.jupyterKernel)
+  do {
+    let result = execute(code: """
+      KernelCommunicator.callSymbol("fetch_pipes")
+      """)
+    if result is ExecutionResultError {
+      throw Exception("Error fetching pipes: \(result)")
+    }
   }
 }
 

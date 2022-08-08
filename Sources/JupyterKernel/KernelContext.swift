@@ -119,10 +119,23 @@ struct KernelPipe {
   static var file2: UnsafeMutablePointer<FILE>?
   static var pipe1: Int32?
   static var pipe2: Int32?
+
+  // Close existing file handles.
+  private static func closeHandles() {
+    if let file1 = file1 {
+      fclose(file1)
+      pipe1 = nil
+    }
+    if let file2 = file2 {
+      fclose(file2)
+      pipe2 = nil
+    }
+  }
   
-  // TODO: Flush files and assign new file descriptors before each cell.
-  // TODO: Replace KernelCommunicator with transferring data over this stream.
+  // TODO: Replace `afterSuccessfulExecution` with transferring data over this 
+  // stream.
   static func resetPipes() {
+    closeHandles()
     remove("/opt/swift/pipe1")
     remove("/opt/swift/pipe2")
     fclose(fopen("/opt/swift/pipe1", "wb")!)
@@ -131,6 +144,7 @@ struct KernelPipe {
   
   // Both parent and child processes call the same function.
   static func fetchPipes(_ process: CurrentProcess) {
+    closeHandles()
     let mode1 = (process == .jupyterKernel) ? "rb" : "ab"
     let mode2 = (process == .lldb) ? "rb" : "ab"
     file1 = fopen("/opt/swift/pipe1", mode1)

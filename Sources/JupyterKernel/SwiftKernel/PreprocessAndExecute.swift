@@ -5,13 +5,16 @@ fileprivate let time = Python.import("time")
 func preprocessAndExecute(
   code: String, isCell: Bool = false
 ) throws -> ExecutionResult {
-  // TODO: Clear pipes here.
-
   let preprocessed = try preprocess(code: code)
   var executionResult: ExecutionResult?
+  
+  // Accessing LLDB from multiple threads, so synchronize calls to `execute` for
+  // safe measure.
+  let semaphore = DispatchSemaphore(value: 0)
   DispatchQueue.global().async {
     executionResult = execute(
       code: preprocessed, lineIndex: isCell ? 0 : nil, isCell: isCell)
+    semaphore.signal()
   }
   
   var loopID = 0
@@ -34,6 +37,7 @@ func preprocessAndExecute(
     }
     loopID += 1
   }
+  semaphore.wait()
   return executionResult!
 }
 
@@ -41,15 +45,8 @@ func execute(
   code: String, lineIndex: Int? = nil, isCell: Bool = false
 ) -> ExecutionResult {
   // Send a header to stdout, letting the StdoutHandler know that it compiled 
-  // without errors and executed in LLDB. Also, reset the pipes for inter-
-  // process communication.
-  var prefixCode = (!isCell) ? "" : """
-    print(\"HEADER\")
-    do {
-      // TODO: KernelCommunicator.callSymbol("fetch_pipes")
-    }
-
-    """
+  // without errors and executed in LLDB.
+  var prefixCode = isCell ? "print(\"HEADER\")\n" : ""
   if let lineIndex = lineIndex {
     prefixCode += getLocationDirective(lineIndex: lineIndex)
   } else {

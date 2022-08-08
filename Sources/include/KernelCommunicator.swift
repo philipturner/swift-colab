@@ -123,7 +123,7 @@ extension KernelCommunicator {
 // workaround.
 KernelCommunicator.callSymbol("prevent_numpy_import_hang")
 
-// Clear pipes before executing any other Swift code for safe measure. This may
+// Fetch pipes before executing any other Swift code for safe measure. This may
 // not be needed.
 KernelCommunicator.callSymbol("fetch_pipes")
 
