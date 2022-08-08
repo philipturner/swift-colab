@@ -10,9 +10,9 @@ func doExecute(code: String, allowStdin: Bool) throws -> PythonObject? {
   // handles.
   try KernelContext.lldbQueue.sync {
     // Should we leave the pipes' contents lingering until the next cell
-    // execution? They might contain sensitive information. Flushing the pipes 
-    // will not solve the security vulnerability of information being exposed 
-    // like that.
+    // execution? They might contain sensitive information. However, flushing 
+    // the pipes will not solve the security vulnerability of information being
+    // exposed like that.
     try configureCellPipes()
   }
   
