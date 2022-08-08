@@ -218,7 +218,7 @@ struct KernelPipe {
     headerPtr.pointee = UInt64(data.count)
     data.copyBytes(to: buffer + 8, count: data.count)
     
-    let pipe = process.writePipe
+    let pipe = process.sendPipe
     precondition(
       Foundation.write(pipe, buffer, 8 + data.count) >= 0, 
       "Could not write to pipe \(pipe): \(errno)")
@@ -237,7 +237,7 @@ struct KernelPipe {
     }
     var output = Data()
     
-    let pipe = process.readPipe
+    let pipe = process.recvPipe
     while true {
       let bytesRead = read(pipe, scratchBuffer, scratchBufferSize)
       KernelContext.log("BYTES READ: \(bytesRead) from: \(process)")
@@ -250,7 +250,7 @@ struct KernelPipe {
   }
   
   static func recv(from process: TargetProcess) -> [Data] {
-    let raw_data = recv_raw(process)
+    let raw_data = recv_raw(from: process)
     guard raw_data.count > 0 else {
       return []
     }
