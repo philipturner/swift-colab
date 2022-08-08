@@ -121,6 +121,7 @@ struct KernelPipe {
   static var pipe2: Int32?
   
   // TODO: Flush files and assign new file descriptors before each cell.
+  // TODO: Replace KernelCommunicator with transferring data over this stream.
   static func resetPipes() {
     fclose(fopen("/opt/swift/pipe1", "wb")!)
     fclose(fopen("/opt/swift/pipe2", "wb")!)
