@@ -200,6 +200,33 @@ fileprivate func _read_stdin_message() -> PythonObject {
   }
 }
 
+// Reads a reply to the message from the stdin channel.
+fileprivate func read_reply_from_input(
+  _ message_id: PythonObject,
+  _ timeout_sec: PythonObject
+) -> PythonObject {
+  var deadline = Python.None
+  if timeout_sec != Python.None {
+    deadline = time.time() + timeout_sec
+  }
+  while Bool(deadline == Python.None) || 
+        Bool(time.time() < deadline) {
+    let reply = _read_next_input_message()
+    if Bool(reply == _NOT_READY) ||
+       !Bool(Python.isinstance(reply, Python.dict)) {
+      time.sleep(0.025)
+      continue
+    }
+    if Bool(reply["type"] == "colab_reply") &&
+       Bool(reply["colab_msg_id"] == message_id) {
+      if reply.checking["error"] != nil {
+        fatalError("MessageError: \(reply["error"])")
+      }
+      return reply.checking["data"] ?? Python.None
+    }
+  }
+}
+
 // Global counter for message id.
 fileprivate var _msg_id: PythonObject = 0
 
@@ -244,6 +271,25 @@ fileprivate func send_request(
     "colab_request", content: content, metadata: metadata, parent: parent)
   kernel.session.send(kernel.iopub_socket, msg)
   return request_id
+}
+
+fileprivate func blocking_request() {
+  
+}
+
+// Used in "PreprocessAndExecute.swift".
+func execute_blocking_request(_ input: Data) -> Data {
+  Data()
+}
+
+// Used in "SwiftShell.swift".
+func encode_blocking_request(_ input: Any) -> Data {
+  fatalError()
+}
+
+// Used in "SwiftShell.swift".
+func decode_blocking_request(_ input: Data) -> Any {
+  fatalError()
 }
 
 //===----------------------------------------------------------------------===//

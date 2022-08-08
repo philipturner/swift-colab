@@ -119,7 +119,7 @@ extension KernelCommunicator {
   }
 }
 
-// See Sources/JupyterKernel/SwiftShell.swift for an explanation of this 
+// See "Sources/JupyterKernel/SwiftShell.swift" for an explanation of this 
 // workaround.
 KernelCommunicator.callSymbol("prevent_numpy_import_hang")
 

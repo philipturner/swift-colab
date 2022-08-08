@@ -40,6 +40,9 @@ public func fetch_pipes() {
 
 @_cdecl("redirect_stdin")
 public func redirect_stdin() {
+  let _message = Python.import("google.colab")._message
+  
+
   let colab = Python.import("google.colab")
   if colab != Python.None {
     

@@ -240,17 +240,17 @@ int get_pretty_stack_trace(void ***frames, int *size) {
   for (uint32_t i = 0; i < allocated_size; ++i) {
     auto frame = main_thread.GetFrameAtIndex(i);
     
-    // Do not include frames without source location information. These
-    // are frames in libraries and frames that belong to the LLDB
-    // expression execution implementation.
+    // Do not include frames without source location information. These are 
+    // frames in libraries and frames that belong to the LLDB expression 
+    // execution implementation.
     auto line_entry = frame.GetLineEntry();
     auto file_spec = line_entry.GetFileSpec();
     if (!file_spec.IsValid()) {
       continue;
     }
     
-    // Do not include <compiler-generated> frames. These are
-    // specializations of library functions.
+    // Do not include <compiler-generated> frames. These are specializations of
+    // library functions.
     if (strcmp(file_spec.GetFilename(), "<compiler-generated>") == 0) {
       continue;
     }
@@ -267,7 +267,7 @@ int get_pretty_stack_trace(void ***frames, int *size) {
       directory_name_len = strlen(directory_name);
     }
     
-    // Let the Swift code format the line and column. Serialize them into an 
+    // Let the Swift code format the line and column. Serialize them into an
     // 8-byte header.
     void *desc = malloc(
       /*line*/4 + /*column*/4 + 
