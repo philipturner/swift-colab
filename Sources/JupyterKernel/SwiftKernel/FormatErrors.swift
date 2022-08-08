@@ -154,7 +154,7 @@ func prettyPrintStackTrace(
       path = file
       KernelContext.log("NOTEBOOK")
     }
-    KernelContext.log("\(function) ~ \(file) ~ \(directory) ~ \(path)")
+    KernelContext.log("\(function) ~ \(file) ~ \(directory) ~ \(path) ~")
     path = formatString(path, ansiOptions: [32])
     
     var frameID = String(i + 1) + " "
