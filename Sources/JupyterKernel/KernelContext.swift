@@ -7,6 +7,8 @@ struct KernelContext {
   static var debuggerInitialized = false
   static var isInterrupted = false
   static var pollingStdout = false
+  static var lldbQueue = DispatchQueue(
+    label: "com.philipturner.swift-colab.KernelContext.lldbQueue")
   
   // For use in "ProcessInstalls.swift"
   static var installLocation = "/opt/swift/packages"
