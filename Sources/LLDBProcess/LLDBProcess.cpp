@@ -261,7 +261,7 @@ int get_pretty_stack_trace(void ***frames, int *size) {
     auto file_name = file_spec.GetFilename();
     auto file_name_len = strlen(file_name);
 
-    char *function_name;
+    const char *function_name;
     if (num_finished_frames == 1) {
       function_name = frame.GetFunctionName();
     } else {
