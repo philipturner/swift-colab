@@ -193,7 +193,6 @@ struct KernelPipe {
     let read = Foundation.read
     while true {
       let bytesRead = read(pipe, scratchBuffer, scratchBufferSize)
-      KernelContext.log("BYTES READ \(bytesRead) errno: \(errno)")
       if bytesRead <= 0 {
         break
       }
