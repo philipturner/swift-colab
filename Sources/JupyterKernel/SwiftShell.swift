@@ -63,7 +63,7 @@ public func redirect_stdin() {
       usleep(500_000)
       // usleep(50_000)
       print("Before attempting to read request")
-      let messages = KernelPipe.read(from: .jupyterKernel)
+      let messages = KernelPipe.recv(from: .jupyterKernel)
       precondition(messages.count <= 1, "Received more than one message.")
       print("After attempting to read request")
       if messages.count == 0 {

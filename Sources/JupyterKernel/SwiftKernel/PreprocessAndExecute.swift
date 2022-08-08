@@ -19,7 +19,7 @@ func preprocessAndExecute(
     time.sleep(0.05)
     
     if isCell {
-      let messages = KernelPipe.read(from: .lldb)
+      let messages = KernelPipe.recv(from: .lldb)
       precondition(messages.count <= 1, "Received more than one message.")
       if messages.count == 0 {
         continue
