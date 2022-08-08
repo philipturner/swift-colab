@@ -115,7 +115,6 @@ struct KernelPipe {
     }
   }
   
-  // TODO: Place everything related to pipes in its own directory.
   static var file1: UnsafeMutablePointer<FILE>?
   static var file2: UnsafeMutablePointer<FILE>?
   static var pipe1: Int32?
@@ -126,7 +125,7 @@ struct KernelPipe {
     fclose(fopen("/opt/swift/pipe1", "wb")!)
     fclose(fopen("/opt/swift/pipe2", "wb")!)
   }
-
+  
   // Both parent and child processes call the same function.
   static func fetchPipes(_ process: CurrentProcess) {
     let mode1 = (process == .jupyterKernel) ? "rb" : "ab"
