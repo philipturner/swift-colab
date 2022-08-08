@@ -49,36 +49,58 @@ public func redirect_stdin() {
         return Python.None
       }
     }
-    let request_type = args[0]
-    let request = fetchArgument("request")
-    let timeout_sec = fetchArgument("timeout_sec")
-    let parent = fetchArgument("parent")
+    print("Encoding request")
+    let input = encode_blocking_request(
+      args[0], 
+      request: fetchArgument("request"), 
+      timeout_sec: fetchArgument("timeout_sec"), 
+      parent: fetchArgument("parent"))
+    print("Before submitting request")
+    KernelPipe.append(input, .lldb)
+    print("After submitting request")
     
-    var shouldWait = false
-    var loopID = 0
     while true {
-      if shouldWait {
-        let messages = KernelPipe.read(.lldb)
-        for message in messages {
-          var string = String(data: message, encoding: .utf8)!
-          print(string)
-          
-          string += "-\(loopID)"
-          let stringData = string.data(using: .utf8)!
-          KernelPipe.append(stringData, .lldb)
-        }
-      } else {
-        let string = "HELLO WORLD"
-        print(string)
-        
-        let stringData = string.data(using: .utf8)!
-        KernelPipe.append(stringData, .lldb)
+      usleep(500_000)
+      // usleep(50_000)
+      print("Before attempting to read request")
+      let messages = KernelPipe.read(.lldb)
+      precondition(messages.count <= 1, "Received more than one message.")
+      print("After attempting to read request")
+      if messages.count == 0 {
+        continue
       }
       
-      shouldWait = true
-      usleep(500_000)
-      loopID += 1
+      print("Got request output")
+      let output = decode_blocking_request(messages[0])
+      print("Decoded request")
+      return output
     }
+    
+    // var shouldWait = false
+    // var loopID = 0
+    // while true {
+    //   if shouldWait {
+    //     let messages = KernelPipe.read(.lldb)
+    //     for message in messages {
+    //       var string = String(data: message, encoding: .utf8)!
+    //       print(string)
+          
+    //       string += "-\(loopID)"
+    //       let stringData = string.data(using: .utf8)!
+    //       KernelPipe.append(stringData, .lldb)
+    //     }
+    //   } else {
+    //     let string = "HELLO WORLD"
+    //     print(string)
+        
+    //     let stringData = string.data(using: .utf8)!
+    //     KernelPipe.append(stringData, .lldb)
+    //   }
+      
+    //   shouldWait = true
+    //   usleep(500_000)
+    //   loopID += 1
+    // }
   }.pythonObject
 }
 
