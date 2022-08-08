@@ -262,7 +262,7 @@ int get_pretty_stack_trace(void ***frames, int *size) {
     // auto function_name_len = strlen(function_name);
     auto file_name1 = file_spec.GetFilename();
     auto file_name_len = strlen(file_name1);
-    char *file_name = malloc(file_name_len + 1);
+    char *file_name = (char*)malloc(file_name_len + 1);
     memcpy(file_name, file_name1, file_name_len + 1);
     unsafe_log_message(file_name);
     unsafe_log_message("\n");
