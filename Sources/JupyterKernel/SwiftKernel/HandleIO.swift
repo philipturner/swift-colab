@@ -1,6 +1,7 @@
 import Foundation
 fileprivate let codecs = Python.import("codecs")
 fileprivate let io = Python.import("io")
+fileprivate let json = Python.import("json")
 fileprivate let locale = Python.import("locale")
 fileprivate let os = Python.import("os")
 fileprivate let pexpect = Python.import("pexpect")
@@ -287,17 +288,41 @@ fileprivate func blocking_request(
 
 // Used in "PreprocessAndExecute.swift".
 func execute_blocking_request(_ input: Data) -> Data {
-  Data()
+  let input_str = String(data: input, encoding: .utf8)!
+  let input_dict = json.loads(input_str.pythonObject)
+
+  let request_type = input_dict["request_type"]
+  let request = input_dict["request"]
+  let timeout_sec = input_dict["timeout_sec"]
+  let parent= input_dict["parent"]
+  
+  let output_obj = blocking_request(
+    request_type, request: request, timeout_sec: timeout_sec, parent: parent)
+  let output_str = String(json.dumps(output_obj))!
+  return output_str.data(using: .utf8)!
 }
 
 // Used in "SwiftShell.swift".
-func encode_blocking_request(_ input: Any) -> Data {
-  fatalError()
+func encode_blocking_request(
+  _ request_type: PythonObject,
+  request: PythonObject,
+  timeout_sec: PythonObject,
+  parent: PythonObject
+) -> Data {
+  let input_dict = PythonObject([:])
+  input_dict["request_type"] = request_type
+  input_dict["request"] = request
+  input_dict["timeout_sec"] = timeout_sec
+  input_dict["parent"] = parent
+  
+  let input_str = String(json.dumps(input_dict))
+  return input_str.data(using: .utf8)!
 }
 
 // Used in "SwiftShell.swift".
-func decode_blocking_request(_ input: Data) -> Any {
-  fatalError()
+func decode_blocking_request(_ input: Data) -> PythonObject {
+  let input_str = String(data: input, encoding: .utf8)!
+  return json.loads(input_str.pythonObject)
 }
 
 //===----------------------------------------------------------------------===//
