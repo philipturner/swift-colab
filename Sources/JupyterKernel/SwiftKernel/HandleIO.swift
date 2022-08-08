@@ -210,16 +210,16 @@ fileprivate func read_reply_from_input(
   if timeout_sec != Python.None {
     deadline = time.time() + timeout_sec
   }
-  while Bool(deadline == Python.None) || 
-        Bool(time.time() < deadline) {
+  while Bool(deadline == Python.None)! || 
+        Bool(time.time() < deadline)! {
     let reply = _read_next_input_message()
-    if Bool(reply == _NOT_READY) ||
-       !Bool(Python.isinstance(reply, Python.dict)) {
+    if Bool(reply == _NOT_READY)! ||
+       !Bool(Python.isinstance(reply, Python.dict))! {
       time.sleep(0.025)
       continue
     }
-    if Bool(reply["type"] == "colab_reply") &&
-       Bool(reply["colab_msg_id"] == message_id) {
+    if Bool(reply["type"] == "colab_reply")! &&
+       Bool(reply["colab_msg_id"] == message_id)! {
       if reply.checking["error"] != nil {
         fatalError("MessageError: \(reply["error"])")
       }
@@ -315,7 +315,7 @@ func encode_blocking_request(
   input_dict["timeout_sec"] = timeout_sec
   input_dict["parent"] = parent
   
-  let input_str = String(json.dumps(input_dict))
+  let input_str = String(json.dumps(input_dict))!
   return input_str.data(using: .utf8)!
 }
 
