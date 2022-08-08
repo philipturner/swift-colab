@@ -16,8 +16,6 @@ func doExecute(code: String, allowStdin: Bool) throws -> PythonObject? {
       // being exposed like that.
       try configureCellPipes()
     }
-  } else {
-    KernelContext.log("Received empty code")
   }
   
   KernelContext.isInterrupted = false
