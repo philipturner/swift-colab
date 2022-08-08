@@ -191,7 +191,7 @@ struct KernelPipe {
   }
   
   // Both parent and child processes call the same function.
-  static func fetchPipes(_ process: CurrentProcess) {
+  static func fetchPipes(_ process: TargetProcess) {
     closeHandles()
     globalCellID = loadCounter()
     
