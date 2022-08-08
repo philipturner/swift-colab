@@ -42,6 +42,11 @@ public func fetch_pipes() {
 public func redirect_stdin() {
   let _message = Python.import("google.colab")._message
   _message.blocking_request = PythonFunction { args, kwargs in
+    let request_type = args[0]
+    let request = kwargs["request"]
+    let timeout_sec = kwargs["timeout_sec"]
+    let parent = kwargs["parent"]
+
     var shouldWait = false
     var loopID = 0
     while true {
