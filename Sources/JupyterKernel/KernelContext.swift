@@ -125,12 +125,12 @@ struct KernelPipe {
   // Close existing file handles.
   /*private */static func closeHandles() {
     if let file1 = file1 {
-      fclose(file1)
+      precondition(fclose(file1) == 0, "Could not close pipe 1: \(errno)")
       Self.file1 = nil
       pipe1 = nil
     }
     if let file2 = file2 {
-      fclose(file2)
+      precondition(fclose(file2) == 0, "Could not close pipe 2: \(errno)")
       Self.file2 = nil
       pipe2 = nil
     }
