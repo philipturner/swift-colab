@@ -121,15 +121,17 @@ struct KernelPipe {
   static var file2: UnsafeMutablePointer<FILE>?
   static var pipe1: Int32?
   static var pipe2: Int32?
-
+  
   // Close existing file handles.
-  private static func closeHandles() {
+  /*private */static func closeHandles() {
     if let file1 = file1 {
       fclose(file1)
+      file1 = nil
       pipe1 = nil
     }
     if let file2 = file2 {
       fclose(file2)
+      file2 = nil
       pipe2 = nil
     }
   }
