@@ -113,7 +113,7 @@ func doExecute(code: String, allowStdin: Bool) throws -> PythonObject? {
 
 fileprivate func configureCellPipes() throws {
   KernelPipe.resetPipes()
-  // KernelPipe.fetchPipes(.jupyterKernel)
+  KernelPipe.fetchPipes(.jupyterKernel)
   do {
     // let result = execute(code: """
     //   KernelCommunicator.callSymbol("fetch_pipes")
