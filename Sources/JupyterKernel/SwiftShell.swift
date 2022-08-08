@@ -63,7 +63,6 @@ public func redirect_stdin() {
       if messages.count == 0 {
         continue
       }
-      
       return try decode_blocking_request(messages[0])
     }
   }.pythonObject
