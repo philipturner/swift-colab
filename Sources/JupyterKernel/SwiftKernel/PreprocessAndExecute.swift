@@ -88,7 +88,10 @@ fileprivate func preprocess(code: String) throws -> String {
   return preprocessedLines.joined(separator: "\n")
 }
 
-fileprivate func preprocess(line: String, index lineIndex: Int) throws -> String {
+fileprivate func preprocess(
+  line: String, 
+  index lineIndex: Int
+) throws -> String {
   let installRegularExpression = ###"""
     ^\s*%install
     """###
@@ -128,7 +131,10 @@ fileprivate func preprocess(line: String, index lineIndex: Int) throws -> String
 
 fileprivate var previouslyReadPaths: Set<String> = []
 
-fileprivate func readInclude(restOfLine: String, lineIndex: Int) throws -> String {
+fileprivate func readInclude(
+  restOfLine: String, 
+  lineIndex: Int
+) throws -> String {
   let nameRegularExpression = ###"""
     ^\s*"([^"]+)"\s*$
     """###

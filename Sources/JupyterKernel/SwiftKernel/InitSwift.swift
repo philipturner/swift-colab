@@ -9,12 +9,13 @@ fileprivate struct CEnvironment {
       envArray.append("\(key)=\(value)")
     }
     
-    typealias EnvPointerType = UnsafeMutablePointer<UnsafeMutablePointer<CChar>?>
-    let envPointer = EnvPointerType.allocate(capacity: envArray.count + 1)
+    typealias EnvPointer = UnsafeMutablePointer<UnsafeMutablePointer<CChar>?>
+    let envPointer = EnvPointer.allocate(capacity: envArray.count + 1)
     envPointer[envArray.count] = nil
     for i in 0..<envArray.count {
       let originalStr = envArray[i]
-      let strPointer = UnsafeMutablePointer<CChar>.allocate(capacity: originalStr.count + 1)
+      let strPointer = UnsafeMutablePointer<CChar>
+        .allocate(capacity: originalStr.count + 1)
       _ = originalStr.withCString {
         memcpy(strPointer, $0, originalStr.count + 1)
       }
