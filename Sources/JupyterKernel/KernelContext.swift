@@ -208,8 +208,6 @@ struct KernelPipe {
     file2 = fopen("/opt/swift/pipes/2-\(globalCellID!)", mode2)
     pipe1 = fileno(file1)
     pipe2 = fileno(file2)
-
-    if process 
   }
   
   static func send(_ data: Data, to targetProcess: ProcessType) {
@@ -249,7 +247,7 @@ struct KernelPipe {
     let pipe = targetProcess.other.recvPipe
     while true {
       let bytesRead = read(pipe, scratchBuffer, scratchBufferSize)
-      KernelContext.log("BYTES READ: \(bytesRead) from: \(process)")
+      KernelContext.log("BYTES READ: \(bytesRead) self: \(targetProcess.other)")
       if bytesRead <= 0 {
         break
       }
