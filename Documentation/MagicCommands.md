@@ -53,7 +53,7 @@ Inject code from a source file into the interpreter. The code executes at the to
 
 - `PATH` - File path relative to the current working directory (`/content`), omitting the first forward flash. If the file does not exist there, it looks inside `/opt/swift/include`.
 
-The command silently fails if you previously included `PATH` during the current Jupyter session. This protective mechanism prevents duplication of the `SwiftShell` Python object. Swift-Colab v2.3 will restore old behavior from [swift-jupyter](https://github.com/google/swift-jupyter), where a file can be included multiple times.
+The command silently fails if you previously included `PATH` during the current Jupyter session. This protective mechanism prevents duplication of the `SwiftShell` Python object in `EnableIPythonDisplay.swift`. Swift-Colab v2.3 will restore old behavior from [swift-jupyter](https://github.com/google/swift-jupyter), where a file can be included multiple times.
 
 ## `%install`
 ```
