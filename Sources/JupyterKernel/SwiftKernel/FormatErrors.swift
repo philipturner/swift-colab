@@ -159,10 +159,15 @@ func prettyPrintStackTrace(
     }
     // KernelContext.log("\(function) ~ \(file) ~ \(directory) ~ \(path) ~")
     // KernelContext.log("function ~ file ~ directory ~ path ~")
+    KernelContext.log("begin")
     KernelContext.log("\(function) ~")
+    KernelContext.log("d")
     KernelContext.log("\(file) ~")
+    KernelContext.log("d")
     KernelContext.log("\(directory) ~")
+    KernelContext.log("d")
     KernelContext.log("\(path) ~")
+    KernelContext.log("d")
     KernelContext.log("-")
     path = formatString(path, ansiOptions: [32])
     
