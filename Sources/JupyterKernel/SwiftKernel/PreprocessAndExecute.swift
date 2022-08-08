@@ -20,15 +20,22 @@ func preprocessAndExecute(
     
     if isCell {
       let messages = KernelPipe.read(.jupyterKernel)
-      for message in messages {
-        var string = String(data: message, encoding: .utf8)!
-        let cellID = KernelContext.cellID
-        KernelContext.log("Message at <Cell \(cellID)>: \(string)")
-        
-        string += "+\(loopID)"
-        let stringData = string.data(using: .utf8)!
-        KernelPipe.append(stringData, .jupyterKernel)
+      precondition(messages.count <= 1, "Received more than one message.")
+      if messages.count == 0 {
+        continue
       }
+
+      KernelContext.log("Before executing request")
+      let output = execute
+      // for message in messages {
+      //   var string = String(data: message, encoding: .utf8)!
+      //   let cellID = KernelContext.cellID
+      //   KernelContext.log("Message at <Cell \(cellID)>: \(string)")
+        
+      //   string += "+\(loopID)"
+      //   let stringData = string.data(using: .utf8)!
+      //   KernelPipe.append(stringData, .jupyterKernel)
+      // }
     }
     loopID += 1
   }
