@@ -121,7 +121,7 @@ Adds a line of Bash code to execute before building the package.
 
 Treats a previously compiled module like a library built into the Swift toolchain. This lets a Swift package's source code import the module, without declaring a dependency in `Package.swift`.
 
-- `MODULE` - The Swift module to automatically link. Before running the `%install-swiftpm-import` command, execute the `%include` command that declares this module
+- `MODULE` - The Swift module to automatically link. Before running `%install-swiftpm-import`, execute the `%include` command that declares this module
 
 This command's underlying mechanism is used to inject `JupyterDisplay` into Swift packages. This module lets external packages seamlessly communicate with the notebook's Jupyter display. Use the convention below to conditionally import `MODULE` inside a Swift package.
 
