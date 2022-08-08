@@ -118,9 +118,9 @@ fileprivate func configureCellPipes() throws {
     let result = execute(code: """
       KernelCommunicator.callSymbol("fetch_pipes")
       """)
-    // if result is ExecutionResultError {
-    //   throw Exception("Error fetching pipes: \(result)")
-    // }
+    if result is ExecutionResultError {
+      throw Exception("Error fetching pipes: \(result)")
+    }
   }
 }
 
