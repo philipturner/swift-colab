@@ -60,18 +60,15 @@ public func redirect_stdin() {
     print("After submitting request")
     
     while true {
-      usleep(500_000)
-      // usleep(50_000)
-      print("Before attempting to read request")
+      usleep(50_000)
       let messages = KernelPipe.recv(from: .jupyterKernel)
       precondition(messages.count <= 1, "Received more than one message.")
-      print("After attempting to read request")
       if messages.count == 0 {
         continue
       }
       
       print("Got response")
-      let output = decode_blocking_request(messages[0])
+      let output = try decode_blocking_request(messages[0])
       print("Decoded response")
       return output
     }

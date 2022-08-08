@@ -220,10 +220,7 @@ fileprivate func read_reply_from_input(
     }
     if Bool(reply["type"] == "colab_reply")! &&
        Bool(reply["colab_msg_id"] == message_id)! {
-      if reply.checking["error"] != nil {
-        fatalError("MessageError: \(reply["error"])")
-      }
-      return reply.checking["data"] ?? Python.None
+      return reply
     }
   }
   return Python.None
@@ -321,9 +318,14 @@ func encode_blocking_request(
 }
 
 // Used in "SwiftShell.swift".
-func decode_blocking_request(_ input: Data) -> PythonObject {
+func decode_blocking_request(_ input: Data) throws -> PythonObject {
   let input_str = String(data: input, encoding: .utf8)!
-  return json.loads(input_str.pythonObject)
+  let reply = json.loads(input_str.pythonObject)
+  if reply.checking["error"] != nil {
+    let _message = Python.import("google.colab")._message
+    throw _message.MessageError(reply["error"])
+  }
+  return reply.checking["data"] ?? Python.None
 }
 
 //===----------------------------------------------------------------------===//
