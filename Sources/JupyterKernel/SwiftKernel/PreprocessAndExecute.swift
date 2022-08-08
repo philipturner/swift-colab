@@ -25,13 +25,8 @@ func preprocessAndExecute(
         continue
       }
       
-      KernelContext.log("Before executing request")
-      let output = execute_blocking_request(messages[0])
-      KernelContext.log("After executing request")
-      
-      KernelContext.log("Before submitting response")
-      KernelPipe.send(output, to: .lldb)
-      KernelContext.log("After submitting response")
+      let response = execute_blocking_request(messages[0])
+      KernelPipe.send(response, to: .lldb)
       // for message in messages {
       //   var string = String(data: message, encoding: .utf8)!
       //   let cellID = KernelContext.cellID

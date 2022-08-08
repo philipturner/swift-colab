@@ -247,7 +247,6 @@ struct KernelPipe {
     let pipe = targetProcess.other.recvPipe
     while true {
       let bytesRead = read(pipe, scratchBuffer, scratchBufferSize)
-      KernelContext.log("BYTES READ: \(bytesRead) self: \(targetProcess.other)")
       if bytesRead <= 0 {
         break
       }

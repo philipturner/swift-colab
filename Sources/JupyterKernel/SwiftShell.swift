@@ -49,15 +49,12 @@ public func redirect_stdin() {
         return Python.None
       }
     }
-    print("Encoding request")
     let input = encode_blocking_request(
       args[0], 
       request: fetchArgument("request"), 
       timeout_sec: fetchArgument("timeout_sec"), 
       parent: fetchArgument("parent"))
-    print("Before submitting request")
     KernelPipe.send(input, to: .jupyterKernel)
-    print("After submitting request")
     
     while true {
       usleep(50_000)
@@ -67,12 +64,10 @@ public func redirect_stdin() {
         continue
       }
       
-      print("Got response")
-      let output = try decode_blocking_request(messages[0])
-      print("Decoded response")
-      return output
+      return = try decode_blocking_request(messages[0])
     }
     
+    // TODO: Profile first-round trip performance.
     // var shouldWait = false
     // var loopID = 0
     // while true {
