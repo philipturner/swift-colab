@@ -72,7 +72,7 @@ public func redirect_stdin() {
     var loopID = 0
     while true {
       if shouldWait {
-        let messages = KernelPipe.recv(from: .jupyterKernel))
+        let messages = KernelPipe.recv(from: .jupyterKernel)
         for message in messages {
           var string = String(data: message, encoding: .utf8)!
           print(string)
