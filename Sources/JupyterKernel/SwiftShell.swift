@@ -41,53 +41,33 @@ public func fetch_pipes() {
 @_cdecl("redirect_stdin")
 public func redirect_stdin() {
   let _message = Python.import("google.colab")._message
-  
+  _message.blocking_request = PythonFunction { args, kwargs in
+    var shouldWait = false
+    var loopID = 0
+    while true {
+      if shouldWait {
+        let messages = KernelPipe.read(.lldb)
+        for message in messages {
+          var string = String(data: message, encoding: .utf8)!
+          print(string)
 
-  let colab = Python.import("google.colab")
-  if colab != Python.None {
-    
-    var _message: PythonObject?
-    if let _obj = colab.checking._message {
-      _message = _obj
-    }
-    if let _import = try? Python.attemptImport("google.colab._message") {
-      _message = _import
-    }
-    
-    if let _message = _message {
-      let blocking_request = _message.checking.blocking_request
-      if blocking_request != nil {
-        
-      }
-      _message.blocking_request = PythonFunction { args, kwargs in
-        var shouldWait = false
-        var loopID = 0
-        while true {
-          if shouldWait {
-            let messages = KernelPipe.read(.lldb)
-            for message in messages {
-              var string = String(data: message, encoding: .utf8)!
-              print(string)
-
-              string += "-\(loopID)"
-              let stringData = string.data(using: .utf8)!
-              KernelPipe.append(stringData, .lldb)
-            }
-          } else {
-            let string = "HELLO WORLD"
-            print(string)
-
-            let stringData = string.data(using: .utf8)!
-            KernelPipe.append(stringData, .lldb)
-          }
-          
-          shouldWait = true
-          usleep(500_000)
-          loopID += 1
+          string += "-\(loopID)"
+          let stringData = string.data(using: .utf8)!
+          KernelPipe.append(stringData, .lldb)
         }
-      }.pythonObject
+      } else {
+        let string = "HELLO WORLD"
+        print(string)
+
+        let stringData = string.data(using: .utf8)!
+        KernelPipe.append(stringData, .lldb)
+      }
+      
+      shouldWait = true
+      usleep(500_000)
+      loopID += 1
     }
-  }
+  }.pythonObject
 }
 
 // Caller side: use `ctypes` to convert return value, which is the address of a
