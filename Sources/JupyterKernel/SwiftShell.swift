@@ -42,56 +42,29 @@ public func fetch_pipes() {
 public func redirect_stdin() {
   let _message = Python.import("google.colab")._message
   _message.blocking_request = PythonFunction { args, kwargs in
-    // func fetchArgument(_ key: String) -> PythonObject {
-    //   if let index = kwargs.firstIndex(where: { $0.key == key }) {
-    //     return kwargs[index].value
-    //   } else {
-    //     return Python.None
-    //   }
-    // }
-    // let input = encode_blocking_request(
-    //   args[0], 
-    //   request: fetchArgument("request"), 
-    //   timeout_sec: fetchArgument("timeout_sec"), 
-    //   parent: fetchArgument("parent"))
-    // KernelPipe.send(input, to: .jupyterKernel)
-    
-    // while true {
-    //   usleep(50_000)
-    //   let messages = KernelPipe.recv(from: .jupyterKernel)
-    //   precondition(messages.count <= 1, "Received more than one message.")
-    //   if messages.count == 0 {
-    //     continue
-    //   }
-      
-    //   return try decode_blocking_request(messages[0])
-    // }
-    
-    // TODO: Profile first-round trip performance.
-    var shouldWait = false
-    var loopID = 0
-    while true {
-      if shouldWait {
-        let messages = KernelPipe.recv(from: .jupyterKernel)
-        for message in messages {
-          var string = String(data: message, encoding: .utf8)!
-          print(string)
-          
-          string += "-\(loopID)"
-          let stringData = string.data(using: .utf8)!
-          KernelPipe.send(stringData, to: .jupyterKernel)
-        }
+    func fetchArgument(_ key: String) -> PythonObject {
+      if let index = kwargs.firstIndex(where: { $0.key == key }) {
+        return kwargs[index].value
       } else {
-        let string = "HELLO WORLD"
-        print(string)
-        
-        let stringData = string.data(using: .utf8)!
-        KernelPipe.send(stringData, to: .jupyterKernel)
+        return Python.None
+      }
+    }
+    let input = encode_blocking_request(
+      args[0], 
+      request: fetchArgument("request"), 
+      timeout_sec: fetchArgument("timeout_sec"), 
+      parent: fetchArgument("parent"))
+    KernelPipe.send(input, to: .jupyterKernel)
+    
+    while true {
+      usleep(50_000)
+      let messages = KernelPipe.recv(from: .jupyterKernel)
+      precondition(messages.count <= 1, "Received more than one message.")
+      if messages.count == 0 {
+        continue
       }
       
-      shouldWait = true
-      usleep(500_000)
-      loopID += 1
+      return try decode_blocking_request(messages[0])
     }
   }.pythonObject
 }

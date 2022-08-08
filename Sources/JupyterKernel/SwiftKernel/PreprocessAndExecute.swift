@@ -12,7 +12,6 @@ func preprocessAndExecute(
       code: preprocessed, lineIndex: isCell ? 0 : nil, isCell: isCell)
   }
   
-  var loopID = 0
   while executionResult == nil {
     // Using Python's `time` module instead of Foundation.usleep releases the
     // GIL.
@@ -20,24 +19,14 @@ func preprocessAndExecute(
     
     if isCell {
       let messages = KernelPipe.recv(from: .lldb)
-      // precondition(messages.count <= 1, "Received more than one message.")
-      // if messages.count == 0 {
-      //   continue
-      // }
-      
-      // let response = execute_blocking_request(messages[0])
-      // KernelPipe.send(response, to: .lldb)
-      for message in messages {
-        var string = String(data: message, encoding: .utf8)!
-        let cellID = KernelContext.cellID
-        KernelContext.log("Message at <Cell \(cellID)>: \(string)")
-        
-        string += "+\(loopID)"
-        let stringData = string.data(using: .utf8)!
-        KernelPipe.send(stringData, to: .lldb)
+      precondition(messages.count <= 1, "Received more than one message.")
+      if messages.count == 0 {
+        continue
       }
+      
+      let response = execute_blocking_request(messages[0])
+      KernelPipe.send(response, to: .lldb)
     }
-    loopID += 1
   }
   return executionResult!
 }
