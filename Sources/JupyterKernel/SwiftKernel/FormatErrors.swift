@@ -160,9 +160,12 @@ func prettyPrintStackTrace(
     // KernelContext.log("\(function) ~ \(file) ~ \(directory) ~ \(path) ~")
     // KernelContext.log("function ~ file ~ directory ~ path ~")
 
-    func getData(_ str: String) -> [UInt8] {
-      let data = str.data(using: .utf8)!
-      return Array(data)
+    // func getData(_ str: String) -> [UInt8] {
+    //   let data = str.data(using: .utf8)!
+    //   return Array(data)
+    // }
+    func getData(_ str: String) -> String {
+      str
     }
 
     KernelContext.log("begin")
