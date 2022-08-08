@@ -70,9 +70,9 @@ public func redirect_stdin() {
         continue
       }
       
-      print("Got request output")
+      print("Got response")
       let output = decode_blocking_request(messages[0])
-      print("Decoded request")
+      print("Decoded response")
       return output
     }
     

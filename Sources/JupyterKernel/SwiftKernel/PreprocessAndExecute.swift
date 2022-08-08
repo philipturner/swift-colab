@@ -24,9 +24,14 @@ func preprocessAndExecute(
       if messages.count == 0 {
         continue
       }
-
+      
       KernelContext.log("Before executing request")
-      let output = execute
+      let output = execute_blocking_request(messages[0])
+      KernelContext.log("After executing request")
+      
+      KernelContext.log("Before submitting response")
+      KernelPipe.append(output, .jupyterKernel)
+      KernelContext.log("After submitting response")
       // for message in messages {
       //   var string = String(data: message, encoding: .utf8)!
       //   let cellID = KernelContext.cellID
