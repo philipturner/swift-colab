@@ -258,9 +258,11 @@ int get_pretty_stack_trace(void ***frames, int *size) {
     
     // auto function_name = frame.GetDisplayFunctionName();
     // auto function_name_len = strlen(function_name);
-    auto file_name = file_spec.GetFilename();
-    auto file_name_len = strlen(file_name);
-
+    auto file_name1 = file_spec.GetFilename();
+    auto file_name_len = strlen(file_name1);
+    auto file_name = malloc(file_name_len + 1);
+    memcpy(file_name, file_name1, file_name_len + 1);
+    
     const char *function_name;
     if (num_finished_frames == 1) {
       function_name = frame.GetDisplayFunctionName();
@@ -315,6 +317,8 @@ int get_pretty_stack_trace(void ***frames, int *size) {
     // Store description pointer
     out[filled_size] = desc;
     filled_size += 1;
+
+    free(file_name);
   }
   *frames = out;
   *size = filled_size;
