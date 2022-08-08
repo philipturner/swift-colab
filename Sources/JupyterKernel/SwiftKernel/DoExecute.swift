@@ -9,6 +9,10 @@ func doExecute(code: String, allowStdin: Bool) throws -> PythonObject? {
   // interrupt. Otherwise, the LLDB process might halt while exchanging file
   // handles.
   try KernelContext.lldbQueue.sync {
+    // Should we leave the pipes' contents lingering until the next cell
+    // execution? They might contain sensitive information. Flushing the pipes 
+    // will not solve the security vulnerability of information being exposed 
+    // like that.
     try configureCellPipes()
   }
   
