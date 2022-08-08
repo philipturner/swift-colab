@@ -98,18 +98,18 @@ fileprivate struct LLDBProcessLibrary {
 }
 
 struct KernelPipe {
-  enum CurrentProcess {
+  enum TargetProcess {
     case jupyterKernel
     case lldb
     
-    var readPipe: Int32 {
+    var recvPipe: Int32 {
       switch self {
         case .jupyterKernel: return pipe1!
         case .lldb: return pipe2!
       }
     }
     
-    var writePipe: Int32 {
+    var sendPipe: Int32 {
       switch self {
         case .jupyterKernel: return pipe2!
         case .lldb: return pipe1!
@@ -117,10 +117,22 @@ struct KernelPipe {
     }
   }
   
+  // file1/pipe1: what JupyterKernel monitors for messages
+  // file2/pipe2: what LLDB monitors for messages
   static var file1: UnsafeMutablePointer<FILE>?
   static var file2: UnsafeMutablePointer<FILE>?
   static var pipe1: Int32?
   static var pipe2: Int32?
+
+  // If the runtime crashed while LLDB was `while` looping to receive a message,
+  // the LLDB thread's Python code keeps running endlessly. This could cause
+  // data races, where the zombie thread consumes messages it doesn't own.
+  //
+  // Solve this problem with a global, monotonically increasing counter. It
+  // creates unique file names across Jupyter sessions, and provides a way to
+  // invalidate a zombie thread. If the current counter doesn't match the last
+  // one cached by `fetchPipes`, it crashes.
+  static var globalCellID: UInt64 = -1
   
   // Close existing file handles.
   private static func closeHandles() {
@@ -136,28 +148,63 @@ struct KernelPipe {
     }
   }
   
+  static func incrementThenLoadCounter() -> UInt64 {
+    let fm = FileManager.default
+    var nextCounter: UInt64
+    if let previous = fm.contents(atPath: "/opt/swift/pipes/counter") {
+      let string = String(data: previous, encoding: .utf8)!
+      nextCounter = UInt64(string)! + 1
+    } else {
+      nextCounter = 0
+    }
+    
+    let contents = "\(nextCounter)".data(using: .utf8)!
+    fm.createFile(atPath: "/opt/swift/pipes/counter", contents: contents)
+    return nextCounter
+  }
+  
+  static func loadCounter() -> UInt64 {
+    let fm = FileManager.default
+    let data = fm.contents(atPath: "/opt/swift/pipes/counter")!
+    let string = String(data: data, encoding: .utf8)!
+    return UInt64(string)!
+  }
+
+  static func validateCounter() {
+    let currentCounter = loadCounter()
+    guard globalCelID == currentCounter else {
+      fatalError("Zombie thread.")
+    }
+  }
+  
   // TODO: Replace `afterSuccessfulExecution` with transferring data over this 
   // stream.
   static func resetPipes() {
     closeHandles()
-    remove("/opt/swift/pipe1")
-    remove("/opt/swift/pipe2")
-    fclose(fopen("/opt/swift/pipe1", "wb")!)
-    fclose(fopen("/opt/swift/pipe2", "wb")!)
+    let counter = incrementThenLoadCounter()
+    if counter > 0 {
+      remove("/opt/swift/pipes/1-\(counter - 1)")
+      remove("/opt/swift/pipes/2-\(counter - 1)")
+    }
+    fclose(fopen("/opt/swift/pipes/1-\(counter)", "wb")!)
+    fclose(fopen("/opt/swift/pipes/2-\(counter)", "wb")!)
   }
   
   // Both parent and child processes call the same function.
   static func fetchPipes(_ process: CurrentProcess) {
     closeHandles()
+    globalCellID = loadCounter()
+    
     let mode1 = (process == .jupyterKernel) ? "rb" : "ab"
     let mode2 = (process == .lldb) ? "rb" : "ab"
-    file1 = fopen("/opt/swift/pipe1", mode1)
-    file2 = fopen("/opt/swift/pipe2", mode2)
+    file1 = fopen("/opt/swift/pipes/1-\(globalCellID)", mode1)
+    file2 = fopen("/opt/swift/pipes/2-\(globalCellID)", mode2)
     pipe1 = fileno(file1)
     pipe2 = fileno(file2)
   }
   
-  static func append(_ data: Data, _ process: CurrentProcess) {
+  static func send(_ data: Data, to process: TargetProcess) {
+    validateCounter()
     guard data.count > 0 else {
       // Buffer pointer might initialize with null base address and zero count.
       return
@@ -181,7 +228,8 @@ struct KernelPipe {
   
   // Still need to perform a postprocessing pass, which parses headers to
   // separate each message into its own `Data`.
-  static func read_raw(_ process: CurrentProcess) -> Data {
+  static func recv_raw(from process: TargetProcess) -> Data {
+    validateCounter()
     let scratchBuffer: UnsafeMutablePointer<UInt8> = 
       .allocate(capacity: scratchBufferSize)
     defer {
@@ -190,9 +238,9 @@ struct KernelPipe {
     var output = Data()
     
     let pipe = process.readPipe
-    let read = Foundation.read
     while true {
       let bytesRead = read(pipe, scratchBuffer, scratchBufferSize)
+      KernelContext.log("BYTES READ: \(bytesRead) from: \(process)")
       if bytesRead <= 0 {
         break
       }
@@ -201,8 +249,8 @@ struct KernelPipe {
     return output
   }
   
-  static func read(_ process: CurrentProcess) -> [Data] {
-    let raw_data = read_raw(process)
+  static func recv(from process: TargetProcess) -> [Data] {
+    let raw_data = recv_raw(process)
     guard raw_data.count > 0 else {
       return []
     }

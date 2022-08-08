@@ -5,6 +5,7 @@ if [[ ! -d /opt/swift ]]; then
   mkdir /opt/swift/internal-modules
   mkdir /opt/swift/lib
   mkdir /opt/swift/packages
+  mkdir /opt/swift/pipes
   mkdir /opt/swift/progress
   mkdir /opt/swift/toolchains
   touch /opt/swift/toolchains/index

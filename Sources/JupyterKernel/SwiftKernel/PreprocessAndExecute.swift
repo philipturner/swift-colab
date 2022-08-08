@@ -19,7 +19,7 @@ func preprocessAndExecute(
     time.sleep(0.05)
     
     if isCell {
-      let messages = KernelPipe.read(.jupyterKernel)
+      let messages = KernelPipe.read(from: .lldb)
       precondition(messages.count <= 1, "Received more than one message.")
       if messages.count == 0 {
         continue
@@ -30,7 +30,7 @@ func preprocessAndExecute(
       KernelContext.log("After executing request")
       
       KernelContext.log("Before submitting response")
-      KernelPipe.append(output, .jupyterKernel)
+      KernelPipe.send(output, to: .lldb)
       KernelContext.log("After submitting response")
       // for message in messages {
       //   var string = String(data: message, encoding: .utf8)!
