@@ -29,7 +29,7 @@ fileprivate var sigintHandler: PythonObject!
 
 func initSwift() throws {
   KernelPipe.resetPipes()
-  KernelPipe.fetchPipes(.jupyterKernel)
+  KernelPipe.fetchPipes(currentProcess: .jupyterKernel)
   
   try initReplProcess()
   try initKernelCommunicator()
