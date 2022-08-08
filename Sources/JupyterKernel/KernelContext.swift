@@ -123,10 +123,8 @@ struct KernelPipe {
   // TODO: Flush files and assign new file descriptors before each cell.
   // TODO: Replace KernelCommunicator with transferring data over this stream.
   static func resetPipes() {
-    precondition(
-      remove("/opt/swift/pipe1") == 0, "Could not remove pipe 1: \(errno)")
-    precondition(
-      remove("/opt/swift/pipe2") == 0, "Could not remove pipe 2: \(errno)")
+    remove("/opt/swift/pipe1")
+    remove("/opt/swift/pipe2")
     fclose(fopen("/opt/swift/pipe1", "wb")!)
     fclose(fopen("/opt/swift/pipe2", "wb")!)
   }
