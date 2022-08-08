@@ -294,12 +294,14 @@ int get_pretty_stack_trace(void ***frames, int *size) {
     
     // Write function name
     memcpy((char*)desc + str_ptr, function_name, function_name_len);
+    function_name = desc + str_ptr; //
     str_ptr += function_name_len;
     ((char*)desc)[str_ptr] = 0; // Write null terminator
     str_ptr += 1;
     
     // Write file name
     memcpy((char*)desc + str_ptr, file_name, file_name_len);
+    file_name = desc + str_ptr; //
     str_ptr += file_name_len;
     ((char*)desc)[str_ptr] = 0; // Write null terminator
     str_ptr += 1;
@@ -307,6 +309,7 @@ int get_pretty_stack_trace(void ***frames, int *size) {
     // Write directory name
     if (directory_name_len > 0) {
       memcpy((char*)desc + str_ptr, directory_name, directory_name_len);
+      directory_name = desc + str_ptr; //
       str_ptr += directory_name_len;
     }
     ((char*)desc)[str_ptr] = 0; // Write null terminator
@@ -315,6 +318,19 @@ int get_pretty_stack_trace(void ***frames, int *size) {
     // Store description pointer
     out[filled_size] = desc;
     filled_size += 1;
+
+    {
+      unsafe_log_message("frame start2\n");
+      unsafe_log_message(file_name);
+      unsafe_log_message("\n");
+      unsafe_log_message(function_name);
+      unsafe_log_message("\n");
+      if (directory_name) {
+        unsafe_log_message(directory_name);
+        unsafe_log_message("\n");
+      }
+      unsafe_log_message("frame end2\n");
+    }
   }
   *frames = out;
   *size = filled_size;
