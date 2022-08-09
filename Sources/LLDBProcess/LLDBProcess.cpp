@@ -293,7 +293,7 @@ int get_pretty_stack_trace(void ***frames, int *size) {
     int str_ptr = 4 + 4;
     
     // Write function name
-    *((int*)header) = function_name_len + 1;
+    *((int*)header + str_ptr) = function_name_len + 1;
     str_ptr += 4;
     memcpy((char*)desc + str_ptr, function_name, function_name_len);
     function_name = (char*)desc + str_ptr; //
@@ -302,7 +302,7 @@ int get_pretty_stack_trace(void ***frames, int *size) {
     str_ptr += 1;
     
     // Write file name
-    *((int*)header) = file_name_len + 1;
+    *((int*)header + str_ptr) = file_name_len + 1;
     str_ptr += 4;
     memcpy((char*)desc + str_ptr, file_name, file_name_len);
     file_name = (char*)desc + str_ptr; //
@@ -311,7 +311,7 @@ int get_pretty_stack_trace(void ***frames, int *size) {
     str_ptr += 1;
     
     // Write directory name
-    *((int*)header) = directory_name_len + 1;
+    *((int*)header + str_ptr) = directory_name_len + 1;
     str_ptr += 4;
     if (directory_name_len > 0) {
       memcpy((char*)desc + str_ptr, directory_name, directory_name_len);

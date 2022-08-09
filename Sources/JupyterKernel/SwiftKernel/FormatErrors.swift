@@ -101,7 +101,7 @@ func prettyPrintStackTrace(
   let error = KernelContext.get_pretty_stack_trace(&frames, &size);
   guard let frames = frames else {
     throw Exception(
-      "`get_pretty_stack_trace` failed with error code \(error).")
+      "'get_pretty_stack_trace' failed with error code \(error).")
   }
   defer { free(frames) }
   
