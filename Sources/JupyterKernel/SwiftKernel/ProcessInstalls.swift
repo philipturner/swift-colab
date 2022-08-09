@@ -15,7 +15,7 @@ func processInstallDirective(
     let regexMatch = re.match(regex, line)
     if regexMatch != Python.None {
       let restOfLine = String(regexMatch.group(1))!
-      try command(restOfLine, lineIndex)
+      try command(line, restOfLine, lineIndex)
       isValidDirective = true
     }
   }
@@ -48,7 +48,7 @@ fileprivate var swiftPMFlags: [String] = []
 // Allow passing empty whitespace as the flags because it's valid to run:
 // swift         build
 fileprivate func processSwiftPMFlags(
-  restOfLine: String, lineIndex: Int
+  line: String, restOfLine: String, lineIndex: Int
 ) throws {
   // Nobody is going to type this literal into their Colab notebook.
   let id = "$SWIFT_COLAB_sHcpmxAcqC7eHlgD"
@@ -94,7 +94,7 @@ fileprivate func handleTemplateError(
 
 // Allow passing empty whitespace as the command because that's valid Bash.
 fileprivate func processExtraIncludeCommand(
-  restOfLine: String, lineIndex: Int
+  line: String, restOfLine: String, lineIndex: Int
 ) throws {
   let result = subprocess.run(
     restOfLine,
@@ -114,12 +114,21 @@ fileprivate func processExtraIncludeCommand(
   for includeDir in includeDirs {
     if includeDir.prefix(2) != "-I" {
       // TODO: Make a validation test for text colorization.
-      let file = "<Cell \(KernelContext.cellID)>:\(lineIndex):1"
-      sendStdout(
-        formatString("\(file): ", ansiOptions: [1]) +
-        formatString("warning: ", ansiOptions: [1, 36]) + """
-        non '-I' output from %install-extra-include-command: '\(includeDir)'
 
+      
+      // Ensure correct characters/column are highlighted.
+      let magicCommand = "%install-extra-include-command"
+      
+      // `file` and `warning` contain the ": " that comes after them.
+      let file = "<Cell \(KernelContext.cellID)>:\(lineIndex):1: "
+      let warning = "warning: "
+      let message = "non '-I' output from \(magicCommand): '\(includeDir)'"
+      
+      sendStdout(
+        formatString(file, ansiOptions: [1]) +
+        formatString(warning, ansiOptions: [1, 36]) +
+        formatString(message + """
+        %install-extra-include-command
         """)
       continue
     }
@@ -130,9 +139,9 @@ fileprivate func processExtraIncludeCommand(
 // %install-location
 
 fileprivate func processInstallLocation(
-  restOfLine: String, lineIndex: Int
+  line: String, restOfLine: String, lineIndex: Int
 ) throws {
-  let parsed = 
+  // let parsed = 
   KernelContext.installLocation = try substituteCwd(
     template: restOfLine, lineIndex: lineIndex)
 }
@@ -221,7 +230,7 @@ fileprivate func readClangModules() {
 }
 
 fileprivate func processInstall(
-  restOfLine: String, lineIndex: Int
+  line: String, restOfLine: String, lineIndex: Int
 ) throws {
   let parsed = try shlexSplit(lineIndex: lineIndex, line: restOfLine)
   if parsed.count < 2 {
@@ -559,7 +568,7 @@ fileprivate func processInstall(
 
 // Used in "PreprocessAndExecute.swift".
 func processTest(
-  restOfLine: String, lineIndex: Int
+  line: String, restOfLine: String, lineIndex: Int
 ) throws {
   let parsed = try shlexSplit(lineIndex: lineIndex, line: restOfLine)
   if parsed.count != 1 {
