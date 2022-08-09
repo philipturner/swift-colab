@@ -116,8 +116,6 @@ fileprivate func processExtraIncludeCommand(
       """)
   }
   
-  // TODO: Utilize the fact that regex split includes spaces.
-  
   // Cache column locations to avoid computing multiple times. These are
   // 1-indexed, matching what LLDB would show.
   var startColumn: Int?
