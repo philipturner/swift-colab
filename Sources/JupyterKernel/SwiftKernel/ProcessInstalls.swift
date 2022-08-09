@@ -233,9 +233,15 @@ fileprivate func processInstall(
 ) throws {
   let parsed = try shlexSplit(lineIndex: lineIndex, line: restOfLine)
   if parsed.count < 2 {
+    var sentence: String
+    if parsed.count == 0 {
+      sentence = "Please enter a specification."
+    } else {
+      sentence = "Please specify one or more products."
+    }
     throw PreprocessorException(lineIndex: lineIndex, message: """
       Usage: %install SPEC PRODUCT [PRODUCT ...]
-      Please specify one or more products. For more information, visit:
+      \(sentence) For more information, visit:
       https://github.com/philipturner/swift-colab/blob/main/Documentation/MagicCommands.md#install
       """)
   }
@@ -564,9 +570,15 @@ fileprivate func processTest(
 ) throws {
   let parsed = try shlexSplit(lineIndex: lineIndex, line: restOfLine)
   if parsed.count != 1 {
+    var sentence: String
+    if parsed.count == 0 {
+      sentence = "Please enter a specification."
+    } else {
+      sentence = "Do not enter anything after the specification."
+    }
     throw PreprocessorException(lineIndex: lineIndex, message: """
       Usage: %test SPEC
-      Please do not specify anything besides the spec. For more information, visit:
+      \(sentence) For more information, visit:
       https://github.com/philipturner/swift-colab/blob/main/Documentation/MagicCommands.md#test
       """)
   }
