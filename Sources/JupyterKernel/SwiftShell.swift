@@ -77,19 +77,23 @@ public func create_shell(
   _ sessionID_ptr: UnsafePointer<CChar>, 
   _ key_ptr: UnsafePointer<CChar>
 ) -> Int64 {
-  InteractiveShellABC.register(SwiftShell)
-  
-  let username = String(cString: username_ptr)
-  let sessionID = String(cString: sessionID_ptr)
-  let key = String(cString: key_ptr).pythonObject.encode("utf8")
-  
-  let socket = CapturingSocket()
-  let session = Session(username: username, session: sessionID, key: key)
-  let shell = SwiftShell.instance()
-  shell.display_pub.session = session
-  shell.display_pub.pub_socket = socket
-  
-  socketAndShell = [socket, shell]
+  // If the user includes "EnableIPythonDisplay.swift" twice, don't regenerate
+  // the socket and shell.
+  if socketAndShell == nil {
+    InteractiveShellABC.register(SwiftShell)
+    
+    let username = String(cString: username_ptr)
+    let sessionID = String(cString: sessionID_ptr)
+    let key = String(cString: key_ptr).pythonObject.encode("utf8")
+    
+    let socket = CapturingSocket()
+    let session = Session(username: username, session: sessionID, key: key)
+    let shell = SwiftShell.instance()
+    shell.display_pub.session = session
+    shell.display_pub.pub_socket = socket
+    
+    socketAndShell = [socket, shell]
+  }
   return Int64(Python.id(socketAndShell))!
 }
 
