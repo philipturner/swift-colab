@@ -241,7 +241,7 @@ fileprivate func processInstall(
     }
     throw PreprocessorException(lineIndex: lineIndex, message: """
       Usage: %install SPEC PRODUCT [PRODUCT ...]
-      \(sentence) For more information, visit:
+      \(sentence) For more guidance, visit:
       https://github.com/philipturner/swift-colab/blob/main/Documentation/MagicCommands.md#install
       """)
   }
@@ -578,7 +578,7 @@ fileprivate func processTest(
     }
     throw PreprocessorException(lineIndex: lineIndex, message: """
       Usage: %test SPEC
-      \(sentence) For more information, visit:
+      \(sentence) For more guidance, visit:
       https://github.com/philipturner/swift-colab/blob/main/Documentation/MagicCommands.md#test
       """)
   }
