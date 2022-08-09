@@ -138,15 +138,19 @@ func prettyPrintStackTrace(
       let output = String(bytes: bytes, encoding: .utf8)!
       stream += Int(count)
       return output
-
+      
       // let output = String(cString: UnsafePointer(data))
       // data += output.count + 1
       // return output
     }
     
+    KernelContext.log("BEGIN SEARCH")
     let function = extractComponent()
+    KernelContext.log("FUNCTION FOUND \(function)")
     let file = extractComponent()
+    KernelContext.log("FILE FOUND \(file)")
     let directory = extractComponent()
+    KernelContext.log("DIRECTORY FOUND \(directory)")
     var path: String
     
     if let folder = extractPackageFolder(fromPath: directory) {
