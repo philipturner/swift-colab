@@ -312,9 +312,9 @@ fileprivate func processInstall(
   // Ensure install location exists
   let fm = FileManager.default
   do {
-    KernelContext.log("checkpoint 2.1")
-    try fm.createDirectory(
-      atPath: KernelContext.installLocation, withIntermediateDirectories: true)
+    KernelContext.log("checkpoint 2.1 \(KernelContext.installLocation)")
+    // try fm.createDirectory(
+    //   atPath: KernelContext.installLocation, withIntermediateDirectories: true)
     KernelContext.log("checkpoint 2.3")
   } catch {
     KernelContext.log("checkpoint 2.2")
