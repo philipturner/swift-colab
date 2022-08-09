@@ -115,11 +115,13 @@ fileprivate func processExtraIncludeCommand(
       stderr: \(result.stderr.decode("utf8"))
       """)
   }
-
+  
   // TODO: Utilize the fact that regex split includes spaces.
   
-  // Cache column location to avoid computing multiple times.
-  var column: Int?
+  // Cache column locations to avoid computing multiple times.
+  var startColumn: Int?
+  var endColumn: Int?
+  
   let preprocessed = result.stdout.decode("utf8")
   let includeDirs = try shlexSplit(lineIndex: lineIndex, line: preprocessed)
   for includeDir in includeDirs {
@@ -133,7 +135,9 @@ fileprivate func processExtraIncludeCommand(
     //   %install-extra-include-command  echo  "hello world c"
     if includeDir.prefix(2) != "-I" {
       let magicCommand = "%install-extra-include-command"
-      if column == nil {
+      if startColumn == nil {
+        precondition(endColumn == nil, "This should never happen.")
+
         // Magic command might be prepended by spaces, so find index of "%".
         var index = line.firstIndex(of: "%")!
         index = line.index(index, offsetBy: magicCommand.count)
@@ -143,17 +147,23 @@ fileprivate func processExtraIncludeCommand(
         while line[index].isWhitespace {
           index = line.index(after: index)
         }
-        column = 1 + line.distance(from: line.startIndex, to: index)
+        startColumn = 1 + line.distance(from: line.startIndex, to: index)
+        
+        // Column after last column that isn't whitespace.
+        index = line.lastIndex(where: { $0.isWhitespace == false })
+        endColumn = 1 + line.distance(from: line.startIndex, to: index) + 1
+      } else {
+        precondition(endColumn != nil, "This should never happen.")
       }
       
       // `file` and `warning` contain the ": " that comes after them.
-      let file = "<Cell \(KernelContext.cellID)>:\(lineIndex):\(column!): "
+      let file = "<Cell \(KernelContext.cellID)>:\(lineIndex):\(startColumn!): "
       let warning = "warning: "
       let message = "non '-I' output from \(magicCommand): '\(includeDir)'"
       
       // Ensure correct characters are highlighted.
-      let numSpaces = column! - 1
-      let numTildes = restOfLine.count - 1
+      let numSpaces = startColumn! - 1
+      let numTildes = (endColumn! - startColumn!) - 1
       let spaces = String(repeating: Character(" "), count: numSpaces)
       let marker = "^" + String(repeating: Character("~"), count: numTildes)
       sendStdout(
