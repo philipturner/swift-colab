@@ -115,6 +115,8 @@ fileprivate func processExtraIncludeCommand(
       stderr: \(result.stderr.decode("utf8"))
       """)
   }
+
+  // TODO: Utilize the fact that regex split includes spaces.
   
   // Cache column location to avoid computing multiple times.
   var column: Int?
@@ -124,9 +126,11 @@ fileprivate func processExtraIncludeCommand(
     // TODO: Make a validation test for text colorization, using abnormal 
     // whitespace configurations.
     //
+    // TODO: Trim whitespace from end of line.
+    //
     // %install-extra-include-command echo -I/usr/include/glib-2.0
     // %install-extra-include-command pkg-config --cflags-only-I glib-2.0
-    // %install-extra-include-command echo "hello world c"
+    //   %install-extra-include-command  echo  "hello world c"
     if includeDir.prefix(2) != "-I" {
       let magicCommand = "%install-extra-include-command"
       if column == nil {
