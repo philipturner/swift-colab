@@ -126,9 +126,8 @@ fileprivate func processExtraIncludeCommand(
   let includeDirs = try shlexSplit(lineIndex: lineIndex, line: preprocessed)
   for includeDir in includeDirs {
     // TODO: Make a validation test for text colorization, using abnormal 
-    // whitespace configurations.
-    //
-    // TODO: Trim whitespace from end of line.
+    // whitespace configurations. The third command below should end with two
+    // extra spaces.
     //
     // %install-extra-include-command echo -I/usr/include/glib-2.0
     // %install-extra-include-command pkg-config --cflags-only-I glib-2.0
@@ -171,8 +170,7 @@ fileprivate func processExtraIncludeCommand(
         formatString(warning, ansiOptions: [1, 35]) +
         formatString(message, ansiOptions: [1]) + "\n" +
         line + "\n" +
-        spaces + formatString(marker, ansiOptions: [1, 32]) + "\n" +
-        "\n", insertNewLine: false /*Explicitly add double newline.*/)
+        spaces + formatString(marker, ansiOptions: [1, 32]))
       continue
     }
     swiftPMFlags.append(includeDir)
