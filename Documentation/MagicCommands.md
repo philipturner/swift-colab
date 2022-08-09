@@ -10,6 +10,7 @@ The Swift kernel has various built-in commands for downloading dependencies and 
 - [`%install-swiftpm-flags`](#install-swiftpm-flags)
 - [`%install-swiftpm-import`](#install-swiftpm-import)
 - [`%system`](#system)
+- [`%test`](#test)
 
 > Some of this documentation is a work in progress.
 
@@ -62,10 +63,10 @@ The command silently fails if you previously included `PATH` during the current 
 
 Build a Swift package for use inside a notebook. If a previous Jupyter session executed this command, import the cached build products. To avoid recompilation, the SwiftPM flags should match those present when the `%install` command last executed.
 
-- `SPEC` - Specification to insert into a package manifest. Use SwiftPM version 4.2\* syntax, such as `.package(url: "", .branch(""))`. Place the specification between single quotes to avoid colliding with string literals, which use double quotes.
+- `SPEC` - Specification to insert into a package manifest. Prefer to use SwiftPM version 5.0\* syntax, such as `.package(url: "", branch: ""))`, although v4.2 syntax also works for backward compatibility. Place the specification between single quotes to avoid colliding with string literals, which use double quotes.
 - `PRODUCT` - Each exported Swift module the debugger should build and import.
 
-> *Do not use version 5.0 syntax, such as `.package(url: "", branch: "")`. This syntax will be permitted in Swift-Colab v2.3.
+> \*v5.0 syntax will be supported in Swift-Colab v2.3. Until that happens, use v4.2 syntax such as `.package(url: "", .branch(""))`.
 
 Although the SwiftPM engine utilizes cached build products, LLDB does not automatically detect those products. `%install` tells the Jupyter kernel to locate and optionally recompile each `PRODUCT`. Always run the command before using external dependencies in a notebook.
 
@@ -148,3 +149,16 @@ import JupyterDisplay
 %system cd "sample_data" && touch "$(uname -m).sh"
 ```
 The code above works and makes a file called `x86_64.sh` in `/content/sample_data`.
+
+## `%test`
+```
+%install SPEC
+```
+
+> Coming in Swift-Colab v2.3.
+
+Run Swift package tests on the package specified by `SPEC`. This does not share build products with any corresponding `%install` command. If you both install and test the same command in a Jupyter notebook, you will spend twice as long waiting for compilation to finish.
+
+- `SPEC` - Specification to insert into a package manifest. Prefer to use SwiftPM version 5.0\* syntax, such as `.package(url: "", branch: ""))`, although v4.2 syntax also works for backward compatibility. Place the specification between single quotes to avoid colliding with string literals, which use double quotes.
+
+> \*v5.0 syntax will be supported in Swift-Colab v2.3. Until that happens, use v4.2 syntax such as `.package(url: "", .branch(""))`.
