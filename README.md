@@ -190,7 +190,7 @@ In the table below, "Compatible Swift Versions" lists whether each notebook runs
 - Release = 5.6.2 Release
 - Development = July 20, 2022 Development Snapshot
 
-| Google Tutorials | Dependencies | Compatible Swift Versions |
+| Tutorials from Google | Dependencies | Compatible Swift Versions |
 | -------- | ------------ | ------------------------- |
 | [A Swift Tour](https://colab.research.google.com/github/tensorflow/swift/blob/main/docs/site/tutorials/a_swift_tour.ipynb) | | Release, Development |
 | [Protocol-Oriented Programming & Generics](https://colab.research.google.com/github/tensorflow/swift/blob/main/docs/site/tutorials/protocol_oriented_generics.ipynb) | | Release, Development |
@@ -210,7 +210,7 @@ In the table below, "Compatible Swift Versions" lists whether each notebook runs
 >
 > <sup>5</sup>This notebook depends on [tensorflow/swift-models](https://github.com/tensorflow/swift-models), which is now maintained at [s4tf/models](https://github.com/s4tf/models). The repository has not been tested recently. Also, compilation requires using `%install-swiftpm-import` to inject the `TensorFlow` module.
 
-| FastAI Tutorials | Dependencies | Compatible Swift Versions |
+| Tutorials from FastAI | Dependencies | Compatible Swift Versions |
 | ---------------- | ------------ | ------------------------- |
 | n/a | S4TF | n/a |
 
