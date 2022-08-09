@@ -282,9 +282,9 @@ int get_pretty_stack_trace(void ***frames, int *size) {
     // 8-byte header.
     void *desc = malloc(
       /*line*/4 + /*column*/4 + 
-      /*count*/4 + function_name_len + /*null terminator*/1 + 
-      /*count*/4 + file_name_len + /*null terminator*/1 + 
-      /*count*/4 + directory_name_len + /*null terminator*/1);
+      /*count*/4 + (~3 & (function_name_len + 3)) + 
+      /*count*/4 + (~3 & (file_name_len + 3)) + 
+      /*count*/4 + (~3 & (directory_name_len + 3)));
     
     // Write line and column
     uint32_t *header = (uint32_t*)desc;
@@ -293,47 +293,28 @@ int get_pretty_stack_trace(void ***frames, int *size) {
     int str_ptr = 4 + 4;
     
     // Write function name
-    ((int*)((char*)header + str_ptr))[0] = function_name_len + 1;
+    ((int*)((char*)header + str_ptr))[0] = function_name_len;
     str_ptr += 4;
     memcpy((char*)desc + str_ptr, function_name, function_name_len);
-    function_name = (char*)desc + str_ptr; //
-    ((char*)desc)[str_ptr + function_name_len] = 0; // Write null terminator
-    str_ptr += ~3 & (function_name_len + 1 + 3); // Align to 4 bytes
+    str_ptr += ~3 & (function_name_len + 3); // Align to 4 bytes
     
     // Write file name
-    ((int*)((char*)header + str_ptr))[0] = file_name_len + 1;
+    ((int*)((char*)header + str_ptr))[0] = file_name_len;
     str_ptr += 4;
     memcpy((char*)desc + str_ptr, file_name, file_name_len);
-    file_name = (char*)desc + str_ptr; //
-    ((char*)desc)[str_ptr + file_name_len] = 0; // Write null terminator
-    str_ptr += ~3 & (file_name_len + 1 + 3); // Align to 4 bytes
+    str_ptr += ~3 & (file_name_len + 3); // Align to 4 bytes
     
     // Write directory name
-    ((int*)((char*)header + str_ptr))[0] = directory_name_len + 1;
+    ((int*)((char*)header + str_ptr))[0] = directory_name_len;
     str_ptr += 4;
     if (directory_name_len > 0) {
       memcpy((char*)desc + str_ptr, directory_name, directory_name_len);
-      directory_name = (char*)desc + str_ptr; //
     }
-    ((char*)desc)[str_ptr + directory_name_len] = 0; // Write null terminator
-    str_ptr += ~3 & (directory_name_len + 1 + 3); // Align to 4 bytes
+    str_ptr += ~3 & (directory_name_len + 3); // Align to 4 bytes
     
     // Store description pointer
     out[filled_size] = desc;
     filled_size += 1;
-
-    {
-      unsafe_log_message("frame start3\n");
-      unsafe_log_message(file_name);
-      unsafe_log_message("\n");
-      unsafe_log_message(function_name);
-      unsafe_log_message("\n");
-      if (directory_name) {
-        unsafe_log_message(directory_name);
-        unsafe_log_message("\n");
-      }
-      unsafe_log_message("frame end3\n");
-    }
   }
   *frames = out;
   *size = filled_size;

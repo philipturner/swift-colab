@@ -138,10 +138,6 @@ func prettyPrintStackTrace(
       let output = String(bytes: bytes, encoding: .utf8)!
       stream += ~3 & (Int(count) + 3)
       return output
-      
-      // let output = String(cString: UnsafePointer(data))
-      // data += output.count + 1
-      // return output
     }
     
     KernelContext.log("BEGIN SEARCH")
