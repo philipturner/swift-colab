@@ -190,6 +190,8 @@ In the table below, "Compatible Swift Versions" lists whether each notebook runs
 - Release = 5.6.2 Release
 - Development = July 20, 2022 Development Snapshot
 
+<!-- TODO: Revamp s4tf/s4tf-docs and link updated tutorials here -->
+
 | Tutorials from Google | Dependencies | Compatible Swift Versions |
 | -------- | ------------ | ------------------------- |
 | [A Swift Tour](https://colab.research.google.com/github/tensorflow/swift/blob/main/docs/site/tutorials/a_swift_tour.ipynb) | | Release, Development |
