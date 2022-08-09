@@ -79,7 +79,7 @@ public func create_shell(
 ) -> Int64 {
   // If the user includes "EnableIPythonDisplay.swift" twice, don't regenerate
   // the socket and shell.
-  if socketAndShell == nil || true {
+  if socketAndShell == nil {
     InteractiveShellABC.register(SwiftShell)
     
     let username = String(cString: username_ptr)
