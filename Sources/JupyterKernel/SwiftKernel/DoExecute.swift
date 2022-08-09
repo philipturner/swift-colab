@@ -158,6 +158,8 @@ fileprivate func executeCell(code: String) throws -> ExecutionResult {
   return result
 }
 
+// This happens before someone runs the cell, so the parent message doesn't
+// appear if you include "EnableIPythonDisplay.swift" in the middle of the cell.
 fileprivate func setParentMessage() throws {
   let parentHeader = KernelContext.kernel._parent_header
   let jsonObj = json.dumps(json.dumps(jsonutil.squash_dates(parentHeader)))
