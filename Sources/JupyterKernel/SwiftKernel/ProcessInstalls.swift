@@ -150,7 +150,7 @@ fileprivate func processExtraIncludeCommand(
         startColumn = 1 + line.distance(from: line.startIndex, to: index)
         
         // Column after last column that isn't whitespace.
-        index = line.lastIndex(where: { $0.isWhitespace == false })
+        index = line.lastIndex(where: { $0.isWhitespace == false })!
         endColumn = 1 + line.distance(from: line.startIndex, to: index) + 1
       } else {
         precondition(endColumn != nil, "This should never happen.")
