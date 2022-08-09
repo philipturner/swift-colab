@@ -10,7 +10,7 @@ func processInstallDirective(
   line: String, lineIndex: Int, isValidDirective: inout Bool
 ) throws {
   func attempt(
-    command: (String, Int) throws -> Void, _ regex: String
+    command: (String, String, Int) throws -> Void, _ regex: String
   ) rethrows {
     let regexMatch = re.match(regex, line)
     if regexMatch != Python.None {
@@ -118,7 +118,7 @@ fileprivate func processExtraIncludeCommand(
     // making validation test).
     if includeDir.prefix(2) != "-I" {
       // Magic command might be prepended by spaces, so find index of "%".
-      var index = line.firstIndex(of: "%")
+      var index = line.firstIndex(of: "%")!
       let magicCommand = "%install-extra-include-command"
       index = line.index(index, offsetBy: magicCommand.count)
       
@@ -142,7 +142,7 @@ fileprivate func processExtraIncludeCommand(
         formatString(warning, ansiOptions: [1, 36]) +
         formatString(message, ansiOptions: [1]) + "\n" +
         line + "\n" +
-        spaces + formatString(marker, ansiOptios: [1, 35]) + "\n" +
+        spaces + formatString(marker, ansiOptions: [1, 35]) + "\n" +
         "\n")
       continue
     }
@@ -243,6 +243,10 @@ fileprivate func readClangModules() {
     }
   }
 }
+
+//===----------------------------------------------------------------------===//
+// Compile Swift Packages
+//===----------------------------------------------------------------------===//
 
 fileprivate func processInstall(
   line: String, restOfLine: String, lineIndex: Int
@@ -580,6 +584,10 @@ fileprivate func processInstall(
       """)
   }
 }
+
+//===----------------------------------------------------------------------===//
+// Test Swift Packages
+//===----------------------------------------------------------------------===//
 
 // Used in "PreprocessAndExecute.swift".
 func processTest(
