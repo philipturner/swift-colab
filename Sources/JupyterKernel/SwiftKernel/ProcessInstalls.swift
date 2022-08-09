@@ -200,7 +200,7 @@ fileprivate func processInstallLocation(
       """)
   }
   KernelContext.installLocation = try substituteCwd(
-    template: restOfLine, lineIndex: lineIndex)
+    template: parsed[0], lineIndex: lineIndex)
 }
 
 fileprivate func substituteCwd(
