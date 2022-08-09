@@ -233,8 +233,11 @@ fileprivate func processInstall(
 ) throws {
   let parsed = try shlexSplit(lineIndex: lineIndex, line: restOfLine)
   if parsed.count < 2 {
-    throw PreprocessorException(lineIndex: lineIndex, message:
-      "%install usage: SPEC PRODUCT [PRODUCT ...]")
+    throw PreprocessorException(lineIndex: lineIndex, message: """
+      Usage: %install SPEC PRODUCT [PRODUCT ...]
+      Please specify one or more products. For more information, visit:
+      https://github.com/philipturner/swift-colab/blob/main/Documentation/MagicCommands.md#install
+      """)
   }
   
   // Expand template before writing to file.

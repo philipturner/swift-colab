@@ -101,7 +101,7 @@ func doExecute(code: String, allowStdin: Bool) throws -> PythonObject? {
     } else {
       // There is no stdout, so it must be a compile error. Simply return the 
       // error without trying to get a stack trace.
-      message = formatCompilerError(result.description)
+      message = formatCompileError(result.description)
       
       // Forward this as "stream" instead of "error" to preserve bold 
       // formatting. This also means the lines will not wrap.
