@@ -307,14 +307,17 @@ fileprivate func processInstall(
   let spec = try substituteCwd(template: parsed[0], lineIndex: lineIndex)
   let products = Array(parsed[1...])
   
-  KernelContext.log("checkpoint 2")
+  KernelContext.log("checkpoint 2.0")
   
   // Ensure install location exists
   let fm = FileManager.default
   do {
+    KernelContext.log("checkpoint 2.1")
     try fm.createDirectory(
       atPath: KernelContext.installLocation, withIntermediateDirectories: true)
+    KernelContext.log("checkpoint 2.3")
   } catch {
+    KernelContext.log("checkpoint 2.2")
     throw PackageInstallException(lineIndex: lineIndex, message: """
       Could not create directory "". \
       Encountered error: 
