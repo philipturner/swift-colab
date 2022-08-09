@@ -300,10 +300,14 @@ fileprivate func processInstall(
       https://github.com/philipturner/swift-colab/blob/main/Documentation/MagicCommands.md#install
       """)
   }
+
+  KernelContext.log("checkpoint 1")
   
   // Expand template before writing to file.
   let spec = try substituteCwd(template: parsed[0], lineIndex: lineIndex)
   let products = Array(parsed[1...])
+
+  KernelContext.log("checkpoint 2")
 
   // Ensure install location exists
   let fm = FileManager.default
@@ -316,16 +320,22 @@ fileprivate func processInstall(
       Encountered error: \(error.localizedDescription)
       """)
   }
+
+  KernelContext.log("checkpoint 3")
   
   let linkPath = "/opt/swift/install-location"
   try? fm.removeItem(atPath: linkPath)
   try fm.createSymbolicLink(
     atPath: linkPath, withDestinationPath: KernelContext.installLocation)
   
+  KernelContext.log("checkpoint 4")
+  
   if installedPackages == nil || 
      installedPackagesLocation != KernelContext.installLocation {
     try readInstalledPackages()
   }
+
+  KernelContext.log("checkpoint 5")
   
   var packageID: Int
   if let index = installedPackagesMap[spec] {
@@ -336,6 +346,8 @@ fileprivate func processInstall(
     installedPackagesMap[spec] = packageID
   }
   try writeInstalledPackages(lineIndex: lineIndex)
+  
+  KernelContext.log("checkpoint 6")
   
   // Summary of how this works:
   // - create a Swift package that depends all the modules that
