@@ -39,15 +39,15 @@ func processInstallDirective(
 
 // %install-swiftpm-flags
 
-fileprivate var swiftPMFlags: [String] = []
+// Nobody will type this literal into their Colab notebook.
+fileprivate let id = "$SWIFT_COLAB_sHcpmxAcqC7eHlgD"
+fileprivate let reversedID = String(id.reversed())
 
-// Allow passing empty whitespace as the flags because it's valid to run:
-// swift         build
+// Permit passing empty whitespace because this is valid:
+// swift <arbitrary whitespace> build
 fileprivate func processSwiftPMFlags(
   line: String, restOfLine: String, lineIndex: Int
 ) throws {
-  // Nobody is going to type this literal into their Colab notebook.
-  let id = "$SWIFT_COLAB_sHcpmxAcqC7eHlgD"
   var processedLine: String
   do {
     processedLine = String(try string.Template(restOfLine).substitute.throwing
@@ -56,19 +56,19 @@ fileprivate func processSwiftPMFlags(
       ])
     )!
   } catch {
-    throw handleTemplateError(error, lineIndex: lineIndex)
+    throw PackageContext.handleTemplateError(error, lineIndex: lineIndex)
   }
   
   // Ensure that only everything after the last "$clear" flag passes into shlex.
-  let reversedID = String(id.reversed())
   let reversedLine = String(processedLine.reversed())
   if let idRange = reversedLine.range(of: reversedID) {
     let endRange = reversedLine.startIndex..<idRange.lowerBound
     processedLine = String(reversedLine[endRange].reversed())
-    swiftPMFlags = []
+    PackageContext.swiftPMFlags = []
   }
   
-  swiftPMFlags += try shlexSplit(lineIndex: lineIndex, line: processedLine)
+  PackageContext.swiftPMFlags += try PackageContext.shlexSplit(
+    processedLine, lineIndex: lineIndex)
 }
 
 // %install-extra-include-command

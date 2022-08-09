@@ -1,6 +1,8 @@
 import Foundation
 
 struct PackageContext {
+  static var var swiftPMFlags: [String] = []
+  
   static func sendStdout(_ message: String, insertNewLine: Bool = true) {
     KernelContext.sendResponse("stream", [
       "name": "stdout",
@@ -9,15 +11,15 @@ struct PackageContext {
   }
   
   static func shlexSplit(
-    _ restOfLine: PythonConvertible, lineIndex: Int,
+    _ arguments: PythonConvertible, lineIndex: Int,
   ) throws -> [String] {
     let split = shlex[dynamicMember: "split"].throwing
     do {
-      let output = try split.dynamicallyCall(withArguments: restOfLine)
+      let output = try split.dynamicallyCall(withArguments: arguments)
       return [String](output)!
     } catch let error as PythonError {
       throw PreprocessorException(lineIndex: lineIndex, message: """
-        Could not parse shell arguments: \(restOfLine)
+        Could not parse shell arguments: \(arguments)
         \(error)
         """)
     }

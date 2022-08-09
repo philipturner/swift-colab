@@ -172,7 +172,7 @@ func processInstall(
   func makeBlue(_ label: String) -> String {
     return formatString(label, ansiOptions: [36])
   }
-  sendStdout("""
+  PackageContext.sendStdout("""
     \(makeBlue("Installing package:"))
         \(spec)
     \(modulesHumanDescription)
