@@ -7,7 +7,7 @@ import Foundation
 func processTest(
   restOfLine: String, lineIndex: Int
 ) throws {
-  let parsed = try PackageContext.shlexSplit(restOfLine, lineIndex: lineIndex)
+  let parsed = try PackageContext.shlexSplit(restOfLine, lineIndex)
   if parsed.count != 1 {
     var sentence: String
     if parsed.count == 0 {
