@@ -130,7 +130,7 @@ Treats a previously compiled module like a library built into the Swift toolchai
 
 After running each `%install` command, the Jupyter kernel records each product's location. The record stays the same even after switching install locations with `%install-location`. During an `%install-swiftpm-import`, it queries each product's file path to link the corresponding `.so` and `.swiftmodule`.
 
-This command's underlying mechanism is used to inject `JupyterDisplay` into Swift packages. This module lets external packages seamlessly communicate with the notebook's Jupyter display. Use the convention below to conditionally import `MODULE` inside a Swift package.
+A mechanism similar to `%install-swiftpm-import` injects `JupyterDisplay` into Swift packages. This module lets external packages seamlessly communicate with the notebook's Jupyter display. Use the convention below to conditionally import `MODULE` inside a Swift package.
 
 ```swift
 #if canImport(JupyterDisplay)
