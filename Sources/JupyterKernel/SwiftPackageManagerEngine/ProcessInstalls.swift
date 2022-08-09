@@ -1,6 +1,7 @@
 import Foundation
 fileprivate let json = Python.import("json")
 fileprivate let os = Python.import("os")
+fileprivate let re = Python.import("re")
 fileprivate let sqlite3 = Python.import("sqlite3")
 fileprivate let subprocess = Python.import("subprocess")
 
@@ -73,7 +74,7 @@ fileprivate func readClangModules() {
 func processInstall(
   restOfLine: String, lineIndex: Int
 ) throws {
-  let parsed = try PackageContext.shlexSplit(restOfLine, lineIndex: lineIndex)
+  let parsed = try PackageContext.shlexSplit(restOfLine, lineIndex)
   if parsed.count < 2 {
     var sentence: String
     if parsed.count == 0 {
@@ -89,7 +90,7 @@ func processInstall(
   }
 
   // Expand template before writing to file.
-  let spec = try substituteCwd(template: parsed[0], lineIndex: lineIndex)
+  let spec = try PackageContext.substituteCwd(parsed[0], lineIndex)
   let products = Array(parsed[1...])
   
   // Ensure install location exists
@@ -380,7 +381,7 @@ func processInstall(
   }
   
   if !warningClangModules.isEmpty {
-    sendStdout("""
+    PackageContext.sendStdout("""
       === ------------------------------------------------------------------------ ===
       === The following Clang modules cannot be imported in your source code until ===
       === you restart the runtime. If you do not intend to explicitly import       ===
