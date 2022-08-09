@@ -118,7 +118,8 @@ fileprivate func processExtraIncludeCommand(
   
   // TODO: Utilize the fact that regex split includes spaces.
   
-  // Cache column locations to avoid computing multiple times.
+  // Cache column locations to avoid computing multiple times. These are
+  // 1-indexed, matching what LLDB would show.
   var startColumn: Int?
   var endColumn: Int?
   
@@ -156,15 +157,16 @@ fileprivate func processExtraIncludeCommand(
       }
       
       // `file` and `warning` contain the ": " that comes after them.
-      let file = "<Cell \(KernelContext.cellID)>:\(lineIndex):\(startColumn!): "
+      let row = lineIndex + 1
+      let file = "<Cell \(KernelContext.cellID)>:\(row):\(startColumn!): "
       let warning = "warning: "
       let message = "non '-I' output from \(magicCommand): '\(includeDir)'"
       
       // Ensure correct characters are highlighted.
       let numSpaces = startColumn! - 1
-      let numTildes = (endColumn! - startColumn!) - 1
+      let numTildes = endColumn! - startColumn!
       let spaces = String(repeating: Character(" "), count: numSpaces)
-      let marker = "^" + String(repeating: Character("~"), count: numTildes)
+      let marker = String(repeating: Character("~"), count: numTildes)
       sendStdout(
         formatString(file, ansiOptions: [1]) +
         formatString(warning, ansiOptions: [1, 35]) +
