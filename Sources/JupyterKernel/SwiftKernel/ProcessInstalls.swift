@@ -558,3 +558,16 @@ fileprivate func processInstall(
       """)
   }
 }
+
+fileprivate func processTest(
+  restOfLine: String, lineIndex: Int
+) throws {
+  let parsed = try shlexSplit(lineIndex: lineIndex, line: restOfLine)
+  if parsed.count != 1 {
+    throw PreprocessorException(lineIndex: lineIndex, message: """
+      Usage: %test SPEC
+      Please do not specify anything besides the spec. For more information, visit:
+      https://github.com/philipturner/swift-colab/blob/main/Documentation/MagicCommands.md#test
+      """)
+  }
+}
