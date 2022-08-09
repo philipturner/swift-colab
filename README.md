@@ -216,7 +216,7 @@ In the table below, "Compatible Swift Versions" lists whether each notebook runs
 | ---------------- | ------------ | ------------------------- |
 | n/a | S4TF | n/a |
 
-The Swift community made the following tutorials without sponsorship from Google. These do not import S4TF, so close the custom notebook that ran previous tutorials. Run each tutorial below in its original notebook, which may be pre-configured for GPU acceleration. Click `Runtime > Disconnect and delete runtime` after completing each tutorial. Otherwise, Google may temporarily restrict your access to accelerators for overusing them.
+The Swift community made the following tutorials without sponsorship from Google. These do not import S4TF, so close the common Colab instance that ran previous tutorials. Run each tutorial below in its original notebook, which may be pre-configured for GPU acceleration. Click `Runtime > Disconnect and delete runtime` after completing each tutorial. Otherwise, Google may temporarily restrict your access to accelerators for overusing them.
 
 For those looking to showcase Swift libraries Jupyter/Colaboratory: contributions are welcome. Notebooks submitted in [issues](https://github.com/philipturner/swift-colab/issues) will be reviewed and accepted. DocC tutorials are also permissible; Swift-Colab's maintainer will either convert them into Jupyter notebooks or redirect users to the documentation website.
 
