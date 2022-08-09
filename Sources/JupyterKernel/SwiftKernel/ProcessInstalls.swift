@@ -122,9 +122,9 @@ fileprivate func processExtraIncludeCommand(
       let magicCommand = "%install-extra-include-command"
       index = line.index(index, offsetBy: magicCommand.count)
       
-      // Force-unwrap because something besides whitespace must exist, otherwise
-      // there would be no output.
-      index = line[index...].firstIndex(of: restOfLine.first!)
+      // Force-unwrap `firstIndex` because something besides whitespace must 
+      // exist, otherwise there would be no output.
+      index = line[index...].firstIndex(of: restOfLine.first!)!
       let column = 1 + line.distance(from: line.startIndex, to: index)
       
       // `file` and `warning` contain the ": " that comes after them.
