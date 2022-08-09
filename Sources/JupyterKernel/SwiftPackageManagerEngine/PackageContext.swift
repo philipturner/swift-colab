@@ -1,4 +1,6 @@
 import Foundation
+fileprivate let shlex = Python.import("shlex")
+fileprivate let shlex = Python.import("shlex")
 
 struct PackageContext {
   static var installLocation = "/opt/swift/packages"
@@ -36,7 +38,7 @@ struct PackageContext {
         ])
       return String(output)!
     } catch {
-      throw handleTemplateError(error, lineIndex: lineIndex)
+      throw handleTemplateError(error, lineIndex)
     }
   }
   

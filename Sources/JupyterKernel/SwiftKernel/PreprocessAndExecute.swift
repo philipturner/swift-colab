@@ -1,6 +1,5 @@
 import Foundation
 fileprivate let re = Python.import("re")
-fileprivate let shlex = Python.import("shlex")
 fileprivate let time = Python.import("time")
 
 func preprocessAndExecute(
