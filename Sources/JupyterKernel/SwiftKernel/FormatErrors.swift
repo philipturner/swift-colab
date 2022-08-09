@@ -129,11 +129,19 @@ func prettyPrintStackTrace(
     let line = formatString("\(header[0])", ansiOptions: [32])
     let column = formatString("\(header[1])", ansiOptions: [32])
     
-    var data = frameBytes.advanced(by: 8).assumingMemoryBound(to: CChar.self)
+    var stream = frameBytes.advanced(by: 8)//.assumingMemoryBound(to: CChar.self)
     func extractComponent() -> String {
-      let output = String(cString: UnsafePointer(data))
-      data += output.count + 1
+      let count = stream.assumingMemoryBound(to: Int32.self).pointee
+      stream += 4
+      let contents = stream.assumingMemoryBound(to: CChar.self)
+      let bytes = UnsafeBufferPointer(contents, count: count)
+      let output = String(bytes: bytes, encoding: .utf8)!
+      stream += Int(count)
       return output
+
+      // let output = String(cString: UnsafePointer(data))
+      // data += output.count + 1
+      // return output
     }
     
     let function = extractComponent()

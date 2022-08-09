@@ -282,9 +282,9 @@ int get_pretty_stack_trace(void ***frames, int *size) {
     // 8-byte header.
     void *desc = malloc(
       /*line*/4 + /*column*/4 + 
-      function_name_len + /*null terminator*/1 + 
-      file_name_len + /*null terminator*/1 + 
-      directory_name_len + /*null terminator*/1);
+      /*count*/4 + function_name_len + /*null terminator*/1 + 
+      /*count*/4 + file_name_len + /*null terminator*/1 + 
+      /*count*/4 + directory_name_len + /*null terminator*/1);
     
     // Write line and column
     uint32_t *header = (uint32_t*)desc;
@@ -293,6 +293,8 @@ int get_pretty_stack_trace(void ***frames, int *size) {
     int str_ptr = 4 + 4;
     
     // Write function name
+    *((int*)header) = function_name_len + 1;
+    str_ptr += 4;
     memcpy((char*)desc + str_ptr, function_name, function_name_len);
     function_name = (char*)desc + str_ptr; //
     str_ptr += function_name_len;
@@ -300,6 +302,8 @@ int get_pretty_stack_trace(void ***frames, int *size) {
     str_ptr += 1;
     
     // Write file name
+    *((int*)header) = file_name_len + 1;
+    str_ptr += 4;
     memcpy((char*)desc + str_ptr, file_name, file_name_len);
     file_name = (char*)desc + str_ptr; //
     str_ptr += file_name_len;
@@ -307,6 +311,8 @@ int get_pretty_stack_trace(void ***frames, int *size) {
     str_ptr += 1;
     
     // Write directory name
+    *((int*)header) = directory_name_len + 1;
+    str_ptr += 4;
     if (directory_name_len > 0) {
       memcpy((char*)desc + str_ptr, directory_name, directory_name_len);
       directory_name = (char*)desc + str_ptr; //
