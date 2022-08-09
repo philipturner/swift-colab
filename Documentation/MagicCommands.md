@@ -92,8 +92,8 @@ To build packages stored on the local computer, pass `$cwd` into `.package(path:
 - Link to PR that initiated this
 - Has `$cwd` substitution (describe).
 - Long-term cache build products with Google Drive.
-- Switching install location may impact build performance, because it changes which cached build products are visible to the interpreter.
-- After switching, certain modules might be available to `%install-swiftpm-import` but unavailable to the interpreter with basic `import Module`. Explain this fundamental limitation of the SwiftPM engine's internals.
+- Switching install location may impact future build performance, because it changes which cached build products are visible to the Jupyter kernel.
+- Packages cached in the previous location are still available to `%install-swiftpm-import`. They are also available to the interpreter with `import Module`, but I'm not sure why. I haven't been able to prevent packages from being importable by switching the install location.
 
 ## `%install-swiftpm-environment`
 ```
