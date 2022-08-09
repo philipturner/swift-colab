@@ -129,7 +129,7 @@ func prettyPrintStackTrace(
     let line = formatString("\(header[0])", ansiOptions: [32])
     let column = formatString("\(header[1])", ansiOptions: [32])
     
-    var stream = frameBytes.advanced(by: 8)//.assumingMemoryBound(to: CChar.self)
+    var stream = frameBytes.advanced(by: 8)
     func extractComponent() -> String {
       let count = stream.assumingMemoryBound(to: Int32.self).pointee
       stream += 4
@@ -141,7 +141,7 @@ func prettyPrintStackTrace(
     }
     
     KernelContext.log("BEGIN SEARCH")
-    let function = extractComponent()
+    var function = extractComponent()
     KernelContext.log("FUNCTION FOUND \(function)")
     let file = extractComponent()
     KernelContext.log("FILE FOUND \(file)")
@@ -163,7 +163,13 @@ func prettyPrintStackTrace(
       // File is a notebook cell.
       path = file
       KernelContext.log("+")
-      KernelContext.log("NOTEBOOK")
+      KernelContext.log("NOTEBOOKy")
+
+      if function.hasPrefix("closure #"),
+         function.hasSuffix(" in  ") {
+        function.removeLast(1)
+        function += "main"
+      }
     }
     // KernelContext.log("\(function) ~ \(file) ~ \(directory) ~ \(path) ~")
     // KernelContext.log("function ~ file ~ directory ~ path ~")
