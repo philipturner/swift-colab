@@ -293,7 +293,7 @@ int get_pretty_stack_trace(void ***frames, int *size) {
     int str_ptr = 4 + 4;
     
     // Write function name
-    *((int*)header + str_ptr) = function_name_len + 1;
+    ((int*)((char*)header + str_ptr))[0] = function_name_len + 1;
     str_ptr += 4;
     memcpy((char*)desc + str_ptr, function_name, function_name_len);
     function_name = (char*)desc + str_ptr; //
@@ -301,7 +301,7 @@ int get_pretty_stack_trace(void ***frames, int *size) {
     str_ptr += ~3 & (function_name_len + 1 + 3); // Align to 4 bytes
     
     // Write file name
-    *((int*)header + str_ptr) = file_name_len + 1;
+    ((int*)((char*)header + str_ptr))[0] = file_name_len + 1;
     str_ptr += 4;
     memcpy((char*)desc + str_ptr, file_name, file_name_len);
     file_name = (char*)desc + str_ptr; //
@@ -309,7 +309,7 @@ int get_pretty_stack_trace(void ***frames, int *size) {
     str_ptr += ~3 & (file_name_len + 1 + 3); // Align to 4 bytes
     
     // Write directory name
-    *((int*)header + str_ptr) = directory_name_len + 1;
+    ((int*)((char*)header + str_ptr))[0] = directory_name_len + 1;
     str_ptr += 4;
     if (directory_name_len > 0) {
       memcpy((char*)desc + str_ptr, directory_name, directory_name_len);
@@ -323,7 +323,7 @@ int get_pretty_stack_trace(void ***frames, int *size) {
     filled_size += 1;
 
     {
-      unsafe_log_message("frame start2\n");
+      unsafe_log_message("frame start3\n");
       unsafe_log_message(file_name);
       unsafe_log_message("\n");
       unsafe_log_message(function_name);
@@ -332,7 +332,7 @@ int get_pretty_stack_trace(void ***frames, int *size) {
         unsafe_log_message(directory_name);
         unsafe_log_message("\n");
       }
-      unsafe_log_message("frame end2\n");
+      unsafe_log_message("frame end3\n");
     }
   }
   *frames = out;
