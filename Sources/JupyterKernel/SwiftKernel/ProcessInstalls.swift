@@ -41,6 +41,13 @@ func processInstallDirective(
   if isValidDirective { return }
 }
 
+fileprivate func sendStdout(_ message: String, insertNewLine: Bool = true) {
+  KernelContext.sendResponse("stream", [
+    "name": "stdout",
+    "text": "\(message)\(insertNewLine ? "\n" : "")"
+  ])
+}
+
 // %install-swiftpm-flags
 
 fileprivate var swiftPMFlags: [String] = []
@@ -139,11 +146,11 @@ fileprivate func processExtraIncludeCommand(
       let marker = "^" + String(repeating: Character("~"), count: numTildes)
       sendStdout(
         formatString(file, ansiOptions: [1]) +
-        formatString(warning, ansiOptions: [1, 36]) +
+        formatString(warning, ansiOptions: [1, 35]) +
         formatString(message, ansiOptions: [1]) + "\n" +
         line + "\n" +
-        spaces + formatString(marker, ansiOptions: [1, 35]) + "\n" +
-        "\n")
+        spaces + formatString(marker, ansiOptions: [1, 32]) + "\n" +
+        "\n", insertNewLine: false /*Explicitly define newline instead.*/)
       continue
     }
     swiftPMFlags.append(includeDir)
@@ -176,13 +183,6 @@ fileprivate func substituteCwd(
 }
 
 // %install
-
-fileprivate func sendStdout(_ message: String, insertNewLine: Bool = true) {
-  KernelContext.sendResponse("stream", [
-    "name": "stdout",
-    "text": "\(message)\(insertNewLine ? "\n" : "")"
-  ])
-}
 
 fileprivate var installedPackages: [String]! = nil
 fileprivate var installedPackagesLocation: String! = nil
