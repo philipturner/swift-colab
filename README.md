@@ -208,15 +208,15 @@ In the table below, "Compatible Swift Versions" lists whether each notebook runs
 >
 > <sup>4</sup>One cell fails because of the ambiguous line `gradient(at: 2, 2, of: pow)`. Fix this by replacing either `2` with `Double(2)`.
 >
-> <sup>5</sup>This notebook depends on [tensorflow/swift-models](https://github.com/tensorflow/swift-models), which you must change to [s4tf/models](https://github.com/s4tf/models). The repository is not updated for recent Swift toolchains, and it must compile by injecting the `TensorFlow` Swift module into it.
+> <sup>5</sup>This notebook depends on [tensorflow/swift-models](https://github.com/tensorflow/swift-models), which is now maintained at [s4tf/models](https://github.com/s4tf/models). The repository has not been tested recently. Also, compilation requires using `%install-swiftpm-import` to inject the `TensorFlow` module.
 
 | FastAI Tutorials | Dependencies | Compatible Swift Versions |
 | ---------------- | ------------ | ------------------------- |
 | n/a | S4TF | n/a |
 
-The Swift community made the tutorials below, independently of Google and S4TF. These do not depend on S4TF, so close out the Colab notebook used to run previous tutorials. Open each tutorial in a separate notebook, which may be pre-configured for GPU acceleration. When finished with each notebook, click `Runtime > Disconnect and delete runtime` to let other people use the GPU. Otherwise, Google may temporarily restrict your capabilities for exceeding usage limits.
+The Swift community made the tutorials below, independently of Google. These do not import S4TF, so exit the Colab notebook that ran previous tutorials. Open each tutorial using its official notebook, which may be pre-configured for GPU acceleration. Click `Runtime > Disconnect and delete runtime` when done with each tutorial. Otherwise, Google may temporarily restrict your access to accelerators for overusing them.
 
-If you maintain a library and want showcase it in Colab, any contributions are welcome. Tutorials can be submitted and reviewed in [issues](https://github.com/philipturner/swift-colab/issues).
+For those who wish to showcase Swift libraries Colab: contributions are welcome. Tutorials submitted in [issues](https://github.com/philipturner/swift-colab/issues) will be reviewed and accepted. Swift-Colab's maintainer also offers a free service of converting DocC tutorials into Jupyter notebooks.
 
 | Community Tutorials | Dependencies | Compatible Swift Versions |
 | ---------------- | ------------ | ------------------------- |
