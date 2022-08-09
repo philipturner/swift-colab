@@ -1,5 +1,6 @@
 import Foundation
 fileprivate let re = Python.import("re")
+fileprivate let shlex = Python.import("shlex")
 fileprivate let time = Python.import("time")
 
 func preprocessAndExecute(
@@ -130,6 +131,7 @@ fileprivate func preprocess(
 
 fileprivate var previouslyReadPaths: Set<String> = []
 
+// TODO: Allow passing the name not-in-quotes, utilizing Shlex split
 fileprivate func readInclude(
   restOfLine: String, 
   lineIndex: Int
@@ -180,4 +182,20 @@ fileprivate func readInclude(
     \(getLocationDirective(lineIndex: lineIndex))
     
     """
+}
+
+// Used in "ProcessInstalls.swift".
+func shlexSplit(
+  lineIndex: Int, line: PythonConvertible
+) throws -> [String] {
+  let split = shlex[dynamicMember: "split"].throwing
+  do {
+    let output = try split.dynamicallyCall(withArguments: line)
+    return [String](output)!
+  } catch let error as PythonError {
+    throw PreprocessorException(lineIndex: lineIndex, message: """
+      Could not parse shell arguments: \(line)
+      \(error)
+      """)
+  }
 }

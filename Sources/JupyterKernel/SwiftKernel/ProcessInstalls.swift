@@ -2,25 +2,9 @@ import Foundation
 fileprivate let json = Python.import("json")
 fileprivate let os = Python.import("os")
 fileprivate let re = Python.import("re")
-fileprivate let shlex = Python.import("shlex")
 fileprivate let sqlite3 = Python.import("sqlite3")
 fileprivate let string = Python.import("string")
 fileprivate let subprocess = Python.import("subprocess")
-
-fileprivate func shlexSplit(
-  lineIndex: Int, line: PythonConvertible
-) throws -> [String] {
-  let split = shlex[dynamicMember: "split"].throwing
-  do {
-    let output = try split.dynamicallyCall(withArguments: line)
-    return [String](output)!
-  } catch let error as PythonError {
-    throw PreprocessorException(lineIndex: lineIndex, message: """
-      Could not parse shell arguments: \(line)
-      \(error)
-      """)
-  }
-}
 
 func processInstallDirective(
   line: String, lineIndex: Int, isValidDirective: inout Bool
@@ -61,6 +45,8 @@ func processInstallDirective(
 
 fileprivate var swiftPMFlags: [String] = []
 
+// Allow passing empty whitespace as the flags because it's valid to run:
+// swift         build
 fileprivate func processSwiftPMFlags(
   restOfLine: String, lineIndex: Int
 ) throws {
@@ -106,6 +92,7 @@ fileprivate func handleTemplateError(
 
 // %install-extra-include-command
 
+// Allow passing empty whitespace as the command because that's valid Bash.
 fileprivate func processExtraIncludeCommand(
   restOfLine: String, lineIndex: Int
 ) throws {
@@ -126,9 +113,13 @@ fileprivate func processExtraIncludeCommand(
   let includeDirs = try shlexSplit(lineIndex: lineIndex, line: preprocessed)
   for includeDir in includeDirs {
     if includeDir.prefix(2) != "-I" {
-      // Warning goes to "Runtime" > "View runtime logs"
-      print("""
-        Non "-I" output from %install-extra-include-command: \(includeDir)
+      // TODO: Make a validation test for text colorization.
+      let file = "<Cell \(KernelContext.cellID)>:\(lineIndex):1"
+      sendStdout(
+        formatString("\(file): ", ansiOptions: [1]) +
+        formatString("warning: ", ansiOptions: [1, 36]) + """
+        non '-I' output from %install-extra-include-command: '\(includeDir)'
+
         """)
       continue
     }
@@ -141,6 +132,7 @@ fileprivate func processExtraIncludeCommand(
 fileprivate func processInstallLocation(
   restOfLine: String, lineIndex: Int
 ) throws {
+  let parsed = 
   KernelContext.installLocation = try substituteCwd(
     template: restOfLine, lineIndex: lineIndex)
 }
@@ -565,7 +557,8 @@ fileprivate func processInstall(
   }
 }
 
-fileprivate func processTest(
+// Used in "PreprocessAndExecute.swift".
+func processTest(
   restOfLine: String, lineIndex: Int
 ) throws {
   let parsed = try shlexSplit(lineIndex: lineIndex, line: restOfLine)

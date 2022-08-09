@@ -107,8 +107,8 @@ fileprivate func getAndSendStdout(handler: PythonObject) {
       // Remove header that signalled that the code successfully compiled.
       let header = "HEADER\r\n"
       precondition(stdout.hasPrefix(header), """
-        Stdout did not start with the expected header "\(header)". Stdout was: \
-        \(stdout)
+        Stdout did not start with the expected header "\(header)".
+        Stdout was: \(stdout)
         """)
       stdout.removeFirst(header.count)
       handler.had_stdout = true
