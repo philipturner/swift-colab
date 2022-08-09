@@ -179,11 +179,26 @@ fileprivate func processExtraIncludeCommand(
 
 // %install-location
 
+// TODO: Validate that debugger finds correct modules after changing install
+// location during notebook execution.
 fileprivate func processInstallLocation(
   line: String, restOfLine: String, lineIndex: Int
 ) throws {
-  // TODO: Check number of arguments to %install-location.
-  // let parsed = 
+  // TODO: Make validation test for %install-location.
+  let parsed = try shlexSplit(lineIndex: lineIndex, line: restOfLine)
+  if parsed.count != 1 {
+    var sentence: String
+    if parsed.count == 0 {
+      sentence = "Please enter a path."
+    } else {
+      sentence = "Do not enter anything after the path."
+    }
+    throw PreprocessorException(lineIndex: lineIndex, message: """
+      Usage: %install-location PATH
+      \(sentence) For more guidance, visit:
+      https://github.com/philipturner/swift-colab/blob/main/Documentation/MagicCommands.md#install-location
+      """)
+  }
   KernelContext.installLocation = try substituteCwd(
     template: restOfLine, lineIndex: lineIndex)
 }

@@ -92,6 +92,7 @@ To build packages stored on the local computer, pass `$cwd` into `.package(path:
 - Link to PR that initiated this
 - Has `$cwd` substitution (describe).
 - Long-term cache build products with Google Drive.
+- Switching install location after running an `%install` command produces undefined behavior.
 
 ## `%install-swiftpm-environment`
 ```
@@ -101,7 +102,7 @@ To build packages stored on the local computer, pass `$cwd` into `.package(path:
 
 > Coming in Swift-Colab v2.3.
 
-Adds a line of Bash code to execute before building the package.
+Append a line of Bash code to execute before building the package.
 
 
 ## `%install-swiftpm-flags`
