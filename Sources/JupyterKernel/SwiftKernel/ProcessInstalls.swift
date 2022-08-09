@@ -306,9 +306,9 @@ fileprivate func processInstall(
   // Expand template before writing to file.
   let spec = try substituteCwd(template: parsed[0], lineIndex: lineIndex)
   let products = Array(parsed[1...])
-
+  
   KernelContext.log("checkpoint 2")
-
+  
   // Ensure install location exists
   let fm = FileManager.default
   do {
@@ -316,9 +316,13 @@ fileprivate func processInstall(
       atPath: KernelContext.installLocation, withIntermediateDirectories: true)
   } catch {
     throw PackageInstallException(lineIndex: lineIndex, message: """
-      Could not create directory "\(KernelContext.installLocation)". \
-      Encountered error: \(error.localizedDescription)
+      Could not create directory "". \
+      Encountered error: 
       """)
+    // throw PackageInstallException(lineIndex: lineIndex, message: """
+    //   Could not create directory "\(KernelContext.installLocation)". \
+    //   Encountered error: \(error.localizedDescription)
+    //   """)
   }
 
   KernelContext.log("checkpoint 3")
