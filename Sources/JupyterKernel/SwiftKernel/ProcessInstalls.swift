@@ -134,9 +134,11 @@ fileprivate func processExtraIncludeCommand(
         var index = line.firstIndex(of: "%")!
         index = line.index(index, offsetBy: magicCommand.count)
         
-        // Force-unwrap `firstIndex` because something besides whitespace must 
-        // exist, otherwise there would be no output.
-        index = line[index...].firstIndex(of: restOfLine.first!)!
+        // Something besides whitespace must exist, otherwise there would be no 
+        // output.
+        while line[index].isWhitespace {
+          index = line.index(after: index)
+        }
         column = 1 + line.distance(from: line.startIndex, to: index)
       }
       
