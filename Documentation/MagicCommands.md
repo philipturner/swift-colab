@@ -162,3 +162,5 @@ Run Swift package tests on the package specified by `SPEC`. This does not share 
 - `SPEC` - Specification to insert into a package manifest. Prefer to use SwiftPM version 5.0\* syntax, such as `.package(url: "", branch: ""))`, although v4.2 syntax also works for backward compatibility. Place the specification between single quotes to avoid colliding with string literals, which use double quotes.
 
 > \*v5.0 syntax will be supported in Swift-Colab v2.3. Until that happens, use v4.2 syntax such as `.package(url: "", .branch(""))`.
+
+This command utilizes the same SwiftPM flags as `%install`, providing a convenient way to configure and run tests in Colaboratory.
