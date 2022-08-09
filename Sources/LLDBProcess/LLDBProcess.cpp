@@ -297,18 +297,16 @@ int get_pretty_stack_trace(void ***frames, int *size) {
     str_ptr += 4;
     memcpy((char*)desc + str_ptr, function_name, function_name_len);
     function_name = (char*)desc + str_ptr; //
-    str_ptr += function_name_len;
-    ((char*)desc)[str_ptr] = 0; // Write null terminator
-    str_ptr += 1;
+    ((char*)desc)[str_ptr + function_name_len] = 0; // Write null terminator
+    str_ptr += ~3 & (function_name_len + 1 + 3); // Align to 4 bytes
     
     // Write file name
     *((int*)header + str_ptr) = file_name_len + 1;
     str_ptr += 4;
     memcpy((char*)desc + str_ptr, file_name, file_name_len);
     file_name = (char*)desc + str_ptr; //
-    str_ptr += file_name_len;
-    ((char*)desc)[str_ptr] = 0; // Write null terminator
-    str_ptr += 1;
+    ((char*)desc)[str_ptr + file_name_len] = 0; // Write null terminator
+    str_ptr += ~3 & (file_name_len + 1 + 3); // Align to 4 bytes
     
     // Write directory name
     *((int*)header + str_ptr) = directory_name_len + 1;
@@ -316,10 +314,9 @@ int get_pretty_stack_trace(void ***frames, int *size) {
     if (directory_name_len > 0) {
       memcpy((char*)desc + str_ptr, directory_name, directory_name_len);
       directory_name = (char*)desc + str_ptr; //
-      str_ptr += directory_name_len;
     }
-    ((char*)desc)[str_ptr] = 0; // Write null terminator
-    str_ptr += 1;
+    ((char*)desc)[str_ptr + directory_name_len] = 0; // Write null terminator
+    str_ptr += ~3 & (directory_name_len + 1 + 3); // Align to 4 bytes
     
     // Store description pointer
     out[filled_size] = desc;

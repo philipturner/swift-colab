@@ -136,7 +136,7 @@ func prettyPrintStackTrace(
       let contents = stream.assumingMemoryBound(to: UInt8.self)
       let bytes = UnsafeBufferPointer(start: contents, count: Int(count))
       let output = String(bytes: bytes, encoding: .utf8)!
-      stream += Int(count)
+      stream += ~3 & (Int(count) + 3)
       return output
       
       // let output = String(cString: UnsafePointer(data))
