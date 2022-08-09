@@ -134,15 +134,16 @@ fileprivate func processExtraIncludeCommand(
       
       // Ensure correct characters are highlighted.
       let numSpaces = column - 1
-      let numGreenCharacters = line.count - numSpaces
-      let numTildes = numGreenCharacters - 1
-      
+      let numTildes = restOfLine.count - 1
+      let spaces = String(repeating: Character(" "), count: numSpaces)
+      let marker = "^" + String(repeating: Character("~"), count: numTildes)
       sendStdout(
         formatString(file, ansiOptions: [1]) +
         formatString(warning, ansiOptions: [1, 36]) +
-        formatString(message + """
-        %install-extra-include-command
-        """)
+        formatString(message, ansiOptions: [1]) + "\n" +
+        line + "\n" +
+        spaces + formatString(marker, ansiOptios: [1, 35]) + "\n" +
+        "\n")
       continue
     }
     swiftPMFlags.append(includeDir)
@@ -154,6 +155,7 @@ fileprivate func processExtraIncludeCommand(
 fileprivate func processInstallLocation(
   line: String, restOfLine: String, lineIndex: Int
 ) throws {
+  // TODO: Check number of arguments to %install-location.
   // let parsed = 
   KernelContext.installLocation = try substituteCwd(
     template: restOfLine, lineIndex: lineIndex)
