@@ -313,19 +313,15 @@ fileprivate func processInstall(
   let fm = FileManager.default
   do {
     KernelContext.log("checkpoint 2.1 \(KernelContext.installLocation)")
-    // try fm.createDirectory(
-    //   atPath: KernelContext.installLocation, withIntermediateDirectories: true)
+    try fm.createDirectory(
+      atPath: KernelContext.installLocation, withIntermediateDirectories: true)
     KernelContext.log("checkpoint 2.3")
   } catch {
     KernelContext.log("checkpoint 2.2")
     throw PackageInstallException(lineIndex: lineIndex, message: """
-      Could not create directory "". \
-      Encountered error: 
+      Could not create directory "\(KernelContext.installLocation)". \
+      Encountered error: \(error.localizedDescription)
       """)
-    // throw PackageInstallException(lineIndex: lineIndex, message: """
-    //   Could not create directory "\(KernelContext.installLocation)". \
-    //   Encountered error: \(error.localizedDescription)
-    //   """)
   }
 
   KernelContext.log("checkpoint 3")
