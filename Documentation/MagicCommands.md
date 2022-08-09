@@ -91,6 +91,7 @@ To build packages stored on the local computer, pass `$cwd` into `.package(path:
 
 - Link to PR that initiated this
 - Has `$cwd` substitution (describe).
+- Long-term cache builds products with Google Drive.
 
 ## `%install-swiftpm-environment`
 ```
