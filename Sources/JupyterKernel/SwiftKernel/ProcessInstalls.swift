@@ -112,17 +112,30 @@ fileprivate func processExtraIncludeCommand(
   let preprocessed = result.stdout.decode("utf8")
   let includeDirs = try shlexSplit(lineIndex: lineIndex, line: preprocessed)
   for includeDir in includeDirs {
+    // TODO: Make a validation test for text colorization, using abnormal 
+    // whitespace configurations.
+    // TODO: Cache column location to avoid computing multiple times (after
+    // making validation test).
     if includeDir.prefix(2) != "-I" {
-      // TODO: Make a validation test for text colorization.
-
-      
-      // Ensure correct characters/column are highlighted.
+      // Magic command might be prepended by spaces, so find index of "%".
+      var index = line.firstIndex(of: "%")
       let magicCommand = "%install-extra-include-command"
+      index = line.index(index, offsetBy: magicCommand.count)
+      
+      // Force-unwrap because something besides whitespace must exist, otherwise
+      // there would be no output.
+      index = line[index...].firstIndex(of: restOfLine.first!)
+      let column = 1 + line.distance(from: line.startIndex, to: index)
       
       // `file` and `warning` contain the ": " that comes after them.
-      let file = "<Cell \(KernelContext.cellID)>:\(lineIndex):1: "
+      let file = "<Cell \(KernelContext.cellID)>:\(lineIndex):\(column): "
       let warning = "warning: "
       let message = "non '-I' output from \(magicCommand): '\(includeDir)'"
+      
+      // Ensure correct characters are highlighted.
+      let numSpaces = column - 1
+      let numGreenCharacters = line.count - numSpaces
+      let numTildes = numGreenCharacters - 1
       
       sendStdout(
         formatString(file, ansiOptions: [1]) +
