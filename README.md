@@ -193,7 +193,7 @@ In the table below, "Compatible Swift Versions" lists whether each notebook runs
 <!-- TODO: Revamp s4tf/s4tf-docs and link updated tutorials here -->
 
 | Tutorials from Google | Dependencies | Compatible Swift Versions |
-| -------- | ------------ | ------------------------- |
+| --------------------- | ------------ | ------------------------- |
 | [A Swift Tour](https://colab.research.google.com/github/tensorflow/swift/blob/main/docs/site/tutorials/a_swift_tour.ipynb) | | Release, Development |
 | [Protocol-Oriented Programming & Generics](https://colab.research.google.com/github/tensorflow/swift/blob/main/docs/site/tutorials/protocol_oriented_generics.ipynb) | | Release, Development |
 | [Python Interoperability](https://colab.research.google.com/github/tensorflow/swift/blob/main/docs/site/tutorials/python_interoperability.ipynb)<sup>[1]</sup> | PythonKit, S4TF<sup>[2]</sup> | Release, Development |
@@ -213,7 +213,7 @@ In the table below, "Compatible Swift Versions" lists whether each notebook runs
 > <sup>5</sup>This notebook depends on [tensorflow/swift-models](https://github.com/tensorflow/swift-models), which is now maintained at [s4tf/models](https://github.com/s4tf/models). The repository has not been tested recently. Also, compilation requires using `%install-swiftpm-import` to inject the `TensorFlow` module.
 
 | Tutorials from FastAI | Dependencies | Compatible Swift Versions |
-| ---------------- | ------------ | ------------------------- |
+| --------------------- | ------------ | ------------------------- |
 | n/a | S4TF | n/a |
 
 The Swift community made the following tutorials without sponsorship from Google. These do not import S4TF, so close the common Colab instance that ran previous tutorials. Execute each tutorial below in its original notebook, which may be pre-configured for GPU acceleration. Click `Runtime > Disconnect and delete runtime` after completing each tutorial. Otherwise, Google may temporarily restrict your access to accelerators for overusing them.
@@ -221,7 +221,7 @@ The Swift community made the following tutorials without sponsorship from Google
 For those looking to showcase Swift libraries Jupyter/Colaboratory: contributions are welcome. Notebooks submitted in [issues](https://github.com/philipturner/swift-colab/issues) will be reviewed and accepted. DocC tutorials are also permissible; Swift-Colab's maintainer will either convert them into Jupyter notebooks or redirect users to the documentation website.
 
 | Community Tutorials | Dependencies | Compatible Swift Versions |
-| ---------------- | ------------ | ------------------------- |
+| ------------------- | ------------ | ------------------------- |
 | Simulating 3D Physics<sup>6</sup> | [MuJoCo](https://github.com/deepmind/mujoco) | Release, Development |
 | General-Purpose GPU with OpenCL<sup>6</sup> | [SwiftOpenCL](https://github.com/philipturner/swift-opencl) | Release, Development |
 
