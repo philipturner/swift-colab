@@ -232,9 +232,6 @@ func processInstall(
   // empty subsequences.
   let binDir = binDirLines.last!
   let libPath = "\(binDir)/lib\(packageName).so"
-
-  KernelContext.log("BIN DIR \(binDir)")
-  KernelContext.log("LIB PATH \(libPath)")
   
   // Copy .swiftmodule and modulemap files to Swift module search path.
   let moduleSearchPath = "\(PackageContext.installLocation)/modules"
