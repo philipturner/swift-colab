@@ -153,7 +153,7 @@ The code above works and makes a file called `x86_64.sh` in `/content/sample_dat
 
 ## `%test`
 ```
-%install SPEC
+%test SPEC
 ```
 
 > Coming in Swift-Colab v2.3.
