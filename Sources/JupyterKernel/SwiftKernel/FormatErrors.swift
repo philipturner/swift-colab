@@ -166,8 +166,7 @@ func prettyPrintStackTrace(
       KernelContext.log("NOTEBOOKy")
 
       if function.hasPrefix("closure #"),
-         function.hasSuffix(" in  ") {
-        function.removeLast(1)
+         function.hasSuffix(" in ") {
         function += "main"
       }
     }
