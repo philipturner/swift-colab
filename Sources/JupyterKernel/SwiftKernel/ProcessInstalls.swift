@@ -116,23 +116,29 @@ fileprivate func processExtraIncludeCommand(
       """)
   }
   
+  // Cache column location to avoid computing multiple times.
+  var column: Int?
   let preprocessed = result.stdout.decode("utf8")
   let includeDirs = try shlexSplit(lineIndex: lineIndex, line: preprocessed)
   for includeDir in includeDirs {
     // TODO: Make a validation test for text colorization, using abnormal 
     // whitespace configurations.
-    // TODO: Cache column location to avoid computing multiple times (after
-    // making validation test).
+    //
+    // %install-extra-include-command echo -I/usr/include/glib-2.0
+    // %install-extra-include-command pkg-config --cflags-only-I glib-2.0
+    // %install-extra-include-command echo "hello world c"
     if includeDir.prefix(2) != "-I" {
-      // Magic command might be prepended by spaces, so find index of "%".
-      var index = line.firstIndex(of: "%")!
       let magicCommand = "%install-extra-include-command"
-      index = line.index(index, offsetBy: magicCommand.count)
-      
-      // Force-unwrap `firstIndex` because something besides whitespace must 
-      // exist, otherwise there would be no output.
-      index = line[index...].firstIndex(of: restOfLine.first!)!
-      let column = 1 + line.distance(from: line.startIndex, to: index)
+      if column == nil {
+        // Magic command might be prepended by spaces, so find index of "%".
+        var index = line.firstIndex(of: "%")!
+        index = line.index(index, offsetBy: magicCommand.count)
+        
+        // Force-unwrap `firstIndex` because something besides whitespace must 
+        // exist, otherwise there would be no output.
+        index = line[index...].firstIndex(of: restOfLine.first!)!
+        column = 1 + line.distance(from: line.startIndex, to: index)
+      }
       
       // `file` and `warning` contain the ": " that comes after them.
       let file = "<Cell \(KernelContext.cellID)>:\(lineIndex):\(column): "
@@ -140,7 +146,7 @@ fileprivate func processExtraIncludeCommand(
       let message = "non '-I' output from \(magicCommand): '\(includeDir)'"
       
       // Ensure correct characters are highlighted.
-      let numSpaces = column - 1
+      let numSpaces = column! - 1
       let numTildes = restOfLine.count - 1
       let spaces = String(repeating: Character(" "), count: numSpaces)
       let marker = "^" + String(repeating: Character("~"), count: numTildes)
@@ -150,7 +156,7 @@ fileprivate func processExtraIncludeCommand(
         formatString(message, ansiOptions: [1]) + "\n" +
         line + "\n" +
         spaces + formatString(marker, ansiOptions: [1, 32]) + "\n" +
-        "\n", insertNewLine: false /*Explicitly define newline instead.*/)
+        "\n", insertNewLine: false /*Explicitly add double newline.*/)
       continue
     }
     swiftPMFlags.append(includeDir)
