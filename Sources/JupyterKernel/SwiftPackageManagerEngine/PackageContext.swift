@@ -2,7 +2,7 @@ import Foundation
 
 struct PackageContext {
   static var installLocation = "/opt/swift/packages"
-  static var var swiftPMFlags: [String] = []
+  static var swiftPMFlags: [String] = []
   
   static func sendStdout(_ message: String, insertNewLine: Bool = true) {
     KernelContext.sendResponse("stream", [
@@ -12,7 +12,7 @@ struct PackageContext {
   }
   
   static func shlexSplit(
-    _ arguments: PythonConvertible, _ lineIndex: Int,
+    _ arguments: PythonConvertible, _ lineIndex: Int
   ) throws -> [String] {
     let split = shlex[dynamicMember: "split"].throwing
     do {
