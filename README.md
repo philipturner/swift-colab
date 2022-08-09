@@ -190,17 +190,15 @@ In the table below, "Compatible Swift Versions" lists whether each notebook runs
 - Release = 5.6.2 Release
 - Development = July 20, 2022 Development Snapshot
 
-<!-- Dependency shortcuts for reference: AutoDiff PythonKit S4TF SwiftAI SwiftModels -->
-
-| Tutorial | Dependencies | Compatible Swift Versions |
+| Google Tutorials | Dependencies | Compatible Swift Versions |
 | -------- | ------------ | ------------------------- |
 | [A Swift Tour](https://colab.research.google.com/github/tensorflow/swift/blob/main/docs/site/tutorials/a_swift_tour.ipynb) | | Release, Development |
 | [Protocol-Oriented Programming & Generics](https://colab.research.google.com/github/tensorflow/swift/blob/main/docs/site/tutorials/protocol_oriented_generics.ipynb) | | Release, Development |
 | [Python Interoperability](https://colab.research.google.com/github/tensorflow/swift/blob/main/docs/site/tutorials/python_interoperability.ipynb)<sup>[1]</sup> | PythonKit, S4TF<sup>[2]</sup> | Release, Development |
-| [Sharp Edges in Differentiability](https://colab.research.google.com/github/tensorflow/swift/blob/main/docs/site/tutorials/Swift_autodiff_sharp_edges.ipynb)<sup>[3][4]</sup> | AutoDiff | Release, Development |
-| [Model Training Walkthrough](https://colab.research.google.com/github/tensorflow/swift/blob/main/docs/site/tutorials/model_training_walkthrough.ipynb) | AutoDiff, PythonKit, S4TF | Development |
-| [Raw TensorFlow Operators](https://colab.research.google.com/github/tensorflow/swift/blob/main/docs/site/tutorials/raw_tensorflow_operators.ipynb) | AutoDiff, S4TF | Development |
-| [Introducing X10, an XLA-Based Backend](https://colab.research.google.com/github/tensorflow/swift/blob/main/docs/site/tutorials/introducing_x10.ipynb)<sup>[5]</sup> | S4TF, S4TF Models | n/a |
+| [Sharp Edges in Differentiability](https://colab.research.google.com/github/tensorflow/swift/blob/main/docs/site/tutorials/Swift_autodiff_sharp_edges.ipynb)<sup>[3][4]</sup> | Differentiation | Release, Development |
+| [Model Training Walkthrough](https://colab.research.google.com/github/tensorflow/swift/blob/main/docs/site/tutorials/model_training_walkthrough.ipynb) | Differentiation, PythonKit, S4TF | Development |
+| [Raw TensorFlow Operators](https://colab.research.google.com/github/tensorflow/swift/blob/main/docs/site/tutorials/raw_tensorflow_operators.ipynb) | Differentiation, S4TF | Development |
+| [Introducing X10, an XLA-Based Backend](https://colab.research.google.com/github/tensorflow/swift/blob/main/docs/site/tutorials/introducing_x10.ipynb)<sup>[5]</sup> | S4TF, [S4TF Models](https://github.com/s4tf/models) | n/a |
 
 > <sup>1</sup>One cell fails because of ambiguous overloads for `PythonObject.==` and `PythonObject.<`. Work around this by explicitly casting the comparison result to `Bool` before printing.
 >
@@ -210,14 +208,22 @@ In the table below, "Compatible Swift Versions" lists whether each notebook runs
 >
 > <sup>4</sup>One cell fails because of the ambiguous line `gradient(at: 2, 2, of: pow)`. Fix this by replacing either `2` with `Double(2)`.
 >
-> <sup>5</sup>This notebook depends on [tensorflow/swift-models](https://github.com/tensorflow/swift-models), which you must change to [s4tf/models](https://github.com/s4tf/models). The repository is not updated for recent Swift toolchains, and I need to decide how to link the `TensorFlow` Swift module into it.
+> <sup>5</sup>This notebook depends on [tensorflow/swift-models](https://github.com/tensorflow/swift-models), which you must change to [s4tf/models](https://github.com/s4tf/models). The repository is not updated for recent Swift toolchains, and it must compile by injecting the `TensorFlow` Swift module into it.
 
-More tutorials are in development. Upon completion, they will appear in the table above. The notation `(New)` distinguishes them from tutorials created by Google.
-
-| Planned Tutorial | Dependencies | Compatible Swift Versions |
+| FastAI Tutorials | Dependencies | Compatible Swift Versions |
 | ---------------- | ------------ | ------------------------- |
-| General-Purpose GPU with OpenCL (New) | [SwiftOpenCL](https://github.com/philipturner/swift-opencl) | Release, Development |
-| ??? (Tentative) (New) | [MuJoCo](https://github.com/deepmind/mujoco) | n/a |
+| n/a | S4TF | n/a |
+
+The Swift community made the tutorials below, independently of Google and S4TF. These do not depend on S4TF, so close out the Colab notebook used to run previous tutorials. Open each tutorial in a separate notebook, which may be pre-configured for GPU acceleration. When finished with each notebook, click `Runtime > Disconnect and delete runtime` to let other people use the GPU. Otherwise, Google may temporarily restrict your capabilities for exceeding usage limits.
+
+If you maintain a library and want showcase it in Colab, any contributions are welcome. Tutorials can be submitted and reviewed in [issues](https://github.com/philipturner/swift-colab/issues).
+
+| Community Tutorials | Dependencies | Compatible Swift Versions |
+| ---------------- | ------------ | ------------------------- |
+| Simulating 3D Physics<sup>6</sup> | [MuJoCo](https://github.com/deepmind/mujoco) | Release, Development |
+| General-Purpose GPU with OpenCL<sup>6</sup> | [SwiftOpenCL](https://github.com/philipturner/swift-opencl) | Release, Development |
+
+> <sup>6</sup>Still in development. Upon completion, their names will become hyperlinks.
 
 ## Testing
 
