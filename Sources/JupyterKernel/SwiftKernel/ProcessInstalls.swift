@@ -158,7 +158,7 @@ fileprivate func processExtraIncludeCommand(
       let row = lineIndex + 1
       let file = "<Cell \(KernelContext.cellID)>:\(row):\(startColumn!): "
       let warning = "warning: "
-      let message = "non '-I' output from \(magicCommand): '\(includeDir)'"
+      let message = "non-'-I' output from \(magicCommand): '\(includeDir)'"
       
       // Ensure correct characters are highlighted.
       let numSpaces = startColumn! - 1
