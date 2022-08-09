@@ -79,7 +79,7 @@ public func create_shell(
 ) -> Int64 {
   // If the user includes "EnableIPythonDisplay.swift" twice, don't regenerate
   // the socket and shell.
-  if socketAndShell == nil {
+  if socketAndShell == nil || true {
     InteractiveShellABC.register(SwiftShell)
     
     let username = String(cString: username_ptr)
@@ -127,6 +127,7 @@ fileprivate let SwiftShell = PythonClass(
     "kernel": Instance(
       "ipykernel.inprocess.ipkernel.InProcessKernel", allow_none: true),
     
+    // TODO: Would enable_gui allow the rich Pandas DataFrame display?
     // Enable GUI integration for the kernel.
     "enable_gui": PythonInstanceMethod { args in
       let `self` = args[0]
