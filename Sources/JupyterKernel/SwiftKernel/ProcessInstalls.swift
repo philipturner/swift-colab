@@ -141,7 +141,7 @@ fileprivate func processExtraIncludeCommand(
       }
       
       // `file` and `warning` contain the ": " that comes after them.
-      let file = "<Cell \(KernelContext.cellID)>:\(lineIndex):\(column): "
+      let file = "<Cell \(KernelContext.cellID)>:\(lineIndex):\(column!): "
       let warning = "warning: "
       let message = "non '-I' output from \(magicCommand): '\(includeDir)'"
       
