@@ -92,7 +92,8 @@ To build packages stored on the local computer, pass `$cwd` into `.package(path:
 - Link to PR that initiated this
 - Has `$cwd` substitution (describe).
 - Long-term cache build products with Google Drive.
-- Switching install location after running an `%install` command produces undefined behavior.
+- Switching install location may impact build performance, because it changes which cached build products are visible to the interpreter.
+- After switching, certain modules might be available to `%install-swiftpm-import` but unavailable to the interpreter with basic `import Module`. Explain this fundamental limitation of the SwiftPM engine's internals.
 
 ## `%install-swiftpm-environment`
 ```
@@ -118,7 +119,7 @@ Append a line of Bash code to execute before building the package.
 
 ## `%install-swiftpm-import`
 ```
-%install-swiftpm-import MODULE
+%install-swiftpm-import MODULE [MODULE ...]
 ```
 
 > Coming in Swift-Colab v2.3.
@@ -126,6 +127,8 @@ Append a line of Bash code to execute before building the package.
 Treats a previously compiled module like a library built into the Swift toolchain. This lets a Swift package's source code import the module, without declaring a dependency in `Package.swift`.
 
 - `MODULE` - The Swift module to automatically link. Before running `%install-swiftpm-import`, execute the `%include` command that declares this module
+
+After running each `%install` command, the Jupyter kernel records each product's location. The record stays the same even after switching install locations with `%install-location`. During an `%install-swiftpm-import`, it queries each product's file path to link the corresponding `.so` and `.swiftmodule`.
 
 This command's underlying mechanism is used to inject `JupyterDisplay` into Swift packages. This module lets external packages seamlessly communicate with the notebook's Jupyter display. Use the convention below to conditionally import `MODULE` inside a Swift package.
 

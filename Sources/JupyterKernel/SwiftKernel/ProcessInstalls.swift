@@ -179,12 +179,9 @@ fileprivate func processExtraIncludeCommand(
 
 // %install-location
 
-// TODO: Validate that debugger finds correct modules after changing install
-// location during notebook execution.
 fileprivate func processInstallLocation(
   line: String, restOfLine: String, lineIndex: Int
 ) throws {
-  // TODO: Make validation test for %install-location.
   let parsed = try shlexSplit(lineIndex: lineIndex, line: restOfLine)
   if parsed.count != 1 {
     var sentence: String
@@ -301,44 +298,31 @@ fileprivate func processInstall(
       """)
   }
 
-  KernelContext.log("checkpoint 1")
-  
   // Expand template before writing to file.
   let spec = try substituteCwd(template: parsed[0], lineIndex: lineIndex)
   let products = Array(parsed[1...])
   
-  KernelContext.log("checkpoint 2.0")
-  
   // Ensure install location exists
   let fm = FileManager.default
   do {
-    KernelContext.log("checkpoint 2.1 \(KernelContext.installLocation)")
     try fm.createDirectory(
       atPath: KernelContext.installLocation, withIntermediateDirectories: true)
-    KernelContext.log("checkpoint 2.3")
   } catch {
-    KernelContext.log("checkpoint 2.2")
     throw PackageInstallException(lineIndex: lineIndex, message: """
       Could not create directory "\(KernelContext.installLocation)". \
       Encountered error: \(error.localizedDescription)
       """)
   }
-
-  KernelContext.log("checkpoint 3")
   
   let linkPath = "/opt/swift/install-location"
   try? fm.removeItem(atPath: linkPath)
   try fm.createSymbolicLink(
     atPath: linkPath, withDestinationPath: KernelContext.installLocation)
   
-  KernelContext.log("checkpoint 4")
-  
   if installedPackages == nil || 
      installedPackagesLocation != KernelContext.installLocation {
     try readInstalledPackages()
   }
-
-  KernelContext.log("checkpoint 5")
   
   var packageID: Int
   if let index = installedPackagesMap[spec] {
@@ -349,8 +333,6 @@ fileprivate func processInstall(
     installedPackagesMap[spec] = packageID
   }
   try writeInstalledPackages(lineIndex: lineIndex)
-  
-  KernelContext.log("checkpoint 6")
   
   // Summary of how this works:
   // - create a Swift package that depends all the modules that
