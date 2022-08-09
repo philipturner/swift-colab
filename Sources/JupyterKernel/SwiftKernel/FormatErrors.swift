@@ -140,57 +140,27 @@ func prettyPrintStackTrace(
       return output
     }
     
-    KernelContext.log("BEGIN SEARCH")
     var function = extractComponent()
-    KernelContext.log("FUNCTION FOUND \(function)")
     let file = extractComponent()
-    KernelContext.log("FILE FOUND \(file)")
     let directory = extractComponent()
-    KernelContext.log("DIRECTORY FOUND \(directory)")
     var path: String
     
     if let folder = extractPackageFolder(fromPath: directory) {
       // File is in a package's build checkouts.
       path = folder + "/" + file
-      KernelContext.log("+")
-      KernelContext.log("FOLDER")
     } else if directory.count > 0 {
       // File location not recognized.
       path = directory + "/" + file
-      KernelContext.log("+")
-      KernelContext.log("DIRECTORY")
     } else {
       // File is a notebook cell.
       path = file
-      KernelContext.log("+")
-      KernelContext.log("NOTEBOOKy")
-
+      
+      // Insert missing context.
       if function.hasPrefix("closure #"),
          function.hasSuffix(" in ") {
         function += "main"
       }
     }
-    // KernelContext.log("\(function) ~ \(file) ~ \(directory) ~ \(path) ~")
-    // KernelContext.log("function ~ file ~ directory ~ path ~")
-
-    // func getData(_ str: String) -> [UInt8] {
-    //   let data = str.data(using: .utf8)!
-    //   return Array(data)
-    // }
-    func getData(_ str: String) -> String {
-      str
-    }
-
-    KernelContext.log("begin")
-    KernelContext.log("\(getData(function)) ~")
-    KernelContext.log("d")
-    KernelContext.log("\(getData(file)) ~")
-    KernelContext.log("d")
-    KernelContext.log("\(getData(directory)) ~")
-    KernelContext.log("d")
-    KernelContext.log("\(getData(path)) ~")
-    KernelContext.log("d")
-    KernelContext.log("-")
     path = formatString(path, ansiOptions: [32])
     
     var frameID = String(i + 1) + " "

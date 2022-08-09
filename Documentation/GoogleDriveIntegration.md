@@ -19,3 +19,5 @@ drive.mount("/content")
 TODO: Change ColabSupportHistory link to direct here
 
 TODO: Warn to not connect a Google Drive containing sensitive or important data. Your data could be deleted permanently.
+
+UPDATE: You no longer need Python mode to mount a Google Drive.
