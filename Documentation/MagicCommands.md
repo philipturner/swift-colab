@@ -106,12 +106,13 @@ Adds a line of Bash code to execute before building the package.
 ## `%install-swiftpm-flags`
 ```
 %install-swiftpm-flags [FLAG ...]
+%install-swiftpm-flags $clear
 ```
 
 - Appends the arguments to a growing list of flags every time you execute
-- The `$clear` flag, was added to allow emptying SwiftPM flags. If you have `$clear` before other flags, it resets then adds the flags to the right of it.
+- The `$clear` flag was added to allow emptying SwiftPM flags. If you have `$clear` before other flags, it resets then adds the flags to the right of it.
 - Explain workaround for `-Xcc -I/...` flags, but for now just hyperlink: [problem 4 in this comment](https://github.com/philipturner/swift-colab/issues/14#issuecomment-1158237894).
-- `$clear` also resets anything added by `%install-swiftpm-environment` or `%install-swiftpm-import`.
+- `$clear` also resets anything added by `%install-swiftpm-environment` or `%install-swiftpm-import`, but not `%install-location`.
 
 ## `%install-swiftpm-import`
 ```
@@ -157,10 +158,18 @@ The code above works and makes a file called `x86_64.sh` in `/content/sample_dat
 
 > Coming in Swift-Colab v2.3.
 
-Run Swift package tests on the package specified by `SPEC`. This does not share build products with any corresponding `%install` command. If you both install and test the same command in a Jupyter notebook, you will spend twice as long waiting for compilation to finish.
+Run Swift package tests on the package specified by `SPEC`. This does not share build products with any corresponding `%install` command, but it does cache build products from previous test runs. If you both install and test the same package in a Jupyter notebook, you will spend twice as long waiting for compilation to finish.
 
 - `SPEC` - Specification to insert into a package manifest. Prefer to use SwiftPM version 5.0\* syntax, such as `.package(url: "", branch: ""))`, although v4.2 syntax also works for backward compatibility. Place the specification between single quotes to avoid colliding with string literals, which use double quotes.
 
 > \*v5.0 syntax will be supported in Swift-Colab v2.3. Until that happens, use v4.2 syntax such as `.package(url: "", .branch(""))`.
 
-This command utilizes the same SwiftPM flags as `%install`, providing a convenient way to configure and run tests in Colaboratory.
+This command utilizes the same SwiftPM flags as `%install`, providing a convenient way to configure and run tests in Colaboratory. The following commands affect how tests compile:
+
+```
+%install-extra-include-command
+%install-location
+%install-swiftpm-environment
+%install-swiftpm-flags
+%install-swiftpm-import
+```
