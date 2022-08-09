@@ -1,6 +1,7 @@
 import Foundation
 fileprivate let re = Python.import("re")
 fileprivate let string = Python.import("string")
+fileprivate let subprocess = Python.import("subprocess")
 
 func processInstallDirective(
   line: String, lineIndex: Int, isValidDirective: inout Bool
