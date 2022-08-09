@@ -188,10 +188,10 @@ fileprivate func extractPackageFolder(fromPath path: String) -> String? {
   
   // Should never start with the symbolic link "/opt/swift/install-location".
   // Rather, it should start with that link's destination.
-  guard path.hasPrefix(KernelContext.installLocation) else {
+  guard path.hasPrefix(PackageContext.installLocation) else {
     return nil
   }
-  var url = path.dropFirst(KernelContext.installLocation.count)
+  var url = path.dropFirst(PackageContext.installLocation.count)
   // url = /1/.build/checkouts/Lib/Folder
   guard url.hasPrefix("/") else { return nil }
   url = url.dropFirst(1)

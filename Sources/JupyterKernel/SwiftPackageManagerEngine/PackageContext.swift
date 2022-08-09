@@ -1,6 +1,7 @@
 import Foundation
 
 struct PackageContext {
+  static var installLocation = "/opt/swift/packages"
   static var var swiftPMFlags: [String] = []
   
   static func sendStdout(_ message: String, insertNewLine: Bool = true) {
@@ -11,7 +12,7 @@ struct PackageContext {
   }
   
   static func shlexSplit(
-    _ arguments: PythonConvertible, lineIndex: Int,
+    _ arguments: PythonConvertible, _ lineIndex: Int,
   ) throws -> [String] {
     let split = shlex[dynamicMember: "split"].throwing
     do {
@@ -26,7 +27,7 @@ struct PackageContext {
   }
   
   static func substituteCwd(
-    _ template: String, lineIndex: Int
+    _ template: String, _ lineIndex: Int
   ) throws -> String {
     do {
       let output = try string.Template(template).substitute.throwing
@@ -40,7 +41,7 @@ struct PackageContext {
   }
   
   static func handleTemplateError(
-    _ anyError: Error, lineIndex: Int
+    _ anyError: Error, _ lineIndex: Int
   ) -> Error {
     guard let pythonError = anyError as? PythonError else {
       return anyError

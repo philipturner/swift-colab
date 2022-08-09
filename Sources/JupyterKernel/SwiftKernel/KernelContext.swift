@@ -10,9 +10,6 @@ struct KernelContext {
   static var lldbQueue = DispatchQueue(
     label: "com.philipturner.swift-colab.KernelContext.lldbQueue")
   
-  // For use in "ProcessInstalls.swift"
-  static var installLocation = "/opt/swift/packages"
-  
   private static var logInitialized = false
   private static let logQueue = DispatchQueue(
     label: "com.philipturner.swift-colab.KernelContext.logQueue")

@@ -6,12 +6,12 @@ func processInstallDirective(
   line: String, lineIndex: Int, isValidDirective: inout Bool
 ) throws {
   func attempt(
-    command: (String, String, Int) throws -> Void, _ regex: String
+    command: (String, Int) throws -> Void, _ regex: String
   ) rethrows {
     let regexMatch = re.match(regex, line)
     if regexMatch != Python.None {
       let restOfLine = String(regexMatch.group(1))!
-      try command(line, restOfLine, lineIndex)
+      try command(restOfLine, lineIndex)
       isValidDirective = true
     }
   }
@@ -46,7 +46,7 @@ fileprivate let reversedID = String(id.reversed())
 // Permit passing empty whitespace because this is valid:
 // swift <arbitrary whitespace> build
 fileprivate func processSwiftPMFlags(
-  line: String, restOfLine: String, lineIndex: Int
+  restOfLine: String, lineIndex: Int
 ) throws {
   var processedLine: String
   do {
@@ -56,7 +56,7 @@ fileprivate func processSwiftPMFlags(
       ])
     )!
   } catch {
-    throw PackageContext.handleTemplateError(error, lineIndex: lineIndex)
+    throw PackageContext.handleTemplateError(error, lineIndex)
   }
   
   // Ensure that only everything after the last "$clear" flag passes into shlex.
@@ -66,16 +66,15 @@ fileprivate func processSwiftPMFlags(
     processedLine = String(reversedLine[endRange].reversed())
     PackageContext.swiftPMFlags = []
   }
-  
-  PackageContext.swiftPMFlags += try PackageContext.shlexSplit(
-    processedLine, lineIndex: lineIndex)
+  let flags = try PackageContext.shlexSplit(processedLine, lineIndex)
+  PackageContext.swiftPMFlags += flags
 }
 
 // %install-extra-include-command
 
 // Allow passing empty whitespace as the command because that's valid Bash.
 fileprivate func processExtraIncludeCommand(
-  line: String, restOfLine: String, lineIndex: Int
+  restOfLine: String, lineIndex: Int
 ) throws {
   let result = subprocess.run(
     restOfLine,
@@ -89,6 +88,11 @@ fileprivate func processExtraIncludeCommand(
       stderr: \(result.stderr.decode("utf8"))
       """)
   }
+
+  // Regex eliminates only the middle space, so `restOfLine` could start with
+  // spaces.
+  let magicCommand = "%install-extra-include-command"
+  let line = magicCommand + " " + restOfLine
   
   // Cache column locations to avoid computing multiple times. These are
   // 1-indexed, matching what LLDB would show.
@@ -96,7 +100,7 @@ fileprivate func processExtraIncludeCommand(
   var endColumn: Int?
   
   let preprocessed = result.stdout.decode("utf8")
-  let includeDirs = try shlexSplit(lineIndex: lineIndex, line: preprocessed)
+  let includeDirs = try PackageContext.shlexSplit(preprocessed, lineIndex)
   for includeDir in includeDirs {
     // TODO: Make a validation test for text colorization, using abnormal 
     // whitespace configurations. The third command below should end with two
@@ -106,10 +110,8 @@ fileprivate func processExtraIncludeCommand(
     // %install-extra-include-command pkg-config --cflags-only-I glib-2.0
     //   %install-extra-include-command  echo  "hello world c"
     if includeDir.prefix(2) != "-I" {
-      let magicCommand = "%install-extra-include-command"
+      
       if startColumn == nil {
-        precondition(endColumn == nil, "This should never happen.")
-
         // Magic command might be prepended by spaces, so find index of "%".
         var index = line.firstIndex(of: "%")!
         index = line.index(index, offsetBy: magicCommand.count)
@@ -124,8 +126,6 @@ fileprivate func processExtraIncludeCommand(
         // Column after last column that isn't whitespace.
         index = line.lastIndex(where: { $0.isWhitespace == false })!
         endColumn = 1 + line.distance(from: line.startIndex, to: index) + 1
-      } else {
-        precondition(endColumn != nil, "This should never happen.")
       }
       
       // `file` and `warning` contain the ": " that comes after them.
@@ -139,7 +139,7 @@ fileprivate func processExtraIncludeCommand(
       let numTildes = endColumn! - startColumn!
       let spaces = String(repeating: Character(" "), count: numSpaces)
       let marker = String(repeating: Character("~"), count: numTildes)
-      sendStdout(
+      PackageContext.sendStdout(
         formatString(file, ansiOptions: [1]) +
         formatString(warning, ansiOptions: [1, 35]) +
         formatString(message, ansiOptions: [1]) + "\n" +
@@ -147,16 +147,16 @@ fileprivate func processExtraIncludeCommand(
         spaces + formatString(marker, ansiOptions: [1, 32]))
       continue
     }
-    swiftPMFlags.append(includeDir)
+    PackageContext.swiftPMFlags.append(includeDir)
   }
 }
 
 // %install-location
 
 fileprivate func processInstallLocation(
-  line: String, restOfLine: String, lineIndex: Int
+  restOfLine: String, lineIndex: Int
 ) throws {
-  let parsed = try shlexSplit(lineIndex: lineIndex, line: restOfLine)
+  let parsed = try PackageContext.shlexSplit(restOfLine, lineIndex)
   if parsed.count != 1 {
     var sentence: String
     if parsed.count == 0 {
@@ -170,6 +170,6 @@ fileprivate func processInstallLocation(
       https://github.com/philipturner/swift-colab/blob/main/Documentation/MagicCommands.md#install-location
       """)
   }
-  KernelContext.installLocation = try substituteCwd(
-    template: parsed[0], lineIndex: lineIndex)
+  let path = try PackageContext.substituteCwd(parsed[0], lineIndex)
+  PackageContext.installLocation = path
 }

@@ -15,7 +15,7 @@ fileprivate var installedPackagesMap: [String: Int]! = nil
 
 fileprivate func readInstalledPackages() throws {
   installedPackages = []
-  installedPackagesLocation = "\(KernelContext.installLocation)/index"
+  installedPackagesLocation = "\(PackageContext.installLocation)/index"
   installedPackagesMap = [:]
   
   if let packagesData = FileManager.default.contents(
@@ -51,7 +51,7 @@ fileprivate func readClangModules() {
   loadedClangModules = []
   let fm = FileManager.default
   
-  let moduleSearchPath = "\(KernelContext.installLocation)/modules"
+  let moduleSearchPath = "\(PackageContext.installLocation)/modules"
   let items = try! fm.contentsOfDirectory(atPath: moduleSearchPath)
   for item in items {
     guard item.hasPrefix("module-") else {
@@ -71,7 +71,7 @@ fileprivate func readClangModules() {
 // TODO: Split this up into smaller functions, bring parent function to top of
 // file.
 func processInstall(
-  line: String, restOfLine: String, lineIndex: Int
+  restOfLine: String, lineIndex: Int
 ) throws {
   let parsed = try PackageContext.shlexSplit(restOfLine, lineIndex: lineIndex)
   if parsed.count < 2 {
@@ -96,10 +96,10 @@ func processInstall(
   let fm = FileManager.default
   do {
     try fm.createDirectory(
-      atPath: KernelContext.installLocation, withIntermediateDirectories: true)
+      atPath: PackageContext.installLocation, withIntermediateDirectories: true)
   } catch {
     throw PackageInstallException(lineIndex: lineIndex, message: """
-      Could not create directory "\(KernelContext.installLocation)". \
+      Could not create directory "\(PackageContext.installLocation)". \
       Encountered error: \(error.localizedDescription)
       """)
   }
@@ -107,10 +107,10 @@ func processInstall(
   let linkPath = "/opt/swift/install-location"
   try? fm.removeItem(atPath: linkPath)
   try fm.createSymbolicLink(
-    atPath: linkPath, withDestinationPath: KernelContext.installLocation)
+    atPath: linkPath, withDestinationPath: PackageContext.installLocation)
   
   if installedPackages == nil || 
-     installedPackagesLocation != KernelContext.installLocation {
+     installedPackagesLocation != PackageContext.installLocation {
     try readInstalledPackages()
   }
   
@@ -176,11 +176,11 @@ func processInstall(
     \(makeBlue("Installing package:"))
         \(spec)
     \(modulesHumanDescription)
-    \(makeBlue("With SwiftPM flags: "))\(swiftPMFlags)
-    \(makeBlue("Working in: "))\(KernelContext.installLocation)
+    \(makeBlue("With SwiftPM flags: "))\(PackageContext.swiftPMFlags)
+    \(makeBlue("Working in: "))\(PackageContext.installLocation)
     """)
   
-  let packagePath = "\(KernelContext.installLocation)/\(packageID + 1)"
+  let packagePath = "\(PackageContext.installLocation)/\(packageID + 1)"
   try? fm.createDirectory(
     atPath: packagePath, withIntermediateDirectories: false)
   
@@ -203,14 +203,14 @@ func processInstall(
   
   try createFile(name: "Package.swift", contents: manifest)
   try createFile(name: "\(packageName).swift", contents: """
-    // intentionally blank
+    // Intentionally blank.
     
     """)
   
   // Ask SwiftPM to build the package.
   let swiftBuildPath = "/opt/swift/toolchain/usr/bin/swift-build"
   let buildReturnCode = try runTerminalProcess(
-    args: [swiftBuildPath] + swiftPMFlags, cwd: packagePath)
+    args: [swiftBuildPath] + PackageContext.swiftPMFlags, cwd: packagePath)
   if buildReturnCode != 0 {
     throw PackageInstallException(lineIndex: lineIndex, message: """
       swift-build returned nonzero exit code \(buildReturnCode).
@@ -218,7 +218,7 @@ func processInstall(
   }
   
   let showBinPathResult = subprocess.run(
-    [swiftBuildPath, "--show-bin-path"] + swiftPMFlags,
+    [swiftBuildPath, "--show-bin-path"] + PackageContext.swiftPMFlags,
     stdout: subprocess.PIPE,
     stderr: subprocess.PIPE,
     cwd: packagePath)
@@ -236,7 +236,7 @@ func processInstall(
   KernelContext.log("LIB PATH \(libPath)")
   
   // Copy .swiftmodule and modulemap files to Swift module search path.
-  let moduleSearchPath = "\(KernelContext.installLocation)/modules"
+  let moduleSearchPath = "\(PackageContext.installLocation)/modules"
   try? fm.createDirectory(
     atPath: moduleSearchPath, withIntermediateDirectories: false)
   if loadedClangModules == nil {
