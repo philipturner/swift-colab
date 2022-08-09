@@ -45,7 +45,6 @@ fileprivate func writeInstalledPackages(lineIndex: Int) throws {
   }
 }
 
-
 fileprivate var loadedClangModules: Set<String>!
 
 fileprivate func readClangModules() {
@@ -69,11 +68,12 @@ fileprivate func readClangModules() {
   }
 }
 
-// Used in "ProcessInstallDirectives.swift"
+// TODO: Split this up into smaller functions, bring parent function to top of
+// file.
 func processInstall(
   line: String, restOfLine: String, lineIndex: Int
 ) throws {
-  let parsed = try shlexSplit(lineIndex: lineIndex, line: restOfLine)
+  let parsed = try PackageContext.shlexSplit(restOfLine, lineIndex: lineIndex)
   if parsed.count < 2 {
     var sentence: String
     if parsed.count == 0 {
