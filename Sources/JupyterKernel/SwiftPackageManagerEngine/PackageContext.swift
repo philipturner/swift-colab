@@ -1,6 +1,6 @@
 import Foundation
 fileprivate let shlex = Python.import("shlex")
-fileprivate let shlex = Python.import("shlex")
+fileprivate let string = Python.import("string")
 
 struct PackageContext {
   static var installLocation = "/opt/swift/packages"
