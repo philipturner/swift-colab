@@ -50,11 +50,13 @@ A B C D A B C D
 %include PATH 
 ```
 
-Inject code from a source file into the interpreter. The code executes at the top of the current cell, even if the `%include` command appears below other Swift code.
+Inject code from a source file into the interpreter. The code executes at the top of the current cell, even if the `%include` command appears below other Swift code. In Swift-Colab v2.3, it will instead inject code at the exact location of the `%include`.
 
-- `PATH` - File path relative to the current working directory (`/content`), omitting the first forward flash. If the file does not exist there, it looks inside `/opt/swift/include`.
+- `PATH` - File path relative to the current working directory (`/content`). If the file does not exist there, it looks inside `/opt/swift/include`.
 
-The command silently fails if you previously included `PATH` during the current Jupyter session. This protective mechanism prevents duplication of the `SwiftShell` Python object in `EnableIPythonDisplay.swift`. Swift-Colab v2.3 will restore old behavior from [swift-jupyter](https://github.com/google/swift-jupyter), where a file can be included multiple times and in the middle of a cell.
+`PATH` may omit the first forward slash; prefer this style when specifying just a file name. The path registers as `/content/PATH` internally. Prepending a slash creates `/content//PATH`, which resolves to the same location.
+
+The command silently fails if you previously included `PATH` during the current Jupyter session. This protective mechanism prevents duplication of the `IPythonDisplay.socket` Python object in `EnableIPythonDisplay.swift`. Swift-Colab v2.3 will restore old behavior from [swift-jupyter](https://github.com/google/swift-jupyter), where a file can be included multiple times and in the middle of a cell.
 
 ## `%install`
 ```

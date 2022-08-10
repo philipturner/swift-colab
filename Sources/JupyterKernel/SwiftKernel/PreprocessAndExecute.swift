@@ -136,16 +136,34 @@ fileprivate func readInclude(
   restOfLine: String,
   lineIndex: Int
 ) throws -> String {
-  let nameRegularExpression = ###"""
-    ^\s*"([^"]+)"\s*$
-    """###
-  let nameMatch = re.match(nameRegularExpression, restOfLine)
-  guard nameMatch != Python.None else {
-    throw PreprocessorException(lineIndex: lineIndex, message:
-      "%include must be followed by a name in quotes")
+  // let nameRegularExpression = ###"""
+  //   ^\s*"([^"]+)"\s*$
+  //   """###
+  // let nameMatch = re.match(nameRegularExpression, restOfLine)
+  // guard nameMatch != Python.None else {
+  //   throw PreprocessorException(lineIndex: lineIndex, message:
+  //     "%include must be followed by a name in quotes")
+  // }
+  
+  // let restOfLine = String(nameMatch.group(1))!
+  // let parsed = try PackageContext.shlexSplit
+  
+  let parsed = try PackageContext.shlexSplit(restOfLine, lineIndex)
+  if parsed.count != 1 {
+    var sentence: String
+    if parsed.count == 0 {
+      sentence = "Please enter a path."
+    } else {
+      sentence = "Do not enter anything after the path."
+      throw PreprocessorException(lineIndex: lineIndex, message: """
+        Usage: %include PATH
+        \(sentence) For more guidance, visit:
+        https://github.com/philipturner/swift-colab/blob/main/Documentation/MagicCommands.md#include
+        """)
+    }
   }
   
-  let name = String(nameMatch.group(1))!
+  let name = parsed[0]
   let includePaths = ["/opt/swift/include", "/content"]
   var code: String? = nil
   var chosenPath: String? = nil
