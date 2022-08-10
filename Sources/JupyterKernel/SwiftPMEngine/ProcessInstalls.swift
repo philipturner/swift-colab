@@ -394,14 +394,15 @@ func processInstall(
       padding = String(repeating: Character(" "), count: numExtraSpaces)
       padding += " ==="
     }
-    padding = formatString(padding, ansiOptions: [32])
+    description = formatString(description, ansiOptions: [32])
+    padding = formatString(padding, ansiOptions: [36])
     
     var left = "=== "
     var right = " ==="
     var top = left + String(repeating: Character("-"), count: 72) + right
-    left = formatString(left, ansiOptions: [32])
-    right = formatString(right, ansiOptions: [32])
-    top = formatString(top, ansiOptions: [32])
+    left = formatString(left, ansiOptions: [36])
+    right = formatString(right, ansiOptions: [36])
+    top = formatString(top, ansiOptions: [36])
     PackageContext.sendStdout("""
       \(top)
       \(left)The following Clang modules cannot be imported in your source code until\(right)
