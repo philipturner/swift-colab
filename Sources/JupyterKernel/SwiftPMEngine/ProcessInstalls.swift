@@ -378,12 +378,26 @@ func processInstall(
   }
   
   if !warningClangModules.isEmpty {
+    var description = String(describing: warningClangModules)
+    if description.count >= 76 {
+      // Exceeds 80-character limit.
+    } else if description.count == 75 {
+      description += " "
+    } else if description.count == 74 {
+      descripton += " ="
+    } else if description.count == 73 {
+      description += " =="
+    } else {
+      let numExtraSpaces = 72 - description.count
+      description += String(repeating: Character(" "), count: numExtraSpaces)
+      description += " ==="
+    }
     PackageContext.sendStdout("""
       === ------------------------------------------------------------------------ ===
       === The following Clang modules cannot be imported in your source code until ===
       === you restart the runtime. If you do not intend to explicitly import       ===
       === modules listed here, ignore this warning.                                ===
-      === \(warningClangModules)
+      === \(description)
       === ------------------------------------------------------------------------ ===
       """)
   }
