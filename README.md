@@ -240,6 +240,8 @@ To run a test, replace `"5.6.2"` in the first code cell with the newest Swift ve
 | [Own Kernel Tests](https://colab.research.google.com/drive/1nHitEZm9QZNheM-ALajARyRZY2xpZr00?usp=sharing) | ✅ | June 2022 | 5.6.2 Release |
 | [Simple Notebook Tests](https://colab.research.google.com/drive/18316eFVMw-NIlA9OandB7djvp0J4jI0-?usp=sharing) | ✅ | June 2022 | 5.6.2 Release |
 | [SwiftPlot](https://colab.research.google.com/drive/1Rxs7OfuKIJ_hAm2gUQT2gWSuIcyaeZfz?usp=sharing) | ✅ | June 2022 | 5.6.2 Release
-| [Swift for TensorFlow](https://colab.research.google.com/drive/1v3ZhraaHdAS2TGj03hE0cK-KRFzsqxO1?usp=sharing) | ✅ | August 2022 | August 6, 2022 Development Snapshot |
+| [Swift for TensorFlow](https://colab.research.google.com/drive/1v3ZhraaHdAS2TGj03hE0cK-KRFzsqxO1?usp=sharing) | ❌\* | August 2022 | August 9, 2022 Development Snapshot |
 | [Concurrency](https://colab.research.google.com/drive/1du6YzWL9L_lbjoLl8qvrgPvyZ_8R7MCq?usp=sharing) | ✅ | June 2022 | 5.6.2 Release |
 | [TPU Tests](https://colab.research.google.com/drive/1DfkbU_JQnSw1_xLAlDyDvDT3S1G45i6d?usp=sharing) | ✅ | July 2022 | July 5, 2022 v5.7 Development Snapshot |
+
+> \* Tracked by https://github.com/apple/swift/issues/60492.
