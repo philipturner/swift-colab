@@ -136,18 +136,6 @@ fileprivate func readInclude(
   restOfLine: String,
   lineIndex: Int
 ) throws -> String {
-  // let nameRegularExpression = ###"""
-  //   ^\s*"([^"]+)"\s*$
-  //   """###
-  // let nameMatch = re.match(nameRegularExpression, restOfLine)
-  // guard nameMatch != Python.None else {
-  //   throw PreprocessorException(lineIndex: lineIndex, message:
-  //     "%include must be followed by a name in quotes")
-  // }
-  
-  // let restOfLine = String(nameMatch.group(1))!
-  // let parsed = try PackageContext.shlexSplit
-  
   let parsed = try PackageContext.shlexSplit(restOfLine, lineIndex)
   if parsed.count != 1 {
     var sentence: String

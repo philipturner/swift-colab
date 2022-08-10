@@ -18,7 +18,10 @@ Magic commands are implemented in [PreprocessAndExecute.swift](https://github.co
 
 ## Execution Behavior
 
-Before executing a code block, the kernel extracts all magic commands and executes them in the order they appear. The commands are oblivious to the surrounding Swift code. In contrast, a Python notebook executes Shell commands according to the control flow of their surrounding code. For example, this code in a Swift notebook:
+Before executing a code block, the kernel extracts (almost\*) all magic commands and executes them in the order they appear. The commands are oblivious to the surrounding Swift code. In contrast, a Python notebook executes Shell commands according to the control flow of their surrounding code. For example, this code in a Swift notebook:
+
+> \*`%include` is an exception to this rule.
+
 ```swift
 for _ in 0..<2 {
 %system echo "A"
@@ -45,32 +48,61 @@ Produces (replacing newlines with spaces):
 A B C D A B C D
 ```
 
+## Syntax
+
+Each of these commands accepts arguments styled like command-line arguments, unless stated otherwise. Commands are parsed first using the Python Regex library (`re`), which extracts the `%` directive. The rest of the line feeds into a Shell lexer (`shlex`).
+
+> This styling is a feature coming in Swift-Colab v2.3. In the current release (v2.2), magic commands have varied and inconsistent restrictions on accepted formats.
+
+Arguments may be entered with or without quotes, and both single and double quotes work. To facilitate appropriate syntax coloring and improve legibility, please wrap text-like arguments in double quotes. The Swift parser treats these like string literals. For command-line flags, do not use quotes.
+
+```swift
+// Include quotes for the file path.
+// Omit quotes for the executable name.
+%system unzip "x10-binary.zip"
+
+// Include quotes for the '-L' argument, which contains a file path.
+// Omit quotes for the command-line flag '-Xlinker'.
+%install-swiftpm-flags -Xlinker "-L/content/Library/..."
+
+// Omit quotes for the special '$clear' argument.
+%install-swiftpm-flags $clear
+
+// Include single quotes for inline Swift code.
+// Omit quotes when specifying Swift module names.
+%include '.package(url: "https://...", branch: "main")' Module
+```
+
 ## `%include`
 ```
 %include PATH 
 ```
 
-Inject code from a source file into the interpreter. The code executes at the top of the current cell, even if the `%include` command appears below other Swift code. In Swift-Colab v2.3, it will instead inject code at the exact location of the `%include`.
+Inject code from a source file into the interpreter. The `%include` command substitutes with the source code located at `PATH`, inserting at the command's exact location\* within the notebook cell.
 
 - `PATH` - File path relative to the current working directory (`/content`). If the file does not exist there, it looks inside `/opt/swift/include`.
 
+Source code injected by `%include` may not contain magic commands.
+
 `PATH` may omit the first forward slash; prefer this style when specifying just a file name. The path registers as `/content/PATH` internally. Prepending a slash creates `/content//PATH`, which resolves to the same location.
 
-The command silently fails if you previously included `PATH` during the current Jupyter session. This protective mechanism prevents duplication of the `IPythonDisplay.socket` Python object in `EnableIPythonDisplay.swift`. Swift-Colab v2.3 will restore old behavior from [swift-jupyter](https://github.com/google/swift-jupyter), where a file can be included multiple times and in the middle of a cell.
+> \*In Swift-Colab v2.0-2.2, the code would execute at the top of the current cell, even if the `%include` command appeared below other Swift code. Furthermore, the command silently failed if you previously included `PATH` during the current Jupyter session. This protective mechanism prevented duplication of the `IPythonDisplay.socket` Python object in `EnableIPythonDisplay.swift`.
+>
+> The behavior deviated from [swift-jupyter](https://github.com/google/swift-jupyter) and the magic command's semantic meaning. Thus, is was restored in v2.3 (not yet released).
 
 ## `%install`
 ```
-%install SPEC PRODUCT [PRODUCT ...]
+%install SPEC MODULE [MODULE ...]
 ```
 
 Build a Swift package for use inside a notebook. If a previous Jupyter session executed this command, import the cached build products. To avoid recompilation, the SwiftPM flags should match those present when the `%install` command last executed.
 
 - `SPEC` - Specification to insert into a package manifest. Prefer to use SwiftPM version 5.0\* syntax, such as `.package(url: "", branch: ""))`, although v4.2 syntax also works for backward compatibility. Place the specification between single quotes to avoid colliding with string literals, which use double quotes.
-- `PRODUCT` - Each exported Swift module the debugger should build and import.
+- `MODULE` - Each package product the debugger should build and import.
 
 > \*v5.0 syntax will be supported in Swift-Colab v2.3. Until that happens, use v4.2 syntax such as `.package(url: "", .branch(""))`.
 
-Although the SwiftPM engine utilizes cached build products, LLDB does not automatically detect those products. `%install` tells the Jupyter kernel to locate and optionally recompile each `PRODUCT`. Always run the command before using external dependencies in a notebook.
+Although the SwiftPM engine utilizes cached build products, LLDB does not automatically detect exported modules. `%install` tells the Jupyter kernel to locate and optionally recompile each `MODULE`. Always run the command before using external dependencies in a notebook.
 
 To build packages stored on the local computer, pass `$cwd` into `.package(path: "")`. This keyword substitutes with the current working directory, which is always `/content`. The example below demonstrates directory substitution.
 

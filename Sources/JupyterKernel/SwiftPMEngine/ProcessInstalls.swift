@@ -83,7 +83,7 @@ func processInstall(
       sentence = "Please specify one or more products."
     }
     throw PreprocessorException(lineIndex: lineIndex, message: """
-      Usage: %install SPEC PRODUCT [PRODUCT ...]
+      Usage: %install SPEC MODULE [MODULE ...]
       \(sentence) For more guidance, visit:
       https://github.com/philipturner/swift-colab/blob/main/Documentation/MagicCommands.md#install
       """)
