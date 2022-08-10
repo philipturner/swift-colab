@@ -169,7 +169,7 @@ fileprivate func readInclude(
       "File \"\(name)\" not found. Searched \(includePaths).")
   }
   return """
-    #sourceLocation(file: "\(chosenPath)", line: 1)
+    #sourceLocation(file: "\(resolvedPath)", line: 1)
     \(code)
     \(getLocationDirective(lineIndex: lineIndex))
     
