@@ -25,25 +25,25 @@ Each magic command accepts arguments styled like command-line arguments, unless 
 
 > This styling is a feature coming in Swift-Colab v2.3. In the current release (v2.2), magic commands have varied and inconsistent restrictions on accepted formats.
 
-Arguments may be entered with or without quotes, and both single and double quotes work. To facilitate appropriate syntax coloring and improve legibility, please wrap text-like arguments in double quotes. The Swift parser treats these like string literals. For command-line flags, do not use quotes.
+Arguments may be entered with or without quotes, and both single and double quotes work. To facilitate appropriate syntax highlighting and improve legibility, wrap text-like arguments in double quotes. The Swift parser treats these like string literals. For command-line flags, do not use quotes.
 
 ```swift
-// Include quotes for the file path.
-// Omit quotes for the executable name.
+// Double quotes for the file path.
+// No quotes for the executable name.
 %system unzip "x10-binary.zip"
 
-// Include quotes for the '-L' argument, which contains a file path.
-// Omit quotes for the command-line flag '-Xlinker'.
-%install-swiftpm-flags -Xlinker "-L/content/Library/..."
-
-// Omit quotes for the special '$clear' argument.
-%install-swiftpm-flags $clear
-
-// Include single quotes for inline Swift code.
-// Omit quotes when specifying Swift module names.
+// Single quotes for the inline Swift code.
+// No quotes for the Swift module name.
 %install '.package(url: "https://...", branch: "main")' Module
 
-// Include quotes for the file path.
+// Double quotes for the '-L' argument, which contains a file path.
+// No quotes for the command-line flag '-Xlinker'.
+%install-swiftpm-flags -Xlinker "-L/content/Library/..."
+
+// No quotes for the special '$clear' argument.
+%install-swiftpm-flags $clear
+
+// Double quotes for the file path.
 %include "EnableIPythonDisplay.swift"
 ```
 
