@@ -405,9 +405,9 @@ func processInstall(
     top = formatString(top, ansiOptions: [36])
     PackageContext.sendStdout("""
       \(top)
-      \(left)The following Clang modules cannot be imported in your source code until\(right)
-      \(left)you restart the runtime. If you do not intend to explicitly import      \(right)
-      \(left)modules listed here, ignore this warning.                               \(right)
+      \(left)Code cells cannot import the following Clang modules until you restart  \(right)
+      \(left)the runtime. Ignore this warning, unless you intend to explicitly import\(right)
+      \(left)a module listed here.                                                   \(right)
       \(left)\(description)\(padding)
       \(top)
       """)
