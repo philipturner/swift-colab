@@ -1,5 +1,7 @@
 # Magic Commands
 
+> Some of this documentation is a work in progress.
+
 The Swift kernel has various built-in commands for downloading dependencies and interacting with the operating system. These commands start with `%` and behave like the IPython [magic commands](http://ipython.org/ipython-doc/dev/interactive/magics.html). They take the role of inline Shell commands in Python notebooks, which start with `!`.
 
 - [Syntax](#syntax)
@@ -15,9 +17,7 @@ The Swift kernel has various built-in commands for downloading dependencies and 
   - [`%system`](#system)
   - [`%test`](#test)
 
-Magic commands are implemented in [PreprocessAndExecute.swift](https://github.com/philipturner/swift-colab/blob/main/Sources/JupyterKernel/SwiftKernel/PreprocessAndExecute.swift) and [ProcessInstalls.swift](https://github.com/philipturner/swift-colab/blob/main/Sources/JupyterKernel/SwiftKernel/ProcessInstalls.swift).
-
-> Some of this documentation is a work in progress.
+Magic commands are implemented in [PreprocessAndExecute.swift](https://github.com/philipturner/swift-colab/blob/main/Sources/JupyterKernel/SwiftKernel/PreprocessAndExecute.swift) and the [SwiftPMEngine](https://github.com/philipturner/swift-colab/blob/main/Sources/JupyterKernel/SwiftPMEngine) directory.
 
 ## Syntax
 
