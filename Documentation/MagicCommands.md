@@ -41,7 +41,10 @@ Arguments may be entered with or without quotes, and both single and double quot
 
 // Include single quotes for inline Swift code.
 // Omit quotes when specifying Swift module names.
-%include '.package(url: "https://...", branch: "main")' Module
+%install '.package(url: "https://...", branch: "main")' Module
+
+// Include quotes for the file path.
+%include "EnableIPythonDisplay.swift"
 ```
 
 ## Execution

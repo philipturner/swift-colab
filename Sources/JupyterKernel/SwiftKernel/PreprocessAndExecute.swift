@@ -130,7 +130,6 @@ fileprivate func preprocess(
 
 fileprivate var previouslyReadPaths: Set<String> = []
 
-// TODO: Allow passing the name not-in-quotes, utilizing Shlex split
 // TODO: Restore the old behavior, which always injects source code.
 fileprivate func readInclude(
   restOfLine: String,
