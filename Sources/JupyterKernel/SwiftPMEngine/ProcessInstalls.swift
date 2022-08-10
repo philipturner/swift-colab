@@ -384,7 +384,7 @@ func processInstall(
     } else if description.count == 75 {
       description += " "
     } else if description.count == 74 {
-      descripton += " ="
+      description += " ="
     } else if description.count == 73 {
       description += " =="
     } else {
