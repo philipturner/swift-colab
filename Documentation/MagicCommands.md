@@ -43,9 +43,7 @@ Arguments may be entered with or without quotes, and both single and double quot
 
 ## Execution Behavior
 
-Before executing a code block, the kernel extracts (almost\*) all magic commands and executes them in the order they appear. The commands are oblivious to the surrounding Swift code. In contrast, a Python notebook executes Shell commands according to the control flow of their surrounding code. For example, this code in a Swift notebook:
-
-> \*`%include` is an exception to this rule.
+Before executing a code block, the kernel extracts (almost\*) all magic commands and executes them in the order they appear. The commands are oblivious to the surrounding Swift code. In contrast, a Python notebook executes Shell commands according to the control flow of their surrounding code. This code in a Swift notebook:
 
 ```swift
 for _ in 0..<2 {
@@ -72,6 +70,8 @@ Produces (replacing newlines with spaces):
 ```
 A B C D A B C D
 ```
+
+> \*`%include` is an exception to this rule.
 
 # Commands
 
