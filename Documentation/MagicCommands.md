@@ -2,19 +2,22 @@
 
 The Swift kernel has various built-in commands for downloading dependencies and interacting with the operating system. These commands start with `%` and behave like the IPython [magic commands](http://ipython.org/ipython-doc/dev/interactive/magics.html). They take the role of inline Shell commands in Python notebooks, which start with `!`.
 
-- [`%include`](#include)
-- [`%install`](#install)
-- [`%install-extra-include-command`](#install-extra-include-command)
-- [`%install-location`](#install-location)
-- [`%install-swiftpm-environment`](#install-swiftpm-environment)
-- [`%install-swiftpm-flags`](#install-swiftpm-flags)
-- [`%install-swiftpm-import`](#install-swiftpm-import)
-- [`%system`](#system)
-- [`%test`](#test)
-
-> Some of this documentation is a work in progress.
+- [Syntax](#syntax)
+- [Execution](#execution)
+- [Commands](#commands)
+  - [`%include`](#include)
+  - [`%install`](#install)
+  - [`%install-extra-include-command`](#install-extra-include-command)
+  - [`%install-location`](#install-location)
+  - [`%install-swiftpm-environment`](#install-swiftpm-environment)
+  - [`%install-swiftpm-flags`](#install-swiftpm-flags)
+  - [`%install-swiftpm-import`](#install-swiftpm-import)
+  - [`%system`](#system)
+  - [`%test`](#test)
 
 Magic commands are implemented in [PreprocessAndExecute.swift](https://github.com/philipturner/swift-colab/blob/main/Sources/JupyterKernel/SwiftKernel/PreprocessAndExecute.swift) and [ProcessInstalls.swift](https://github.com/philipturner/swift-colab/blob/main/Sources/JupyterKernel/SwiftKernel/ProcessInstalls.swift).
+
+> Some of this documentation is a work in progress.
 
 ## Syntax
 
