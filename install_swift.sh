@@ -279,8 +279,10 @@ runtime=`cat "/opt/swift/runtime"`
 runtime=$(echo $runtime | tr '[:upper:]' '[:lower:]')
 
 if [[ $runtime == "swift" ]]; then
-  echo '=== ------------------------------------------------------------------------ ===
-=== Swift-Colab overwrote the Python kernel with Swift, but Colab is still   ===
-=== in Python mode. To enter Swift mode, go to Runtime > Restart runtime.    ===
-=== ------------------------------------------------------------------------ ==='
+  # Work around issues with escaping single quotes (') by printing each line
+  # in a separate command.
+  echo "=== ------------------------------------------------------------------------ ==="
+  echo "=== Swift-Colab overwrote the Python kernel with Swift, but Colab is still   ==="
+  echo "=== in Python mode. To enter Swift mode, go to 'Runtime > Restart runtime'.  ==="
+  echo "=== ------------------------------------------------------------------------ ==="
 fi
