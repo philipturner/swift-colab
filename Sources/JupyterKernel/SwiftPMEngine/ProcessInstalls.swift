@@ -379,26 +379,36 @@ func processInstall(
   
   if !warningClangModules.isEmpty {
     var description = String(describing: warningClangModules)
+    var padding: String
     if description.count >= 76 {
       // Exceeds 80-character limit.
+      padding = ""
     } else if description.count == 75 {
-      description += " "
+      padding = " "
     } else if description.count == 74 {
-      description += " ="
+      padding = " ="
     } else if description.count == 73 {
-      description += " =="
+      padding = " =="
     } else {
       let numExtraSpaces = 72 - description.count
-      description += String(repeating: Character(" "), count: numExtraSpaces)
-      description += " ==="
+      padding = String(repeating: Character(" "), count: numExtraSpaces)
+      padding += " ==="
     }
+    padding = formatString(padding, ansiOptions: [32])
+    
+    var left = "=== "
+    var right = " ==="
+    var top = left + String(repeating: Character("-"), count: 72) + right
+    left = formatString(left, ansiOptions: [32])
+    right = formatString(right, ansiOptions: [32])
+    top = formatString(top, ansiOptions: [32])
     PackageContext.sendStdout("""
-      === ------------------------------------------------------------------------ ===
-      === The following Clang modules cannot be imported in your source code until ===
-      === you restart the runtime. If you do not intend to explicitly import       ===
-      === modules listed here, ignore this warning.                                ===
-      === \(description)
-      === ------------------------------------------------------------------------ ===
+      \(top)
+      \(left)The following Clang modules cannot be imported in your source code until\(right)
+      \(left)you restart the runtime. If you do not intend to explicitly import      \(right)
+      \(left)modules listed here, ignore this warning.                               \(right)
+      \(left)\(description)\(padding)
+      \(top)
       """)
   }
   
