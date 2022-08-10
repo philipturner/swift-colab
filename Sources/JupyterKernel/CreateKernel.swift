@@ -115,4 +115,3 @@ fileprivate func activatePythonKernel() {
     app.launch_new_instance()          
     """)
 }
-

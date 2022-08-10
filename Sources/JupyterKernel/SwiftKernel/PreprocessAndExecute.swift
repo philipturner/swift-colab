@@ -128,9 +128,6 @@ fileprivate func preprocess(
   return line
 }
 
-fileprivate var previouslyReadPaths: Set<String> = []
-
-// TODO: Restore the old behavior, which always injects source code.
 fileprivate func readInclude(
   restOfLine: String,
   lineIndex: Int
@@ -151,36 +148,26 @@ fileprivate func readInclude(
   }
   
   let name = parsed[0]
-  let includePaths = ["/opt/swift/include", "/content"]
+  let includePaths = ["/content", "/opt/swift/include"]
   var code: String? = nil
-  var chosenPath: String? = nil
-  var rejectedAPath = false
+  var resolvedPath: String? = nil
   
-  // Paths in "/content" should override paths in "/opt/swift/include".
-  // Paths later in the list `includePaths` have higher priority.
+  // Paths in "/content" should override paths in "/opt/swift/include". Stop
+  // after finding the first file that matches.
   for includePath in includePaths {
     let path = includePath + "/" + name
-    if previouslyReadPaths.contains(path) { 
-        rejectedAPath = true
-        continue 
-    }
     if let data = FileManager.default.contents(atPath: path) {
       code = String(data: data, encoding: .utf8)!
-      chosenPath = path
+      resolvedPath = path
+      break
     }
   }
   
   guard let code = code, 
-        let chosenPath = chosenPath else {
-    if rejectedAPath {
-      return ""
-    }
-    
-    // Reversing `includePaths` to show the highest-priority one first.
+        let resolvedPath = resolvedPath else {
     throw PreprocessorException(lineIndex: lineIndex, message:
-      "Could not find \"\(name)\". Searched \(includePaths.reversed()).")
+      "File \"\(name)\" not found. Searched \(includePaths).")
   }
-  previouslyReadPaths.insert(chosenPath)
   return """
     #sourceLocation(file: "\(chosenPath)", line: 1)
     \(code)

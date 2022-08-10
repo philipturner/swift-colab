@@ -16,7 +16,7 @@
 import PythonKit
 
 // These symbols disappear from the Swift interpreter after the file finishes
-// executing. Why?
+// executing.
 import func Glibc.dlopen
 import func Glibc.dlsym
 

@@ -94,9 +94,9 @@ Source code injected by `%include` may not contain magic commands.
 
 `PATH` may omit the first forward slash; prefer this style when specifying just a file name. The path registers as `/content/PATH` internally. Prepending a slash creates `/content//PATH`, which resolves to the same location.
 
-> \*In Swift-Colab v2.0-2.2, the code would execute at the top of the current cell, even if the `%include` command appeared below other Swift code. Furthermore, the command silently failed if you previously included `PATH` during the current Jupyter session. This protective mechanism prevented duplication of the `IPythonDisplay.socket` Python object in `EnableIPythonDisplay.swift`.
+> \*In Swift-Colab v2.0-2.2, the command silently failed if you previously included `PATH` during the current Jupyter session. This protective mechanism prevented duplication of the `IPythonDisplay.socket` Python object in `EnableIPythonDisplay.swift`.
 >
-> The behavior deviated from [swift-jupyter](https://github.com/google/swift-jupyter) and the magic command's semantic meaning. Thus, is was restored in v2.3 (not yet released).
+> The behavior deviated from [swift-jupyter](https://github.com/google/swift-jupyter) and the magic command's semantic meaning. Thus, it was restored in v2.3 (not yet released).
 
 ### `%install`
 ```
