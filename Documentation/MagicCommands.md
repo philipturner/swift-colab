@@ -16,6 +16,31 @@ The Swift kernel has various built-in commands for downloading dependencies and 
 
 Magic commands are implemented in [PreprocessAndExecute.swift](https://github.com/philipturner/swift-colab/blob/main/Sources/JupyterKernel/SwiftKernel/PreprocessAndExecute.swift) and [ProcessInstalls.swift](https://github.com/philipturner/swift-colab/blob/main/Sources/JupyterKernel/SwiftKernel/ProcessInstalls.swift).
 
+## Syntax
+
+Each magic command accepts arguments styled like command-line arguments, unless stated otherwise. Commands initially pass into Python Regex library (`re`), which extracts the `%` directive. A Shell lexer (`shlex`) parses the rest of the line.
+
+> This styling is a feature coming in Swift-Colab v2.3. In the current release (v2.2), magic commands have varied and inconsistent restrictions on accepted formats.
+
+Arguments may be entered with or without quotes, and both single and double quotes work. To facilitate appropriate syntax coloring and improve legibility, please wrap text-like arguments in double quotes. The Swift parser treats these like string literals. For command-line flags, do not use quotes.
+
+```swift
+// Include quotes for the file path.
+// Omit quotes for the executable name.
+%system unzip "x10-binary.zip"
+
+// Include quotes for the '-L' argument, which contains a file path.
+// Omit quotes for the command-line flag '-Xlinker'.
+%install-swiftpm-flags -Xlinker "-L/content/Library/..."
+
+// Omit quotes for the special '$clear' argument.
+%install-swiftpm-flags $clear
+
+// Include single quotes for inline Swift code.
+// Omit quotes when specifying Swift module names.
+%include '.package(url: "https://...", branch: "main")' Module
+```
+
 ## Execution Behavior
 
 Before executing a code block, the kernel extracts (almost\*) all magic commands and executes them in the order they appear. The commands are oblivious to the surrounding Swift code. In contrast, a Python notebook executes Shell commands according to the control flow of their surrounding code. For example, this code in a Swift notebook:
@@ -48,30 +73,7 @@ Produces (replacing newlines with spaces):
 A B C D A B C D
 ```
 
-## Syntax
-
-Each of these commands accepts arguments styled like command-line arguments, unless stated otherwise. Commands are parsed first using the Python Regex library (`re`), which extracts the `%` directive. The rest of the line feeds into a Shell lexer (`shlex`).
-
-> This styling is a feature coming in Swift-Colab v2.3. In the current release (v2.2), magic commands have varied and inconsistent restrictions on accepted formats.
-
-Arguments may be entered with or without quotes, and both single and double quotes work. To facilitate appropriate syntax coloring and improve legibility, please wrap text-like arguments in double quotes. The Swift parser treats these like string literals. For command-line flags, do not use quotes.
-
-```swift
-// Include quotes for the file path.
-// Omit quotes for the executable name.
-%system unzip "x10-binary.zip"
-
-// Include quotes for the '-L' argument, which contains a file path.
-// Omit quotes for the command-line flag '-Xlinker'.
-%install-swiftpm-flags -Xlinker "-L/content/Library/..."
-
-// Omit quotes for the special '$clear' argument.
-%install-swiftpm-flags $clear
-
-// Include single quotes for inline Swift code.
-// Omit quotes when specifying Swift module names.
-%include '.package(url: "https://...", branch: "main")' Module
-```
+# Commands
 
 ## `%include`
 ```
