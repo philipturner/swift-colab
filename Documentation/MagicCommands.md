@@ -41,7 +41,7 @@ Arguments may be entered with or without quotes, and both single and double quot
 %include '.package(url: "https://...", branch: "main")' Module
 ```
 
-## Execution Behavior
+## Execution
 
 Before executing a code block, the kernel extracts (almost\*) all magic commands and executes them in the order they appear. The commands are oblivious to the surrounding Swift code. In contrast, a Python notebook executes Shell commands according to the control flow of their surrounding code. This code in a Swift notebook:
 
@@ -73,9 +73,9 @@ A B C D A B C D
 
 > \*`%include` is an exception to this rule.
 
-# Commands
+## Commands
 
-## `%include`
+### `%include`
 ```
 %include PATH 
 ```
@@ -92,7 +92,7 @@ Source code injected by `%include` may not contain magic commands.
 >
 > The behavior deviated from [swift-jupyter](https://github.com/google/swift-jupyter) and the magic command's semantic meaning. Thus, is was restored in v2.3 (not yet released).
 
-## `%install`
+### `%install`
 ```
 %install SPEC MODULE [MODULE ...]
 ```
@@ -113,14 +113,14 @@ To build packages stored on the local computer, pass `$cwd` into `.package(path:
 %install '.package(path: "$cwd/SimplePackage")' SimplePackage
 ```
 
-## `%install-extra-include-command`
+### `%install-extra-include-command`
 ```
 %install-extra-include-command EXECUTABLE [ARGUMENT ...]
 ```
 
 - Link to forum thread that initiated this
 
-## `%install-location`
+### `%install-location`
 ```
 %install-location PATH
 ```
@@ -131,7 +131,7 @@ To build packages stored on the local computer, pass `$cwd` into `.package(path:
 - Switching install location may impact future build performance, because it changes which cached build products are visible to the Jupyter kernel.
 - Packages cached in the previous location are still available to `%install-swiftpm-import`. They are also available to the interpreter with `import Module`, but I'm not sure why. I haven't been able to prevent packages from being importable by switching the install location.
 
-## `%install-swiftpm-environment`
+### `%install-swiftpm-environment`
 ```
 %install-swiftpm-environment EXECUTABLE [ARGUMENT ...]
 %install-swiftpm-environment export KEY=VALUE
@@ -142,7 +142,7 @@ To build packages stored on the local computer, pass `$cwd` into `.package(path:
 Append a line of Bash code to execute before building the package.
 
 
-## `%install-swiftpm-flags`
+### `%install-swiftpm-flags`
 ```
 %install-swiftpm-flags [FLAG ...]
 %install-swiftpm-flags $clear
@@ -153,7 +153,7 @@ Append a line of Bash code to execute before building the package.
 - Explain workaround for `-Xcc -I/...` flags, but for now just hyperlink: [problem 4 in this comment](https://github.com/philipturner/swift-colab/issues/14#issuecomment-1158237894).
 - `$clear` also resets anything added by `%install-swiftpm-environment` or `%install-swiftpm-import`, but not `%install-location`.
 
-## `%install-swiftpm-import`
+### `%install-swiftpm-import`
 ```
 %install-swiftpm-import MODULE [MODULE ...]
 ```
@@ -178,7 +178,7 @@ import JupyterDisplay
 #endif
 ```
 
-## `%system`
+### `%system`
 ```
 %system EXECUTABLE [ARGUMENT ...]
 ```
@@ -192,7 +192,7 @@ import JupyterDisplay
 ```
 The code above works and makes a file called `x86_64.sh` in `/content/sample_data`.
 
-## `%test`
+### `%test`
 ```
 %test SPEC
 ```
