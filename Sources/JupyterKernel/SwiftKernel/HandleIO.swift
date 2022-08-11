@@ -61,7 +61,7 @@ let StdoutHandler = PythonClass(
       }
       getAndSendStdout(handler: `self`)
       return Python.None
-    }
+    },
     
     // Lets another Python thread ensure that all Stdout is handled before doing
     // something. Because this doesn't actually use multithreading, it is 
