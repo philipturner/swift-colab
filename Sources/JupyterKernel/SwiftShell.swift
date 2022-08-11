@@ -113,10 +113,10 @@ fileprivate let CapturingSocket = PythonClass(
     
     "send_multipart": PythonInstanceMethod { args, kwargs in
       // let `self` = args[0]
-      // let msg = args[1]
+      let msg = args[1]
       // `self`.messages[dynamicMember: "append"](msg)
       print("started send_multipart")
-      let input = encode_send_multipart(args[0])
+      let input = encode_send_multipart(msg)
       KernelPipe.send(input, to: .jupyterKernel)
       
       while true {
