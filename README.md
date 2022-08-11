@@ -35,7 +35,9 @@ Local environments have faster CPUs than virtual machines, compiling Swift packa
 
 ## Getting Started
 
-Colab notebooks created directly from Google Drive are tailored for Python programming. When making a Swift notebook, copy the [official template](https://colab.research.google.com/drive/1EACIWrk9IWloUckRm3wu973bKUBXQDKR?usp=sharing) instead. It contains the commands listed below, which download and compile the Jupyter kernel. Run the first code cell and click on `Runtime > Restart runtime` in the menu bar.
+Colab notebooks created directly from Google Drive are tailored for Python programming. When making a Swift notebook, copy the [official template](https://colab.research.google.com/drive/1EACIWrk9IWloUckRm3wu973bKUBXQDKR?usp=sharing) instead. It contains the commands listed below, which download and compile the Jupyter kernel. Run the first code cell and click `Runtime > Restart runtime` in the menu bar.
+
+<!-- TODO: Remove the third line in all test/template notebooks after releasing v2.3 -->
 
 ```swift
 !curl "https://raw.githubusercontent.com/philipturner/swift-colab/release/latest/install_swift.sh" --output "install_swift.sh"

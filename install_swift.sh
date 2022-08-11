@@ -283,10 +283,12 @@ if [[ $runtime == "swift" ]]; then
   right="$(printf '\e[0;36m ===\e[0m')"
   top="$(printf '\e[0;36m=== ------------------------------------------------------------------------ ===\e[0m')"
   
-  # Work around issues with escaping single quotes (') by printing each line
-  # in a separate command.
+  # Escape single quote by specifying its hex value (0x27).
+  button="$(printf '\e[0;32m\x27Runtime > Restart runtime\x27\e[0m')"
+  
+  # Print each line separately for clarity.
   echo $top
   echo "${left}Swift-Colab overwrote the Python kernel with Swift, but Colab is still  ${right}"
-  echo "${left}in Python mode. To enter Swift mode, go to 'Runtime > Restart runtime'. ${right}"
+  echo "${left}in Python mode. To enter Swift mode, go to ${button}. ${right}"
   echo $top
 fi
