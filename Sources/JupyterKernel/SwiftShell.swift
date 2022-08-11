@@ -70,7 +70,7 @@ public func redirect_stdin() {
 
 @_cdecl("test_pythonkit_fix")
 public func test_pythonkit_fix() {
-  let display = Python.import("display")
+  let display = Python.import("IPython.display")
   let pd = Python.import("pandas")
   let array: [PythonObject] = [
     ["col 1": 3, "col 2": 5, "col 3": 4],
