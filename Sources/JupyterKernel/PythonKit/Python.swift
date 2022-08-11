@@ -1465,15 +1465,16 @@ extension PythonObject : ExpressibleByArrayLiteral, ExpressibleByDictionaryLiter
     public typealias Value = PythonObject
 
     // Preserves element order in the final Python object, unlike
-    // `Dictionary.pythonObject`. Preserves the same element overriding
-    // semantics as `Dictionary.init(uniquingKeysWith:)`, where the first key
-    // present gets assigned. Python uses the opposite convention; earlier
-    // duplicate keys get overridden.
+    // `Dictionary.pythonObject`. Uses the same element overriding semantics as
+    // `Dictionary.init(uniquingKeysWith:)`, where the first key present gets 
+    // assigned. Python uses the opposite convention; earlier duplicate keys get
+    // overridden.
     // 
     // We break from Python's key uniquing semantics here. We want this to be a 
     // Swift-first API, and duplicating the key in an object literal is bad 
-    // practice anyway. Also, flipping the rule when PythonKit has fully matured
-    // would introduce potential API breakage.
+    // practice anyway. Furthermore, this method's previous implementation used
+    // the key-uniquing `Dictionary` initializer. Flipping the rule when 
+    // PythonKit has fully matured would introduce API breakage.
     public init(dictionaryLiteral elements: (PythonObject, PythonObject)...) {
         _ = Python // Ensure Python is initialized.
         let dict = PyDict_New()!
