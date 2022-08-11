@@ -73,7 +73,7 @@ public func test_pythonkit_fix() {
   let display = Python.import("IPython.display")
   let pd = Python.import("pandas")
   let array: [PythonObject] = [
-    ["col 1": 3, "col 2": 5, "col 3": 4],
+    ["col 1": 3, "col 2": 5, "col 3": 4, "col3 ": 5],
     ["col 1": 8, "col 2": 2, "col 3": 4]
   ]
   print(array)
