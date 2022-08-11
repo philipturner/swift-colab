@@ -1463,8 +1463,22 @@ extension PythonObject : ExpressibleByArrayLiteral, ExpressibleByDictionaryLiter
     }
     public typealias Key = PythonObject
     public typealias Value = PythonObject
+
+    // Duplicates code from `Dictionary.pythonObject` to preserve element order
+    // in the final Python object.
     public init(dictionaryLiteral elements: (PythonObject, PythonObject)...) {
-        self.init(Dictionary(elements, uniquingKeysWith: { lhs, _ in lhs }))
+        _ = Python // Ensure Python is initialized.
+        let dict = PyDict_New()
+        for (key, value) in elements {
+            let k = key.ownedPyObject
+            let v = value.ownedPyObject
+            PyDict_SetItem(dict, k, v)
+            Py_DecRef(k)
+            Py_DecRef(v)
+        }
+        self.init(consuming: dict)
+
+        // self.init(Dictionary(elements, uniquingKeysWith: { lhs, _ in lhs }))
     }
 }
 
