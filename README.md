@@ -16,7 +16,7 @@ For an in-depth look at how and why this repository was created, check out the [
 
 ---
 
-This repository does not currently run local Jupyter notebooks, but the v3.0 release will support [JupyterLab](https://jupyterlab.readthedocs.io/en/stable/) (ETA: early 2023). In the meantime, [liuliu/swift-jupyter](https://github.com/liuliu/swift-jupyter) provides an actively maintained local notebook experience.
+This repository does not currently run local Jupyter notebooks, but the v3.0 release (ETA: early 2023) will support [JupyterLab](https://jupyterlab.readthedocs.io/en/stable/). In the meantime, [liuliu/swift-jupyter](https://github.com/liuliu/swift-jupyter) provides an actively maintained local notebook experience.
 
 <details>
 <summary>Why use Swift-'Colab' for experiences outside of Colaboratory?</summary>
