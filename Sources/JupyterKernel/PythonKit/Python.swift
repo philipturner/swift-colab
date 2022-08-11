@@ -1470,11 +1470,12 @@ extension PythonObject : ExpressibleByArrayLiteral, ExpressibleByDictionaryLiter
     // differs from Python's key uniquing semantics, which silently override an
     // existing key with the next one it encounters.
     //
+    // (In GitHub PR, but not source code):
     // The previous implementation used `Dictionary.init(uniquingKeysWith:)` and
     // retained only the first duplicate key's value. Changing the rule
     // introduces API breakage, but is the most semantically correct. We want to
-    // create a Swift-first API, and duplicating the key in an object literal is
-    // bad/unsafe practice.
+    // create a Swift-first API, and duplicating keys in a literal is bad/unsafe 
+    // practice.
     public init(dictionaryLiteral elements: (PythonObject, PythonObject)...) {
         _ = Python // Ensure Python is initialized.
         let dict = PyDict_New()!
@@ -1482,15 +1483,23 @@ extension PythonObject : ExpressibleByArrayLiteral, ExpressibleByDictionaryLiter
             let k = key.ownedPyObject
             let v = value.ownedPyObject
 
-            // Inserts the item only if it has not already been set. This is
-            // how we implement Swift-style key uniquing.
-            PyDict_SetItem(dict, k, v)
+            // Use Python's native key checking instead of querying whether
+            // `elements` contains the key. Although this could theoretically
+            // produce different results, it produces the Python object we want.
+            switch PyDict_Contains(dict, k) {
+            case 0:
+                PyDict_SetItem(dict, k, v)
+            case 1:
+                fatalError("Dictionary literal contains duplicate keys")
+            default:
+                try! throwPythonErrorIfPresent()
+                fatalError("No result or error checking whether \(elements) contains \(key)")
+            }
+
             Py_DecRef(k)
             Py_DecRef(v)
         }
         self.init(consuming: dict)
-
-        // self.init(Dictionary(elements, uniquingKeysWith: { lhs, _ in lhs }))
     }
 }
 
