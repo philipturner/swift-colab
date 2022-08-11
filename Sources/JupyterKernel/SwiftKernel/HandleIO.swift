@@ -288,7 +288,7 @@ fileprivate func blocking_request(
 func execute_blocking_request(_ input: Data) -> Data {
   let input_str = String(data: input, encoding: .utf8)!
   let input_dict = json.loads(input_str.pythonObject)
-
+  
   let request_type = input_dict["request_type"]
   let request = input_dict["request"]
   let timeout_sec = input_dict["timeout_sec"]
