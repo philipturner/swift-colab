@@ -68,7 +68,7 @@ public func redirect_stdin() {
   }.pythonObject
 }
 
-@_decl("test_pythonkit_fix")
+@_cdecl("test_pythonkit_fix")
 public func test_pythonkit_fix() {
   let display = Python.import("display")
   let pd = Python.import("pandas")
