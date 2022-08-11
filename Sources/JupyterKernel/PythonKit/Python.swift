@@ -1265,8 +1265,8 @@ extension PythonObject : SignedNumeric {
         return self < 0 ? -self : self
     }
 
-    //override the default implementation of - prefix function
-    //from SignedNumeric  (https://bugs.swift.org/browse/SR-13293)
+    // Override the default implementation of `-` prefix function
+    // from SignedNumeric (https://bugs.swift.org/browse/SR-13293).
     public static prefix func - (_ operand: Self) -> Self {
         return performUnaryOp(PyNumber_Negative, operand: operand)
     }
@@ -1903,7 +1903,9 @@ public struct PythonClass {
                 (key, value.pythonObject)
             }
             
-            dictionary = Dictionary(castedElements, uniquingKeysWith: { lhs, _ in lhs })
+            dictionary = Dictionary(castedElements, uniquingKeysWith: { _, _ in 
+                fatalError("Dictionary literal contains duplicate keys")
+            })
         }
     }
 
