@@ -18,7 +18,7 @@ Why this doesn't work in Swift - summarize the threads talking about this issue,
 
 ```swift
 from google.colab import drive
-drive.mount("/content")
+drive.mount("/content/drive")
 ```
 
 > This Python code renders with Swift syntax coloring. This is awkward, but it's how the code will appear in the Google Colab IDE.

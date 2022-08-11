@@ -112,10 +112,24 @@ fileprivate let CapturingSocket = PythonClass(
     },
     
     "send_multipart": PythonInstanceMethod { args, kwargs in
-      let `self` = args[0]
-      let msg = args[1]
-      `self`.messages[dynamicMember: "append"](msg)
-      print("called send_multipart")
+      // let `self` = args[0]
+      // let msg = args[1]
+      // `self`.messages[dynamicMember: "append"](msg)
+      print("started send_multipart")
+      let input = encode_send_multipart(args[0])
+      KernelPipe.send(input, to: .jupyterKernel)
+      
+      while true {
+        usleep(50_000)
+        let messages = KernelPipe.recv(from: .jupyterKernel)
+        precondition(messages.count <= 1, "Received more than one message.")
+        if messages.count == 0 {
+          continue
+        }
+        decode_send_multipart(messages[0])
+      }
+      print("finished send_multipart")
+      
       return Python.None
     }
   ]
@@ -185,26 +199,7 @@ func execute_message(_ input: Data) -> Data {
   }
 }
 
-fileprivate func execute_blocking_request(_ input: PythonObject) -> Data {
-  let request_type = input["request_type"]
-  let request = input["request"]
-  let timeout_sec = input["timeout_sec"]
-  let parent = input["parent"]
-  
-  let reply = blocking_request(
-    request_type, request: request, timeout_sec: timeout_sec, parent: parent)
-  let output = PythonObject(["blocking_request", reply])
-  let output_str = String(json.dumps(output))!
-  return output_str.data(using: .utf8)!
-}
-
-// TODO: Investigate whether this needs to be blocking/synchronous.
-fileprivate func execute_send_multipart(_ input: PythonObject) -> Data {
-  KernelContext.kernel.send_multipart(input)
-  let output = PythonObject(["send_request", Python.None])
-  let output_str = String(json.dumps(output))!
-  return output_str.data(using: .utf8)!
-}
+// blocking_request
 
 fileprivate func encode_blocking_request(
   _ request_type: PythonObject,
@@ -223,6 +218,19 @@ fileprivate func encode_blocking_request(
   return input_str.data(using: .utf8)!
 }
 
+fileprivate func execute_blocking_request(_ input: PythonObject) -> Data {
+  let request_type = input["request_type"]
+  let request = input["request"]
+  let timeout_sec = input["timeout_sec"]
+  let parent = input["parent"]
+  
+  let reply = blocking_request(
+    request_type, request: request, timeout_sec: timeout_sec, parent: parent)
+  let output = PythonObject(["blocking_request", reply])
+  let output_str = String(json.dumps(output))!
+  return output_str.data(using: .utf8)!
+}
+
 fileprivate func decode_blocking_request(_ input: Data) throws -> PythonObject {
   let input_str = String(data: input, encoding: .utf8)!
   let response = json.loads(input_str.pythonObject)
@@ -239,10 +247,26 @@ fileprivate func decode_blocking_request(_ input: Data) throws -> PythonObject {
   return reply.checking["data"] ?? Python.None
 }
 
+// send_multipart
+
 fileprivate func encode_send_multipart(_ msg: PythonObject) -> Data {
   let input = PythonObject(["send_multipart", msg])
   let input_str = String(json.dumps(input))!
   return input_str.data(using: .utf8)!
+}
+
+// TODO: Scrap the StdoutHandler thread because we're already doing things
+// asynchronously. Increase the rate of polling from 50_000 µs to 10_000 µs,
+// which should minimize latency and make blocking actions more viable.
+// TODO: Scrap the C++ code for serializing and deserializing images.
+// TODO: Investigate whether this needs to be blocking/synchronous. If so, 
+// consider doing some magic with Stdout to preserve order of execution while
+// being asynchronous.
+fileprivate func execute_send_multipart(_ input: PythonObject) -> Data {
+  KernelContext.kernel.send_multipart(input)
+  let output = PythonObject(["send_request", Python.None])
+  let output_str = String(json.dumps(output))!
+  return output_str.data(using: .utf8)!
 }
 
 fileprivate func decode_send_multipart(_ input: Data) {
