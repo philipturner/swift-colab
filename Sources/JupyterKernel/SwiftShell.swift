@@ -241,7 +241,7 @@ fileprivate func decode_blocking_request(_ input: Data) throws -> PythonObject {
 
 fileprivate func encode_send_multipart(_ msg: PythonObject) -> Data {
   let input = PythonObject(["send_multipart", msg])
-  let input_str = String(json.dumps(input_str))!
+  let input_str = String(json.dumps(input))!
   return input_str.data(using: .utf8)!
 }
 
