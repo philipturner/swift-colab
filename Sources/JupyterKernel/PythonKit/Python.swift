@@ -1464,6 +1464,7 @@ extension PythonObject : ExpressibleByArrayLiteral, ExpressibleByDictionaryLiter
     public typealias Key = PythonObject
     public typealias Value = PythonObject
 
+    // (In GitHub PR and source code):
     // Preserves element order in the final Python object, unlike
     // `Dictionary.pythonObject`. When keys are duplicated, throw the same
     // runtime error as `Swift.Dictionary.init(dictionaryLiteral:)`. This
