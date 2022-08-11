@@ -23,7 +23,7 @@ func preprocessAndExecute(
       if messages.count == 0 {
         continue
       }
-      let response = execute_blocking_request(messages[0])
+      let response = execute_message(messages[0])
       KernelPipe.send(response, to: .lldb)
     }
   }

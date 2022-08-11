@@ -284,19 +284,34 @@ fileprivate func blocking_request(
   return read_reply_from_input(request_id, timeout_sec)
 }
 
+//===----------------------------------------------------------------------===//
+// Encoding and decoding messages between processes
+//===----------------------------------------------------------------------===//
+
 // Used in "PreprocessAndExecute.swift".
-func execute_blocking_request(_ input: Data) -> Data {
+func execute_message(_ input: Data) -> Data {
   let input_str = String(data: input, encoding: .utf8)!
   let input_dict = json.loads(input_str.pythonObject)
+  precondition(input_dict.count == 2, "Malformatted message.")
   
-  let request_type = input_dict["request_type"]
-  let request = input_dict["request"]
-  let timeout_sec = input_dict["timeout_sec"]
-  let parent = input_dict["parent"]
+  switch String(input_dict[0]) {
+  case "blocking_request":
+    return execute_blocking_request(input_dict[1])
+  default: // Includes `nil`.
+    fatalError("Unrecognized message type '\(input_dict[0])'.")
+  }
+}
+
+fileprivate func execute_blocking_request(_ input: PythonObject) -> Data {
+  let request_type = input["request_type"]
+  let request = input["request"]
+  let timeout_sec = input["timeout_sec"]
+  let parent = input["parent"]
   
-  let output_obj = blocking_request(
+  let reply = blocking_request(
     request_type, request: request, timeout_sec: timeout_sec, parent: parent)
-  let output_str = String(json.dumps(output_obj))!
+  let output = PythonObject(["blocking_request", reply])
+  let output_str = String(json.dumps(output))!
   return output_str.data(using: .utf8)!
 }
 
@@ -313,6 +328,7 @@ func encode_blocking_request(
   input_dict["timeout_sec"] = timeout_sec
   input_dict["parent"] = parent
   
+  let input = PythonObject(["blocking_request", input_dict])
   let input_str = String(json.dumps(input_dict))!
   return input_str.data(using: .utf8)!
 }
@@ -320,7 +336,13 @@ func encode_blocking_request(
 // Used in "SwiftShell.swift".
 func decode_blocking_request(_ input: Data) throws -> PythonObject {
   let input_str = String(data: input, encoding: .utf8)!
-  let reply = json.loads(input_str.pythonObject)
+  let response = json.loads(input_str.pythonObject)
+  precondition(response.count == 2, "Malformatted response.")
+  precondition(
+    response[0] == "blocking_request", 
+    "Unexpected response type '\(response[0])'.")
+  
+  let reply = response[1]
   if reply.checking["error"] != nil {
     let _message = Python.import("google.colab")._message
     throw _message.MessageError(reply["error"])
