@@ -2,6 +2,7 @@ import Foundation
 
 struct KernelContext {
   static var kernel: PythonObject = Python.None
+  static var stdoutHandler: PythonObject = Python.None
   static var cellID: Int = 0
   
   static var debuggerInitialized = false

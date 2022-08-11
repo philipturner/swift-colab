@@ -28,6 +28,7 @@ func doExecute(code: String, allowStdin: Bool) throws -> PythonObject? {
   
   let handler = StdoutHandler()
   handler.start()
+  KernelContext.stdoutHandler = handler
   
   // Execute the cell, handle unexpected exceptions, and make sure to always 
   // clean up the stdout handler.
@@ -36,6 +37,7 @@ func doExecute(code: String, allowStdin: Bool) throws -> PythonObject? {
     defer {
       restoreInput()
       KernelContext.pollingStdout = false
+      KernelContext.stdoutHandler = Python.None
       handler.join()
     }
     result = try executeCell(code: code)

@@ -62,6 +62,17 @@ let StdoutHandler = PythonClass(
       getAndSendStdout(handler: `self`)
       return Python.None
     }
+    
+    // Lets another Python thread ensure that all Stdout is handled before doing
+    // something. Because this doesn't actually use multithreading, it is 
+    // thread-safe.
+    "flush": PythonObject { (`self`): PythonObject in
+      precondition(
+        KernelContext.pollingStdout, 
+        "Only call 'StdoutHandler.flush' while executing a Jupyter cell.")
+      getAndSendStdout(handler: `self`)
+      return Python.None
+    }
   ]
 ).pythonObject
 

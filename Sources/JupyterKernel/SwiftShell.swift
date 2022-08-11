@@ -177,6 +177,9 @@ func execute_message(_ input: Data) -> Data {
   switch String(input_dict[0]) {
   case "blocking_request":
     return execute_blocking_request(input_dict[1])
+  case "send_multipart":
+    KernelContext.stdoutHandler.flush()
+    return execute_send_multipart(input_dict[1])
   default: // Includes `nil`.
     fatalError("Unrecognized message type '\(input_dict[0])'.")
   }
@@ -195,7 +198,15 @@ fileprivate func execute_blocking_request(_ input: PythonObject) -> Data {
   return output_str.data(using: .utf8)!
 }
 
-func encode_blocking_request(
+// TODO: Investigate whether this needs to be blocking/synchronous.
+fileprivate func execute_send_multipart(_ input: PythonObject) -> Data {
+  KernelContext.kernel.send_multipart(input)
+  let output = PythonObject(["send_request", Python.None])
+  let output_str = String(json.dumps(output))!
+  return output_str.data(using: .utf8)!
+}
+
+fileprivate func encode_blocking_request(
   _ request_type: PythonObject,
   request: PythonObject,
   timeout_sec: PythonObject,
@@ -212,7 +223,7 @@ func encode_blocking_request(
   return input_str.data(using: .utf8)!
 }
 
-func decode_blocking_request(_ input: Data) throws -> PythonObject {
+fileprivate func decode_blocking_request(_ input: Data) throws -> PythonObject {
   let input_str = String(data: input, encoding: .utf8)!
   let response = json.loads(input_str.pythonObject)
   precondition(response.count == 2, "Malformatted response.")
@@ -226,4 +237,19 @@ func decode_blocking_request(_ input: Data) throws -> PythonObject {
     throw _message.MessageError(reply["error"])
   }
   return reply.checking["data"] ?? Python.None
+}
+
+fileprivate func encode_send_multipart(_ msg: PythonObject) -> Data {
+  let input = PythonObject(["send_multipart", msg])
+  let input_str = String(json.dumps(input_str))!
+  return input_str.data(using: .utf8)!
+}
+
+fileprivate func decode_send_multipart(_ input: Data) {
+  let input_str = String(data: input, encoding: .utf8)!
+  let response = json.logs(input_str.pythonObject)
+  precondition(response.count == 2, "Malformatted response.")
+  precondition(
+    response[0] == "send_request", 
+    "Unexpected response type '\(response[0])'.")
 }
