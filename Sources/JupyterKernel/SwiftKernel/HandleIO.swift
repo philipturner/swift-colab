@@ -329,7 +329,7 @@ func encode_blocking_request(
   input_dict["parent"] = parent
   
   let input = PythonObject(["blocking_request", input_dict])
-  let input_str = String(json.dumps(input_dict))!
+  let input_str = String(json.dumps(input))!
   return input_str.data(using: .utf8)!
 }
 
