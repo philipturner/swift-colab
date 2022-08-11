@@ -68,18 +68,6 @@ public func redirect_stdin() {
   }.pythonObject
 }
 
-@_cdecl("test_pythonkit_fix")
-public func test_pythonkit_fix() {
-  let display = Python.import("IPython.display")
-  let pd = Python.import("pandas")
-  let array: [PythonObject] = [
-    ["col 1": 3, "col 2": 5, "col 3": 4, "col 3": 5],
-    ["col 1": 8, "col 2": 2, "col 3": 4]
-  ]
-  print(array)
-  display.display(pd.DataFrame.from_records(array))
-}
-
 // Caller side: use `ctypes` to convert return value, which is the address of a
 // Python object, into an actual Python object. This Swift file stores a
 // reference to the return value's object so that it doesn't deallocate.
@@ -174,3 +162,67 @@ fileprivate let SwiftShell = PythonClass(
     }
   ]
 ).pythonObject
+
+//===----------------------------------------------------------------------===//
+// Encoding and decoding messages between processes
+//===----------------------------------------------------------------------===//
+
+// Used in "PreprocessAndExecute.swift".
+func execute_message(_ input: Data) -> Data {
+  let input_str = String(data: input, encoding: .utf8)!
+  let input_dict = json.loads(input_str.pythonObject)
+  precondition(input_dict.count == 2, "Malformatted message.")
+  
+  switch String(input_dict[0]) {
+  case "blocking_request":
+    return execute_blocking_request(input_dict[1])
+  default: // Includes `nil`.
+    fatalError("Unrecognized message type '\(input_dict[0])'.")
+  }
+}
+
+fileprivate func execute_blocking_request(_ input: PythonObject) -> Data {
+  let request_type = input["request_type"]
+  let request = input["request"]
+  let timeout_sec = input["timeout_sec"]
+  let parent = input["parent"]
+  
+  let reply = blocking_request(
+    request_type, request: request, timeout_sec: timeout_sec, parent: parent)
+  let output = PythonObject(["blocking_request", reply])
+  let output_str = String(json.dumps(output))!
+  return output_str.data(using: .utf8)!
+}
+
+func encode_blocking_request(
+  _ request_type: PythonObject,
+  request: PythonObject,
+  timeout_sec: PythonObject,
+  parent: PythonObject
+) -> Data {
+  let input_dict = PythonObject([:])
+  input_dict["request_type"] = request_type
+  input_dict["request"] = request
+  input_dict["timeout_sec"] = timeout_sec
+  input_dict["parent"] = parent
+  
+  let input = PythonObject(["blocking_request", input_dict])
+  let input_str = String(json.dumps(input))!
+  return input_str.data(using: .utf8)!
+}
+
+func decode_blocking_request(_ input: Data) throws -> PythonObject {
+  let input_str = String(data: input, encoding: .utf8)!
+  let response = json.loads(input_str.pythonObject)
+  precondition(response.count == 2, "Malformatted response.")
+  precondition(
+    response[0] == "blocking_request", 
+    "Unexpected response type '\(response[0])'.")
+  
+  let reply = response[1]
+  if reply.checking["error"] != nil {
+    let _message = Python.import("google.colab")._message
+    throw _message.MessageError(reply["error"])
+  }
+  return reply.checking["data"] ?? Python.None
+}
