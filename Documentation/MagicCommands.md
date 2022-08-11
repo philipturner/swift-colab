@@ -125,6 +125,7 @@ To build packages stored on the local computer, pass `$cwd` into `.package(path:
 ```
 
 - Link to forum thread that initiated this
+- Using this command seems like a bad idea, based on [problem 4 in this comment](https://github.com/philipturner/swift-colab/issues/14#issuecomment-1158237894). Perhaps it will be usable in Swift-Colab v2.3.
 
 ### `%install-location`
 ```
@@ -146,7 +147,6 @@ To build packages stored on the local computer, pass `$cwd` into `.package(path:
 > Coming in Swift-Colab v2.3.
 
 Append a line of Bash code to execute before building the package.
-
 
 ### `%install-swiftpm-flags`
 ```
