@@ -223,10 +223,15 @@ For those looking to showcase Swift libraries Jupyter/Colaboratory: contribution
 
 | Community Tutorials | Dependencies | Compatible Swift Versions |
 | ------------------- | ------------ | ------------------------- |
-| Simulating 3D Physics<sup>6</sup> | [MuJoCo](https://github.com/deepmind/mujoco) | Release, Development |
-| General-Purpose GPU with OpenCL<sup>6</sup> | [SwiftOpenCL](https://github.com/philipturner/swift-opencl) | Release, Development |
+| Google Drive Integration<sup>6</sup> | PythonKit | Release, Development |
+| Simulating 3D Physics<sup>7</sup> | [MuJoCo](https://github.com/deepmind/mujoco) | Release, Development |
+| General-Purpose GPU with OpenCL<sup>7</sup> | [SwiftOpenCL](https://github.com/philipturner/swift-opencl) | Release, Development |
 
-> <sup>6</sup>Still in development. Upon completion, the title will become a hyperlink.
+<!-- "Google Drive Integration" tutorial - offloads the explanation from this README, shows an interactive experience. Create a scratch Google account, mount the drive, experience compiling SwiftPlot more quickly -->
+
+> <sup>6</sup>Will be released as part of Swift-Colab v2.3.
+>
+> <sup>7</sup>Still in development. Upon completion, the title will become a hyperlink.
 
 ## Testing
 
