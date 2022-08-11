@@ -127,6 +127,7 @@ fileprivate let CapturingSocket = PythonClass(
           continue
         }
         decode_send_multipart(messages[0])
+        break
       }
       print("finished send_multipart")
       
