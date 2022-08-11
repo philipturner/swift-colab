@@ -1468,7 +1468,7 @@ extension PythonObject : ExpressibleByArrayLiteral, ExpressibleByDictionaryLiter
     // in the final Python object.
     public init(dictionaryLiteral elements: (PythonObject, PythonObject)...) {
         _ = Python // Ensure Python is initialized.
-        let dict = PyDict_New()
+        let dict = PyDict_New()!
         for (key, value) in elements {
             let k = key.ownedPyObject
             let v = value.ownedPyObject
