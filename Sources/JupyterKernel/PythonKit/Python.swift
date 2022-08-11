@@ -1465,22 +1465,25 @@ extension PythonObject : ExpressibleByArrayLiteral, ExpressibleByDictionaryLiter
     public typealias Value = PythonObject
 
     // Preserves element order in the final Python object, unlike
-    // `Dictionary.pythonObject`. Uses the same element overriding semantics as
-    // `Dictionary.init(uniquingKeysWith:)`, where the first key present gets 
-    // assigned. Python uses the opposite convention; earlier duplicate keys get
-    // overridden.
-    // 
-    // We break from Python's key uniquing semantics here. We want this to be a 
-    // Swift-first API, and duplicating the key in an object literal is bad 
-    // practice anyway. Furthermore, this method's previous implementation used
-    // the key-uniquing `Dictionary` initializer. Flipping the rule when 
-    // PythonKit has fully matured would introduce API breakage.
+    // `Dictionary.pythonObject`. When keys are duplicated, throw the same
+    // runtime error as `Swift.Dictionary.init(dictionaryLiteral:)`. This
+    // differs from Python's key uniquing semantics, which silently override an
+    // existing key with the next one it encounters.
+    //
+    // The previous implementation used `Dictionary.init(uniquingKeysWith:)` and
+    // retained only the first duplicate key's value. Changing the rule
+    // introduces API breakage, but is the most semantically correct. We want to
+    // create a Swift-first API, and duplicating the key in an object literal is
+    // bad/unsafe practice.
     public init(dictionaryLiteral elements: (PythonObject, PythonObject)...) {
         _ = Python // Ensure Python is initialized.
         let dict = PyDict_New()!
         for (key, value) in elements {
             let k = key.ownedPyObject
             let v = value.ownedPyObject
+
+            // Inserts the item only if it has not already been set. This is
+            // how we implement Swift-style key uniquing.
             PyDict_SetItem(dict, k, v)
             Py_DecRef(k)
             Py_DecRef(v)
