@@ -114,6 +114,7 @@ fileprivate let CapturingSocket = PythonClass(
       let `self` = args[0]
       let msg = args[1]
       `self`.messages[dynamicMember: "append"](msg)
+      print("called send_multipart")
       return Python.None
     }
   ]
