@@ -68,6 +68,18 @@ public func redirect_stdin() {
   }.pythonObject
 }
 
+@_decl("test_pythonkit_fix")
+public func test_pythonkit_fix() {
+  let display = Python.import("display")
+  let pd = Python.import("pandas")
+  let array: [PythonObject] = [
+    ["col 1": 3, "col 2": 5, "col 3": 4],
+    ["col 1": 8, "col 2": 2, "col 3": 4]
+  ]
+  print(array)
+  display.display(pd.DataFrame.from_records(array))
+}
+
 // Caller side: use `ctypes` to convert return value, which is the address of a
 // Python object, into an actual Python object. This Swift file stores a
 // reference to the return value's object so that it doesn't deallocate.
