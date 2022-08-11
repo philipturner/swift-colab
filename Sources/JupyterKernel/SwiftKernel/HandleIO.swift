@@ -1,7 +1,6 @@
 import Foundation
 fileprivate let codecs = Python.import("codecs")
 fileprivate let io = Python.import("io")
-fileprivate let json = Python.import("json")
 fileprivate let locale = Python.import("locale")
 fileprivate let os = Python.import("os")
 fileprivate let pexpect = Python.import("pexpect")

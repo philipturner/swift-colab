@@ -1,6 +1,7 @@
 import Foundation
 fileprivate let eventloops = Python.import("ipykernel.eventloops")
 fileprivate let interactiveshell = Python.import("IPython.core.interactiveshell")
+fileprivate let json = Python.import("json")
 fileprivate let session = Python.import("jupyter_client.session")
 fileprivate let traitlets = Python.import("traitlets")
 fileprivate let zmqshell = Python.import("ipykernel.zmqshell")
