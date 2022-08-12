@@ -33,7 +33,7 @@ fileprivate func getStdout() -> String {
 
 fileprivate func sendStdout(_ stdout: String) {
   KernelContext.log("Checkpoint A.")
-  if let range = stdout.range(of: "QVQ\n") {//\033[>m") {
+  if let range = stdout.range(of: "QVQ\r\n") {//\033[>m") {
     KernelContext.log("Checkpoint B.")
     sendStdout(String(stdout[..<range.lowerBound]))
     executeNextMessage()
