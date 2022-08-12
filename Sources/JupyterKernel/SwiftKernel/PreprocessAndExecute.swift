@@ -2,21 +2,18 @@ import Foundation
 fileprivate let re = Python.import("re")
 fileprivate let time = Python.import("time")
 
-fileprivate var executionResultMutex = Mutex()
-
 func preprocessAndExecute(
   code: String, isCell: Bool = false
 ) throws -> ExecutionResult {
   let preprocessed = try preprocess(code: code)
   var executionResult: ExecutionResult?
-  _ = executionResultMutex
   
   DispatchQueue.global().async {
     let _executionResult = execute(
       code: preprocessed, lineIndex: isCell ? 0 : nil, isCell: isCell)
-    executionResultMutex.acquire()
+    _ = KernelContext.mutex.acquire()
     executionResult = _executionResult
-    executionResultMutex.release()
+    _ = KernelContext.mutex.release()
   }
   
   while true {
@@ -24,9 +21,9 @@ func preprocessAndExecute(
     // GIL.
     // TODO: Change to Foundation.usleep after eliminating the SIGINTHandler.
     time.sleep(0.05)
-    executionResultMutex.acquire()
+    _ = KernelContext.mutex.acquire()
     let shouldBreak = executionResult != nil
-    executionResultMutex.release()
+    _ = KernelContext.mutex.release()
     
     if isCell {
       getAndSendStdout()

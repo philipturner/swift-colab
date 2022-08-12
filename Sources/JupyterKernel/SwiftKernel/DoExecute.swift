@@ -13,7 +13,10 @@ func doExecute(code: String, allowStdin: Bool) throws -> PythonObject? {
     // execution? They might contain sensitive information. However, flushing 
     // the pipes will not solve the security vulnerability of information 
     // being exposed like that.
+    _ = KernelContext.mutex.acquire()
     try beforeExecution()
+    _ = KernelContext.mutex.release()
+    
   }
   forwardInput(allowStdin: allowStdin)
   

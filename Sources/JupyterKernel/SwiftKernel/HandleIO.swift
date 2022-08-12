@@ -31,7 +31,9 @@ let SIGINTHandler = PythonClass(
       while true {
         // TODO: Use a Swift background thread instead.
         signal.sigwait([signal.SIGINT])
+        _ = KernelContext.mutex.acquire()
         _ = KernelContext.async_interrupt_process()
+        _ = KernelContext.mutex.release()
         KernelContext.isInterrupted = true
       }
       // Do not need to return anything because this is an infinite loop.
