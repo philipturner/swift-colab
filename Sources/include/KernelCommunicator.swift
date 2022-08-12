@@ -12,6 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// These symbols disappear from the Swift interpreter after the file finishes
+// executing.
+import func Glibc.dlopen
+import func Glibc.dlsym
+
 /// A struct with functions that the kernel and the code running inside the
 /// kernel use to talk to each other.
 ///
@@ -27,8 +32,28 @@ struct KernelCommunicator {
   
   private var previousDisplayMessages: [JupyterDisplayMessage]?
   
+  private let libJupyterKernel = dlopen(
+    "/opt/swift/lib/libJupyterKernel.so", /*RTLD_LAZY*/Int32(1))!
+  
   init(jupyterSession: JupyterSession) {
     self.jupyterSession = jupyterSession
+    
+    // See "Sources/JupyterKernel/SwiftShell.swift" for an explanation of this 
+    // workaround.
+    callSymbol("prevent_numpy_import_hang")
+    
+    // Fetch pipes before executing any other Swift code for safe measure. This
+    // may not be needed.
+    callSymbol("fetch_pipes")
+    
+    // Overwrite implementation of `google.colab._message.blocking_request`.
+    callSymbol("redirect_stdin")
+  }
+  
+  func callSymbol(_ name: String) {
+    let address = dlsym(libJupyterKernel, name)!
+    let symbol = unsafeBitCast(address, to: (@convention(c) () -> Void).self)
+    symbol()
   }
   
   /// The kernel calls this after successfully executing a cell of user code.
@@ -49,7 +74,7 @@ struct KernelCommunicator {
 
   /// The kernel calls this when the parent message changes.
   mutating func updateParentMessage(to parentMessage: ParentMessage) {
-    let address = dlsym(Self.libJupyterKernel, "update_parent_message")!
+    let address = dlsym(libJupyterKernel, "update_parent_message")!
     let symbol = unsafeBitCast(address, to: (@convention(c) (
       UnsafePointer<CChar>) -> Void
     ).self)
@@ -106,32 +131,3 @@ struct KernelCommunicator {
     let username: String
   }
 }
-
-// These symbols disappear from the Swift interpreter after the file finishes
-// executing.
-import func Glibc.dlopen
-import func Glibc.dlsym
-
-// TODO: Make these instance methods on `JupyterKernel.communicator`.
-extension KernelCommunicator {
-  private static let /*Glibc.*/RTLD_LAZY = Int32(1)
-  private static let libJupyterKernel = dlopen(
-    "/opt/swift/lib/libJupyterKernel.so", RTLD_LAZY)!
-  
-  static func callSymbol(_ name: String) {
-    let address = dlsym(libJupyterKernel, name)!
-    let symbol = unsafeBitCast(address, to: (@convention(c) () -> Void).self)
-    symbol()
-  }
-}
-
-// See "Sources/JupyterKernel/SwiftShell.swift" for an explanation of this 
-// workaround.
-KernelCommunicator.callSymbol("prevent_numpy_import_hang")
-
-// Fetch pipes before executing any other Swift code for safe measure. This may
-// not be needed.
-KernelCommunicator.callSymbol("fetch_pipes")
-
-// Overwrite implementation of `google.colab._message.blocking_request`.
-KernelCommunicator.callSymbol("redirect_stdin")
