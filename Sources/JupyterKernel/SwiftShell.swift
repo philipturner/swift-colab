@@ -130,7 +130,6 @@ fileprivate let CapturingSocket = PythonClass(
         break
       }
       print("finished send_multipart")
-      
       return Python.None
     }
   ]
@@ -251,7 +250,11 @@ fileprivate func decode_blocking_request(_ input: Data) throws -> PythonObject {
 // send_multipart
 
 fileprivate func encode_send_multipart(_ msg: PythonObject) -> Data {
-  let input = PythonObject(["send_multipart", msg])
+  var parts = Array(msg)!
+  for i in 0..<parts.count {
+    parts[i] = parts[i].decode("utf8")
+  }
+  let input = PythonObject(["send_multipart", PythonObject(parts)])
   let input_str = String(json.dumps(input))!
   return input_str.data(using: .utf8)!
 }
@@ -264,7 +267,11 @@ fileprivate func encode_send_multipart(_ msg: PythonObject) -> Data {
 // consider doing some magic with Stdout to preserve order of execution while
 // being asynchronous.
 fileprivate func execute_send_multipart(_ input: PythonObject) -> Data {
-  KernelContext.kernel.send_multipart(input)
+  var parts = Array(input)!
+  for i in 0..<parts.count {
+    parts[i] = parts[i].encode("utf8")
+  }
+  KernelContext.kernel.send_multipart(PythonObject(parts))
   let output = PythonObject(["send_request", Python.None])
   let output_str = String(json.dumps(output))!
   return output_str.data(using: .utf8)!
