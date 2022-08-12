@@ -25,7 +25,7 @@ fileprivate struct CEnvironment {
   }
 }
 
-fileprivate var sigintHandler: PythonObject!
+// fileprivate var sigintHandler: PythonObject!
 
 func initSwift() throws {
   KernelPipe.resetPipes()
@@ -35,9 +35,10 @@ func initSwift() throws {
   try initReplProcess()
   try initKernelCommunicator()
   try initConcurrency()
+  try initSIGINTHandler()
   
-  sigintHandler = SIGINTHandler()
-  sigintHandler.start()
+  // sigintHandler = SIGINTHandler()
+  // sigintHandler.start()
 }
 
 fileprivate func initReplProcess() throws {
@@ -83,5 +84,23 @@ fileprivate func initConcurrency() throws {
     """)
   if result is ExecutionResultError {
     throw Exception("Error importing _Concurrency: \(result)")
+  }
+}
+
+fileprivate func initSIGINTHandler() throws {
+  DispatchQueue.global().async {
+    while true {
+      var signal_set = sigset_t()
+      sigemptyset(&signal_set)
+      sigaddset(&signal_set, SIGINT) 
+      
+      var sig: Int32 = 0
+      sigwait(&signal_set, &sig)
+      
+      _ = KernelContext.mutex.acquire()
+      _ = KernelContext.async_interrupt_process()
+      _ = KernelContext.mutex.release()
+      KernelContext.isInterrupted = true
+    }
   }
 }
