@@ -30,7 +30,7 @@ func preprocessAndExecute(
     
     if isCell {
       getAndSendStdout()
-
+      
       let messages = KernelPipe.recv(from: .lldb)
       precondition(messages.count <= 1, "Received more than one message.")
       if messages.count == 1 {
