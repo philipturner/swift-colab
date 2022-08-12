@@ -208,7 +208,6 @@ func execute_message(_ input: Data) -> Data {
   case "blocking_request":
     return execute_blocking_request(input_dict[1])
   case "send_multipart":
-    KernelContext.stdoutHandler.flush()
     return execute_send_multipart(input_dict[1])
   default: // Includes `nil`.
     fatalError("Unrecognized message type '\(input_dict[0])'.")
