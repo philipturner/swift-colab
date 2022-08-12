@@ -12,9 +12,10 @@ func preprocessAndExecute(
   _ = executionResultMutex
   
   DispatchQueue.global().async {
-    executionResultMutex.acquire()
-    executionResult = execute(
+    let _executionResult = execute(
       code: preprocessed, lineIndex: isCell ? 0 : nil, isCell: isCell)
+    executionResultMutex.acquire()
+    executionResult = _executionResult
     executionResultMutex.release()
   }
   
