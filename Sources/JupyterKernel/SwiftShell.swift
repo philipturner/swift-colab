@@ -268,6 +268,7 @@ fileprivate func encode_send_multipart(_ msg: PythonObject) -> Data {
 // being asynchronous.
 // Update: It must preserve order of execution, but I can make it asynchronous
 // by creating escape sequences in Stdout (maybe).
+// Use the "\033[<<<m" sequence.
 fileprivate func execute_send_multipart(_ input: PythonObject) -> Data {
   var parts = [PythonObject](input)!
   for i in 0..<parts.count {
