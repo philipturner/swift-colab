@@ -2,7 +2,7 @@ import Foundation
 fileprivate let re = Python.import("re")
 fileprivate let time = Python.import("time")
 
-fileprivate var executionMutex = Mutex()
+fileprivate var executionResultMutex = Mutex()
 
 func preprocessAndExecute(
   code: String, isCell: Bool = false
