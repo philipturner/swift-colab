@@ -9,13 +9,13 @@ func doExecute(code: String, allowStdin: Bool) throws -> PythonObject? {
   // interrupt. Otherwise, the LLDB process might halt while exchanging file
   // handles.
   if code != "" {
-    try KernelContext.lldbQueue.sync {
-      // Should we leave the pipes' contents lingering until the next cell
-      // execution? They might contain sensitive information. However, flushing 
-      // the pipes will not solve the security vulnerability of information 
-      // being exposed like that.
-      try configureCellPipes()
-    }
+    // Should we leave the pipes' contents lingering until the next cell
+    // execution? They might contain sensitive information. However, flushing 
+    // the pipes will not solve the security vulnerability of information 
+    // being exposed like that.
+    try beforeExecution()
+    
+    // TODO: Remove `KernelContext.lldbQueue`
   }
   
   KernelContext.isInterrupted = false
@@ -119,16 +119,19 @@ func doExecute(code: String, allowStdin: Bool) throws -> PythonObject? {
   }
 }
 
-fileprivate func configureCellPipes() throws {
+fileprivate func beforeExecution() throws {
   KernelPipe.resetPipes()
   KernelPipe.fetchPipes(currentProcess: .jupyterKernel)
-  do {
-    let result = execute(code: """
-      JupyterKernel.communicator.fetchPipes()
-      """)
-    if result is ExecutionResultError {
-      throw Exception("Error fetching pipes: \(result)")
-    }
+  let parentHeader = KernelContext.kernel._parent_header
+  let jsonObj = json.dumps(json.dumps(jsonutil.squash_dates(parentHeader)))
+  
+  let result = execute(code: """
+    JupyterKernel.communicator.fetchPipes()
+    JupyterKernel.communicator.updateParentMessage(
+      to: KernelCommunicator.ParentMessage(json: \(String(jsonObj)!)))
+    """)
+  if result is ExecutionResultError {
+    throw Exception("Error setting parent message or fetching pipes: \(result)")
   }
 }
 
@@ -158,21 +161,6 @@ fileprivate func executeCell(code: String) throws -> ExecutionResult {
     try afterSuccessfulExecution()
   }
   return result
-}
-
-// This happens before someone runs the cell, so the parent message doesn't
-// appear if you include "EnableIPythonDisplay.swift" in the middle of the cell.
-fileprivate func setParentMessage() throws {
-  let parentHeader = KernelContext.kernel._parent_header
-  let jsonObj = json.dumps(json.dumps(jsonutil.squash_dates(parentHeader)))
-  
-  let result = execute(code: """
-    JupyterKernel.communicator.updateParentMessage(
-      to: KernelCommunicator.ParentMessage(json: \(String(jsonObj)!)))
-    """)
-  if result is ExecutionResultError {
-    throw Exception("Error setting parent message: \(result)")
-  }
 }
 
 // Erases bold/light formatting, forces lines to wrap in notebook, and adds a
