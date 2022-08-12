@@ -2,23 +2,30 @@ import Foundation
 fileprivate let re = Python.import("re")
 fileprivate let time = Python.import("time")
 
+fileprivate var executionMutex = Mutex()
+
 func preprocessAndExecute(
   code: String, isCell: Bool = false
 ) throws -> ExecutionResult {
   let preprocessed = try preprocess(code: code)
-  
-  // TODO: Protect the execution result with a mutex.
   var executionResult: ExecutionResult?
+  _ = executionResultMutex
+  
   DispatchQueue.global().async {
+    executionResultMutex.acquire()
     executionResult = execute(
       code: preprocessed, lineIndex: isCell ? 0 : nil, isCell: isCell)
+    executionResultMutex.release()
   }
   
   while true {
     // Using Python's `time` module instead of Foundation.usleep releases the
     // GIL.
+    // TODO: Change to Foundation.usleep after eliminating the SIGINTHandler.
     time.sleep(0.05)
+    executionResultMutex.acquire()
     let shouldBreak = executionResult != nil
+    executionResultMutex.release()
     
     if isCell {
       getAndSendStdout()

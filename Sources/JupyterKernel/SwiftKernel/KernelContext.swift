@@ -267,7 +267,7 @@ struct KernelPipe {
     }
     raw_data.copyBytes(
       to: buffer.assumingMemoryBound(to: UInt8.self), count: raw_data.count)
-
+    
     var stream = buffer
     var streamProgress = 0
     let streamEnd = raw_data.count

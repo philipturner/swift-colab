@@ -15,29 +15,20 @@ func doExecute(code: String, allowStdin: Bool) throws -> PythonObject? {
     // being exposed like that.
     try beforeExecution()
   }
+  forwardInput(allowStdin: allowStdin)
   
   KernelContext.isInterrupted = false
-  // KernelContext.pollingStdout = true
   KernelContext.hadStdout = false
   KernelContext.cellID = Int(KernelContext.kernel.execution_count)!
-  forwardInput(allowStdin: allowStdin)
   
   // Flush stderr
   _ = getStderr(readData: false)
   
-  // let handler = StdoutHandler()
-  // handler.start()
-  // KernelContext.stdoutHandler = handler
-  
-  // Execute the cell, handle unexpected exceptions, and make sure to always 
-  // clean up the stdout handler.
+  // Execute the cell, handle unexpected exceptions, and clean up the stdout.
   var result: ExecutionResult
   do {
     defer {
       restoreInput()
-      // KernelContext.pollingStdout = false
-      // KernelContext.stdoutHandler = Python.None
-      // handler.join()
     }
     result = try executeCell(code: code)
   } catch _ as InterruptException {

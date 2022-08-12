@@ -128,9 +128,7 @@ fileprivate let CapturingSocket = PythonClass(
     },
     
     "send_multipart": PythonInstanceMethod { args, kwargs in
-      // let `self` = args[0]
       let msg = args[1]
-      // `self`.messages[dynamicMember: "append"](msg)
       print("started send_multipart")
       let input = encode_send_multipart(msg)
       KernelPipe.send(input, to: .jupyterKernel)
@@ -274,9 +272,6 @@ fileprivate func encode_send_multipart(_ msg: PythonObject) -> Data {
   return input_str.data(using: .utf8)!
 }
 
-// TODO: Scrap the StdoutHandler thread because we're already doing things
-// asynchronously. Increase the rate of polling from 50_000 µs to 10_000 µs,
-// which should minimize latency and make blocking actions more viable.
 // TODO: Scrap the C++ code for serializing and deserializing images.
 // TODO: Investigate whether this needs to be blocking/synchronous. If so, 
 // consider doing some magic with Stdout to preserve order of execution while

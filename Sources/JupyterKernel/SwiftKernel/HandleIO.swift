@@ -29,6 +29,7 @@ let SIGINTHandler = PythonClass(
     
     "run": PythonInstanceMethod { _ in
       while true {
+        // TODO: Use a Swift background thread instead.
         signal.sigwait([signal.SIGINT])
         _ = KernelContext.async_interrupt_process()
         KernelContext.isInterrupted = true
@@ -37,44 +38,6 @@ let SIGINTHandler = PythonClass(
     }
   ]
 ).pythonObject
-
-// // Not possible to use Swift GCD in place of Python single-threaded threading 
-// // here.
-// let StdoutHandler = PythonClass(
-//   "StdoutHandler",
-//   superclasses: [threading.Thread],
-//   members: [
-//     "__init__": PythonInstanceMethod { (`self`: PythonObject) in
-//       threading.Thread.__init__(`self`)
-//       `self`.daemon = true
-//       `self`.had_stdout = false
-//       return Python.None
-//     },
-    
-//     "run": PythonInstanceMethod { (`self`: PythonObject) in
-//       while true {
-//         time.sleep(0.05)
-//         if !KernelContext.pollingStdout {
-//           break
-//         }
-//         getAndSendStdout(handler: `self`)
-//       }
-//       getAndSendStdout(handler: `self`)
-//       return Python.None
-//     },
-    
-//     // Lets another Python thread ensure that all Stdout is handled before doing
-//     // something. Because this doesn't actually use multithreading, it is 
-//     // thread-safe.
-//     "flush": PythonInstanceMethod { (`self`: PythonObject) in
-//       precondition(
-//         KernelContext.pollingStdout, 
-//         "Only call 'StdoutHandler.flush' while executing a Jupyter cell.")
-//       getAndSendStdout(handler: `self`)
-//       return Python.None
-//     }.pythonObject
-//   ]
-// ).pythonObject
 
 fileprivate var cachedScratchBuffer: UnsafeMutablePointer<CChar>?
 
