@@ -250,7 +250,7 @@ fileprivate func decode_blocking_request(_ input: Data) throws -> PythonObject {
 // send_multipart
 
 fileprivate func encode_send_multipart(_ msg: PythonObject) -> Data {
-  var parts = Array(msg)!
+  var parts = [PythonObject](msg)!
   for i in 0..<parts.count {
     parts[i] = parts[i].decode("utf8")
   }
@@ -267,7 +267,7 @@ fileprivate func encode_send_multipart(_ msg: PythonObject) -> Data {
 // consider doing some magic with Stdout to preserve order of execution while
 // being asynchronous.
 fileprivate func execute_send_multipart(_ input: PythonObject) -> Data {
-  var parts = Array(input)!
+  var parts = [PythonObject](input)!
   for i in 0..<parts.count {
     parts[i] = parts[i].encode("utf8")
   }
