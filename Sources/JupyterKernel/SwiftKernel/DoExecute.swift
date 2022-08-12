@@ -16,7 +16,6 @@ func doExecute(code: String, allowStdin: Bool) throws -> PythonObject? {
     _ = KernelContext.mutex.acquire()
     try beforeExecution()
     _ = KernelContext.mutex.release()
-    
   }
   forwardInput(allowStdin: allowStdin)
   
