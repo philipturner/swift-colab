@@ -19,12 +19,11 @@ func preprocessAndExecute(
     
     if isCell {
       let messages = KernelPipe.recv(from: .lldb)
-      precondition(messages.count <= 1, "Received more than one message.")
-      if messages.count == 0 {
-        continue
+      for message in messages {
+        if let response = execute_message(message) {
+          KernelPipe.send(response, to: .lldb)
+        }
       }
-      let response = execute_message(messages[0])
-      KernelPipe.send(response, to: .lldb)
     }
   }
   return executionResult!

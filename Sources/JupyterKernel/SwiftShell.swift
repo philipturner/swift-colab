@@ -112,24 +112,13 @@ fileprivate let CapturingSocket = PythonClass(
     },
     
     "send_multipart": PythonInstanceMethod { args, kwargs in
-      // // let `self` = args[0]
-      // let msg = args[1]
-      // // `self`.messages[dynamicMember: "append"](msg)
-      // print("started send_multipart")
-      // let input = encode_send_multipart(msg)
-      // KernelPipe.send(input, to: .jupyterKernel)
-      
-      // while true {
-      //   usleep(50_000)
-      //   let messages = KernelPipe.recv(from: .jupyterKernel)
-      //   precondition(messages.count <= 1, "Received more than one message.")
-      //   if messages.count == 0 {
-      //     continue
-      //   }
-      //   decode_send_multipart(messages[0])
-      //   break
-      // }
-      // print("finished send_multipart")
+      // let `self` = args[0]
+      let msg = args[1]
+      // `self`.messages[dynamicMember: "append"](msg)
+      print("started send_multipart")
+      let input = encode_send_multipart(msg)
+      KernelPipe.send(input, to: .jupyterKernel)
+      print("finished send_multipart")
       return Python.None
     }
   ]
@@ -183,7 +172,7 @@ fileprivate let SwiftShell = PythonClass(
 //===----------------------------------------------------------------------===//
 
 // Used in "PreprocessAndExecute.swift".
-func execute_message(_ input: Data) -> Data {
+func execute_message(_ input: Data) -> Data? {
   let input_str = String(data: input, encoding: .utf8)!
   let input_dict = json.loads(input_str.pythonObject)
   precondition(input_dict.count == 2, "Malformatted message.")
@@ -192,8 +181,10 @@ func execute_message(_ input: Data) -> Data {
   case "blocking_request":
     return execute_blocking_request(input_dict[1])
   case "send_multipart":
+    // TODO: Don't flush Stdout here.
     KernelContext.stdoutHandler.flush()
-    return execute_send_multipart(input_dict[1])
+    execute_send_multipart(input_dict[1])
+    return nil
   default: // Includes `nil`.
     fatalError("Unrecognized message type '\(input_dict[0])'.")
   }
@@ -260,30 +251,13 @@ fileprivate func encode_send_multipart(_ msg: PythonObject) -> Data {
 }
 
 // TODO: Scrap the StdoutHandler thread because we're already doing things
-// asynchronously. Increase the rate of polling from 50_000 µs to 10_000 µs,
-// which should minimize latency and make blocking actions more viable.
+// asynchronously.
 // TODO: Scrap the C++ code for serializing and deserializing images.
-// TODO: Investigate whether this needs to be blocking/synchronous. If so, 
-// consider doing some magic with Stdout to preserve order of execution while
-// being asynchronous.
-fileprivate func execute_send_multipart(_ input: PythonObject) -> Data {
+fileprivate func execute_send_multipart(_ input: PythonObject) {
   var parts = [PythonObject](input)!
   for i in 0..<parts.count {
     parts[i] = parts[i].encode("utf8")
   }
-  // let socket = KernelContext.kernel.iopub_socket
-  // socket.send_multipart(PythonObject(parts))
-
-  let output = PythonObject(["send_request", Python.None])
-  let output_str = String(json.dumps(output))!
-  return output_str.data(using: .utf8)!
-}
-
-fileprivate func decode_send_multipart(_ input: Data) {
-  let input_str = String(data: input, encoding: .utf8)!
-  let response = json.loads(input_str.pythonObject)
-  precondition(response.count == 2, "Malformatted response.")
-  precondition(
-    response[0] == "send_request", 
-    "Unexpected response type '\(response[0])'.")
+  let socket = KernelContext.kernel.iopub_socket
+  socket.send_multipart(PythonObject(parts))
 }
