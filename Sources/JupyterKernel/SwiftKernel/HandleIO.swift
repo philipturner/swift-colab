@@ -46,7 +46,7 @@ fileprivate func sendStdout(_ stdout: String) {
     ])
     sendStdout(String(stdout[range.upperBound...]))
   } else {
-    KernelContext.log("Checkpoint D.")
+    KernelContext.log("Checkpoint D. - \(stdout)")
     KernelContext.sendResponse("stream", [
       "name": "stdout",
       "text": stdout
