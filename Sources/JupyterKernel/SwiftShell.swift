@@ -198,19 +198,17 @@ fileprivate let SwiftShell = PythonClass(
 // Encoding and decoding messages between processes
 //===----------------------------------------------------------------------===//
 
-// Keep the sequence small so it's atomic.
 fileprivate func printMessageStart() {
-  // Automatically inserts '\r' after this. The actual escape sequence is 
-  // "\033[>\r".
-  // print("\033[>", terminator: "")
-  print("QVQ", terminator: "\n")
+  // `print` automatically inserts an '\r' before the terminator. The actual 
+  // escape sequence is "\033[>>>\r\n".
+  print("\033[>>>", terminator: "\n")
 }
 
 // Keep the sequence small so it's atomic.
 fileprivate func printMessageEnd() {
-  // Automatically inserts '\r' after this. The actual escape sequence is 
-  // "\033[<\r".
-  print("\033[<", terminator: "")
+  // `print` automatically inserts an '\r' before the terminator. The actual 
+  // escape sequence is "\033[<<<\r\n".
+  print("\033[<<<", terminator: "\n")
 }
 
 // Used in "PreprocessAndExecute.swift".
