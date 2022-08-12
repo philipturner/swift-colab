@@ -55,7 +55,7 @@ public func redirect_stdin() {
       request: fetchArgument("request"), 
       timeout_sec: fetchArgument("timeout_sec"), 
       parent: fetchArgument("parent"))
-    print("QVQV"/*"\033[>m"*/, terminator: "") // Mark the message in Stdout.
+    print("QVQ"/*"\033[>m"*/, terminator: "\n") // Mark the message in Stdout.
     KernelPipe.send(input, to: .jupyterKernel)
     
     while true {
@@ -133,7 +133,7 @@ fileprivate let CapturingSocket = PythonClass(
       print("started send_multipart")
       print("AVAV")
       let input = encode_send_multipart(msg)
-      print("QVQV"/*"\033[>m"*/, terminator: "") // Mark the message in Stdout.
+      print("QVQ"/*"\033[>m"*/, terminator: "\n") // Mark the message in Stdout.
       KernelPipe.send(input, to: .jupyterKernel)
       
       while true {
