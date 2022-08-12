@@ -271,8 +271,8 @@ fileprivate func execute_send_multipart(_ input: PythonObject) -> Data {
   for i in 0..<parts.count {
     parts[i] = parts[i].encode("utf8")
   }
-  let socket = KernelContext.kernel.iopub_socket
-  socket.send_multipart(PythonObject(parts))
+  // let socket = KernelContext.kernel.iopub_socket
+  // socket.send_multipart(PythonObject(parts))
 
   let output = PythonObject(["send_request", Python.None])
   let output_str = String(json.dumps(output))!
