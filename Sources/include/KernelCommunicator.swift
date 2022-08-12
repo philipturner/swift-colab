@@ -49,7 +49,7 @@ struct KernelCommunicator {
 
   /// The kernel calls this when the parent message changes.
   mutating func updateParentMessage(to parentMessage: ParentMessage) {
-    let address = dlsym(libJupyterKernel, "update_parent_message")!
+    let address = dlsym(Self.libJupyterKernel, "update_parent_message")!
     let symbol = unsafeBitCast(address, to: (@convention(c) (
       UnsafePointer<CChar>) -> Void
     ).self)
