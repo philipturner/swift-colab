@@ -20,7 +20,8 @@ func preprocessAndExecute(
     // Using Python's `time` module instead of Foundation.usleep releases the
     // GIL.
     // TODO: Change to Foundation.usleep after eliminating the SIGINTHandler.
-    time.sleep(0.05)
+    // time.sleep(0.05)
+    usleep(50_000)
     _ = KernelContext.mutex.acquire()
     let shouldBreak = executionResult != nil
     _ = KernelContext.mutex.release()
