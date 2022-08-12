@@ -134,7 +134,6 @@ fileprivate let CapturingSocket = PythonClass(
       print("AVAV")
       let input = encode_send_multipart(msg)
       print("QVQV"/*"\033[>m"*/, terminator: "") // Mark the message in Stdout.
-      print("IVIV")
       KernelPipe.send(input, to: .jupyterKernel)
       
       while true {
