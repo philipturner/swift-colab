@@ -155,7 +155,6 @@ fileprivate func restoreInput() {
 }
 
 fileprivate func executeCell(code: String) throws -> ExecutionResult {
-  try setParentMessage()
   let result = try preprocessAndExecute(code: code, isCell: true)
   if result is ExecutionResultSuccess {
     try afterSuccessfulExecution()
