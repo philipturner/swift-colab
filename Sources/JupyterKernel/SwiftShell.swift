@@ -55,7 +55,7 @@ public func redirect_stdin() {
       request: fetchArgument("request"), 
       timeout_sec: fetchArgument("timeout_sec"), 
       parent: fetchArgument("parent"))
-    print("QVQ"/*"\033[>m"*/, terminator: "\n") // Mark the message in Stdout.
+    printMessageStart()
     KernelPipe.send(input, to: .jupyterKernel)
     
     while true {
@@ -131,9 +131,8 @@ fileprivate let CapturingSocket = PythonClass(
     "send_multipart": PythonInstanceMethod { args, kwargs in
       let msg = args[1]
       print("started send_multipart")
-      print("AVAV")
       let input = encode_send_multipart(msg)
-      print("QVQ"/*"\033[>m"*/, terminator: "\n") // Mark the message in Stdout.
+      printMessageStart()
       KernelPipe.send(input, to: .jupyterKernel)
       
       while true {
@@ -198,6 +197,20 @@ fileprivate let SwiftShell = PythonClass(
 //===----------------------------------------------------------------------===//
 // Encoding and decoding messages between processes
 //===----------------------------------------------------------------------===//
+
+// Keep the sequence small so it's atomic.
+fileprivate func printMessageStart() {
+  // Automatically inserts '\r' after this. The actual escape sequence is 
+  // "\033[>\r".
+  print("\033[>", terminator: "")
+}
+
+// Keep the sequence small so it's atomic.
+fileprivate func printMessageEnd() {
+  // Automatically inserts '\r' after this. The actual escape sequence is 
+  // "\033[<\r".
+  print("\033[<", terminator: "")
+}
 
 // Used in "PreprocessAndExecute.swift".
 func execute_message(_ input: Data) -> Data {

@@ -32,14 +32,11 @@ fileprivate func getStdout() -> String {
 }
 
 fileprivate func sendStdout(_ stdout: String) {
-  KernelContext.log("Checkpoint A.")
-  if let range = stdout.range(of: "QVQ\r\n") {//\033[>m") {
-    KernelContext.log("Checkpoint B.")
+  if let range = stdout.range(of: "\033[>\r") {
     sendStdout(String(stdout[..<range.lowerBound]))
     executeNextMessage()
     sendStdout(String(stdout[range.upperBound...]))
   } else if let range = stdout.range(of: "\033[2J") {
-    KernelContext.log("Checkpoint C.")
     sendStdout(String(stdout[..<range.lowerBound]))
     KernelContext.sendResponse("clear_output", [
       "wait": false
@@ -57,10 +54,8 @@ fileprivate func sendStdout(_ stdout: String) {
 fileprivate var messages: [Data] = []
 
 fileprivate func executeNextMessage() {
-  KernelContext.log("Started to execute next message.")
   var triedOnce = false
   while messages.count == 0 {
-    KernelContext.log("Cache miss 0: message not yet written.")
     if triedOnce {
       KernelContext.log("Cache miss: message not yet written.")
       usleep(50_000)
