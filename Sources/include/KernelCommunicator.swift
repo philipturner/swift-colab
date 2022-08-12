@@ -112,6 +112,7 @@ struct KernelCommunicator {
 import func Glibc.dlopen
 import func Glibc.dlsym
 
+// TODO: Make these instance methods on `JupyterKernel.communicator`.
 extension KernelCommunicator {
   private static let /*Glibc.*/RTLD_LAZY = Int32(1)
   private static let libJupyterKernel = dlopen(
