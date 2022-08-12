@@ -273,7 +273,7 @@ fileprivate func execute_send_multipart(_ input: PythonObject) -> Data {
   }
   let socket = KernelContext.kernel.iopub_socket
   socket.send_multipart(PythonObject(parts))
-  
+
   let output = PythonObject(["send_request", Python.None])
   let output_str = String(json.dumps(output))!
   return output_str.data(using: .utf8)!
@@ -281,7 +281,7 @@ fileprivate func execute_send_multipart(_ input: PythonObject) -> Data {
 
 fileprivate func decode_send_multipart(_ input: Data) {
   let input_str = String(data: input, encoding: .utf8)!
-  let response = json.logs(input_str.pythonObject)
+  let response = json.load(input_str.pythonObject)
   precondition(response.count == 2, "Malformatted response.")
   precondition(
     response[0] == "send_request", 
