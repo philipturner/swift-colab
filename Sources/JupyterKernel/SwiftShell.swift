@@ -112,24 +112,24 @@ fileprivate let CapturingSocket = PythonClass(
     },
     
     "send_multipart": PythonInstanceMethod { args, kwargs in
-      // let `self` = args[0]
-      let msg = args[1]
-      // `self`.messages[dynamicMember: "append"](msg)
-      print("started send_multipart")
-      let input = encode_send_multipart(msg)
-      KernelPipe.send(input, to: .jupyterKernel)
+      // // let `self` = args[0]
+      // let msg = args[1]
+      // // `self`.messages[dynamicMember: "append"](msg)
+      // print("started send_multipart")
+      // let input = encode_send_multipart(msg)
+      // KernelPipe.send(input, to: .jupyterKernel)
       
-      while true {
-        usleep(50_000)
-        let messages = KernelPipe.recv(from: .jupyterKernel)
-        precondition(messages.count <= 1, "Received more than one message.")
-        if messages.count == 0 {
-          continue
-        }
-        decode_send_multipart(messages[0])
-        break
-      }
-      print("finished send_multipart")
+      // while true {
+      //   usleep(50_000)
+      //   let messages = KernelPipe.recv(from: .jupyterKernel)
+      //   precondition(messages.count <= 1, "Received more than one message.")
+      //   if messages.count == 0 {
+      //     continue
+      //   }
+      //   decode_send_multipart(messages[0])
+      //   break
+      // }
+      // print("finished send_multipart")
       return Python.None
     }
   ]
