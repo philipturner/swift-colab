@@ -32,17 +32,21 @@ fileprivate func getStdout() -> String {
 }
 
 fileprivate func sendStdout(_ stdout: String) {
+  KernelContext.log("Checkpoint A.")
   if let range = stdout.range(of: "QVQV") {//\033[>m") {
+    KernelContext.log("Checkpoint B.")
     sendStdout(String(stdout[..<range.lowerBound]))
     executeNextMessage()
     sendStdout(String(stdout[range.upperBound...]))
   } else if let range = stdout.range(of: "\033[2J") {
+    KernelContext.log("Checkpoint C.")
     sendStdout(String(stdout[..<range.lowerBound]))
     KernelContext.sendResponse("clear_output", [
       "wait": false
     ])
     sendStdout(String(stdout[range.upperBound...]))
   } else {
+    KernelContext.log("Checkpoint D.")
     KernelContext.sendResponse("stream", [
       "name": "stdout",
       "text": stdout
