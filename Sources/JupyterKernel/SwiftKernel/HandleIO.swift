@@ -32,15 +32,15 @@ fileprivate func getStdout() -> String {
 }
 
 fileprivate func sendStdout(_ stdout: String) {
-  if let range = stdout.range(of: "\033[2J") {
+  if let range = stdout.range(of: "QVQV") {//\033[>m") {
+    sendStdout(String(stdout[..<range.lowerBound]))
+    executeNextMessage()
+    sendStdout(String(stdout[range.upperBound...]))
+  } else if let range = stdout.range(of: "\033[2J") {
     sendStdout(String(stdout[..<range.lowerBound]))
     KernelContext.sendResponse("clear_output", [
       "wait": false
     ])
-    sendStdout(String(stdout[range.upperBound...]))
-  } else if let range = stdout.range(of: "\033[>m") {
-    sendStdout(String(stdout[..<range.lowerBound]))
-    executeNextMessage()
     sendStdout(String(stdout[range.upperBound...]))
   } else {
     KernelContext.sendResponse("stream", [
@@ -53,8 +53,10 @@ fileprivate func sendStdout(_ stdout: String) {
 fileprivate var messages: [Data] = []
 
 fileprivate func executeNextMessage() {
+  KernelContext.log("Started to execute next message.")
   var triedOnce = false
   while messages.count == 0 {
+    KernelContext.log("Cache miss 0: message not yet written.")
     if triedOnce {
       KernelContext.log("Cache miss: message not yet written.")
       usleep(50_000)
