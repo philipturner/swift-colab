@@ -113,7 +113,7 @@ fileprivate func sendStdout(_ stdout: String) {
 func getAndSendStdout() {
   var stdout = getStdout()
   if stdout.count > 0 {
-    if !KernelContext.hasStdout {
+    if !KernelContext.hadStdout {
       // Remove header that signalled that the code successfully compiled.
       let header = "HEADER\r\n"
       precondition(stdout.hasPrefix(header), """
@@ -121,7 +121,7 @@ func getAndSendStdout() {
         Stdout was: \(stdout)
         """)
       stdout.removeFirst(header.count)
-      KernelContext.hasStdout = true
+      KernelContext.hadStdout = true
     }
     sendStdout(stdout)
   }
