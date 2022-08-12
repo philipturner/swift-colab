@@ -76,6 +76,7 @@ func flushMessages() {
 func validateMessages() {
   guard messages.count == 0 else {
     KernelContext.log("Warning: \(messages.count) messages not executed.")
+    return
   }
 }
 
