@@ -17,16 +17,17 @@ func doExecute(code: String, allowStdin: Bool) throws -> PythonObject? {
   }
   
   KernelContext.isInterrupted = false
-  KernelContext.pollingStdout = true
+  // KernelContext.pollingStdout = true
+  KernelContext.hasStdout = false
   KernelContext.cellID = Int(KernelContext.kernel.execution_count)!
   forwardInput(allowStdin: allowStdin)
   
   // Flush stderr
   _ = getStderr(readData: false)
   
-  let handler = StdoutHandler()
-  handler.start()
-  KernelContext.stdoutHandler = handler
+  // let handler = StdoutHandler()
+  // handler.start()
+  // KernelContext.stdoutHandler = handler
   
   // Execute the cell, handle unexpected exceptions, and make sure to always 
   // clean up the stdout handler.
@@ -34,9 +35,9 @@ func doExecute(code: String, allowStdin: Bool) throws -> PythonObject? {
   do {
     defer {
       restoreInput()
-      KernelContext.pollingStdout = false
-      KernelContext.stdoutHandler = Python.None
-      handler.join()
+      // KernelContext.pollingStdout = false
+      // KernelContext.stdoutHandler = Python.None
+      // handler.join()
     }
     result = try executeCell(code: code)
   } catch _ as InterruptException {
@@ -84,7 +85,7 @@ func doExecute(code: String, allowStdin: Bool) throws -> PythonObject? {
       // that this execute request can cleanly finish before the kernel exits.
       let loop = Python.import("tornado").ioloop.IOLoop.current()
       loop.add_timeout(Python.import("time").time() + 0.1, loop.stop)
-    } else if Bool(handler.had_stdout)! {
+    } else if KernelContext.hadStdout {
       // If it crashed while unwrapping `nil`, there is no stack trace. To solve
       // this problem, extract where it crashed from the error message. If no
       // stack frames are generated, at least show where the error originated.

@@ -38,43 +38,43 @@ let SIGINTHandler = PythonClass(
   ]
 ).pythonObject
 
-// Not possible to use Swift GCD in place of Python single-threaded threading 
-// here.
-let StdoutHandler = PythonClass(
-  "StdoutHandler",
-  superclasses: [threading.Thread],
-  members: [
-    "__init__": PythonInstanceMethod { (`self`: PythonObject) in
-      threading.Thread.__init__(`self`)
-      `self`.daemon = true
-      `self`.had_stdout = false
-      return Python.None
-    },
+// // Not possible to use Swift GCD in place of Python single-threaded threading 
+// // here.
+// let StdoutHandler = PythonClass(
+//   "StdoutHandler",
+//   superclasses: [threading.Thread],
+//   members: [
+//     "__init__": PythonInstanceMethod { (`self`: PythonObject) in
+//       threading.Thread.__init__(`self`)
+//       `self`.daemon = true
+//       `self`.had_stdout = false
+//       return Python.None
+//     },
     
-    "run": PythonInstanceMethod { (`self`: PythonObject) in
-      while true {
-        time.sleep(0.05)
-        if !KernelContext.pollingStdout {
-          break
-        }
-        getAndSendStdout(handler: `self`)
-      }
-      getAndSendStdout(handler: `self`)
-      return Python.None
-    },
+//     "run": PythonInstanceMethod { (`self`: PythonObject) in
+//       while true {
+//         time.sleep(0.05)
+//         if !KernelContext.pollingStdout {
+//           break
+//         }
+//         getAndSendStdout(handler: `self`)
+//       }
+//       getAndSendStdout(handler: `self`)
+//       return Python.None
+//     },
     
-    // Lets another Python thread ensure that all Stdout is handled before doing
-    // something. Because this doesn't actually use multithreading, it is 
-    // thread-safe.
-    "flush": PythonInstanceMethod { (`self`: PythonObject) in
-      precondition(
-        KernelContext.pollingStdout, 
-        "Only call 'StdoutHandler.flush' while executing a Jupyter cell.")
-      getAndSendStdout(handler: `self`)
-      return Python.None
-    }.pythonObject
-  ]
-).pythonObject
+//     // Lets another Python thread ensure that all Stdout is handled before doing
+//     // something. Because this doesn't actually use multithreading, it is 
+//     // thread-safe.
+//     "flush": PythonInstanceMethod { (`self`: PythonObject) in
+//       precondition(
+//         KernelContext.pollingStdout, 
+//         "Only call 'StdoutHandler.flush' while executing a Jupyter cell.")
+//       getAndSendStdout(handler: `self`)
+//       return Python.None
+//     }.pythonObject
+//   ]
+// ).pythonObject
 
 fileprivate var cachedScratchBuffer: UnsafeMutablePointer<CChar>?
 
@@ -113,7 +113,7 @@ fileprivate func sendStdout(_ stdout: String) {
 func getAndSendStdout(handler: PythonObject) {
   var stdout = getStdout()
   if stdout.count > 0 {
-    if Bool(handler.had_stdout)! == false {
+    if !KernelContext.hasStdout {
       // Remove header that signalled that the code successfully compiled.
       let header = "HEADER\r\n"
       precondition(stdout.hasPrefix(header), """
@@ -121,7 +121,7 @@ func getAndSendStdout(handler: PythonObject) {
         Stdout was: \(stdout)
         """)
       stdout.removeFirst(header.count)
-      handler.had_stdout = true
+      KernelContext.hasStdout = true
     }
     sendStdout(stdout)
   }

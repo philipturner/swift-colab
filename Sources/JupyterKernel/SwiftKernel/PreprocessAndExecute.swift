@@ -6,25 +6,32 @@ func preprocessAndExecute(
   code: String, isCell: Bool = false
 ) throws -> ExecutionResult {
   let preprocessed = try preprocess(code: code)
+  
+  // TODO: Protect the execution result with a mutex.
   var executionResult: ExecutionResult?
   DispatchQueue.global().async {
     executionResult = execute(
       code: preprocessed, lineIndex: isCell ? 0 : nil, isCell: isCell)
   }
   
-  while executionResult == nil {
+  while true {
     // Using Python's `time` module instead of Foundation.usleep releases the
     // GIL.
     time.sleep(0.05)
+    let shouldBreak = executionResult != nil
     
     if isCell {
+      getAndSendStdout()
+
       let messages = KernelPipe.recv(from: .lldb)
       precondition(messages.count <= 1, "Received more than one message.")
-      if messages.count == 0 {
-        continue
+      if messages.count == 1 {
+        let response = execute_message(messages[0])
+        KernelPipe.send(response, to: .lldb)
       }
-      let response = execute_message(messages[0])
-      KernelPipe.send(response, to: .lldb)
+    }
+    if shouldBreak {
+      break
     }
   }
   return executionResult!

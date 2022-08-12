@@ -2,12 +2,13 @@ import Foundation
 
 struct KernelContext {
   static var kernel: PythonObject = Python.None
-  static var stdoutHandler: PythonObject = Python.None
+  // static var stdoutHandler: PythonObject = Python.None
   static var cellID: Int = 0
   
   static var debuggerInitialized = false
   static var isInterrupted = false
-  static var pollingStdout = false
+  // static var pollingStdout = false
+  static var hadStdout = false
   
   private static var logInitialized = false
   private static let logQueue = DispatchQueue(
