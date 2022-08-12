@@ -110,7 +110,7 @@ fileprivate func sendStdout(_ stdout: String) {
   }
 }
 
-func getAndSendStdout(handler: PythonObject) {
+func getAndSendStdout() {
   var stdout = getStdout()
   if stdout.count > 0 {
     if !KernelContext.hasStdout {
