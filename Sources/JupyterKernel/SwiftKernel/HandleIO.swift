@@ -38,11 +38,44 @@ fileprivate func sendStdout(_ stdout: String) {
       "wait": false
     ])
     sendStdout(String(stdout[range.upperBound...]))
+  } else if let range = stdout.range(of: "\033[>m") {
+    sendStdout(String(stdout[..<range.lowerBound]))
+    executeNextMessage()
+    sendStdout(String(stdout[range.upperBound...]))
   } else {
     KernelContext.sendResponse("stream", [
       "name": "stdout",
       "text": stdout
     ])
+  }
+}
+
+fileprivate var messages: [Data] = []
+
+fileprivate func executeNextMessage() {
+  var triedOnce = false
+  while messages.count == 0 {
+    if triedOnce {
+      KernelContext.log("Cache miss: message not yet written.")
+      usleep(50_000)
+    }
+    triedOnce = true
+    messages = KernelPipe.recv(from: .lldb)
+  }
+  let response = execute_message(messages[0])
+  KernelPipe.send(response, to: .lldb)
+  messages.removeFirst()
+}
+
+// Call this before running each Jupyter cell.
+func flushMessages() {
+  messages = []
+}
+
+// Call this after running each Jupyter cell.
+func validateMessages() {
+  guard messages.count == 0 else {
+    KernelContext.log("Warning: \(messages.count) messages not executed.")
   }
 }
 

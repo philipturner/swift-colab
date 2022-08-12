@@ -18,6 +18,7 @@ func doExecute(code: String, allowStdin: Bool) throws -> PythonObject? {
     _ = KernelContext.mutex.release()
   }
   forwardInput(allowStdin: allowStdin)
+  flushMessages()
   
   KernelContext.isInterrupted = false
   KernelContext.hadStdout = false
@@ -31,6 +32,7 @@ func doExecute(code: String, allowStdin: Bool) throws -> PythonObject? {
   do {
     defer {
       restoreInput()
+      validateMessages()
     }
     result = try preprocessAndExecute(code: code, isCell: true)
   } catch _ as InterruptException {
