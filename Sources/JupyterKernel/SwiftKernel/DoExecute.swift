@@ -32,7 +32,7 @@ func doExecute(code: String, allowStdin: Bool) throws -> PythonObject? {
     defer {
       restoreInput()
     }
-    result = try executeCell(code: code)
+    result = try preprocessAndExecute(code: code, isCell: true)
   } catch _ as InterruptException {
     return nil
   } catch let error as PreprocessorError {
@@ -144,14 +144,6 @@ fileprivate func restoreInput() {
   let kernel = KernelContext.kernel
   builtins.input = kernel._sys_raw_input
   getpass.getpass = kernel._save_getpass
-}
-
-fileprivate func executeCell(code: String) throws -> ExecutionResult {
-  let result = try preprocessAndExecute(code: code, isCell: true)
-  if result is ExecutionResultSuccess {
-    // try afterSuccessfulExecution()
-  }
-  return result
 }
 
 // Erases bold/light formatting, forces lines to wrap in notebook, and adds a

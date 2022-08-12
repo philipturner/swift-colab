@@ -43,11 +43,6 @@ SBProcess process;
 SBExpressionOptions expr_opts;
 SBThread main_thread;
 
-int read_byte_array(SBValue sbvalue, 
-                    uint64_t *output_size, 
-                    uint64_t *output_capacity, 
-                    void **output);
-
 extern "C" {
 
 int init_repl_process(const char **repl_env,
@@ -175,58 +170,6 @@ int process_is_alive() {
   }
 }
 
-// Output is in a serialized format:
-// 1st level of recursion (the header that starts the output):
-// - first 8 bytes (UInt64): header that says how many display messages
-// 2nd level of recursion:
-// - first 8 bytes (UInt64): header that says how many byte arrays
-// 3rd level of recursion:
-// - first 8 bytes (UInt64): header that says how long the byte array is
-// - rest of line: data in the byte array, with allocated capacity rounded
-//   up to a multiple of 8 bytes
-//
-// Caller must deallocate `serialized_output`.
-int after_successful_execution(uint64_t **serialized_output) {
-  const char *code = "JupyterKernel.communicator.triggerAfterSuccessfulExecution()";
-  auto result = target.EvaluateExpression(code, expr_opts);
-  auto errorType = result.GetError().GetType();
-  
-  if (errorType != eErrorTypeInvalid) {
-    *serialized_output = NULL;
-    return 1;
-  }
-  
-  uint64_t output_size = 0;
-  uint64_t output_capacity = 1024;
-  void *output = malloc(output_capacity);
-  
-  uint32_t num_display_messages = result.GetNumChildren();
-  ((uint64_t*)output)[0] = num_display_messages;
-  output_size += 8;
-  
-  for (uint32_t i = 0; i < num_display_messages; ++i) {
-    auto display_message = result.GetChildAtIndex(i);
-    
-    uint32_t num_byte_arrays = display_message.GetNumChildren();
-    ((uint64_t*)((char*)output + output_size))[0] = num_byte_arrays;
-    output_size += 8;
-    
-    for (uint32_t j = 0; j < num_byte_arrays; ++j) {
-      auto byte_array = display_message.GetChildAtIndex(j);
-      int error_code = read_byte_array(
-        byte_array, &output_size, &output_capacity, &output);
-      if (error_code != 0) {
-        free(output);
-        *serialized_output = NULL;
-        return 1 + error_code;
-      }
-    }
-  }
-  
-  *serialized_output = (uint64_t*)output;
-  return 0;
-}
-
 int get_stdout(char *dst, int *buffer_size) {
   return int(process.GetSTDOUT(dst, size_t(buffer_size)));
 }
@@ -316,67 +259,3 @@ int async_interrupt_process() {
 }
 
 } // extern "C"
-
-int read_byte_array(SBValue sbvalue, 
-                    uint64_t *output_size, 
-                    uint64_t *output_capacity, 
-                    void **output) {
-  auto get_address_error = SBError();
-  auto address = sbvalue
-    .GetChildMemberWithName("address")
-    .GetData()
-    .GetAddress(get_address_error, 0);
-  if (get_address_error.Fail()) {
-    return 1;
-  }
-  
-  auto get_count_error = SBError();
-  auto count_data = sbvalue
-    .GetChildMemberWithName("count")
-    .GetData();
-  int64_t count = count_data.GetSignedInt64(get_count_error, 0);
-  if (get_count_error.Fail()) {
-    return 2;
-  }
-  
-  int64_t needed_new_capacity = 
-    8 // 3rd-level header 
-    + (~7 & (count + 7)) // byte array's contents
-    + 8; // potential next 2nd-level header
-  int64_t needed_total_capacity = *output_size + needed_new_capacity;
-  if (needed_total_capacity > *output_capacity) {
-    uint64_t new_capacity = (*output_capacity) * 2;
-    while (needed_total_capacity > new_capacity) {
-      new_capacity *= 2;
-    }
-    
-    void *new_output = malloc(new_capacity);
-    memcpy(new_output, *output, *output_size);
-    free(*output);
-    *output = new_output;
-    *output_capacity = new_capacity;
-  }
-  
-  int64_t added_size = 
-    8 // 3rd-level header 
-    + (~7 & (count + 7)); // byte array's contents
-  int64_t current_size = *output_size;
-  int64_t *data_stream = (int64_t*)((char*)(*output) + current_size);
-  
-  // Zero out the last 8 bytes in the buffer; everything else will
-  // be written to at some point.
-  data_stream[added_size / 8 - 1] = 0;
-  data_stream[0] = count;
-  
-  if (count > 0) {
-    auto get_data_error = SBError();
-    process.ReadMemory(address, data_stream + 1, count, get_data_error);
-    if (get_data_error.Fail()) {
-      return 3;
-    }
-  }
-  
-  // Update `output_size` to reflect the added data.
-  *output_size = current_size + added_size;
-  return 0;
-}
