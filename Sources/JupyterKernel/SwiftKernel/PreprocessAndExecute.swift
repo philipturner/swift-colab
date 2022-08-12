@@ -31,10 +31,9 @@ func preprocessAndExecute(
       }
     }
     if shouldBreak {
-      break
+      return executionResult!
     }
   }
-  return executionResult!
 }
 
 func execute(
