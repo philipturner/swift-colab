@@ -18,7 +18,7 @@ func doExecute(code: String, allowStdin: Bool) throws -> PythonObject? {
   
   KernelContext.isInterrupted = false
   // KernelContext.pollingStdout = true
-  KernelContext.hasStdout = false
+  KernelContext.hadStdout = false
   KernelContext.cellID = Int(KernelContext.kernel.execution_count)!
   forwardInput(allowStdin: allowStdin)
   
