@@ -50,10 +50,14 @@ struct KernelCommunicator {
     callSymbol("redirect_stdin")
   }
   
-  func callSymbol(_ name: String) {
+  private func callSymbol(_ name: String) {
     let address = dlsym(libJupyterKernel, name)!
     let symbol = unsafeBitCast(address, to: (@convention(c) () -> Void).self)
     symbol()
+  }
+  
+  func fetchPipes() {
+    callSymbol("fetch_pipes")
   }
   
   /// The kernel calls this after successfully executing a cell of user code.

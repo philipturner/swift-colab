@@ -124,7 +124,7 @@ fileprivate func configureCellPipes() throws {
   KernelPipe.fetchPipes(currentProcess: .jupyterKernel)
   do {
     let result = execute(code: """
-      KernelCommunicator.callSymbol("fetch_pipes")
+      JupyterKernel.communicator.fetchPipes()
       """)
     if result is ExecutionResultError {
       throw Exception("Error fetching pipes: \(result)")
