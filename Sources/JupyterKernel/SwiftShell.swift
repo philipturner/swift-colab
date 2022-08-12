@@ -203,7 +203,7 @@ fileprivate func printMessageStart() {
   // Automatically inserts '\r' after this. The actual escape sequence is 
   // "\033[>\r".
   // print("\033[>", terminator: "")
-  print("QVQ", terminator: "")
+  print("QVQ", terminator: "\n")
 }
 
 // Keep the sequence small so it's atomic.

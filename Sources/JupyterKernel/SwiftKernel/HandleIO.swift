@@ -37,7 +37,7 @@ fileprivate func sendStdout(_ stdout: String) {
     body()
     sendStdout(String(stdout[range.upperBound...]))
   }
-  if let range = stdout.range(of: "QVQ\r") {
+  if let range = stdout.range(of: "QVQ\r\n") {
   // if let range = stdout.range(of: "\033[>\r") {
     sendStdout(String(stdout[..<range.lowerBound]))
     executeNextMessage()
