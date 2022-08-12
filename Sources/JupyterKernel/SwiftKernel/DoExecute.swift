@@ -14,8 +14,6 @@ func doExecute(code: String, allowStdin: Bool) throws -> PythonObject? {
     // the pipes will not solve the security vulnerability of information 
     // being exposed like that.
     try beforeExecution()
-    
-    // TODO: Remove `KernelContext.lldbQueue`
   }
   
   KernelContext.isInterrupted = false
@@ -142,7 +140,7 @@ fileprivate func forwardInput(allowStdin: Bool) {
   
   kernel._sys_raw_input = builtins.input
   builtins.input = kernel.raw_input
-
+  
   kernel._save_getpass = getpass.getpass
   getpass.getpass = kernel.getpass
 }

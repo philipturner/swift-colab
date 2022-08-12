@@ -7,7 +7,7 @@ func preprocessAndExecute(
 ) throws -> ExecutionResult {
   let preprocessed = try preprocess(code: code)
   var executionResult: ExecutionResult?
-  KernelContext.lldbQueue.async {
+  DispatchQueue.global().async {
     executionResult = execute(
       code: preprocessed, lineIndex: isCell ? 0 : nil, isCell: isCell)
   }

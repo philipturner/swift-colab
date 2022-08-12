@@ -8,8 +8,6 @@ struct KernelContext {
   static var debuggerInitialized = false
   static var isInterrupted = false
   static var pollingStdout = false
-  static var lldbQueue = DispatchQueue(
-    label: "com.philipturner.swift-colab.KernelContext.lldbQueue")
   
   private static var logInitialized = false
   private static let logQueue = DispatchQueue(

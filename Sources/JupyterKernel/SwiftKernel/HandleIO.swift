@@ -110,7 +110,7 @@ fileprivate func sendStdout(_ stdout: String) {
   }
 }
 
-fileprivate func getAndSendStdout(handler: PythonObject) {
+func getAndSendStdout(handler: PythonObject) {
   var stdout = getStdout()
   if stdout.count > 0 {
     if Bool(handler.had_stdout)! == false {
@@ -283,7 +283,6 @@ fileprivate func send_request(
 }
 
 // Calls the front end with a request, and blocks until a reply is received.
-// Used in "SwiftShell.swift".
 func blocking_request(
   _ request_type: PythonObject,
   request: PythonObject,
