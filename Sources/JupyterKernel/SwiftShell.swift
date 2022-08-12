@@ -69,6 +69,9 @@ public func redirect_stdin() {
   }.pythonObject
 }
 
+fileprivate var socketAndShell: PythonObject!
+fileprivate var parentMessage: PythonObject!
+
 // Caller side: use `ctypes` to convert return value, which is the address of a
 // Python object, into an actual Python object. This Swift file stores a
 // reference to the return value's object so that it doesn't deallocate.
@@ -93,12 +96,25 @@ public func create_shell(
     shell.display_pub.session = session
     shell.display_pub.pub_socket = socket
     
+    shell.set_parent(parentMessage)
     socketAndShell = [socket, shell]
   }
   return Int64(Python.id(socketAndShell))!
 }
 
-fileprivate var socketAndShell: PythonObject!
+// If the shell already exists, update its parent message. If this cell 
+// initializes the shell, lazily set the parent message.
+@_cdecl("update_parent_message")
+public func update_parent_message(
+  _ message_json_ptr: UnsafePointer<CChar>
+) {
+  let message_json = String(cString: message_json_ptr)
+  parentMessage = json.loads(message_json.pythonObject)
+  
+  if let socketAndShell = socketAndShell {
+    socketAndShell[1].set_parent(parentMessage)
+  }
+}
 
 // Simulates a ZMQ socket, saving messages instead of sending them. We use this 
 // to capture display messages.

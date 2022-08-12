@@ -49,7 +49,12 @@ struct KernelCommunicator {
 
   /// The kernel calls this when the parent message changes.
   mutating func updateParentMessage(to parentMessage: ParentMessage) {
-    parentMessageHandler?(parentMessage)
+    let address = dlsym(libJupyterKernel, "update_parent_message")!
+    let symbol = unsafeBitCast(address, to: (@convention(c) (
+      UnsafePointer<CChar>) -> Void
+    ).self)
+    symbol(parentMessage.json)
+    // parentMessageHandler?(parentMessage)
   }
 
   /// A single serialized display message for the Jupyter client.
