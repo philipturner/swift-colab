@@ -25,8 +25,6 @@ fileprivate struct CEnvironment {
   }
 }
 
-// fileprivate var sigintHandler: PythonObject!
-
 func initSwift() throws {
   KernelPipe.resetPipes()
   KernelPipe.fetchPipes(currentProcess: .jupyterKernel)
@@ -36,9 +34,6 @@ func initSwift() throws {
   try initKernelCommunicator()
   try initConcurrency()
   try initSIGINTHandler()
-  
-  // sigintHandler = SIGINTHandler()
-  // sigintHandler.start()
 }
 
 fileprivate func initReplProcess() throws {

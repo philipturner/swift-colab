@@ -149,7 +149,7 @@ fileprivate func restoreInput() {
 fileprivate func executeCell(code: String) throws -> ExecutionResult {
   let result = try preprocessAndExecute(code: code, isCell: true)
   if result is ExecutionResultSuccess {
-    try afterSuccessfulExecution()
+    // try afterSuccessfulExecution()
   }
   return result
 }
