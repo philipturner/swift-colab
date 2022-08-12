@@ -32,18 +32,32 @@ fileprivate func getStdout() -> String {
 }
 
 fileprivate func sendStdout(_ stdout: String) {
+  func withRange(_ range: Range<String.Index>, _ body: () -> Void) {
+    sendStdout(String(stdout[..<range.lowerBound]))
+    body()
+    sendStdout(String(stdout[range.upperBound...]))
+  }
   if let range = stdout.range(of: "\033[>\r") {
     sendStdout(String(stdout[..<range.lowerBound]))
     executeNextMessage()
     sendStdout(String(stdout[range.upperBound...]))
+    // // Starting a message.
+    // withRange(range) {
+    //   executeNextMessage()
+    // }
   } else if let range = stdout.range(of: "\033[2J") {
     sendStdout(String(stdout[..<range.lowerBound]))
     KernelContext.sendResponse("clear_output", [
       "wait": false
     ])
     sendStdout(String(stdout[range.upperBound...]))
+    // withRange(range) {
+    //   KernelContext.sendResponse("clear_output", [
+    //     "wait": false
+    //   ])
+    // }
   } else {
-    KernelContext.log("Checkpoint D. - \(stdout)")
+    // TODO: If currently decoding a message, do something different.
     KernelContext.sendResponse("stream", [
       "name": "stdout",
       "text": stdout
