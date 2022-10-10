@@ -51,7 +51,7 @@ else
   read -a strarr <<< "$1"
   component_count=${#strarr[*]}
   
-  if [[ $component_count -le 2 ]]; then
+  if [[ $component_count -ge 2 ]]; then
     # First argument is two components separated by a period like "5.6" or three
     # components like "5.5.3".
     toolchain_type="release"
