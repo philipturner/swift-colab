@@ -14,6 +14,8 @@ For an in-depth look at how and why this repository was created, check out the [
 - [Swift Tutorials](#swift-tutorials)
 - [Testing](#testing)
 
+<!--
+
 ---
 
 This repository does not currently run local Jupyter notebooks, but a future release will support [JupyterLab](https://jupyterlab.readthedocs.io/en/stable/). In the meantime, [liuliu/swift-jupyter](https://github.com/liuliu/swift-jupyter) provides an actively maintained local notebook experience.
@@ -32,6 +34,8 @@ Local environments have faster CPUs than virtual machines, compiling Swift packa
 > Docker does not provide access to the user's GPU, unless they have an NVIDIA GPU ([nvidia-docker](https://github.com/NVIDIA/nvidia-docker)). The maintainer wishes to make GPU acceleration accessible to all users, not favoring one specific platform over all others. If Docker could utilize non-NVIDIA GPUs, it would be viable and preferred to JupyterLab.
 
 </details>
+
+-->
 
 ## Getting Started
 
@@ -213,6 +217,8 @@ In the table below, "Compatible Swift Versions" lists whether each notebook runs
 >
 > <sup>5</sup>This notebook depends on [tensorflow/swift-models](https://github.com/tensorflow/swift-models), which is now maintained at [s4tf/models](https://github.com/s4tf/models). The repository has not been tested recently. Also, compilation requires using `%install-swiftpm-import` to inject the `TensorFlow` module.
 
+<!--
+
 | Tutorials from FastAI | Dependencies | Compatible Swift Versions |
 | --------------------- | ------------ | ------------------------- |
 | n/a | S4TF | n/a |
@@ -227,13 +233,19 @@ For those looking to showcase Swift libraries in Jupyter/Colaboratory: contribut
 | Simulating 3D Physics<sup>7</sup> | [MuJoCo](https://github.com/deepmind/mujoco) | Release, Development |
 | General-Purpose GPU with OpenCL<sup>7</sup> | [SwiftOpenCL](https://github.com/philipturner/swift-opencl) | Release, Development |
 
+-->
+
 <!-- "Google Drive Integration" tutorial - offloads the explanation from this README, shows an interactive experience. Create a scratch Google account, mount the drive, experience compiling SwiftPlot more quickly, caching multiple build configurations. Notify FastAI forums once released. -->
 
 <!-- Maintain the existing S4TF build optimization hack, but nest it inside a dropdown. Encourage people to use Google Drive instead. -->
 
+<!--
+
 > <sup>6</sup>Will be released as part of Swift-Colab v2.3.
 >
 > <sup>7</sup>Still in development. Upon completion, the title will become a hyperlink.
+
+-->
 
 ## Testing
 
