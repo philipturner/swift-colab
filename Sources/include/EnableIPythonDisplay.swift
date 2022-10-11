@@ -71,10 +71,6 @@ extension IPythonDisplay {
     let socketAndShell = _ctypes.PyObj_FromPtr(socketAndShellID)
     IPythonDisplay.socket = socketAndShell[0]
     IPythonDisplay.shell = socketAndShell[1]
-    
-    JupyterKernel.communicator.parentMessageHandler = updateParentMessage
-    JupyterKernel.communicator.afterSuccessfulExecutionHandler = 
-      consumeDisplayMessages
   }
 }
 

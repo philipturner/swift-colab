@@ -11,11 +11,11 @@ The Swift kernel has various built-in commands for downloading dependencies and 
   - [`%install`](#install)
   - [`%install-extra-include-command`](#install-extra-include-command)
   - [`%install-location`](#install-location)
-  - [`%install-swiftpm-environment`](#install-swiftpm-environment)
+  <!-- - [`%install-swiftpm-environment`](#install-swiftpm-environment) -->
   - [`%install-swiftpm-flags`](#install-swiftpm-flags)
-  - [`%install-swiftpm-import`](#install-swiftpm-import)
+  <!-- - [`%install-swiftpm-import`](#install-swiftpm-import) -->
   - [`%system`](#system)
-  - [`%test`](#test)
+  <!-- - [`%test`](#test) -->
 
 Magic commands are implemented in [PreprocessAndExecute.swift](https://github.com/philipturner/swift-colab/blob/main/Sources/JupyterKernel/SwiftKernel/PreprocessAndExecute.swift) and the [SwiftPMEngine](https://github.com/philipturner/swift-colab/blob/main/Sources/JupyterKernel/SwiftPMEngine) directory.
 
@@ -138,6 +138,8 @@ To build packages stored on the local computer, pass `$cwd` into `.package(path:
 - Switching install location may impact future build performance, because it changes which cached build products are visible to the Jupyter kernel.
 - Packages cached in the previous location are still available to `%install-swiftpm-import`. They are also available to the interpreter with `import Module`, but I'm not sure why. I haven't been able to prevent packages from being importable by switching the install location.
 
+<!--
+
 ### `%install-swiftpm-environment`
 ```
 %install-swiftpm-environment EXECUTABLE [ARGUMENT ...]
@@ -147,6 +149,8 @@ To build packages stored on the local computer, pass `$cwd` into `.package(path:
 > Coming in Swift-Colab v2.4.
 
 Append a line of Bash code to execute before building the package.
+
+-->
 
 ### `%install-swiftpm-flags`
 ```
@@ -158,6 +162,8 @@ Append a line of Bash code to execute before building the package.
 - The `$clear` flag was added to allow emptying SwiftPM flags. If you have `$clear` before other flags, it resets then adds the flags to the right of it.
 - Explain workaround for `-Xcc -I/...` flags, but for now just hyperlink: [problem 4 in this comment](https://github.com/philipturner/swift-colab/issues/14#issuecomment-1158237894).
 - `$clear` also resets anything added by `%install-swiftpm-environment` or `%install-swiftpm-import`, but not `%install-location`.
+
+<!--
 
 ### `%install-swiftpm-import`
 ```
@@ -184,6 +190,8 @@ import JupyterDisplay
 #endif
 ```
 
+-->
+
 ### `%system`
 ```
 %system EXECUTABLE [ARGUMENT ...]
@@ -197,6 +205,8 @@ import JupyterDisplay
 %system cd "sample_data" && touch "$(uname -m).sh"
 ```
 The code above works and makes a file called `x86_64.sh` in `/content/sample_data`.
+
+<!--
 
 ### `%test`
 ```
@@ -220,3 +230,5 @@ This command utilizes the same SwiftPM flags as `%install`, providing a convenie
 %install-swiftpm-flags
 %install-swiftpm-import
 ```
+
+-->

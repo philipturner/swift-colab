@@ -180,8 +180,6 @@ struct KernelPipe {
     }
   }
   
-  // TODO: Replace `afterSuccessfulExecution` with transferring data over this 
-  // stream.
   static func resetPipes() {
     closeHandles()
     let counter = incrementThenLoadCounter()

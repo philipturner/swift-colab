@@ -25,9 +25,6 @@ import func Glibc.dlsym
 /// asynchronously using IO threads, and LLDB pauses those IO threads, which
 /// prevents them from sending the messages.
 struct KernelCommunicator {
-  private var afterSuccessfulExecutionHandler: (() -> [JupyterDisplayMessage])?
-  private var parentMessageHandler: ((ParentMessage) -> ())?
-  
   let jupyterSession: JupyterSession
   
   private var previousDisplayMessages: [JupyterDisplayMessage]?
@@ -59,22 +56,6 @@ struct KernelCommunicator {
   func fetchPipes() {
     callSymbol("fetch_pipes")
   }
-  
-  /// The kernel calls this after successfully executing a cell of user code.
-  /// Returns an array of messages, where each message is returned as an array
-  /// of parts, where each part is returned as an address to the memory containing the part's
-  /// bytes and a count of the number of bytes.
-  mutating func triggerAfterSuccessfulExecution() -> [[(address: UInt, count: Int)]] {
-    // Keep a reference to the messages, so that their `.unsafeBufferPointer`
-    // stays valid while the kernel is reading from them.
-    previousDisplayMessages = afterSuccessfulExecutionHandler?()
-    return previousDisplayMessages?.map { message in
-      return message.parts.map { part in
-        let b = part.unsafeBufferPointer
-        return (address: UInt(bitPattern: b.baseAddress), count: b.count)
-      }
-    } ?? []
-  }
 
   /// The kernel calls this when the parent message changes.
   mutating func updateParentMessage(to parentMessage: ParentMessage) {
@@ -83,7 +64,6 @@ struct KernelCommunicator {
       UnsafePointer<CChar>) -> Void
     ).self)
     symbol(parentMessage.json)
-    // parentMessageHandler?(parentMessage)
   }
 
   /// A single serialized display message for the Jupyter client.

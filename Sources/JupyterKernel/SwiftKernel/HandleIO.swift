@@ -38,19 +38,11 @@ fileprivate func sendStdout(_ stdout: String) {
     sendStdout(String(stdout[range.upperBound...]))
   }
   if let range = stdout.range(of: "\033[>>>\r\n") {
-    // sendStdout(String(stdout[..<range.lowerBound]))
-    // executeNextMessage()
-    // sendStdout(String(stdout[range.upperBound...]))
     // Starting a message.
     withRange(range) {
       executeNextMessage()
     }
   } else if let range = stdout.range(of: "\033[2J") {
-    // sendStdout(String(stdout[..<range.lowerBound]))
-    // KernelContext.sendResponse("clear_output", [
-    //   "wait": false
-    // ])
-    // sendStdout(String(stdout[range.upperBound...]))
     withRange(range) {
       KernelContext.sendResponse("clear_output", [
         "wait": false

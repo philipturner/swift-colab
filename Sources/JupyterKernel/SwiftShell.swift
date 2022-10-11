@@ -130,7 +130,6 @@ fileprivate let CapturingSocket = PythonClass(
     
     "send_multipart": PythonInstanceMethod { args, kwargs in
       let msg = args[1]
-      print("started send_multipart")
       let input = encode_send_multipart(msg)
       printMessageStart()
       KernelPipe.send(input, to: .jupyterKernel)
@@ -145,7 +144,6 @@ fileprivate let CapturingSocket = PythonClass(
         decode_send_multipart(messages[0])
         break
       }
-      print("finished send_multipart")
       return Python.None
     }
   ]
@@ -287,14 +285,6 @@ fileprivate func encode_send_multipart(_ msg: PythonObject) -> Data {
   return input_str.data(using: .utf8)!
 }
 
-// TODO: Scrap the C++ code for serializing and deserializing images.
-// TODO: Investigate whether this needs to be blocking/synchronous. If so, 
-// consider doing some magic with Stdout to preserve order of execution while
-// being asynchronous.
-// Update: It must preserve order of execution, but I can make it asynchronous
-// by creating escape sequences in Stdout (maybe).
-// Use the "\033[>m" to "\033[<m" private escape sequence. The entire
-// sequence must be written atomically.
 fileprivate func execute_send_multipart(_ input: PythonObject) -> Data {
   var parts = [PythonObject](input)!
   for i in 0..<parts.count {

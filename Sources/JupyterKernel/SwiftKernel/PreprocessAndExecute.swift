@@ -29,13 +29,6 @@ func preprocessAndExecute(
     // improves waiting performance.
     if isCell {
       getAndSendStdout()
-      
-      // let messages = KernelPipe.recv(from: .lldb)
-      // precondition(messages.count <= 1, "Received more than one message.")
-      // if messages.count == 1 {
-      //   let response = execute_message(messages[0])
-      //   KernelPipe.send(response, to: .lldb)
-      // }
     }
     if shouldBreak {
       return executionResult!
