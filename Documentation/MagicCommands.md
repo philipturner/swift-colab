@@ -108,7 +108,7 @@ Build a Swift package for use inside a notebook. If a previous Jupyter session e
 - `SPEC` - Specification to insert into a package manifest. Prefer to use SwiftPM version 5.0\* syntax, such as `.package(url: "", branch: ""))`, although v4.2 syntax also works for backward compatibility. Place the specification between single quotes to avoid colliding with string literals, which use double quotes.
 - `MODULE` - Each package product the debugger should build and import.
 
-> \*v5.0 syntax will be supported in Swift-Colab v2.3. Until that happens, use v4.2 syntax such as `.package(url: "", .branch(""))`.
+> \*v5.0 syntax will be supported in Swift-Colab v2.4. Until that happens, use v4.2 syntax such as `.package(url: "", .branch(""))`.
 
 Although the SwiftPM engine utilizes cached build products, LLDB does not automatically detect exported modules. `%install` tells the Jupyter kernel to locate and optionally recompile each `MODULE`. Always run the command before using external dependencies in a notebook.
 
@@ -125,7 +125,7 @@ To build packages stored on the local computer, pass `$cwd` into `.package(path:
 ```
 
 - Link to forum thread that initiated this
-- Using this command seems like a bad idea, based on [problem 4 in this comment](https://github.com/philipturner/swift-colab/issues/14#issuecomment-1158237894). Perhaps it will be usable in Swift-Colab v2.3.
+- Using this command seems like a bad idea, based on [problem 4 in this comment](https://github.com/philipturner/swift-colab/issues/14#issuecomment-1158237894). Perhaps it will be usable in Swift-Colab v2.4.
 
 ### `%install-location`
 ```
@@ -144,7 +144,7 @@ To build packages stored on the local computer, pass `$cwd` into `.package(path:
 %install-swiftpm-environment export KEY=VALUE
 ```
 
-> Coming in Swift-Colab v2.3.
+> Coming in Swift-Colab v2.4.
 
 Append a line of Bash code to execute before building the package.
 
@@ -164,7 +164,7 @@ Append a line of Bash code to execute before building the package.
 %install-swiftpm-import MODULE [MODULE ...]
 ```
 
-> Coming in Swift-Colab v2.3.
+> Coming in Swift-Colab v2.4.
 
 Treats a previously compiled module like a library built into the Swift toolchain. This lets a Swift package's source code import the module, without declaring a dependency in `Package.swift`.
 
@@ -203,13 +203,13 @@ The code above works and makes a file called `x86_64.sh` in `/content/sample_dat
 %test SPEC
 ```
 
-> Coming in Swift-Colab v2.3.
+> Coming in Swift-Colab v2.4.
 
 Run Swift package tests on the package specified by `SPEC`. This does not share build products with any corresponding `%install` command, but it does cache build products from previous test runs. If you both install and test the same package in a Jupyter notebook, you will spend twice as long waiting for compilation to finish.
 
 - `SPEC` - Specification to insert into a package manifest. Prefer to use SwiftPM version 5.0\* syntax, such as `.package(url: "", branch: ""))`, although v4.2 syntax also works for backward compatibility. Place the specification between single quotes to avoid colliding with string literals, which use double quotes.
 
-> \*v5.0 syntax will be supported in Swift-Colab v2.3. Until that happens, use v4.2 syntax such as `.package(url: "", .branch(""))`.
+> \*v5.0 syntax will be supported in Swift-Colab v2.4. Until that happens, use v4.2 syntax such as `.package(url: "", .branch(""))`.
 
 This command utilizes the same SwiftPM flags as `%install`, providing a convenient way to configure and run tests in Colaboratory. The following commands affect how tests compile:
 
