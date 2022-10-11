@@ -7,6 +7,8 @@
 
 Do not hyperlink to this file. It will be deleted soon and transformed into a tutorial notebook.
 
+<!--
+
 ----
 
 Easiest to do this before executing install script
@@ -30,3 +32,5 @@ TODO: Warn to not connect a Google Drive containing sensitive or important data.
 TODO: How to make a scratch Google Drive that caches build products between tutorials.
 
 UPDATE: You no longer need Python mode to mount a Google Drive.
+
+-->
