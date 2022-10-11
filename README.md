@@ -41,12 +41,9 @@ Local environments have faster CPUs than virtual machines, compiling Swift packa
 
 Colab notebooks created directly from Google Drive are tailored for Python programming. When making a Swift notebook, copy the [official template](https://colab.research.google.com/drive/1EACIWrk9IWloUckRm3wu973bKUBXQDKR?usp=sharing) instead. It contains the commands listed below, which download and compile the Jupyter kernel. Run the first code cell and click `Runtime > Restart runtime` in the menu bar.
 
-<!-- TODO: Remove the third line in all test/template notebooks after releasing v2.3 -->
-
 ```swift
 !curl "https://raw.githubusercontent.com/philipturner/swift-colab/release/latest/install_swift.sh" --output "install_swift.sh"
 !bash "install_swift.sh" "5.7" #// Replace '5.7' with newest Swift version.
-#// After this cell finishes, go to 'Runtime > Restart runtime'.
 ```
 
 > Tip: Colab measures how long you keep a notebook open without interacting with it. If you exceed the time limit of Colab's free tier, it may restart in Python mode. That means Swift code executes as if it's Python code. In that situation, repeat the process outlined above to return to Swift mode.
@@ -88,7 +85,7 @@ Int.bitWidth
 // 64
 ```
 
-The Swift kernel has several powerful features, including [magic commands](./Documentation/MagicCommands.md) and [Google Drive integration](./Documentation/GoogleDriveIntegration.md). Unfortunately, they are not fully documented yet. The old swift-jupyter's [usage instructions](https://github.com/google/swift-jupyter#usage-instructions) may be helpful in the meantime.
+The Swift kernel has several powerful features, including [magic commands](./Documentation/MagicCommands.md) and [Google Drive integration](./Documentation/GoogleDriveIntegration.md).
 
 ## Installing Packages
 
@@ -251,16 +248,16 @@ For those looking to showcase Swift libraries in Jupyter/Colaboratory: contribut
 
 These tests ensure that Swift-Colab runs on recent Swift toolchains. Some of them originate from [unit tests](https://github.com/google/swift-jupyter/tree/main/test/tests) in swift-jupyter, while others cover fixed bugs and third-party libraries. If any notebook fails or you have a suggestion for a new test, please [open an issue](https://github.com/philipturner/swift-colab/issues).
 
-To run a test, replace `"5.6.2"` in the first code cell with the newest Swift version. Run the installation commands, then go to `Runtime > Restart runtime`. Click on the second code cell and instruct Colab to execute every cell in the notebook (`Runtime > Run after`). Compare each cell's expected output with its actual output. If additional instructions appear at the top of the notebook, read them before running the test.
+To run a test, replace `"5.7"` in the first code cell with the newest Swift version. Run the installation commands, then go to `Runtime > Restart runtime`. Click on the second code cell and instruct Colab to execute every cell in the notebook (`Runtime > Run after`). Compare each cell's expected output with its actual output. If additional instructions appear at the top of the notebook, read them before running the test.
 
 <!-- Emoji shortcuts for reference: ✅ ❌ -->
 
 | Test | Passing | Date of Last Test Run | Swift Version |
 | ---- | ------- | --------------------- | ------------- |
-| [Swift Kernel Tests](https://colab.research.google.com/drive/1vooU1XVHSpolOSmVUKM4Wj6opEJBt7zs?usp=sharing) | ✅ | June 2022 | 5.6.2 Release |
-| [Own Kernel Tests](https://colab.research.google.com/drive/1nHitEZm9QZNheM-ALajARyRZY2xpZr00?usp=sharing) | ✅ | June 2022 | 5.6.2 Release |
-| [Simple Notebook Tests](https://colab.research.google.com/drive/18316eFVMw-NIlA9OandB7djvp0J4jI0-?usp=sharing) | ✅ | June 2022 | 5.6.2 Release |
-| [SwiftPlot](https://colab.research.google.com/drive/1Rxs7OfuKIJ_hAm2gUQT2gWSuIcyaeZfz?usp=sharing) | ✅ | June 2022 | 5.6.2 Release
+| [Swift Kernel Tests](https://colab.research.google.com/drive/1vooU1XVHSpolOSmVUKM4Wj6opEJBt7zs?usp=sharing) | ✅ | October 2022 | 5.7 Release |
+| [Own Kernel Tests](https://colab.research.google.com/drive/1nHitEZm9QZNheM-ALajARyRZY2xpZr00?usp=sharing) | ✅ | October 2022 | 5.7 Release |
+| [Simple Notebook Tests](https://colab.research.google.com/drive/18316eFVMw-NIlA9OandB7djvp0J4jI0-?usp=sharing) | ✅ | October 2022 | 5.7 Release |
+| [SwiftPlot](https://colab.research.google.com/drive/1Rxs7OfuKIJ_hAm2gUQT2gWSuIcyaeZfz?usp=sharing) | ✅ | October 2022 | 5.7 Release
 | [Swift for TensorFlow](https://colab.research.google.com/drive/1v3ZhraaHdAS2TGj03hE0cK-KRFzsqxO1?usp=sharing) | ✅ | August 2022 | August 9, 2022 Development Snapshot |
-| [Concurrency](https://colab.research.google.com/drive/1du6YzWL9L_lbjoLl8qvrgPvyZ_8R7MCq?usp=sharing) | ✅ | June 2022 | 5.6.2 Release |
+| [Concurrency](https://colab.research.google.com/drive/1du6YzWL9L_lbjoLl8qvrgPvyZ_8R7MCq?usp=sharing) | ✅ | October 2022 | 5.7 Release |
 | [TPU Tests](https://colab.research.google.com/drive/1DfkbU_JQnSw1_xLAlDyDvDT3S1G45i6d?usp=sharing) | ✅ | July 2022 | July 5, 2022 v5.7 Development Snapshot |
