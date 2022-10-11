@@ -126,16 +126,18 @@ For tutorials on using the SwiftPlot API, check out [KarthikRIyer/swiftplot](htt
 
 S4TF has a quite complex build setup. The easiest way to use it is copying the [S4TF test notebook](https://colab.research.google.com/drive/1v3ZhraaHdAS2TGj03hE0cK-KRFzsqxO1?usp=sharing) into your Google Drive. To configure it manually, read the instructions below.
 
+> Swift 5.7 has been released, so this section is out of date.
+
 Swift for TensorFlow does not compile on Linux release toolchains, so select a Swift development toolchain. Visit [swift.org/download](https://www.swift.org/download) and scroll to "Trunk Development (main)". Note the date next to "Ubuntu 18.04" - at the time of writing, July 20, 2022. At the top of your Colab notebook, the first code cell says "Replace 5.6.2 with newest Swift version." Delete the `"5.6.2"` after `"install_swift.sh"` and enter the snapshot's date in YYYY-MM-DD format.
 
 ```swift
-!bash "install_swift.sh" "2022-07-20" #// Replace 5.6.2 with newest Swift version.
+!bash "install_swift.sh" "2022-07-20" #// Replace 5.7 with newest Swift version.
 ```
 
 You can easily download trunk snapshots by pasting their date. For other toolchains, the entire URL must be present. The code below downloads the July 5, 2022 snapshot from Swift's `release/5.7` branch. Do not enter it into the notebook; it is only here for reference.
 
 ```swift
-!bash "install_swift.sh" "https://download.swift.org/swift-5.7-branch/ubuntu1804/swift-5.7-DEVELOPMENT-SNAPSHOT-2022-07-05-a/swift-5.7-DEVELOPMENT-SNAPSHOT-2022-07-05-a-ubuntu18.04.tar.gz" #// Replace 5.6.2 with newest Swift version.
+!bash "install_swift.sh" "https://download.swift.org/swift-5.7-branch/ubuntu1804/swift-5.7-DEVELOPMENT-SNAPSHOT-2022-07-05-a/swift-5.7-DEVELOPMENT-SNAPSHOT-2022-07-05-a-ubuntu18.04.tar.gz" #// Replace 5.7 with newest Swift version.
 ```
 
 Execute the installation script and go to `Runtime > Restart runtime`. Next, download the X10 binary created from [tensorflow/tensorflow](https://github.com/tensorflow/tensorflow) and the C++ code in [s4tf/s4tf](https://github.com/s4tf/s4tf). Paste the commands below into a unique code cell, which you only run once. Do not add anything else to this cell.
@@ -191,8 +193,6 @@ When following a tutorial for the first time, run its cells one by one. To run a
 In the table below, "Compatible Swift Versions" lists whether each notebook runs under the latest release or development toolchain.
 - Release = 5.6.2 Release
 - Development = July 20, 2022 Development Snapshot
-
-<!-- TODO: Revamp s4tf/s4tf-docs and link updated tutorials here -->
 
 | Tutorials from Google | Dependencies | Compatible Swift Versions |
 | --------------------- | ------------ | ------------------------- |
