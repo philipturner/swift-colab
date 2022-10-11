@@ -58,7 +58,9 @@ public func JupyterKernel_constructSwiftKernelClass(_ classObj: OpaquePointer) {
       KernelContext.log("finished initSwift")
     }
     
-    let response = try doExecute(code: String(args[1])!)
+    let code = String(args[1])!
+    let allowStdin = Bool(args[5])!
+    let response = try doExecute(code: code, allowStdin: allowStdin)
     return response ?? [
       "status": "ok",
       "execution_count": PythonObject(KernelContext.cellID),
@@ -113,4 +115,3 @@ fileprivate func activatePythonKernel() {
     app.launch_new_instance()          
     """)
 }
-

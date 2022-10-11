@@ -9,12 +9,13 @@ fileprivate struct CEnvironment {
       envArray.append("\(key)=\(value)")
     }
     
-    typealias EnvPointerType = UnsafeMutablePointer<UnsafeMutablePointer<CChar>?>
-    let envPointer = EnvPointerType.allocate(capacity: envArray.count + 1)
+    typealias EnvPointer = UnsafeMutablePointer<UnsafeMutablePointer<CChar>?>
+    let envPointer = EnvPointer.allocate(capacity: envArray.count + 1)
     envPointer[envArray.count] = nil
     for i in 0..<envArray.count {
       let originalStr = envArray[i]
-      let strPointer = UnsafeMutablePointer<CChar>.allocate(capacity: originalStr.count + 1)
+      let strPointer = UnsafeMutablePointer<CChar>
+        .allocate(capacity: originalStr.count + 1)
       _ = originalStr.withCString {
         memcpy(strPointer, $0, originalStr.count + 1)
       }
@@ -24,15 +25,15 @@ fileprivate struct CEnvironment {
   }
 }
 
-fileprivate var sigintHandler: PythonObject!
-
 func initSwift() throws {
+  KernelPipe.resetPipes()
+  KernelPipe.fetchPipes(currentProcess: .jupyterKernel)
+  _ = KernelContext.mutex
+  
   try initReplProcess()
   try initKernelCommunicator()
   try initConcurrency()
-  
-  sigintHandler = SIGINTHandler()
-  sigintHandler.start()
+  try initSIGINTHandler()
 }
 
 fileprivate func initReplProcess() throws {
@@ -78,5 +79,23 @@ fileprivate func initConcurrency() throws {
     """)
   if result is ExecutionResultError {
     throw Exception("Error importing _Concurrency: \(result)")
+  }
+}
+
+fileprivate func initSIGINTHandler() throws {
+  DispatchQueue.global().async {
+    while true {
+      var signal_set = sigset_t()
+      sigemptyset(&signal_set)
+      sigaddset(&signal_set, SIGINT) 
+      
+      var sig: Int32 = 0
+      sigwait(&signal_set, &sig)
+      
+      _ = KernelContext.mutex.acquire()
+      _ = KernelContext.async_interrupt_process()
+      _ = KernelContext.mutex.release()
+      KernelContext.isInterrupted = true
+    }
   }
 }

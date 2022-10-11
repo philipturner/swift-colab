@@ -1,4 +1,6 @@
-# Inline Images
+# Jupyter Display
+
+> This documentation page is a work in progress.
 
 History of this, once had `JupyterDisplay.swift`, why it doesn't now
 

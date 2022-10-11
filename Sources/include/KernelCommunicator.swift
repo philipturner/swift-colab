@@ -12,6 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// These symbols disappear from the Swift interpreter after the file finishes
+// executing.
+import func Glibc.dlopen
+import func Glibc.dlsym
+
 /// A struct with functions that the kernel and the code running inside the
 /// kernel use to talk to each other.
 ///
@@ -20,36 +25,45 @@
 /// asynchronously using IO threads, and LLDB pauses those IO threads, which
 /// prevents them from sending the messages.
 struct KernelCommunicator {
-  private var afterSuccessfulExecutionHandler: (() -> [JupyterDisplayMessage])?
-  private var parentMessageHandler: ((ParentMessage) -> ())?
-
   let jupyterSession: JupyterSession
-
+  
   private var previousDisplayMessages: [JupyterDisplayMessage]?
-
+  
+  private let libJupyterKernel = dlopen(
+    "/opt/swift/lib/libJupyterKernel.so", /*RTLD_LAZY*/Int32(1))!
+  
   init(jupyterSession: JupyterSession) {
     self.jupyterSession = jupyterSession
+    
+    // See "Sources/JupyterKernel/SwiftShell.swift" for an explanation of this 
+    // workaround.
+    callSymbol("prevent_numpy_import_hang")
+    
+    // Fetch pipes before executing any other Swift code for safe measure. This
+    // may not be needed.
+    callSymbol("fetch_pipes")
+    
+    // Overwrite implementation of `google.colab._message.blocking_request`.
+    callSymbol("redirect_stdin")
   }
-
-  /// The kernel calls this after successfully executing a cell of user code.
-  /// Returns an array of messages, where each message is returned as an array
-  /// of parts, where each part is returned as an address to the memory containing the part's
-  /// bytes and a count of the number of bytes.
-  mutating func triggerAfterSuccessfulExecution() -> [[(address: UInt, count: Int)]] {
-    // Keep a reference to the messages, so that their `.unsafeBufferPointer`
-    // stays valid while the kernel is reading from them.
-    previousDisplayMessages = afterSuccessfulExecutionHandler?()
-    return previousDisplayMessages?.map { message in
-      return message.parts.map { part in
-        let b = part.unsafeBufferPointer
-        return (address: UInt(bitPattern: b.baseAddress), count: b.count)
-      }
-    } ?? []
+  
+  private func callSymbol(_ name: String) {
+    let address = dlsym(libJupyterKernel, name)!
+    let symbol = unsafeBitCast(address, to: (@convention(c) () -> Void).self)
+    symbol()
+  }
+  
+  func fetchPipes() {
+    callSymbol("fetch_pipes")
   }
 
   /// The kernel calls this when the parent message changes.
   mutating func updateParentMessage(to parentMessage: ParentMessage) {
-    parentMessageHandler?(parentMessage)
+    let address = dlsym(libJupyterKernel, "update_parent_message")!
+    let symbol = unsafeBitCast(address, to: (@convention(c) (
+      UnsafePointer<CChar>) -> Void
+    ).self)
+    symbol(parentMessage.json)
   }
 
   /// A single serialized display message for the Jupyter client.
@@ -70,13 +84,12 @@ struct KernelCommunicator {
     private var bytes: ContiguousArray<CChar>
 
     init(_ bytes: UnsafeBufferPointer<CChar>) {
-      
       // Construct our own array and copy `bytes` into it, so that no one
       // else aliases the underlying memory.
       self.bytes = []
       self.bytes.append(contentsOf: bytes)
     }
-
+    
     var unsafeBufferPointer: UnsafeBufferPointer<CChar> {
       // We have tried very hard to make the pointer stay valid outside the
       // closure:
@@ -87,35 +100,18 @@ struct KernelCommunicator {
       return bytes.withUnsafeBufferPointer { $0 }
     }
   }
-
+  
   /// ParentMessage identifies the request that causes things to happen.
   /// This lets Jupyter, for example, know which cell to display graphics
   /// messages in.
   struct ParentMessage {
     let json: String
   }
-
+  
   /// The data necessary to identify and sign outgoing jupyter messages.
   struct JupyterSession {
     let id: String
     let key: String
     let username: String
   }
-}
-
-// These symbols disappear from the Swift interpreter after the file finishes
-// executing. Why?
-import func Glibc.dlopen
-import func Glibc.dlsym
-
-// See Sources/JupyterKernel/SwiftShell.swift for an explanation of this 
-// workaround.
-do {
-  let /*Glibc.*/RTLD_LAZY = Int32(1)
-  let libAddress = dlopen("/opt/swift/lib/libJupyterKernel.so", RTLD_LAZY)
-  let funcAddress = dlsym(libAddress, "prevent_numpy_import_hang")
-  let prevent_numpy_import_hang = unsafeBitCast(
-    funcAddress, to: (@convention(c) () -> Void).self)
-  
-  prevent_numpy_import_hang()
 }

@@ -5,6 +5,7 @@ if [[ ! -d /opt/swift ]]; then
   mkdir /opt/swift/internal-modules
   mkdir /opt/swift/lib
   mkdir /opt/swift/packages
+  mkdir /opt/swift/pipes
   mkdir /opt/swift/progress
   mkdir /opt/swift/toolchains
   touch /opt/swift/toolchains/index
@@ -172,7 +173,7 @@ if [[ $mode == "dev" || ! -e "progress/downloaded-swift-colab" ]]; then
     rm -r "swift-colab"
   fi
   
-  git clone --depth 1 --branch release/2.2 \
+  git clone --depth 1 --branch release/2.3 \
     "https://github.com/philipturner/swift-colab"
   
   swift_colab_include="/opt/swift/swift-colab/Sources/include"
@@ -278,8 +279,16 @@ runtime=`cat "/opt/swift/runtime"`
 runtime=$(echo $runtime | tr '[:upper:]' '[:lower:]')
 
 if [[ $runtime == "swift" ]]; then
-  echo '=== ------------------------------------------------------------------------ ===
-=== Swift-Colab overwrote the Python kernel with Swift, but Colab is still   ===
-=== in Python mode. To enter Swift mode, go to Runtime > Restart runtime.    ===
-=== ------------------------------------------------------------------------ ==='
+  left="$(printf '\e[0;36m=== \e[0m')"
+  right="$(printf '\e[0;36m ===\e[0m')"
+  top="$(printf '\e[0;36m=== ------------------------------------------------------------------------ ===\e[0m')"
+  
+  # Escape single quote by specifying its hex value (0x27).
+  button="$(printf '\e[0;32m\x27Runtime > Restart runtime\x27\e[0m')"
+  
+  # Print each line separately for clarity.
+  echo $top
+  echo "${left}Swift-Colab overwrote the Python kernel with Swift, but Colab is still  ${right}"
+  echo "${left}in Python mode. To enter Swift mode, go to ${button}. ${right}"
+  echo $top
 fi

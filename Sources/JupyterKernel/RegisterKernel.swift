@@ -39,7 +39,8 @@ public func JupyterKernel_registerSwiftKernel() {
   let kernelSpecPath = "\(jupyterKernelFolder)/kernel.json"
   try? fm.removeItem(atPath: kernelSpecPath)
   
-  fm.createFile(atPath: kernelSpecPath, contents: kernelSpec.data(using: .utf8)!)
+  fm.createFile(
+    atPath: kernelSpecPath, contents: kernelSpec.data(using: .utf8)!)
   KernelSpecManager().install_kernel_spec(jupyterKernelFolder, "swift")
   
   // Overwrite Python kernel script.

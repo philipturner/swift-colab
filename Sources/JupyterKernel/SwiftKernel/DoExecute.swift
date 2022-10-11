@@ -1,27 +1,40 @@
 import Foundation
+fileprivate let builtins = Python.import("builtins")
+fileprivate let getpass = Python.import("getpass")
 fileprivate let json = Python.import("json")
 fileprivate let jsonutil = Python.import("jupyter_client").jsonutil
 
-func doExecute(code: String) throws -> PythonObject? {
+func doExecute(code: String, allowStdin: Bool) throws -> PythonObject? {
+  // Reset the pipes here, where `SIGINTHandler` can't simultaneously send an
+  // interrupt. Otherwise, the LLDB process might halt while exchanging file
+  // handles.
+  if code != "" {
+    // Should we leave the pipes' contents lingering until the next cell
+    // execution? They might contain sensitive information. However, flushing 
+    // the pipes will not solve the security vulnerability of information 
+    // being exposed like that.
+    _ = KernelContext.mutex.acquire()
+    try beforeExecution()
+    _ = KernelContext.mutex.release()
+  }
+  forwardInput(allowStdin: allowStdin)
+  flushMessages()
+  
   KernelContext.isInterrupted = false
-  KernelContext.pollingStdout = true
+  KernelContext.hadStdout = false
   KernelContext.cellID = Int(KernelContext.kernel.execution_count)!
   
   // Flush stderr
   _ = getStderr(readData: false)
   
-  let handler = StdoutHandler()
-  handler.start()
-  
-  // Execute the cell, handle unexpected exceptions, and make sure to always 
-  // clean up the stdout handler.
+  // Execute the cell, handle unexpected exceptions, and clean up the stdout.
   var result: ExecutionResult
   do {
     defer {
-      KernelContext.pollingStdout = false
-      handler.join()
+      restoreInput()
+      validateMessages()
     }
-    result = try executeCell(code: code)
+    result = try preprocessAndExecute(code: code, isCell: true)
   } catch _ as InterruptException {
     return nil
   } catch let error as PreprocessorError {
@@ -67,7 +80,7 @@ func doExecute(code: String) throws -> PythonObject? {
       // that this execute request can cleanly finish before the kernel exits.
       let loop = Python.import("tornado").ioloop.IOLoop.current()
       loop.add_timeout(Python.import("time").time() + 0.1, loop.stop)
-    } else if Bool(handler.had_stdout)! {
+    } else if KernelContext.hadStdout {
       // If it crashed while unwrapping `nil`, there is no stack trace. To solve
       // this problem, extract where it crashed from the error message. If no
       // stack frames are generated, at least show where the error originated.
@@ -84,7 +97,7 @@ func doExecute(code: String) throws -> PythonObject? {
     } else {
       // There is no stdout, so it must be a compile error. Simply return the 
       // error without trying to get a stack trace.
-      message = formatCompilerError(result.description)
+      message = formatCompileError(result.description)
       
       // Forward this as "stream" instead of "error" to preserve bold 
       // formatting. This also means the lines will not wrap.
@@ -100,26 +113,39 @@ func doExecute(code: String) throws -> PythonObject? {
   }
 }
 
-fileprivate func executeCell(code: String) throws -> ExecutionResult {
-  try setParentMessage()
-  let result = try preprocessAndExecute(code: code, isCell: true)
-  if result is ExecutionResultSuccess {
-    try afterSuccessfulExecution()
-  }
-  return result
-}
-
-fileprivate func setParentMessage() throws {
+fileprivate func beforeExecution() throws {
+  KernelPipe.resetPipes()
+  KernelPipe.fetchPipes(currentProcess: .jupyterKernel)
   let parentHeader = KernelContext.kernel._parent_header
   let jsonObj = json.dumps(json.dumps(jsonutil.squash_dates(parentHeader)))
   
   let result = execute(code: """
+    JupyterKernel.communicator.fetchPipes()
     JupyterKernel.communicator.updateParentMessage(
       to: KernelCommunicator.ParentMessage(json: \(String(jsonObj)!)))
     """)
   if result is ExecutionResultError {
-    throw Exception("Error setting parent message: \(result)")
+    throw Exception("Error setting parent message or fetching pipes: \(result)")
   }
+}
+
+// Forward raw_input and getpass to the current front via input_request.
+fileprivate func forwardInput(allowStdin: Bool) {
+  let kernel = KernelContext.kernel
+  kernel._allow_stdin = PythonObject(allowStdin)
+  
+  kernel._sys_raw_input = builtins.input
+  builtins.input = kernel.raw_input
+  
+  kernel._save_getpass = getpass.getpass
+  getpass.getpass = kernel.getpass
+}
+
+// Restore raw_input, getpass
+fileprivate func restoreInput() {
+  let kernel = KernelContext.kernel
+  builtins.input = kernel._sys_raw_input
+  getpass.getpass = kernel._save_getpass
 }
 
 // Erases bold/light formatting, forces lines to wrap in notebook, and adds a

@@ -101,7 +101,7 @@ func prettyPrintStackTrace(
   let error = KernelContext.get_pretty_stack_trace(&frames, &size);
   guard let frames = frames else {
     throw Exception(
-      "`get_pretty_stack_trace` failed with error code \(error).")
+      "'get_pretty_stack_trace' failed with error code \(error).")
   }
   defer { free(frames) }
   
@@ -129,14 +129,18 @@ func prettyPrintStackTrace(
     let line = formatString("\(header[0])", ansiOptions: [32])
     let column = formatString("\(header[1])", ansiOptions: [32])
     
-    var data = frameBytes.advanced(by: 8).assumingMemoryBound(to: CChar.self)
+    var stream = frameBytes.advanced(by: 8)
     func extractComponent() -> String {
-      let output = String(cString: UnsafePointer(data))
-      data += output.count + 1
+      let count = stream.assumingMemoryBound(to: Int32.self).pointee
+      stream += 4
+      let contents = stream.assumingMemoryBound(to: UInt8.self)
+      let bytes = UnsafeBufferPointer(start: contents, count: Int(count))
+      let output = String(bytes: bytes, encoding: .utf8)!
+      stream += ~3 & (Int(count) + 3)
       return output
     }
     
-    let function = extractComponent()
+    var function = extractComponent()
     let file = extractComponent()
     let directory = extractComponent()
     var path: String
@@ -150,6 +154,12 @@ func prettyPrintStackTrace(
     } else {
       // File is a notebook cell.
       path = file
+      
+      // Insert missing context.
+      if function.hasPrefix("closure #"),
+         function.hasSuffix(" in ") {
+        function += "main"
+      }
     }
     path = formatString(path, ansiOptions: [32])
     
@@ -178,10 +188,10 @@ fileprivate func extractPackageFolder(fromPath path: String) -> String? {
   
   // Should never start with the symbolic link "/opt/swift/install-location".
   // Rather, it should start with that link's destination.
-  guard path.hasPrefix(KernelContext.installLocation) else {
+  guard path.hasPrefix(PackageContext.installLocation) else {
     return nil
   }
-  var url = path.dropFirst(KernelContext.installLocation.count)
+  var url = path.dropFirst(PackageContext.installLocation.count)
   // url = /1/.build/checkouts/Lib/Folder
   guard url.hasPrefix("/") else { return nil }
   url = url.dropFirst(1)
@@ -211,8 +221,8 @@ func getLocationLine(file: String, line: Int) -> String {
   return locationLabel + formattedFile + lineLabel + formattedLine
 }
 
-func formatCompilerError(_ input: String) -> [String] {
-  let label = formatString("Compile error: ", ansiOptions: [31])
+func formatCompileError(_ input: String) -> [String] {
+  let label = formatString("Compilation error: ", ansiOptions: [31])
   var lines = input.split(
     separator: "\n", omittingEmptySubsequences: false).map(String.init)
   guard lines.count > 0 else {

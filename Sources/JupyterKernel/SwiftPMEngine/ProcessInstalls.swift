@@ -2,171 +2,12 @@ import Foundation
 fileprivate let json = Python.import("json")
 fileprivate let os = Python.import("os")
 fileprivate let re = Python.import("re")
-fileprivate let shlex = Python.import("shlex")
 fileprivate let sqlite3 = Python.import("sqlite3")
-fileprivate let string = Python.import("string")
 fileprivate let subprocess = Python.import("subprocess")
 
-fileprivate func shlexSplit(
-  lineIndex: Int, line: PythonConvertible
-) throws -> [String] {
-  let split = shlex[dynamicMember: "split"].throwing
-  do {
-    let output = try split.dynamicallyCall(withArguments: line)
-    return [String](output)!
-  } catch let error as PythonError {
-    throw PreprocessorException(lineIndex: lineIndex, message: """
-      Could not parse shell arguments: \(line)
-      \(error)
-      """)
-  }
-}
-
-func processInstallDirective(
-  line: String, lineIndex: Int, isValidDirective: inout Bool
-) throws {
-  func attempt(
-    command: (String, Int) throws -> Void, _ regex: String
-  ) rethrows {
-    let regexMatch = re.match(regex, line)
-    if regexMatch != Python.None {
-      let restOfLine = String(regexMatch.group(1))!
-      try command(restOfLine, lineIndex)
-      isValidDirective = true
-    }
-  }
-  
-  try attempt(command: processInstall, ###"""
-    ^\s*%install (.*)$
-    """###)
-  if isValidDirective { return }
-  
-  try attempt(command: processSwiftPMFlags, ###"""
-    ^\s*%install-swiftpm-flags (.*)$
-    """###)
-  if isValidDirective { return }
-  
-  try attempt(command: processExtraIncludeCommand, ###"""
-    ^\s*%install-extra-include-command (.*)$
-    """###)
-  if isValidDirective { return }
-  
-  try attempt(command: processInstallLocation, ###"""
-    ^\s*%install-location (.*)$
-    """###)
-  if isValidDirective { return }
-}
-
-// %install-swiftpm-flags
-
-fileprivate var swiftPMFlags: [String] = []
-
-fileprivate func processSwiftPMFlags(
-  restOfLine: String, lineIndex: Int
-) throws {
-  // Nobody is going to type this literal into their Colab notebook.
-  let id = "$SWIFT_COLAB_sHcpmxAcqC7eHlgD"
-  var processedLine: String
-  do {
-    processedLine = String(try string.Template(restOfLine).substitute.throwing
-      .dynamicallyCall(withArguments: [
-        "clear": id
-      ])
-    )!
-  } catch {
-    throw handleTemplateError(error, lineIndex: lineIndex)
-  }
-  
-  // Ensure that only everything after the last "$clear" flag passes into shlex.
-  let reversedID = String(id.reversed())
-  let reversedLine = String(processedLine.reversed())
-  if let idRange = reversedLine.range(of: reversedID) {
-    let endRange = reversedLine.startIndex..<idRange.lowerBound
-    processedLine = String(reversedLine[endRange].reversed())
-    swiftPMFlags = []
-  }
-  
-  swiftPMFlags += try shlexSplit(lineIndex: lineIndex, line: processedLine)
-}
-
-fileprivate func handleTemplateError(
-  _ anyError: Error, lineIndex: Int
-) -> Error {
-  guard let pythonError = anyError as? PythonError else {
-    return anyError
-  }
-  switch pythonError {
-  case .exception(let error, _):
-    return PreprocessorException(lineIndex: lineIndex, message:
-      "Invalid template argument \(error)")
-  default:
-    return pythonError
-  }
-}
-
-// %install-extra-include-command
-
-fileprivate func processExtraIncludeCommand(
-  restOfLine: String, lineIndex: Int
-) throws {
-  let result = subprocess.run(
-    restOfLine,
-    stdout: subprocess.PIPE,
-    stderr: subprocess.PIPE,
-    shell: true)
-  if result.returncode != 0 {
-    throw PreprocessorException(lineIndex: lineIndex, message: """
-      %install-extra-include-command returned nonzero exit code: \(result.returncode)
-      stdout: \(result.stdout.decode("utf8"))
-      stderr: \(result.stderr.decode("utf8"))
-      """)
-  }
-  
-  let preprocessed = result.stdout.decode("utf8")
-  let includeDirs = try shlexSplit(lineIndex: lineIndex, line: preprocessed)
-  for includeDir in includeDirs {
-    if includeDir.prefix(2) != "-I" {
-      // Warning goes to "Runtime" > "View runtime logs"
-      print("""
-        Non "-I" output from %install-extra-include-command: \(includeDir)
-        """)
-      continue
-    }
-    swiftPMFlags.append(includeDir)
-  }
-}
-
-// %install-location
-
-fileprivate func processInstallLocation(
-  restOfLine: String, lineIndex: Int
-) throws {
-  KernelContext.installLocation = try substituteCwd(
-    template: restOfLine, lineIndex: lineIndex)
-}
-
-fileprivate func substituteCwd(
-  template: String, lineIndex: Int
-) throws -> String {
-  do {
-    let output = try string.Template(template).substitute.throwing
-      .dynamicallyCall(withArguments: [
-        "cwd": FileManager.default.currentDirectoryPath
-      ])
-    return String(output)!
-  } catch {
-    throw handleTemplateError(error, lineIndex: lineIndex)
-  }
-}
-
-// %install
-
-fileprivate func sendStdout(_ message: String, insertNewLine: Bool = true) {
-  KernelContext.sendResponse("stream", [
-    "name": "stdout",
-    "text": "\(message)\(insertNewLine ? "\n" : "")"
-  ])
-}
+//===----------------------------------------------------------------------===//
+// Build Swift Packages (%install)
+//===----------------------------------------------------------------------===//
 
 fileprivate var installedPackages: [String]! = nil
 fileprivate var installedPackagesLocation: String! = nil
@@ -175,7 +16,7 @@ fileprivate var installedPackagesMap: [String: Int]! = nil
 
 fileprivate func readInstalledPackages() throws {
   installedPackages = []
-  installedPackagesLocation = "\(KernelContext.installLocation)/index"
+  installedPackagesLocation = "\(PackageContext.installLocation)/index"
   installedPackagesMap = [:]
   
   if let packagesData = FileManager.default.contents(
@@ -211,7 +52,7 @@ fileprivate func readClangModules() {
   loadedClangModules = []
   let fm = FileManager.default
   
-  let moduleSearchPath = "\(KernelContext.installLocation)/modules"
+  let moduleSearchPath = "\(PackageContext.installLocation)/modules"
   let items = try! fm.contentsOfDirectory(atPath: moduleSearchPath)
   for item in items {
     guard item.hasPrefix("module-") else {
@@ -228,27 +69,38 @@ fileprivate func readClangModules() {
   }
 }
 
-fileprivate func processInstall(
+// TODO: Split this up into smaller functions, bring parent function to top of
+// file.
+func processInstall(
   restOfLine: String, lineIndex: Int
 ) throws {
-  let parsed = try shlexSplit(lineIndex: lineIndex, line: restOfLine)
+  let parsed = try PackageContext.shlexSplit(restOfLine, lineIndex)
   if parsed.count < 2 {
-    throw PreprocessorException(lineIndex: lineIndex, message:
-      "%install usage: SPEC PRODUCT [PRODUCT ...]")
+    var sentence: String
+    if parsed.count == 0 {
+      sentence = "Please enter a specification."
+    } else {
+      sentence = "Please specify one or more products."
+    }
+    throw PreprocessorException(lineIndex: lineIndex, message: """
+      Usage: %install SPEC MODULE [MODULE ...]
+      \(sentence) For more guidance, visit:
+      https://github.com/philipturner/swift-colab/blob/main/Documentation/MagicCommands.md#install
+      """)
   }
-  
-  // Expand template before writing to file.
-  let spec = try substituteCwd(template: parsed[0], lineIndex: lineIndex)
-  let products = Array(parsed[1...])
 
+  // Expand template before writing to file.
+  let spec = try PackageContext.substituteCwd(parsed[0], lineIndex)
+  let products = Array(parsed[1...])
+  
   // Ensure install location exists
   let fm = FileManager.default
   do {
     try fm.createDirectory(
-      atPath: KernelContext.installLocation, withIntermediateDirectories: true)
+      atPath: PackageContext.installLocation, withIntermediateDirectories: true)
   } catch {
     throw PackageInstallException(lineIndex: lineIndex, message: """
-      Could not create directory "\(KernelContext.installLocation)". \
+      Could not create directory "\(PackageContext.installLocation)". \
       Encountered error: \(error.localizedDescription)
       """)
   }
@@ -256,10 +108,10 @@ fileprivate func processInstall(
   let linkPath = "/opt/swift/install-location"
   try? fm.removeItem(atPath: linkPath)
   try fm.createSymbolicLink(
-    atPath: linkPath, withDestinationPath: KernelContext.installLocation)
+    atPath: linkPath, withDestinationPath: PackageContext.installLocation)
   
   if installedPackages == nil || 
-     installedPackagesLocation != KernelContext.installLocation {
+     installedPackagesLocation != PackageContext.installLocation {
     try readInstalledPackages()
   }
   
@@ -321,15 +173,15 @@ fileprivate func processInstall(
   func makeBlue(_ label: String) -> String {
     return formatString(label, ansiOptions: [36])
   }
-  sendStdout("""
+  PackageContext.sendStdout("""
     \(makeBlue("Installing package:"))
         \(spec)
     \(modulesHumanDescription)
-    \(makeBlue("With SwiftPM flags: "))\(swiftPMFlags)
-    \(makeBlue("Working in: "))\(KernelContext.installLocation)
+    \(makeBlue("With SwiftPM flags: "))\(PackageContext.swiftPMFlags)
+    \(makeBlue("Working in: "))\(PackageContext.installLocation)
     """)
   
-  let packagePath = "\(KernelContext.installLocation)/\(packageID + 1)"
+  let packagePath = "\(PackageContext.installLocation)/\(packageID + 1)"
   try? fm.createDirectory(
     atPath: packagePath, withIntermediateDirectories: false)
   
@@ -352,14 +204,14 @@ fileprivate func processInstall(
   
   try createFile(name: "Package.swift", contents: manifest)
   try createFile(name: "\(packageName).swift", contents: """
-    // intentionally blank
+    // Intentionally blank.
     
     """)
   
   // Ask SwiftPM to build the package.
   let swiftBuildPath = "/opt/swift/toolchain/usr/bin/swift-build"
   let buildReturnCode = try runTerminalProcess(
-    args: [swiftBuildPath] + swiftPMFlags, cwd: packagePath)
+    args: [swiftBuildPath] + PackageContext.swiftPMFlags, cwd: packagePath)
   if buildReturnCode != 0 {
     throw PackageInstallException(lineIndex: lineIndex, message: """
       swift-build returned nonzero exit code \(buildReturnCode).
@@ -367,7 +219,7 @@ fileprivate func processInstall(
   }
   
   let showBinPathResult = subprocess.run(
-    [swiftBuildPath, "--show-bin-path"] + swiftPMFlags,
+    [swiftBuildPath, "--show-bin-path"] + PackageContext.swiftPMFlags,
     stdout: subprocess.PIPE,
     stderr: subprocess.PIPE,
     cwd: packagePath)
@@ -382,7 +234,7 @@ fileprivate func processInstall(
   let libPath = "\(binDir)/lib\(packageName).so"
   
   // Copy .swiftmodule and modulemap files to Swift module search path.
-  let moduleSearchPath = "\(KernelContext.installLocation)/modules"
+  let moduleSearchPath = "\(PackageContext.installLocation)/modules"
   try? fm.createDirectory(
     atPath: moduleSearchPath, withIntermediateDirectories: false)
   if loadedClangModules == nil {
@@ -526,13 +378,38 @@ fileprivate func processInstall(
   }
   
   if !warningClangModules.isEmpty {
-    sendStdout("""
-      === ------------------------------------------------------------------------ ===
-      === The following Clang modules cannot be imported in your source code until ===
-      === you restart the runtime. If you do not intend to explicitly import       ===
-      === modules listed here, ignore this warning.                                ===
-      === \(warningClangModules)
-      === ------------------------------------------------------------------------ ===
+    var description = String(describing: warningClangModules)
+    var padding: String
+    if description.count >= 76 {
+      // Exceeds 80-character limit.
+      padding = ""
+    } else if description.count == 75 {
+      padding = " "
+    } else if description.count == 74 {
+      padding = " ="
+    } else if description.count == 73 {
+      padding = " =="
+    } else {
+      let numExtraSpaces = 72 - description.count
+      padding = String(repeating: Character(" "), count: numExtraSpaces)
+      padding += " ==="
+    }
+    description = formatString(description, ansiOptions: [32])
+    padding = formatString(padding, ansiOptions: [36])
+    
+    var left = "=== "
+    var right = " ==="
+    var top = left + String(repeating: Character("-"), count: 72) + right
+    left = formatString(left, ansiOptions: [36])
+    right = formatString(right, ansiOptions: [36])
+    top = formatString(top, ansiOptions: [36])
+    PackageContext.sendStdout("""
+      \(top)
+      \(left)Code cells cannot import the following Clang modules until you restart  \(right)
+      \(left)the runtime. Ignore this warning, unless you intend to explicitly import\(right)
+      \(left)a module listed here.                                                   \(right)
+      \(left)\(description)\(padding)
+      \(top)
       """)
   }
   

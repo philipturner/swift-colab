@@ -7,17 +7,33 @@ func preprocessAndExecute(
 ) throws -> ExecutionResult {
   let preprocessed = try preprocess(code: code)
   var executionResult: ExecutionResult?
+  
   DispatchQueue.global().async {
-    executionResult = execute(
+    let _executionResult = execute(
       code: preprocessed, lineIndex: isCell ? 0 : nil, isCell: isCell)
+    _ = KernelContext.mutex.acquire()
+    executionResult = _executionResult
+    _ = KernelContext.mutex.release()
   }
-
-  while executionResult == nil {
+  
+  while true {
     // Using Python's `time` module instead of Foundation.usleep releases the
-    // GIL.
+    // GIL. If we don't periodically release the GIL, output looks choppy.
     time.sleep(0.05)
+    
+    _ = KernelContext.mutex.acquire()
+    let shouldBreak = executionResult != nil
+    _ = KernelContext.mutex.release()
+    
+    // TODO: Pipe all messages directly through Stdout, see whether this
+    // improves waiting performance.
+    if isCell {
+      getAndSendStdout()
+    }
+    if shouldBreak {
+      return executionResult!
+    }
   }
-  return executionResult!
 }
 
 func execute(
@@ -77,7 +93,10 @@ fileprivate func preprocess(code: String) throws -> String {
   return preprocessedLines.joined(separator: "\n")
 }
 
-fileprivate func preprocess(line: String, index lineIndex: Int) throws -> String {
+fileprivate func preprocess(
+  line: String, 
+  index lineIndex: Int
+) throws -> String {
   let installRegularExpression = ###"""
     ^\s*%install
     """###
@@ -115,51 +134,48 @@ fileprivate func preprocess(line: String, index lineIndex: Int) throws -> String
   return line
 }
 
-fileprivate var previouslyReadPaths: Set<String> = []
-
-fileprivate func readInclude(restOfLine: String, lineIndex: Int) throws -> String {
-  let nameRegularExpression = ###"""
-    ^\s*"([^"]+)"\s*$
-    """###
-  let nameMatch = re.match(nameRegularExpression, restOfLine)
-  guard nameMatch != Python.None else {
-    throw PreprocessorException(lineIndex: lineIndex, message:
-      "%include must be followed by a name in quotes")
+fileprivate func readInclude(
+  restOfLine: String,
+  lineIndex: Int
+) throws -> String {
+  let parsed = try PackageContext.shlexSplit(restOfLine, lineIndex)
+  if parsed.count != 1 {
+    var sentence: String
+    if parsed.count == 0 {
+      sentence = "Please enter a path."
+    } else {
+      sentence = "Do not enter anything after the path."
+      throw PreprocessorException(lineIndex: lineIndex, message: """
+        Usage: %include PATH
+        \(sentence) For more guidance, visit:
+        https://github.com/philipturner/swift-colab/blob/main/Documentation/MagicCommands.md#include
+        """)
+    }
   }
   
-  let name = String(nameMatch.group(1))!
-  let includePaths = ["/opt/swift/include", "/content"]
+  let name = parsed[0]
+  let includePaths = ["/content", "/opt/swift/include"]
   var code: String? = nil
-  var chosenPath: String? = nil
-  var rejectedAPath = false
+  var resolvedPath: String? = nil
   
-  // Paths in "/content" should override paths in "/opt/swift/include".
-  // Paths later in the list `includePaths` have higher priority.
+  // Paths in "/content" should override paths in "/opt/swift/include". Stop
+  // after finding the first file that matches.
   for includePath in includePaths {
     let path = includePath + "/" + name
-    if previouslyReadPaths.contains(path) { 
-        rejectedAPath = true
-        continue 
-    }
     if let data = FileManager.default.contents(atPath: path) {
       code = String(data: data, encoding: .utf8)!
-      chosenPath = path
+      resolvedPath = path
+      break
     }
   }
   
   guard let code = code, 
-        let chosenPath = chosenPath else {
-    if rejectedAPath {
-      return ""
-    }
-    
-    // Reversing `includePaths` to show the highest-priority one first.
+        let resolvedPath = resolvedPath else {
     throw PreprocessorException(lineIndex: lineIndex, message:
-      "Could not find \"\(name)\". Searched \(includePaths.reversed()).")
+      "File \"\(name)\" not found. Searched \(includePaths).")
   }
-  previouslyReadPaths.insert(chosenPath)
   return """
-    #sourceLocation(file: "\(chosenPath)", line: 1)
+    #sourceLocation(file: "\(resolvedPath)", line: 1)
     \(code)
     \(getLocationDirective(lineIndex: lineIndex))
     

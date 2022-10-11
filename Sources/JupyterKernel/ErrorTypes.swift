@@ -53,7 +53,17 @@ struct PreprocessorException: PreprocessorError {
 }
 
 struct PackageInstallException: PreprocessorError {
-  static let label = "Package install error"
+  static let label = "Package installation error"
+  var lineIndex: Int
+  var errorDescription: String?
+  init(lineIndex: Int, message: String) { 
+    self.lineIndex = lineIndex
+    self.errorDescription = message 
+  }
+}
+
+struct PackageTestException: PreprocessorError {
+  static let label = "Package testing error"
   var lineIndex: Int
   var errorDescription: String?
   init(lineIndex: Int, message: String) { 
