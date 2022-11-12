@@ -1,8 +1,8 @@
 # Swift-Colab
 
-In March 2021, Google [ended](./Documentation/ColabSupportHistory.md) built-in Swift support on Colaboratory as part of their <s>evil plot</s> attempt to archive [Swift for TensorFlow (S4TF)](https://github.com/tensorflow/swift). Now that new contributors are working on S4TF, a Swift Colab kernel is essential for ensuring that TPU acceleration still works. This repository is the successor to [google/swift-jupyter](https://github.com/google/swift-jupyter), rewritten entirely in Swift.
+In March 2021, Google [ended](./Documentation/ColabSupportHistory.md) built-in Swift support on Colaboratory as part of the shutdown of [Swift for TensorFlow (S4TF)](https://github.com/tensorflow/swift). When new contributors temporarily revived S4TF, a Swift Colab kernel became essential for testing whether TPU acceleration still worked. This repository is the successor to [google/swift-jupyter](https://github.com/google/swift-jupyter), rewritten entirely in Swift.
 
-Swift-Colab is an accessible way to do programming with Swift. It runs in a browser, taking only 30 seconds to start up. It is perfect for programming on Chromebooks and tablets, which do not have the full functionality of a desktop. You can access a free NVIDIA GPU for machine learning and use the real C bindings for OpenCL - instead of Python wrappers. Most importantly, the [new S4TF](https://github.com/s4tf/s4tf) finally runs on Colab.
+Swift-Colab is an accessible way to do programming with Swift. It runs in a browser, taking only 30 seconds to start up. It is perfect for programming on Chromebooks and tablets, which do not have the full functionality of a desktop. You can access a free NVIDIA GPU for machine learning and use the standard C bindings for OpenCL - instead of Python wrappers. Furthermore, the [updated S4TF](https://github.com/s4tf/s4tf) runs on Colab.
 
 For an in-depth look at how and why this repository was created, check out the [summary of its history](./Documentation/ColabSupportHistory.md).
 
