@@ -112,7 +112,7 @@ fileprivate func activateSwiftKernel() {
     from ipykernel.kernelapp import IPKernelApp
     try: 
         arguments = \(CommandLine.arguments) + ['--IPKernelApp.kernel_class=__main__.SwiftKernel']
-        print("at least started6")
+        print('at least started7 \(CommandLine.arguments)')
         IPKernelApp.launch_instance(argv=arguments)
     except AssertionError as err:
         print("AssertionError recognized2:", err)
