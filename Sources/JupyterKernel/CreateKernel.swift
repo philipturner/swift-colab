@@ -2,7 +2,7 @@ import Foundation
 
 @_cdecl("JupyterKernel_createSwiftKernel")
 public func JupyterKernel_createSwiftKernel() {
-  KernelContext.log("Started creating Swift kernel")
+  KernelContext.log("Started creating Swift kernel2")
   let fm = FileManager.default
   func read(path: String) -> String {
     let data = fm.contents(atPath: path)!
@@ -29,7 +29,7 @@ public func JupyterKernel_createSwiftKernel() {
   } else {
     activateSwiftKernel()
   }
-  KernelContext.log("Ended creating Swift kernel")
+  KernelContext.log("Ended creating Swift kerne2")
 }
 
 // A stored reference to the SwiftKernel type object, used as a workaround for 
@@ -38,7 +38,7 @@ fileprivate var preservedSwiftKernelRef: PythonObject!
 
 @_cdecl("JupyterKernel_constructSwiftKernelClass")
 public func JupyterKernel_constructSwiftKernelClass(_ classObj: OpaquePointer) {
-  KernelContext.log("Started creating Swift kernel class")
+  KernelContext.log("Started creating Swift kernel class2")
   let SwiftKernel = PythonObject(OwnedPyObjectPointer(classObj))
   preservedSwiftKernelRef = SwiftKernel
   
@@ -71,7 +71,7 @@ public func JupyterKernel_constructSwiftKernelClass(_ classObj: OpaquePointer) {
       "user_expressions": [:],
     ]
   }.pythonObject
-  KernelContext.log("Ended creating Swift kernel class")
+  KernelContext.log("Ended creating Swift kernel class2")
 }
 
 fileprivate func activateSwiftKernel() {
@@ -95,19 +95,21 @@ fileprivate func activateSwiftKernel() {
     func = PyDLL("/opt/swift/lib/libJupyterKernel.so").JupyterKernel_constructSwiftKernelClass
     func.argtypes = [c_void_p]; func(c_void_p(id(SwiftKernel)))
 
-    file1 = open("/opt/swift/log", "w")
-    file.write(str(SwiftKernel) + ' ' + str(SwiftKernel.__class__))
+    file1 = open("/opt/swift/log", "a")
+    file1.write("Debug start\n")
+    file1.write(str(SwiftKernel) + '\n' + str(SwiftKernel.__class__) + '\n')
+    file1.write("Debug end\n")
     file1.close()
     """)
   
-  KernelContext.log("Debug checkpoint 0")
+  KernelContext.log("Debug checkpoint 01")
   let IPKernelApp = Python.import("ipykernel.kernelapp").IPKernelApp
-  KernelContext.log("Debug checkpoint 1")
+  KernelContext.log("Debug checkpoint 11")
   // We pass the kernel name as a command-line arg, since Jupyter gives those
   // highest priority (in particular overriding any system-wide config).
   IPKernelApp.launch_instance(
     argv: CommandLine.arguments + ["--IPKernelApp.kernel_class=__main__.SwiftKernel"])
-  KernelContext.log("Debug checkpoint 2")
+  KernelContext.log("Debug checkpoint 21")
 }
 
 // The original Python kernel. There is no way to get it run besides
