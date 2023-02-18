@@ -154,11 +154,11 @@ else
       release="swift-DEVELOPMENT-SNAPSHOT-$version-a"
     fi
     
-    tar_file="$release-ubuntu18.04.tar.gz"
-    url="https://download.swift.org/$branch/ubuntu1804/$release/$tar_file"
+    tar_file="$release-ubuntu20.04.tar.gz"
+    url="https://download.swift.org/$branch/ubuntu2004/$release/$tar_file"
     
     curl $url | tar -xz
-    mv "$release-ubuntu18.04" "toolchain"
+    mv "$release-ubuntu20.04" "toolchain"
   fi
   
   echo $version > "progress/swift-version"
