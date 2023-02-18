@@ -47,7 +47,6 @@ extern "C" {
 
 int init_repl_process(const char **repl_env,
                       const char *cwd) {
-#if 0
   SBDebugger::Initialize();
   debugger = SBDebugger::Create();
   if (!debugger.IsValid())
@@ -68,6 +67,7 @@ int init_repl_process(const char **repl_env,
   if (!main_bp.IsValid())
     return 3;
   
+#if 0
   // Turn off "disable ASLR". This feature prevents the Swift Standard Library
   // from loading.
   auto launch_flags = target.GetLaunchInfo().GetLaunchFlags();
