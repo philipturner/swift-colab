@@ -104,6 +104,8 @@ fileprivate func preprocess(
   line: String, 
   index lineIndex: Int
 ) throws -> String {
+  KernelContext.log("---0nin")
+  print("\(Python)")
   KernelContext.log("---0niq")
   print(try? Python.attemptImport("numpy") as Any)
   let installRegularExpression = ###"""
