@@ -37,7 +37,7 @@ func initSwift() throws {
   // PyRun_SimpleString("""
   //    what = 2
   //    """)
-  KernelContext.log("---0vi2")
+  KernelContext.log("---0vi2333333333")
   PyRun_SimpleString("""
             import sys
             import os
@@ -51,6 +51,7 @@ func initSwift() throws {
             if sys.version_info.major == 3 and sys.platform == "darwin":
                 sys.executable = os.path.join(sys.exec_prefix, "bin", "python3")
             """)
+  KernelContext.log("\(Python.import("numpy").ndarray(1))")
   KernelContext.log("---0jjjj")
 
 
