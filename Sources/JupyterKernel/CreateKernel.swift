@@ -108,15 +108,16 @@ fileprivate func activateSwiftKernel() {
   let IPKernelApp = Python.import("ipykernel.kernelapp").IPKernelApp
   KernelContext.log("Debug checkpoint 115")
   PyRun_SimpleString("""
+    from ipykernel.kernelapp import IPKernelApp
     try: 
-        print("at least started2")
+        print("at least started3")
         IPKernelApp.launch_instance(argv=sys.argv + ['--IPKernelApp.kernel_class=__main__.SwiftKernel'])
     except AssertionError as err:
-        print("AssertionError recognized:", err)
+        print("AssertionError recognized2:", err)
     except BaseException as err:
-        print("BaseException recognized:", err)
+        print("BaseException recognized2:", err)
     except Exception as err:
-        print("Exception recognized:", err)
+        print("Exception recognized2:", err)
     """)
   KernelContext.log("Debug checkpoint 447")
 
