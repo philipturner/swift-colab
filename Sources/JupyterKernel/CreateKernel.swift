@@ -71,7 +71,7 @@ public func JupyterKernel_constructSwiftKernelClass(_ classObj: OpaquePointer) {
       "user_expressions": [:],
     ]
   }.pythonObject
-  KernelContext.log("Ended creating Swift kernel class")
+  KernelContext.log("Ended creating Swift kernel class: \(SwiftKernel.__class__)")
 }
 
 fileprivate func activateSwiftKernel() {
