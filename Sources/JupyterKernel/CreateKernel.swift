@@ -55,7 +55,7 @@ public func JupyterKernel_constructSwiftKernelClass(_ classObj: OpaquePointer) {
   SwiftKernel.interruption_method = PythonInstanceMethod { args in
     KernelContext.log("Swift Kernel interruption method called.")
     return Python.None
-  }
+  }.pythonObject
   
   SwiftKernel.do_execute = PythonInstanceMethod { args in
     if !KernelContext.debuggerInitialized {
