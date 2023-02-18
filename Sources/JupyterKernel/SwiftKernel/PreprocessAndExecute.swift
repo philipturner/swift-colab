@@ -104,10 +104,10 @@ fileprivate func preprocess(
   line: String, 
   index lineIndex: Int
 ) throws -> String {
-  KernelContext.log("---0nim")
+  KernelContext.log("---0nimw")
   Py_Initialize()
   KernelContext.log("---0niq")
-  _ = PythonObject(PyEval_GetBuiltins())
+  _ = PyEval_GetBuiltins()
   KernelContext.log("---0vi")
   PyRun_SimpleString("""
      what = 2
