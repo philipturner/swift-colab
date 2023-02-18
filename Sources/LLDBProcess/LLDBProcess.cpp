@@ -47,8 +47,8 @@ extern "C" {
 
 int init_repl_process(const char **repl_env,
                       const char *cwd) {
-  SBDebugger::Initialize();
 #if 0
+  SBDebugger::Initialize();
   debugger = SBDebugger::Create();
   if (!debugger.IsValid())
     return 1;
