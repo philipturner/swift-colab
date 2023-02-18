@@ -107,8 +107,12 @@ fileprivate func preprocess(
   KernelContext.log("---0nim")
   Py_Initialize()
   KernelContext.log("---0niq")
-  PythonObject(PyEval_GetBuiltins())
+  _ = PythonObject(PyEval_GetBuiltins())
   KernelContext.log("---0vi")
+  PyRun_SimpleString("""
+     what = 2
+     """)
+  KernelContext.log("---0vi2")
   PyRun_SimpleString("""
             import sys
             import os
