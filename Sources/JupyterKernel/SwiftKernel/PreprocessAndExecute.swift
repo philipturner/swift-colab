@@ -105,7 +105,7 @@ fileprivate func preprocess(
   index lineIndex: Int
 ) throws -> String {
   KernelContext.log("---0nimwwwww")
-  PythonLibrary.useVersion(3, 8)
+  _ = PythonLibrary.self
   KernelContext.log("---0niq")
   Py_Initialize()
   KernelContext.log("---0vi")
