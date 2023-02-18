@@ -86,10 +86,14 @@ fileprivate func preprocess(code: String) throws -> String {
     .map(String.init)
   KernelContext.log("1")
   let preprocessedLines = try lines.indices.map { i -> String in
+    KernelContext.log("Testing line \(i): 0")
     let line = lines[i]
+    KernelContext.log("Testing line \(i): 1")
     guard line.contains("%") else {
+      KernelContext.log("Testing line \(i): 2")
       return line
     }
+    KernelContext.log("Testing line \(i): 3")
     return try preprocess(line: line, index: i)
   }
   KernelContext.log("2")
