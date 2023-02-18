@@ -104,14 +104,15 @@ fileprivate func preprocess(
   line: String, 
   index lineIndex: Int
 ) throws -> String {
-  KernelContext.log("---0nin")
-  print("\(Python)")
+  KernelContext.log("---0nim")
+  _ = Py_Initialize
   KernelContext.log("---0niq")
-  print(try? Python.attemptImport("numpy") as Any)
+  Py_Initialize()
+  KernelContext.log("---0vi")
   let installRegularExpression = ###"""
     ^\s*%install
     """###
-  KernelContext.log("---0vi")
+  
   let installMatch = re.match(installRegularExpression, line)
   KernelContext.log("---0q")
   if installMatch != Python.None {
