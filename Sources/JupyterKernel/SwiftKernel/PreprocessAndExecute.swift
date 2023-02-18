@@ -5,9 +5,7 @@ fileprivate let time = Python.import("time")
 func preprocessAndExecute(
   code: String, isCell: Bool = false
 ) throws -> ExecutionResult {
-  KernelContext.log("-0")
   let preprocessed = try preprocess(code: code)
-  KernelContext.log("1")
   var executionResult: ExecutionResult?
   
   DispatchQueue.global().async {
@@ -17,7 +15,6 @@ func preprocessAndExecute(
     executionResult = _executionResult
     _ = KernelContext.mutex.release()
   }
-  KernelContext.log("2")
   
   while true {
     // Using Python's `time` module instead of Foundation.usleep releases the
@@ -37,7 +34,6 @@ func preprocessAndExecute(
       return executionResult!
     }
   }
-  KernelContext.log("3")
 }
 
 func execute(
@@ -85,8 +81,10 @@ fileprivate func getLocationDirective(lineIndex: Int) -> String {
 }
 
 fileprivate func preprocess(code: String) throws -> String {
+  KernelContext.log("--0")
   let lines = code.split(separator: "\n", omittingEmptySubsequences: false)
     .map(String.init)
+  KernelContext.log("1")
   let preprocessedLines = try lines.indices.map { i -> String in
     let line = lines[i]
     guard line.contains("%") else {
@@ -94,6 +92,7 @@ fileprivate func preprocess(code: String) throws -> String {
     }
     return try preprocess(line: line, index: i)
   }
+  KernelContext.log("2")
   return preprocessedLines.joined(separator: "\n")
 }
 
