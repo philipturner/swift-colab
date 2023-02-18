@@ -26,6 +26,7 @@ fileprivate struct CEnvironment {
 }
 
 func initSwift() throws {
+  KernelContext.log("Initializing Swift kernel object")
   KernelPipe.resetPipes()
   KernelPipe.fetchPipes(currentProcess: .jupyterKernel)
   _ = KernelContext.mutex

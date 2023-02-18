@@ -38,7 +38,6 @@ fileprivate var preservedSwiftKernelRef: PythonObject!
 
 @_cdecl("JupyterKernel_constructSwiftKernelClass")
 public func JupyterKernel_constructSwiftKernelClass(_ classObj: OpaquePointer) {
-  KernelContext.log("Started creating Swift kernel class233")
   let SwiftKernel = PythonObject(OwnedPyObjectPointer(classObj))
   preservedSwiftKernelRef = SwiftKernel
   
@@ -52,6 +51,11 @@ public func JupyterKernel_constructSwiftKernelClass(_ classObj: OpaquePointer) {
     "file_extension": ".swift",
     "version": ""
   ]
+
+  SwiftKernel.interruption_method = PythonInstanceMethod { args in
+    KernelContext.log("Swift Kernel interruption method called.")
+    return Python.None
+  }
   
   SwiftKernel.do_execute = PythonInstanceMethod { args in
     if !KernelContext.debuggerInitialized {
@@ -71,7 +75,6 @@ public func JupyterKernel_constructSwiftKernelClass(_ classObj: OpaquePointer) {
       "user_expressions": [:],
     ]
   }.pythonObject
-  KernelContext.log("Ended creating Swift kernel class233")
 }
 
 fileprivate func activateSwiftKernel() {
@@ -90,58 +93,21 @@ fileprivate func activateSwiftKernel() {
     from ctypes import *; from ipykernel.kernelbase import Kernel
     class SwiftKernel(Kernel):
         def __init__(self, **kwargs):
+            self.interruption_method(2, 2, 2)
             super().__init__(**kwargs)
 
     func = PyDLL("/opt/swift/lib/libJupyterKernel.so").JupyterKernel_constructSwiftKernelClass
     func.argtypes = [c_void_p]; func(c_void_p(id(SwiftKernel)))
     """)
-  
-  KernelContext.log("A")
-  KernelContext.log("\(Python.import("__main__"))")
-  KernelContext.log("B")
-  KernelContext.log("\(Python.import("__main__").SwiftKernel)")
-  KernelContext.log("C")
-  KernelContext.log("\(Python.import("__main__").SwiftKernel.__class__)")
-  KernelContext.log("D")
-  
-  KernelContext.log("Debug checkpoint 015")
+
   let IPKernelApp = Python.import("ipykernel.kernelapp").IPKernelApp
-  KernelContext.log("Debug checkpoint 115")
-  KernelContext.log("Command line arguments: \(CommandLine.arguments)")
-  PyRun_SimpleString("""
-    from ipykernel.kernelapp import IPKernelApp
-    try: 
-        arguments = \(CommandLine.arguments) + ['--IPKernelApp.kernel_class=__main__.SwiftKernel']
-        print('at least started7 \(CommandLine.arguments)')
-        IPKernelApp.launch_instance(argv=arguments)
-    except AssertionError as err:
-        print("AssertionError recognized2:", err)
-    except BaseException as err:
-        print("BaseException recognized2:", err)
-    except Exception as err:
-        print("Exception recognized2:", err)
-    """)
-  KernelContext.log("Debug checkpoint 447")
 
   // We pass the kernel name as a command-line arg, since Jupyter gives those
   // highest priority (in particular overriding any system-wide config).
-  do {
-    // TODO: To prevent this from failing ever again, always print errors
-    // encountered here to '/opt/swift/log'.
-  try IPKernelApp.launch_instance.throwing.dynamicallyCall(withKeywordArguments:
-    [(key: "argv", value: CommandLine.arguments + 
-        ["--IPKernelApp.kernel_class=__main__.SwiftKernel"]
-    )])
-  } catch let error as PythonError {
-    KernelContext.log("Python error occurred: start")
-    KernelContext.log(error.description)
-    KernelContext.log("Python error occurred: end")
-  } catch let error {
-    KernelContext.log("Unknown error occurred: start")
-    KernelContext.log("\(error.localizedDescription)")
-    KernelContext.log("Unknown error occurred: end")
-  }
-  KernelContext.log("Debug checkpoint 2123")
+  KernelContext.log("Start")
+  IPKernelApp.launch_instance(
+    argv: CommandLine.arguments + ["--IPKernelApp.kernel_class=__main__.SwiftKernel"])
+  KernelContext.log("End")
 }
 
 // The original Python kernel. There is no way to get it run besides
