@@ -104,14 +104,15 @@ fileprivate func preprocess(
   line: String, 
   index lineIndex: Int
 ) throws -> String {
-  KernelContext.log("---0nimww")
-  Py_Initialize()
+  KernelContext.log("---0nimwwwww")
+  PythonLibrary.useVersion(3, 8)
   KernelContext.log("---0niq")
-  //_ = PyEval_GetBuiltins()
+  Py_Initialize()
   KernelContext.log("---0vi")
-  PyRun_SimpleString("""
-     what = 2
-     """)
+  _ = PyEval_GetBuiltins()
+  // PyRun_SimpleString("""
+  //    what = 2
+  //    """)
   KernelContext.log("---0vi2")
   PyRun_SimpleString("""
             import sys
