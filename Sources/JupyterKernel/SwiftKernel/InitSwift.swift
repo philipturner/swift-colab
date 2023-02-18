@@ -48,22 +48,17 @@ fileprivate func initReplProcess() throws {
 }
 
 fileprivate func initKernelCommunicator() throws {
-  KernelContext.log("0")
   var result = try preprocessAndExecute(code: """
     %include "KernelCommunicator.swift"
     """)
-  KernelContext.log("1")
   if result is ExecutionResultError {
     throw Exception("Error initializing KernelCommunicator: \(result)")
   }
-  KernelContext.log("2")
   
   let session = KernelContext.kernel.session
-  KernelContext.log("3")
   let id = String(session.session)!
   let key = String(session.key.decode("utf8"))!
   let username = String(session.username)!
-  KernelContext.log("4")
   
   result = try preprocessAndExecute(code: """
     enum JupyterKernel {
@@ -72,11 +67,9 @@ fileprivate func initKernelCommunicator() throws {
           id: "\(id)", key: "\(key)", username: "\(username)"))
     }
     """)
-  KernelContext.log("5")
   if result is ExecutionResultError {
     throw Exception("Error declaring JupyterKernel: \(result)")
   }
-  KernelContext.log("6")
 }
 
 fileprivate func initConcurrency() throws {

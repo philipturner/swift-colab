@@ -5,7 +5,9 @@ fileprivate let time = Python.import("time")
 func preprocessAndExecute(
   code: String, isCell: Bool = false
 ) throws -> ExecutionResult {
+  KernelContext.log("-0")
   let preprocessed = try preprocess(code: code)
+  KernelContext.log("1")
   var executionResult: ExecutionResult?
   
   DispatchQueue.global().async {
@@ -15,6 +17,7 @@ func preprocessAndExecute(
     executionResult = _executionResult
     _ = KernelContext.mutex.release()
   }
+  KernelContext.log("2")
   
   while true {
     // Using Python's `time` module instead of Foundation.usleep releases the
@@ -34,6 +37,7 @@ func preprocessAndExecute(
       return executionResult!
     }
   }
+  KernelContext.log("3")
 }
 
 func execute(
