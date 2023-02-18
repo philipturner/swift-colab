@@ -104,40 +104,54 @@ fileprivate func preprocess(
   line: String, 
   index lineIndex: Int
 ) throws -> String {
+  KernelContext.log("---0")
   let installRegularExpression = ###"""
     ^\s*%install
     """###
   let installMatch = re.match(installRegularExpression, line)
   if installMatch != Python.None {
+    KernelContext.log("1")
     var isValidDirective = false
     try processInstallDirective(
       line: line, lineIndex: lineIndex, isValidDirective: &isValidDirective)
+    KernelContext.log("2")
     if isValidDirective {
+      KernelContext.log("2.1")
       return ""
     } else {
+      KernelContext.log("2.2")
       // This was not a valid %install-XXX command. Continue through regular 
       // processing and let the Swift parser throw an error.
     }
   }
+  KernelContext.log("3")
   
   let systemRegularExpression = ###"""
     ^\s*%system (.*)$
     """###
   let systemMatch = re.match(systemRegularExpression, line)
   guard systemMatch == Python.None else {
+    KernelContext.log("4")
     let restOfLine = String(systemMatch.group(1))!
+    KernelContext.log("5")
     _ = try runTerminalProcess(args: [restOfLine])
+    KernelContext.log("5.1")
     return ""
   }
+
+  KernelContext.log("6")
   
   let includeRegularExpression = ###"""
     ^\s*%include (.*)$
     """###
   let includeMatch = re.match(includeRegularExpression, line)
   guard includeMatch == Python.None else {
+    KernelContext.log("7")
     let restOfLine = String(includeMatch.group(1))!
+    KernelContext.log("8")
     return try readInclude(restOfLine: restOfLine, lineIndex: lineIndex)
   }
+  KernelContext.log("9")
   return line
 }
 
