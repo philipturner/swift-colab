@@ -104,30 +104,6 @@ fileprivate func preprocess(
   line: String, 
   index lineIndex: Int
 ) throws -> String {
-  KernelContext.log("---0nimwwwww")
-  _ = PythonLibrary.self
-  KernelContext.log("---0niq")
-  Py_Initialize()
-  KernelContext.log("---0vi")
-  _ = PyEval_GetBuiltins()
-  // PyRun_SimpleString("""
-  //    what = 2
-  //    """)
-  KernelContext.log("---0vi2")
-  PyRun_SimpleString("""
-            import sys
-            import os
-            
-            # Some Python modules expect to have at least one argument in `sys.argv`.
-            sys.argv = [""]
-
-            # Some Python modules require `sys.executable` to return the path
-            # to the Python interpreter executable. In Darwin, Python 3 returns the
-            # main process executable path instead.
-            if sys.version_info.major == 3 and sys.platform == "darwin":
-                sys.executable = os.path.join(sys.exec_prefix, "bin", "python3")
-            """)
-  KernelContext.log("---0jjjj")
   let installRegularExpression = ###"""
     ^\s*%install
     """###
