@@ -5,7 +5,6 @@ fileprivate let KernelSpecManager = Python.import("jupyter_client").kernelspec.K
 @_cdecl("JupyterKernel_registerSwiftKernel")
 public func JupyterKernel_registerSwiftKernel() {
   print("Registering Swift Jupyter kernel")
-  KernelContext.log("Registering Swift Jupyter kernel")
   
   let fm = FileManager.default
   let jupyterKernelFolder = "/opt/swift/internal-modules/JupyterKernel"
@@ -51,5 +50,4 @@ public func JupyterKernel_registerSwiftKernel() {
   } else {
     print("Swift Jupyter kernel was already registered")
   }
-  KernelContext.log("Finished registering Swift Jupyter kernel")
 }

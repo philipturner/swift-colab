@@ -2,6 +2,7 @@ import Foundation
 
 @_cdecl("JupyterKernel_createSwiftKernel")
 public func JupyterKernel_createSwiftKernel() {
+  KernelContext.log("Started creating Swift kernel")
   let fm = FileManager.default
   func read(path: String) -> String {
     let data = fm.contents(atPath: path)!
@@ -28,6 +29,7 @@ public func JupyterKernel_createSwiftKernel() {
   } else {
     activateSwiftKernel()
   }
+  KernelContext.log("Ended creating Swift kernel")
 }
 
 // A stored reference to the SwiftKernel type object, used as a workaround for 
@@ -36,6 +38,7 @@ fileprivate var preservedSwiftKernelRef: PythonObject!
 
 @_cdecl("JupyterKernel_constructSwiftKernelClass")
 public func JupyterKernel_constructSwiftKernelClass(_ classObj: OpaquePointer) {
+  KernelContext.log("Started creating Swift kernel class")
   let SwiftKernel = PythonObject(OwnedPyObjectPointer(classObj))
   preservedSwiftKernelRef = SwiftKernel
   
@@ -68,6 +71,7 @@ public func JupyterKernel_constructSwiftKernelClass(_ classObj: OpaquePointer) {
       "user_expressions": [:],
     ]
   }.pythonObject
+  KernelContext.log("Ended creating Swift kernel class")
 }
 
 fileprivate func activateSwiftKernel() {
