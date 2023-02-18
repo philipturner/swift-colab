@@ -109,14 +109,14 @@ fileprivate func activateSwiftKernel() {
   KernelContext.log("Debug checkpoint 115")
   PyRun_SimpleString("""
     try: 
-        print("at least started")
+        print("at least started2")
         IPKernelApp.launch_instance(argv=sys.argv + ['--IPKernelApp.kernel_class=__main__.SwiftKernel'])
-    except AssertionError:
-        print("AssertionError recognized")
-    except BaseException:
-        print("BaseException recognized")
-    except Exception:
-        print("Exception recognized")
+    except AssertionError as err:
+        print("AssertionError recognized:", err)
+    except BaseException as err:
+        print("BaseException recognized:", err)
+    except Exception as err:
+        print("Exception recognized:", err)
     """)
   KernelContext.log("Debug checkpoint 447")
 
