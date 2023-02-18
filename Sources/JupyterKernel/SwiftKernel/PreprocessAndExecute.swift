@@ -105,6 +105,7 @@ fileprivate func preprocess(
   index lineIndex: Int
 ) throws -> String {
   KernelContext.log("---0n")
+  print(Python.import("numpy").ndarray(1))
   let installRegularExpression = ###"""
     ^\s*%install
     """###
