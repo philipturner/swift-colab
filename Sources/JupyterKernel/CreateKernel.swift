@@ -96,11 +96,14 @@ fileprivate func activateSwiftKernel() {
     func.argtypes = [c_void_p]; func(c_void_p(id(SwiftKernel)))
     """)
   
+  KernelContext.log("Debug checkpoint 0")
   let IPKernelApp = Python.import("ipykernel.kernelapp").IPKernelApp
+  KernelContext.log("Debug checkpoint 1")
   // We pass the kernel name as a command-line arg, since Jupyter gives those
   // highest priority (in particular overriding any system-wide config).
   IPKernelApp.launch_instance(
     argv: CommandLine.arguments + ["--IPKernelApp.kernel_class=__main__.SwiftKernel"])
+  KernelContext.log("Debug checkpoint 2")
 }
 
 // The original Python kernel. There is no way to get it run besides
