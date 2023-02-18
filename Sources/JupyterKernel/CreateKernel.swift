@@ -2,7 +2,6 @@ import Foundation
 
 @_cdecl("JupyterKernel_createSwiftKernel")
 public func JupyterKernel_createSwiftKernel() {
-  KernelContext.log("Started creating Swift kernel233")
   let fm = FileManager.default
   func read(path: String) -> String {
     let data = fm.contents(atPath: path)!
@@ -29,7 +28,6 @@ public func JupyterKernel_createSwiftKernel() {
   } else {
     activateSwiftKernel()
   }
-  KernelContext.log("Ended creating Swift kerne233")
 }
 
 // A stored reference to the SwiftKernel type object, used as a workaround for 
