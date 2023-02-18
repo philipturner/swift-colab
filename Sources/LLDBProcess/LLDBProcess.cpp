@@ -47,6 +47,7 @@ extern "C" {
 
 int init_repl_process(const char **repl_env,
                       const char *cwd) {
+#if 0
   SBDebugger::Initialize();
   debugger = SBDebugger::Create();
   if (!debugger.IsValid())
@@ -99,6 +100,7 @@ int init_repl_process(const char **repl_env,
   expr_opts.SetTimeoutInMicroSeconds(0);
   
   main_thread = process.GetThreadAtIndex(0);
+#endif
   return 0;
 }
 
