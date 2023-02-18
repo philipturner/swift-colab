@@ -57,6 +57,7 @@ int init_repl_process(const char **repl_env,
     "settings append target.swift-module-search-paths "
     "/opt/swift/install-location/modules");
   
+#if 0
   const char *repl_swift = "/opt/swift/toolchain/usr/bin/repl_swift";
   target = debugger.CreateTarget(repl_swift);
   if (!target.IsValid())
@@ -67,7 +68,6 @@ int init_repl_process(const char **repl_env,
   if (!main_bp.IsValid())
     return 3;
   
-#if 0
   // Turn off "disable ASLR". This feature prevents the Swift Standard Library
   // from loading.
   auto launch_flags = target.GetLaunchInfo().GetLaunchFlags();
