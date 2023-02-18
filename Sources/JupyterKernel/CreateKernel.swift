@@ -71,7 +71,7 @@ public func JupyterKernel_constructSwiftKernelClass(_ classObj: OpaquePointer) {
       "user_expressions": [:],
     ]
   }.pythonObject
-  KernelContext.log("Ended creating Swift kernel class: \(SwiftKernel.__class__)")
+  KernelContext.log("Ended creating Swift kernel class")
 }
 
 fileprivate func activateSwiftKernel() {
@@ -94,6 +94,10 @@ fileprivate func activateSwiftKernel() {
 
     func = PyDLL("/opt/swift/lib/libJupyterKernel.so").JupyterKernel_constructSwiftKernelClass
     func.argtypes = [c_void_p]; func(c_void_p(id(SwiftKernel)))
+
+    file1 = open("/opt/swift/log", "w")
+    file.write(str(SwiftKernel) + ' ' + str(SwiftKernel.__class__))
+    file1.close()
     """)
   
   KernelContext.log("Debug checkpoint 0")
