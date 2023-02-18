@@ -104,11 +104,13 @@ fileprivate func preprocess(
   line: String, 
   index lineIndex: Int
 ) throws -> String {
-  KernelContext.log("---0")
+  KernelContext.log("---0n")
   let installRegularExpression = ###"""
     ^\s*%install
     """###
+  KernelContext.log("---0v")
   let installMatch = re.match(installRegularExpression, line)
+  KernelContext.log("---0q")
   if installMatch != Python.None {
     KernelContext.log("1")
     var isValidDirective = false
