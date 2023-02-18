@@ -26,23 +26,14 @@ fileprivate struct CEnvironment {
 }
 
 func initSwift() throws {
-  KernelContext.log("Initializing Swift kernel object2")
-  KernelContext.log("0")
   KernelPipe.resetPipes()
-  KernelContext.log("1")
   KernelPipe.fetchPipes(currentProcess: .jupyterKernel)
-  KernelContext.log("2")
   _ = KernelContext.mutex
-  KernelContext.log("3")
   
   try initReplProcess()
-  KernelContext.log("4")
   try initKernelCommunicator()
-  KernelContext.log("5")
   try initConcurrency()
-  KernelContext.log("6")
   try initSIGINTHandler()
-  KernelContext.log("Finished initializing Swift kernel object2")
 }
 
 fileprivate func initReplProcess() throws {
@@ -57,17 +48,22 @@ fileprivate func initReplProcess() throws {
 }
 
 fileprivate func initKernelCommunicator() throws {
+  KernelContext.log("0")
   var result = try preprocessAndExecute(code: """
     %include "KernelCommunicator.swift"
     """)
+  KernelContext.log("1")
   if result is ExecutionResultError {
     throw Exception("Error initializing KernelCommunicator: \(result)")
   }
+  KernelContext.log("2")
   
   let session = KernelContext.kernel.session
+  KernelContext.log("3")
   let id = String(session.session)!
   let key = String(session.key.decode("utf8"))!
   let username = String(session.username)!
+  KernelContext.log("4")
   
   result = try preprocessAndExecute(code: """
     enum JupyterKernel {
@@ -76,9 +72,11 @@ fileprivate func initKernelCommunicator() throws {
           id: "\(id)", key: "\(key)", username: "\(username)"))
     }
     """)
+  KernelContext.log("5")
   if result is ExecutionResultError {
     throw Exception("Error declaring JupyterKernel: \(result)")
   }
+  KernelContext.log("6")
 }
 
 fileprivate func initConcurrency() throws {
