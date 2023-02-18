@@ -48,6 +48,7 @@ extern "C" {
 int init_repl_process(const char **repl_env,
                       const char *cwd) {
   SBDebugger::Initialize();
+#if 0
   debugger = SBDebugger::Create();
   if (!debugger.IsValid())
     return 1;
@@ -57,7 +58,6 @@ int init_repl_process(const char **repl_env,
     "settings append target.swift-module-search-paths "
     "/opt/swift/install-location/modules");
   
-#if 0
   const char *repl_swift = "/opt/swift/toolchain/usr/bin/repl_swift";
   target = debugger.CreateTarget(repl_swift);
   if (!target.IsValid())
