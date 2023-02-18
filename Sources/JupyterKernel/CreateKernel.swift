@@ -104,9 +104,22 @@ fileprivate func activateSwiftKernel() {
   KernelContext.log("\(Python.import("__main__").SwiftKernel.__class__)")
   KernelContext.log("D")
   
-  KernelContext.log("Debug checkpoint 0123")
+  KernelContext.log("Debug checkpoint 015")
   let IPKernelApp = Python.import("ipykernel.kernelapp").IPKernelApp
-  KernelContext.log("Debug checkpoint 1123")
+  KernelContext.log("Debug checkpoint 115")
+  PyRun_SimpleString("""
+    try: 
+        print("at least started")
+        IPKernelApp.launch_instance(argv=sys.argv + ['--IPKernelApp.kernel_class=__main__.SwiftKernel'])
+    except AssertionError:
+        print("AssertionError recognized")
+    except BaseException:
+        print("BaseException recognized")
+    except Exception:
+        print("Exception recognized")
+    """)
+  KernelContext.log("Debug checkpoint 447")
+
   // We pass the kernel name as a command-line arg, since Jupyter gives those
   // highest priority (in particular overriding any system-wide config).
   do {
