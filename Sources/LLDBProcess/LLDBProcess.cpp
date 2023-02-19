@@ -47,6 +47,13 @@ extern "C" {
 
 int init_repl_process(const char **repl_env,
                       const char *cwd) {
+  SBError error = SBDebugger::InitializeWithErrorHandling();
+  if (error.isValid()) {
+    return error.GetError();
+  } else {
+    return 0;
+  }
+
 #if 0
   SBDebugger::Initialize();
   debugger = SBDebugger::Create();

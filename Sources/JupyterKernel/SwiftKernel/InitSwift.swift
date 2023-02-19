@@ -47,6 +47,7 @@ fileprivate func initReplProcess() throws {
   let error = KernelContext.init_repl_process(
     cEnvironment.envp, FileManager.default.currentDirectoryPath)
   KernelContext.log("C.2: \(Array<Int>([Int.random(in: 0..<5)]).count)")
+  KernelContext.log("C.3: \(error)")
   KernelContext.log("D: \(Python.import("numpy").ndarray(1))")
   if error != 0 {
     throw Exception("Got error code \(error) from 'init_repl_process'")
