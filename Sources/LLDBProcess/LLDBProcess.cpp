@@ -48,8 +48,8 @@ extern "C" {
 int init_repl_process(const char **repl_env,
                       const char *cwd) {
   SBError error = SBDebugger::InitializeWithErrorHandling();
-  if (error.isValid()) {
-    return error.GetError();
+  if (error.IsValid()) {
+    return 999000 + error.GetError();
   } else {
     return 0;
   }
