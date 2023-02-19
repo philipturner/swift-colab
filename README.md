@@ -1,5 +1,7 @@
 # Swift-Colab
 
+> There is currently a major bug in Swift-Colab. See more [below](#colab-update-bug).
+
 In March 2021, Google [ended](./Documentation/ColabSupportHistory.md) built-in Swift support on Colaboratory as part of the shutdown of [Swift for TensorFlow (S4TF)](https://github.com/tensorflow/swift). When new contributors temporarily revived S4TF, a Swift Colab kernel became essential for testing whether TPU acceleration still worked. This repository is the successor to [google/swift-jupyter](https://github.com/google/swift-jupyter), rewritten entirely in Swift.
 
 Swift-Colab is an accessible way to do programming with Swift. It runs in a browser, taking only 30 seconds to start up. It is perfect for programming on Chromebooks and tablets, which do not have the full functionality of a desktop. You can access a free NVIDIA GPU for machine learning and use the standard C bindings for OpenCL - instead of Python wrappers. Furthermore, the [updated S4TF](https://github.com/s4tf/s4tf) runs on Colab.
@@ -13,6 +15,17 @@ For an in-depth look at how and why this repository was created, check out the [
 - [Swift for TensorFlow Integration](#swift-for-tensorflow-integration)
 - [Swift Tutorials](#swift-tutorials)
 - [Testing](#testing)
+
+## Colab Update Bug
+
+Recently, Google upgraded Colab from Ubuntu 18.04 to Ubuntu 20.04. This coincided with upgrading the Python version from 3.7 to 3.8. Multiple things seem to have broken, one being the Swift LLDB interpreter. Upon calling `SBDebugger::Initialize()`, any code touching the CPython library will cause a silent crash. I cannot debug the crash because `stderr` is redirected to somewhere unknown in Colab.
+
+Luckily, Swift-Colab is still usable. Use Swift 5.6.2 instead of 5.7.3 and change the notebook's first cell to pull from the `main` branch. This can be accomplished by replacing the first cell with the following. Since the workaround breaks source compatibility, I will release a new Swift-Colab version once a full fix is found.
+
+```swift
+!curl "https://raw.githubusercontent.com/philipturner/swift-colab/main/install_swift.sh" --output "install_swift.sh"
+!bash "install_swift.sh" "5.6.2" #// Replace '5.7.3' with newest Swift version.
+```
 
 <!--
 
