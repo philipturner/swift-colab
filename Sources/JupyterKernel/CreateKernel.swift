@@ -50,11 +50,6 @@ public func JupyterKernel_constructSwiftKernelClass(_ classObj: OpaquePointer) {
     "version": ""
   ]
 
-  SwiftKernel.interruption_method = PythonInstanceMethod { args in
-    KernelContext.log("Swift Kernel interruption method called.")
-    return Python.None
-  }.pythonObject
-  
   SwiftKernel.do_execute = PythonInstanceMethod { args in
     if !KernelContext.debuggerInitialized {
       KernelContext.kernel = args[0]
@@ -91,7 +86,6 @@ fileprivate func activateSwiftKernel() {
     from ctypes import *; from ipykernel.kernelbase import Kernel
     class SwiftKernel(Kernel):
         def __init__(self, **kwargs):
-            self.interruption_method(2, 2, 2)
             super().__init__(**kwargs)
 
     func = PyDLL("/opt/swift/lib/libJupyterKernel.so").JupyterKernel_constructSwiftKernelClass
@@ -102,10 +96,8 @@ fileprivate func activateSwiftKernel() {
 
   // We pass the kernel name as a command-line arg, since Jupyter gives those
   // highest priority (in particular overriding any system-wide config).
-  KernelContext.log("Start")
   IPKernelApp.launch_instance(
     argv: CommandLine.arguments + ["--IPKernelApp.kernel_class=__main__.SwiftKernel"])
-  KernelContext.log("End")
 }
 
 // The original Python kernel. There is no way to get it run besides
